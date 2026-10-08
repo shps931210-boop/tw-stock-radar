@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from . import config, db, update
 
-app = FastAPI(title="又瑄台股雷達")
+app = FastAPI(title="股栗子")
 STATIC = config.ROOT / "static"
 JOB = {"running": False, "stage": "", "done": 0, "total": 0, "msg": "", "started": None, "finished": None, "errors": []}
 _lock = threading.Lock()
