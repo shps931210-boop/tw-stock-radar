@@ -19,7 +19,7 @@ def get(session: requests.Session, url: str, *, tries: int = 3, backoff: float =
                 continue
             r.raise_for_status()
             return r
-        except (requests.ConnectionError, requests.Timeout):
+        except (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError):
             if i == tries - 1:
                 raise
             time.sleep(backoff * 2 ** i)

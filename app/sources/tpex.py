@@ -70,9 +70,21 @@ class TpexSource:
         if not data:
             return []
         sid = _col(f, "代號")
-        fi = _col(f, "外資", "買賣超", exclude=("自營商",))
-        ti = _col(f, "投信", "買賣超")
-        di = _col(f, "自營商", "買賣超")
+        try:
+            fi = _col(f, "外資", "買賣超", exclude=("自營商",))
+            ti = _col(f, "投信", "買賣超")
+            di = _col(f, "自營商", "買賣超")
+        except KeyError:
+            # 2026-10 實際回應：欄位只寫「買進股數／賣出股數／買賣超股數」，分組名稱在另一層表頭。
+            # 共 24 欄：代號、名稱，接著 7 組（外資不含自營商、外資自營商、外資合計、投信、
+            # 自營商自行買賣、自營商避險、自營商合計）各 3 欄，最後一欄是三大法人合計。
+            if len(f) != 24 or [str(x).strip() for x in f[2:5]] != ["買進股數", "賣出股數", "買賣超股數"]:
+                raise
+            fi, ti, di, total = 10, 13, 22, 23
+            bad = [r for r in data[:50] if num(r[total]) is not None and
+                   abs((num(r[fi]) or 0) + (num(r[ti]) or 0) + (num(r[di]) or 0) - num(r[total])) > 1]
+            if bad:  # 外資＋投信＋自營商 要等於合計，否則代表欄位位置不是我們以為的那樣
+                raise KeyError(f"櫃買法人欄位位置驗證失敗：{bad[0][:3]}")
         return [{"stock_id": str(r[sid]).strip(), "foreign_net": num(r[fi]) or 0, "trust_net": num(r[ti]) or 0,
                  "dealer_net": num(r[di]) or 0} for r in data]
 

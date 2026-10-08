@@ -68,9 +68,12 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
             _say(progress, "每日行情與籌碼", n, len(todo), f"{s.market} {key} {d}")
             try:
                 res = getattr(s, fn)(d)
-            except (KeyError, ValueError) as e:
+            except KeyError as e:  # 欄位對不上：整個來源本次停用，避免每天都重複同樣錯誤
                 errors.append(f"{tag}: {http.describe(e)}")
                 dead.add(tag)
+                continue
+            except ValueError as e:  # 單日回應不是 JSON（偶發、被限流）：只略過這一天，下次再補
+                errors.append(f"{tag} {d}: {http.describe(e)}")
                 continue
             except requests.RequestException as e:
                 errors.append(f"{tag} {d}: {http.describe(e)}")
