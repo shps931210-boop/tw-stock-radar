@@ -1,0 +1,80 @@
+# 每個交易日盤後自動抓官方資料、重算選股，發布到 GitHub Pages。
+# 使用前：Settings → Pages → Source 選 GitHub Actions；
+#         Settings → Secrets and variables → Actions 新增 FINMIND_TOKEN（財報、股利用，可不填但額度較低）。
+# GitHub 的排程可能延遲或偶爾被略過，所以排了多個時段；程式只補缺少的資料，重複執行沒有副作用。
+# 也可以在 Actions 頁面按「Run workflow」手動更新。
+name: 盤後更新
+
+on:
+  schedule:                    # 時間是 UTC，以下換算成台灣時間
+    - cron: "40 6 * * 1-5"     # 14:40 收盤行情
+    - cron: "30 8 * * 1-5"     # 16:30 補跑（萬一前一次延遲或失敗）
+    - cron: "0 13 * * 1-5"     # 21:00 法人、融資等較晚公布的資料
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+env:
+  TZ: Asia/Taipei
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    outputs:
+      site: ${{ steps.build.outputs.site }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      # 資料庫存在 Actions 快取（7 天沒用到或容量滿會被清掉，屆時自動重新回補）。
+      # 長期使用建議改存到持久化儲存，見 README。
+      - uses: actions/cache/restore@v4
+        with:
+          path: data/stocks.db
+          key: stocks-db-${{ github.run_id }}
+          restore-keys: stocks-db-
+
+      - name: 更新資料（先抓最新收盤價，再回補歷史）
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python -m app.update
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: data/stocks.db
+          key: stocks-db-${{ github.run_id }}
+
+      # 沒有任何真實資料就不發布，網站維持上一次成功的版本
+      - id: build
+        run: python build_site.py --strict && echo "site=ok" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      # 資料過期或來源失敗時讓這次執行標成失敗，GitHub 會寄通知信；網站仍會發布並在頂端顯示警告
+      - name: 檢查資料是否最新
+        run: python -m app.check
+
+  deploy:
+    needs: update
+    if: always() && needs.update.outputs.site == 'ok'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

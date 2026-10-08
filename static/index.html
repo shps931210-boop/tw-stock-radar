@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>又瑄台股雷達</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+/* 版面：頂部導覽 + 單欄頁面。首頁雙入口；AI 選股、條件選股共用個股頁。台股慣例紅漲綠跌 */
+:root {
+  --bg: #f1f3f7; --panel: #ffffff; --line: #dbe0e8; --ink: #151e2e; --muted: #5a6578; --faint: #8a94a6;
+  --accent: #1e3c78; --accent-2: #2f5bb7; --accent-soft: #e5ebf7; --hero: #142a55; --hero-ink: #f2f5fb; --hero-muted: #b5c3e0;
+  --up: #cf2f2b; --down: #11835a; --warn: #a96f12; --chip: #e9edf3;
+  --up-bg: #fbe8e6; --down-bg: #e1f2ea; --warn-bg: #faefda;
+  --gold: #c9971c; --silver: #8e99a8; --bronze: #b06a3b;
+  --ma5: #d79a00; --ma20: #3b78d8; --ma60: #8e4fc0; --ma120: #1b998b; --ma240: #9a6b45;
+  --f-display: "Noto Serif TC", "Songti TC", serif;
+  --f-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --f-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d121a; --panel: #151c27; --line: #263144; --ink: #e5eaf2; --muted: #95a1b5; --faint: #6b778b;
+  --accent: #8db0f0; --accent-2: #a9c3f5; --accent-soft: #1c2942; --hero: #17284a; --hero-ink: #eef2fa; --hero-muted: #a5b5d6;
+  --up: #ff6a61; --down: #3cc48a; --warn: #e2a846; --chip: #1e2735;
+  --up-bg: #3a1c1d; --down-bg: #132f20; --warn-bg: #352914;
+  --gold: #e3b341; --silver: #aeb8c6; --bronze: #d08a5a;
+  --ma5: #f0c040; --ma20: #6aa3ff; --ma60: #c08ef0; --ma120: #45c9b8; --ma240: #c9966c; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d121a; --panel: #151c27; --line: #263144; --ink: #e5eaf2; --muted: #95a1b5; --faint: #6b778b;
+  --accent: #8db0f0; --accent-2: #a9c3f5; --accent-soft: #1c2942; --hero: #17284a; --hero-ink: #eef2fa; --hero-muted: #a5b5d6;
+  --up: #ff6a61; --down: #3cc48a; --warn: #e2a846; --chip: #1e2735;
+  --up-bg: #3a1c1d; --down-bg: #132f20; --warn-bg: #352914;
+  --gold: #e3b341; --silver: #aeb8c6; --bronze: #d08a5a;
+  --ma5: #f0c040; --ma20: #6aa3ff; --ma60: #c08ef0; --ma120: #45c9b8; --ma240: #c9966c; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 var(--f-body); }
+a { color: var(--accent-2); text-decoration: none; } a:hover { text-decoration: underline; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); } .faint { color: var(--faint); } .small { font-size: 12px; }
+.up { color: var(--up); } .down { color: var(--down); }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+input[type=text], input[type=number], input[type=search], select { padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+
+/* 頂部 */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--panel); border-bottom: 1px solid var(--line); }
+.top-in { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 10px; display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; }
+.brand { color: var(--ink); display: flex; align-items: center; gap: 10px; }
+.brand:hover { text-decoration: none; }
+.brand svg { flex: none; }
+.brand b { display: block; font: 900 19px/1.1 var(--f-display); letter-spacing: .04em; }
+.brand small { display: block; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+nav { display: flex; gap: 2px; flex-wrap: wrap; }
+nav a { padding: 6px 12px; border-radius: 6px; color: var(--muted); font-weight: 500; }
+nav a.on { background: var(--accent-soft); color: var(--accent); }
+nav a:hover { text-decoration: none; color: var(--ink); }
+nav .cnt { font-size: 11px; background: var(--chip); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
+.search { margin-left: auto; } .search input { width: 210px; background: var(--bg); }
+.fresh { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 6px; display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
+.fresh b { color: var(--ink); font-weight: 500; }
+
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); border-radius: 7px; padding: 7px 16px; font-weight: 500; cursor: pointer; }
+.btn:hover { text-decoration: none; filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.sm { padding: 3px 10px; font-size: 12px; }
+.btn.lg { padding: 11px 26px; font-size: 16px; }
+.btn:disabled { opacity: .5; cursor: default; }
+.icon-btn { border: 0; background: none; cursor: pointer; color: var(--faint); padding: 2px 6px; font-size: 16px; line-height: 1; }
+.icon-btn:hover { color: var(--ink); }
+.star { color: var(--faint); } .star.on { color: var(--gold); }
+
+main { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 48px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+h1 { font: 900 28px/1.3 var(--f-display); margin: 0; text-wrap: balance; }
+h2 { font: 700 18px/1.4 var(--f-display); margin: 0; text-wrap: balance; }
+h3 { font-size: 14px; margin: 0; }
+.lead { color: var(--muted); max-width: 68ch; margin: 6px 0 0; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--muted); font-weight: 500; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; min-width: 0; }
+.card-h { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+.banner { border-left: 3px solid var(--warn); background: var(--warn-bg); padding: 9px 12px; font-size: 13px; border-radius: 0 6px 6px 0; }
+.banner.info { border-color: var(--accent-2); background: var(--accent-soft); }
+.banner.bad { border-color: var(--down); background: var(--down-bg); }
+.pill { display: inline-flex; align-items: center; gap: 4px; padding: 1px 9px; border-radius: 999px; background: var(--chip); font-size: 12px; white-space: nowrap; }
+.pill.acc { background: var(--accent-soft); color: var(--accent); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.good { background: var(--up-bg); color: var(--up); font-weight: 500; }
+.pill.bad { background: var(--down-bg); color: var(--down); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 16px; }
+.side { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+@media (max-width: 980px) { .side { grid-template-columns: minmax(0, 1fr); } }
+.empty { padding: 32px; text-align: center; color: var(--muted); }
+
+/* 首頁 */
+.hero { display: grid; gap: 18px; }
+.entries { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+.entry { border-radius: 14px; padding: 24px; display: grid; gap: 14px; align-content: start; border: 1px solid var(--line); background: var(--panel); }
+.entry.ai { background: var(--hero); color: var(--hero-ink); border-color: var(--hero); }
+.entry.ai .muted { color: var(--hero-muted); }
+.entry h2 { font-size: 22px; }
+.entry ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px 14px; font-size: 13px; }
+.entry li { display: flex; gap: 6px; } .entry li::before { content: "✓"; color: var(--gold); font-weight: 700; }
+.entry:not(.ai) li::before { color: var(--accent-2); }
+.entry .btn { justify-self: start; }
+.entry.ai .btn { background: var(--hero-ink); color: var(--hero); border-color: var(--hero-ink); }
+.who { font-size: 12px; padding: 2px 10px; border-radius: 999px; justify-self: start; background: var(--accent-soft); color: var(--accent); }
+.entry.ai .who { background: rgba(255,255,255,.12); color: var(--hero-ink); }
+.mkt { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 860px) { .mkt { grid-template-columns: minmax(0, 1fr); } }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.kpi span { display: block; font-size: 12px; color: var(--muted); }
+.kpi b { font: 500 20px var(--f-num); white-space: nowrap; }
+.kpi b span { display: inline; }
+.fresh.demo { background: #b42318; color: #fff; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding-block: 10px; }
+.fresh.demo span { color: #fff; opacity: .92; }
+.fresh.bad { background: #b42318; color: #fff; padding-block: 10px; }
+.fresh.bad b, .fresh.bad span { color: #fff; }
+.fresh.warn { background: #fff4e5; }
+.fresh.warn > b { color: #b54708; }
+.errs { margin: 6px 0 0; padding-left: 18px; font-size: 12px; color: var(--muted); }
+.errbox summary { cursor: pointer; color: #b54708; }
+.fresh.demo b { color: #fff; font-weight: 700; font-size: 14px; }
+.breadth { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--chip); margin: 6px 0 2px; }
+.breadth i { display: block; }
+.ind { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 13px; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; }
+.flow span { padding: 6px 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); }
+.flow span.k { background: var(--accent-soft); color: var(--accent); border-color: transparent; font-weight: 500; }
+.flow em { color: var(--faint); font-style: normal; }
+
+/* 表格 */
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th[data-sort] { cursor: pointer; } th[data-sort]:hover { color: var(--ink); }
+td { padding: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: middle; }
+td.wrap { white-space: normal; min-width: 200px; }
+.r { text-align: right; }
+tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
+.bar { display: inline-block; width: 56px; height: 6px; background: var(--chip); border-radius: 3px; vertical-align: middle; margin-left: 6px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent-2); }
+.medal { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; font: 700 12px var(--f-num); background: var(--chip); color: var(--muted); }
+.medal.m1 { background: var(--gold); color: #fff; } .medal.m2 { background: var(--silver); color: #fff; } .medal.m3 { background: var(--bronze); color: #fff; }
+
+/* AI 頁 */
+.modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.mode { text-align: left; border: 1.5px solid var(--line); background: var(--panel); border-radius: 10px; padding: 14px 16px; cursor: pointer; display: grid; gap: 4px; }
+.mode.on { border-color: var(--accent-2); box-shadow: 0 0 0 3px var(--accent-soft); }
+.mode b { font-size: 16px; } .mode span { font-size: 12px; color: var(--muted); }
+.wbar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 6px; }
+.wbar i { display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11px; color: var(--muted); margin-top: 4px; }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px 16px; margin: 0; padding: 0; list-style: none; }
+.steps li { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--faint); }
+.steps li::before { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); flex: none; }
+.steps li.done { color: var(--ink); } .steps li.done::before { background: var(--accent-2); border-color: var(--accent-2); }
+.go { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; }
+.reason { font-size: 12px; color: var(--muted); }
+
+/* 條件建構器 */
+.crow { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(90px, .6fr) minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+.crow select, .crow input { width: 100%; }
+.crow .val { display: flex; gap: 6px; align-items: center; } .crow .val span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+@media (max-width: 640px) { .crow { grid-template-columns: 1fr 1fr; } }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 4px 12px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.list { display: grid; gap: 4px; }
+.li { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 7px; font-size: 13px; }
+.li:hover { background: var(--chip); }
+.li .acts { display: flex; gap: 2px; flex: none; }
+.analysis { display: grid; gap: 12px; }
+.analysis h3 { font-size: 13px; color: var(--muted); font-weight: 500; letter-spacing: .04em; }
+.analysis ul { margin: 4px 0 0; padding-left: 18px; }
+
+/* 個股頁 */
+.s-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-end; }
+.s-head .px { font: 500 32px var(--f-num); line-height: 1; }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.stat { background: var(--bg); border-radius: 7px; padding: 8px 10px; }
+.stat span { display: block; font-size: 11px; color: var(--muted); }
+.stat b { font: 500 15px var(--f-num); }
+.chk { display: inline-flex; gap: 4px; align-items: center; font-size: 12px; color: var(--muted); cursor: pointer; }
+.chk i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; }
+.chart { width: 100%; height: 380px; } .chart.sm { height: 220px; } .chart.xs { height: 180px; }
+.aibox { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.aibox ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; }
+.msc { display: flex; gap: 8px; flex-wrap: wrap; }
+.msc div { background: var(--bg); border-radius: 7px; padding: 6px 12px; } .msc span { font-size: 11px; color: var(--muted); display: block; } .msc b { font: 500 17px var(--f-num); }
+details.strat { border-top: 1px solid var(--line); padding: 7px 0; }
+details.strat summary { cursor: pointer; display: flex; gap: 8px; align-items: center; list-style: none; font-size: 13px; }
+details.strat summary::-webkit-details-marker { display: none; }
+.ck { display: grid; grid-template-columns: 18px 1fr auto; gap: 4px 8px; font-size: 13px; padding: 2px 0 2px 4px; }
+.ok { color: var(--up); } .no { color: var(--faint); }
+.news { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.news li { font-size: 13px; display: grid; grid-template-columns: auto 1fr; gap: 8px; }
+/* 直觀化元件 */
+.bigsearch { display: flex; gap: 8px; max-width: 640px; }
+.bigsearch .btn { white-space: nowrap; }
+.bigsearch input { flex: 1; min-width: 0; width: 100%; font-size: 16px; padding: 12px 16px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--panel); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.tile { display: grid; gap: 6px; align-content: start; padding: 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.tile:hover { text-decoration: none; border-color: var(--accent-2); box-shadow: 0 0 0 3px var(--accent-soft); }
+.tile .q { font-size: 13px; color: var(--muted); }
+.tile b { font: 700 18px var(--f-display); }
+.tile .n { font: 500 30px/1 var(--f-num); }
+.tile .n small { font: 400 13px var(--f-body); color: var(--muted); margin-left: 4px; }
+.tile.hot { background: var(--hero); color: var(--hero-ink); border-color: var(--hero); }
+.tile.hot .q, .tile.hot .n small { color: var(--hero-muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 12px; }
+.scard2 { display: grid; gap: 8px; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.scard2:hover { border-color: var(--accent-2); }
+.scard2 .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.scard2 .px { font: 500 18px var(--f-num); }
+.scard2 p { margin: 0; font-size: 13px; color: var(--muted); }
+.trg { display: flex; flex-wrap: wrap; gap: 4px; }
+.st-buy { background: var(--up); color: #fff; font-weight: 700; }
+.st-watch { background: var(--warn-bg); color: var(--warn); font-weight: 500; }
+.st-none { background: var(--chip); color: var(--muted); }
+.verdict { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 10px; background: var(--accent-soft); font-size: 15px; }
+.verdict.buy { background: var(--up-bg); }
+.radar text { fill: var(--muted); font: 12px var(--f-body); }
+.radar .grid { fill: none; stroke: var(--line); }
+.radar .area { fill: var(--accent-2); fill-opacity: .22; stroke: var(--accent-2); stroke-width: 2; }
+.radar .avg { fill: none; stroke: var(--faint); stroke-dasharray: 4 3; }
+.grid-s { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.scard { display: grid; gap: 6px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); }
+.scard:hover { border-color: var(--accent-2); text-decoration: none; }
+.scard .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.scard .cnt { font: 500 22px var(--f-num); }
+.scard p { margin: 0; font-size: 13px; color: var(--muted); }
+.three { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.three h3 { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .04em; margin-bottom: 4px; }
+.three p { margin: 0; }
+footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 32px; font-size: 12px; color: var(--muted); }
+@media (max-width: 640px) { .search { margin-left: 0; width: 100%; } .search input { width: 100%; } .chart { height: 300px; } h1 { font-size: 24px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#/" aria-label="又瑄台股雷達首頁">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="17" cy="17" r="9" fill="none" stroke="var(--accent)" stroke-width="1.4" opacity=".55"/><path d="M17 17 L28 8" stroke="var(--up)" stroke-width="2.4" stroke-linecap="round"/><circle cx="24" cy="12" r="2.4" fill="var(--up)"/></svg>
+      <span><b>又瑄台股雷達</b><small>AI 智慧選股 × 專業量化篩選</small></span></a>
+    <nav id="nav">
+      <a href="#/" data-r="">首頁</a>
+      <a href="#/buy" data-r="buy">今日買點</a>
+      <a href="#/ai" data-r="ai">AI 選股</a>
+      <a href="#/radar" data-r="radar">策略雷達</a>
+      <a href="#/screener" data-r="screener">條件選股</a>
+      <a href="#/watch" data-r="watch">觀察清單<span class="cnt" id="wcnt">0</span></a>
+    </nav>
+    <div class="search"><input id="q" type="search" list="stockList" placeholder="搜尋代號或名稱，如 2330" autocomplete="off" aria-label="搜尋股票"><datalist id="stockList"></datalist></div>
+  </div>
+  <div class="fresh" id="fresh"></div>
+</header>
+<main id="app"><div class="empty">載入中…</div></main>
+<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。<br>本網站依公開資料與事先定義的規則篩選與評分。「AI 解讀」由數據規則自動產生，不是預測。所有門檻與權重皆為示範參數、尚未經台股歷史回測驗證；分數是相對排名，不是上漲機率，也不構成投資建議。</footer>
+<script>
+const STATIC = window.STATIC_DATA || null;
+const SITE = !!window.STATIC_SITE;  // build_site.py 產生的靜態網站：讀 data/*.json，沒有後端
+let SNAP = null, BYID = {}, CAT = {}, charts = [], priceChart = null;
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const store = { get(k, d) { try { const v = localStorage.getItem("yx_" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("yx_" + k, JSON.stringify(v)); } catch (e) {} } };
+const FC = { quality: "#2f5bb7", growth: "#cf2f2b", value: "#1b998b", momentum: "#d79a00", trend: "#8e4fc0" };
+const FL = { quality: "財務品質", growth: "成長能力", value: "估值", momentum: "股價動能", trend: "趨勢" };
+
+// ---------- 格式 ----------
+const PRICE_LIKE = new Set(["close", "ma5", "ma10", "ma20", "ma60", "ma120", "ma240", "eps_ttm", "high_52w", "low_52w", "stop_ref", "div_cash_last"]);
+function fmtNum(v, d = 2) { return v == null || isNaN(v) ? "—" : Number(v).toLocaleString("zh-TW", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+function money(v) { if (v == null) return "—"; const a = Math.abs(v); return a >= 1e8 ? fmtNum(v / 1e8, a >= 1e10 ? 0 : 1) + " 億" : a >= 1e4 ? fmtNum(v / 1e4, 0) + " 萬" : fmtNum(v, 0); }
+const unitOf = (k) => (CAT[k] || {}).unit || "";
+const isBig = (k) => unitOf(k) === "元" && !PRICE_LIKE.has(k);
+function fmt(key, v) {
+  if (v == null) return "—";
+  if (typeof v === "boolean") return v ? "是" : "否";
+  const u = unitOf(key);
+  if (u === "%" || u === "百分點") return fmtNum(v, 1) + (u === "%" ? "%" : " pt");
+  if (u === "元") return isBig(key) ? money(v) : fmtNum(v, 2);
+  if (u === "倍") return fmtNum(v, 2);
+  if (u === "張") return (v > 0 ? "+" : "") + fmtNum(v, 0);
+  if (["分", "百分位", "日", "年"].includes(u)) return fmtNum(v, 0);
+  return fmtNum(v, 2);
+}
+const signCls = (v) => v > 0 ? "up" : v < 0 ? "down" : "";
+const pctTxt = (v) => v == null ? "—" : `${v > 0 ? "+" : ""}${fmtNum(v, 2)}%`;
+const XN = { base_ok: "基本門檻", coverage: "因子資料完整度", vol_1y_pct: "波動率百分位", is_financial: "金融業" };
+const nm = (k) => (CAT[k] || {}).name || XN[k] || k;
+
+// ---------- 條件（與後端相同規則） ----------
+function check(c, r) {
+  if (c.skip_financial && r.is_financial) return "na";
+  const a = r[c.m];
+  if (a == null) return null;
+  if (c.op === "is") return Boolean(a) === c.v;
+  if (c.op === ">m" || c.op === "<m") { const b = r[c.v]; return b == null ? null : c.op === ">m" ? a > b : a < b; }
+  if (c.op === "between") return a > c.v[0] && a < c.v[1];
+  return { ">": a > c.v, ">=": a >= c.v, "<": a < c.v, "<=": a <= c.v }[c.op];
+}
+const OPS = { ">": ">", ">=": "≥", "<": "<", "<=": "≤", "between": "介於", "is": "是／否", ">m": "> 指標", "<m": "< 指標" };
+function condLabel(c) {
+  if (c.label) return c.label;
+  if (c.op === "is") return `${nm(c.m)}：${c.v ? "是" : "否"}`;
+  if (c.op === ">m" || c.op === "<m") return `${nm(c.m)} ${c.op[0]} ${nm(c.v)}`;
+  if (c.op === "between") return `${nm(c.m)} 介於 ${fmt(c.m, c.v[0])} ~ ${fmt(c.m, c.v[1])}`;
+  return `${nm(c.m)} ${OPS[c.op]} ${fmt(c.m, c.v)}`;
+}
+const mark = (x) => x === true ? '<span class="ok">✓</span>' : x === "na" ? '<span class="faint" title="不適用">–</span>' : x === null ? '<span class="faint" title="資料不足">?</span>' : '<span class="no">✗</span>';
+const resTxt = (x) => x === true ? '<span class="ok">符合</span>' : x === "na" ? '<span class="faint">不適用</span>' : x === null ? '<span class="faint">資料不足</span>' : '<span class="no">不符合</span>';
+
+// ---------- 資料 ----------
+async function loadSnap() {
+  if (STATIC) SNAP = STATIC.snapshot;
+  else {
+    const r = await fetch(SITE ? "data/snapshot.json" : "/api/snapshot" + (DEMO ? "?demo=1" : ""));
+    if (!r.ok && SITE) { renderNoData(await fetch("data/status.json").then((x) => x.json()).catch(() => ({ detail: "還沒有成功取得真實行情。" }))); return false; }
+    if (!r.ok) { renderNoData(await r.json().catch(() => ({ detail: "無法連到網站後端" }))); return false; }
+    SNAP = await r.json();
+  }
+  BYID = Object.fromEntries(SNAP.stocks.map((s) => [s.stock_id, s]));
+  CAT = Object.fromEntries(SNAP.catalog.map((c) => [c.key, c]));
+  $("#stockList").innerHTML = SNAP.stocks.filter((s) => s.is_common).map((s) => `<option value="${s.stock_id} ${esc(s.name)}">`).join("");
+  renderFresh(); renderWcnt();
+  return true;
+}
+const DEMO = new URLSearchParams(location.search).get("demo") === "1";
+// 沒有真實資料時：只顯示失敗原因，不顯示任何股價或選股結果
+function renderNoData(e) {
+  $("#fresh").classList.add("bad");
+  $("#fresh").innerHTML = `<b>⚠ 資料取得失敗</b><span>目前沒有真實行情，因此不顯示任何股價與選股結果。</span>`;
+  $("#app").innerHTML = `<section class="card" style="display:grid;gap:12px;max-width:760px">
+    <h2>還沒有成功取得真實資料</h2><p>${esc(e.detail || "")}</p>
+    ${e.last_attempt ? `<p class="faint">最後一次嘗試：<span class="num">${esc(e.last_attempt.replace("T", " "))}</span></p>` : ""}
+    ${(e.errors || []).length ? `<div><b>錯誤紀錄</b><ul class="errs">${e.errors.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    ${SITE ? "" : `<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="upd">立即更新資料</button><span id="job"></span>
+    <a class="btn ghost" href="?demo=1">改看示範畫面（模擬資料）</a></div>`}</section>`;
+  if ($("#upd")) $("#upd").onclick = startUpdate;
+}
+async function loadStock(id) {
+  if (STATIC) return STATIC.details[id];
+  const r = await fetch(SITE ? `data/stock/${id}.json` : `/api/stock/${id}` + (DEMO ? "?demo=1" : ""));
+  return r.ok ? r.json() : null;
+}
+function renderFresh(job) {
+  const d = SNAP.data_dates;
+  if (SNAP.source === "demo") {
+    $("#fresh").classList.add("demo");
+    $("#fresh").innerHTML = `<b>⚠ 目前是模擬資料</b><span>股價、財報、分數都是程式產生的假數字，用來展示畫面，與今天實際行情無關，請勿參考。接上證交所與 FinMind 後會自動換成真實資料。</span>`;
+    return;
+  }
+  const late = SNAP.expected_date && d.prices && d.prices < SNAP.expected_date;
+  const bad = (SNAP.health || []).filter((h) => !h.last_ok || h.last_ok < (d.prices || ""));
+  const errs = (SNAP.meta?.last_errors || "").split("\n").filter(Boolean);
+  $("#fresh").classList.toggle("warn", !!(late || errs.length));
+  const h = SNAP.history, running = SNAP.meta?.update_state === "running";
+  const histMsg = h && !h.ready ? `<b>⏳ 歷史股價${running ? "回補中" : "不足"}：目前 ${h.days} 個交易日，需要 ${h.need} 天。收盤價是真實的，但技術指標與選股排行要等回補完成才會出現。</b>` : "";
+  if (histMsg) $("#fresh").classList.add("warn");
+  $("#fresh").innerHTML = `${histMsg}${late ? (SNAP.expected_basis === "official"
+      ? `<b>⚠ 行情不是最新：證交所已公布 ${SNAP.expected_date} 的行情，網站資料只到 ${d.prices}</b>`
+      : `<b>⚠ 行情可能不是最新：最新資料日 ${d.prices}，推估應為 ${SNAP.expected_date}（無法連到證交所確認；若當天休市則正常）</b>`) : ""}
+    ${(() => { const q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h.last_ok])); return q.twse_quotes !== undefined
+      ? `<span>上市股價 <b class="num">${q.twse_quotes || "從未成功"}</b></span><span>上櫃股價 <b class="num">${q.tpex_quotes || "從未成功"}</b></span>`
+      : `<span>行情 <b class="num">${d.prices || "—"}</b></span>`; })()}
+    ${SNAP.history && !SNAP.history.ready ? "" : SNAP.history ? `<span>歷史股價 <b class="num">${SNAP.history.days}</b> 天</span>` : ""}<span>月營收 <b class="num">${d.revenue || "—"}</b></span><span>財報 <b class="num">${d.financials || "—"}</b></span>
+    <span>分析於 <span class="num">${(SNAP.generated_at || "").replace("T", " ")}</span></span>
+    ${bad.length ? `<span title="${esc(bad.map((h) => h.label + "：最後成功 " + (h.last_ok || "從未")).join("\n"))}">未更新：${bad.map((h) => esc(h.label)).join("、")}</span>` : ""}
+    ${errs.length ? `<details class="errbox"><summary>上次更新有 ${errs.length} 個警告</summary><ul class="errs">${errs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
+    ${STATIC || SITE ? "" : `<span id="job">${job || ""}</span><button class="btn sm ghost" id="upd">立即更新資料</button>`}`;
+  const b = $("#upd"); if (b) b.onclick = startUpdate;
+}
+async function startUpdate() {
+  const r = await fetch("/api/update", { method: "POST" });
+  if (!r.ok && r.status !== 409) return;
+  const t = setInterval(async () => {
+    const s = await (await fetch("/api/status")).json();
+    if (s.running) { $("#job").textContent = `更新中：${s.stage} ${s.total ? s.done + "/" + s.total : ""}`; $("#upd").disabled = true; }
+    else { clearInterval(t); if (await loadSnap()) { renderFresh(s.errors?.length ? `完成，${s.errors.length} 個警告` : "已更新"); route(); } }
+  }, 1500);
+}
+
+// ---------- 觀察清單 ----------
+const watch = () => store.get("watch", {});
+function toggleWatch(id) {
+  const w = watch();
+  if (w[id]) delete w[id]; else w[id] = { added: SNAP.data_dates.prices, price: BYID[id]?.close };
+  store.set("watch", w); renderWcnt();
+}
+function renderWcnt() { $("#wcnt").textContent = Object.keys(watch()).length; }
+const starBtn = (id) => `<button class="icon-btn star ${watch()[id] ? "on" : ""}" data-star="${id}" title="加入／移出觀察清單" aria-label="觀察清單">${watch()[id] ? "★" : "☆"}</button>`;
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-star]");
+  if (!b) return;
+  e.stopPropagation(); toggleWatch(b.dataset.star);
+  const on = !!watch()[b.dataset.star];
+  $$(`[data-star="${b.dataset.star}"]`).forEach((x) => { x.classList.toggle("on", on); x.textContent = on ? "★" : "☆"; });
+}, true);
+
+// ---------- 直觀化元件 ----------
+const STL = { buy: "到達買點", watch: "觀察中", none: "未到買點" };
+const stPill = (s) => `<span class="pill st-${s.timing?.status || "none"}">${STL[s.timing?.status || "none"]}</span>`;
+function spark(arr, w = 96, h = 28) {
+  if (!arr || arr.length < 2) return "";
+  const mn = Math.min(...arr), mx = Math.max(...arr), sx = w / (arr.length - 1), sy = (h - 4) / ((mx - mn) || 1);
+  const pts = arr.map((v, i) => `${(i * sx).toFixed(1)},${(h - 2 - (v - mn) * sy).toFixed(1)}`).join(" ");
+  const col = arr[arr.length - 1] >= arr[0] ? "var(--up)" : "var(--down)";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+}
+const RAX = [["quality", "品質"], ["growth", "成長"], ["value", "估值"], ["momentum", "動能"], ["trend", "趨勢"], ["chips", "籌碼"]];
+function radar(s, size = 260) {
+  const c = size / 2, R = c - 42, n = RAX.length, ang = (i) => -Math.PI / 2 + i * 2 * Math.PI / n;
+  const pt = (i, v) => [c + Math.cos(ang(i)) * R * v / 100, c + Math.sin(ang(i)) * R * v / 100];
+  const poly = (vals) => vals.map((v, i) => pt(i, v).map((x) => x.toFixed(1)).join(",")).join(" ");
+  const grid = [25, 50, 75, 100].map((g) => `<polygon class="grid" points="${poly(RAX.map(() => g))}"/>`).join("");
+  const axes = RAX.map((_, i) => { const [x, y] = pt(i, 100); return `<line class="grid" x1="${c}" y1="${c}" x2="${x}" y2="${y}"/>`; }).join("");
+  const labels = RAX.map(([k, l], i) => { const [x, y] = pt(i, 128); const v = s["score_" + k]; return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle">${l} ${v == null ? "—" : Math.round(v)}</text>`; }).join("");
+  return `<svg class="radar" width="100%" viewBox="0 0 ${size} ${size}" style="max-width:${size}px" role="img" aria-label="六面向評分雷達圖">${grid}${axes}
+    <polygon class="avg" points="${poly(RAX.map(() => 50))}"/><polygon class="area" points="${poly(RAX.map(([k]) => s["score_" + k] ?? 0))}"/>${labels}</svg>`;
+}
+function stockCard(s) {
+  const t = s.timing || {};
+  return `<div class="scard2" data-id="${s.stock_id}" tabindex="0">
+    <div class="row"><span>${starBtn(s.stock_id)}<b class="num">${s.stock_id}</b> ${esc(s.name)} <span class="faint small">${esc(s.industry || "")}</span></span>${stPill(s)}</div>
+    <div class="row"><span><span class="px">${fmtNum(s.close)}</span> <span class="num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span></span>${spark(s.spark)}</div>
+    ${t.triggers?.length ? `<div class="trg">${t.triggers.map((k) => `<span class="pill good">${esc(SNAP.triggers[k])}</span>`).join("")}</div>` : ""}
+    <p>${esc(s.ai.summary)}</p>
+    <div class="row"><span class="pill acc">${esc(s.ai.tag)}</span><span class="small muted">AI 分數 <b class="num" style="color:var(--ink)">${s.ai.modes.balanced.score == null ? "—" : fmtNum(s.ai.modes.balanced.score, 1)}</b></span></div></div>`;
+}
+function bindCards(root) { $$(".scard2", root).forEach((c) => { c.onclick = (e) => { if (!e.target.closest("button,a")) location.hash = `#/stock/${c.dataset.id}`; }; c.onkeydown = (e) => { if (e.key === "Enter") c.click(); }; }); }
+
+// ---------- 共用元件 ----------
+function scoreBar(v) { return `<span class="num">${v == null ? "—" : fmtNum(v, 1)}</span><span class="bar"><i style="width:${v || 0}%"></i></span>`; }
+function stockCell(s) { return `${starBtn(s.stock_id)}<a href="#/stock/${s.stock_id}"><b class="num">${s.stock_id}</b> ${esc(s.name)}</a> <span class="faint small">${esc(s.industry || "")}</span>`; }
+function stockTable(rows, cols) {
+  if (!rows.length) return `<div class="empty">沒有符合條件的股票</div>`;
+  return `<div class="tbl"><table><thead><tr><th>#</th><th>股票</th><th>買點</th><th class="r">收盤</th><th class="r">漲跌</th><th>近 3 月</th>
+    ${cols.map((k) => `<th class="r" data-sort="${k}" title="${esc((CAT[k] || {}).formula || "")}">${esc(nm(k))}</th>`).join("")}
+    <th class="r" data-sort="__ai">AI 均衡分數</th><th>AI 評估</th></tr></thead><tbody>
+    ${rows.map((s, i) => `<tr class="link" data-id="${s.stock_id}"><td class="num faint">${i + 1}</td><td>${stockCell(s)}</td><td>${stPill(s)}</td>
+      <td class="r num">${fmtNum(s.close)}</td><td class="r num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</td><td>${spark(s.spark, 80, 24)}</td>
+      ${cols.map((k) => `<td class="r num">${fmt(k, s[k])}</td>`).join("")}
+      <td class="r">${scoreBar(s.ai.modes.balanced.score)}</td><td><span class="pill acc">${esc(s.ai.tag)}</span></td></tr>`).join("")}</tbody></table></div>`;
+}
+function bindRows(root, rows, rerender) {
+  $$("tr.link", root).forEach((tr) => tr.onclick = (e) => { if (!e.target.closest("a,button")) location.hash = `#/stock/${tr.dataset.id}`; });
+  let asc = false, key = null;
+  $$("th[data-sort]", root).forEach((th) => th.onclick = () => {
+    const k = th.dataset.sort; asc = key === k ? !asc : false; key = k;
+    const val = (s) => k === "__ai" ? s.ai.modes.balanced.score : s[k];
+    rows.sort((a, b) => ((val(a) ?? -Infinity) - (val(b) ?? -Infinity)) * (asc ? 1 : -1)); rerender();
+  });
+}
+function mkChart(el, opt = {}) {
+  const c = LightweightCharts.createChart(el, Object.assign({
+    autoSize: true, layout: { background: { color: "transparent" }, textColor: css("--muted"), fontFamily: "IBM Plex Mono, monospace", fontSize: 11 },
+    grid: { vertLines: { visible: false }, horzLines: { color: css("--line") } },
+    rightPriceScale: { borderVisible: false }, timeScale: { borderVisible: false }, crosshair: { mode: 0 }, localization: { locale: "zh-TW" } }, opt));
+  charts.push(c); return c;
+}
+const hasLWC = () => !!window.LightweightCharts;
+function weightBar(w) {
+  const ks = Object.keys(w).sort((a, b) => w[b] - w[a]);
+  return `<div class="wbar">${ks.map((k) => `<i style="width:${w[k] * 100}%;background:${FC[k]}" title="${FL[k]} ${w[k] * 100}%"></i>`).join("")}</div>
+    <div class="legend">${ks.map((k) => `<span><i style="background:${FC[k]}"></i>${FL[k]} ${Math.round(w[k] * 100)}%</span>`).join("")}</div>`;
+}
+
+// ---------- 首頁 ----------
+function pageHome() {
+  const m = SNAP.market, b = SNAP.breadth, tot = b.up + b.down + b.flat || 1, inds = SNAP.industries || [];
+  const buys = SNAP.stocks.filter((s) => s.timing?.status === "buy").sort((a, b) => b.ai.modes.balanced.score - a.ai.modes.balanced.score);
+  const watching = SNAP.stocks.filter((s) => s.timing?.status === "watch").length;
+  const aiN = SNAP.stocks.filter((s) => s.ai.modes.balanced.rank).length;
+  $("#app").innerHTML = `
+    <section style="display:grid;gap:12px"><div class="eyebrow">${SNAP.source === "demo" ? "模擬資料示範" : `台灣上市櫃股票・${SNAP.data_dates.prices || ""} 收盤後分析`}</div>
+      <h1>今天，哪些好公司出現好時機？</h1>
+      <p class="lead" style="margin:0">輸入股票直接看分析，或從下面四個入口開始。所有結果都用同一套資料與規則計算。</p>
+      <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看分析</button></form></section>
+    <section class="tiles">
+      <a class="tile hot" href="#/buy"><span class="q">好公司 × 好時機</span><b>今日到達買點</b><span class="n">${buys.length}<small>檔</small></span><span class="q">另有 ${watching} 檔觀察中</span></a>
+      <a class="tile" href="#/ai"><span class="q">不懂指標也能用</span><b>AI 智慧選股</b><span class="n">${aiN}<small>檔入榜</small></span><span class="q">穩健／均衡／積極三種模式</span></a>
+      <a class="tile" href="#/radar"><span class="q">照投資方法找</span><b>策略雷達</b><span class="n">${SNAP.strategies.length}<small>種策略</small></span><span class="q">價值、品質、成長、動能…</span></a>
+      <a class="tile" href="#/screener"><span class="q">自己制定規則</span><b>自訂條件選股</b><span class="n">70+<small>個指標</small></span><span class="q">AND／OR、儲存與比較</span></a>
+    </section>
+    <section><div class="card-h"><h2>今日到達買點</h2><a href="#/buy">看全部與觀察中的股票 →</a></div>
+      <div class="cards" id="bc">${buys.slice(0, 6).map(stockCard).join("") || '<div class="card empty">今天沒有股票同時符合體質與時機條件</div>'}</div></section>
+    <section class="card"><div class="card-h"><h2>今日市場概況</h2><span class="muted small">資料日 ${SNAP.data_dates.prices || "—"}</span></div>
+      <div class="mkt">
+        <div><div class="kpis">
+            <div class="kpi"><span>加權指數</span><b>${fmtNum(m.taiex, 2)}</b></div>
+            <div class="kpi"><span>漲跌</span><b class="${signCls(m.taiex_chg)}">${pctTxt(m.taiex_chg)}</b></div>
+            <div class="kpi"><span>上漲／下跌家數</span><b><span class="up">${b.up}</span> / <span class="down">${b.down}</span></b></div></div>
+          <div class="breadth" title="上漲 ${b.up}、平盤 ${b.flat}、下跌 ${b.down}"><i style="width:${b.up / tot * 100}%;background:var(--up)"></i><i style="width:${b.flat / tot * 100}%;background:var(--faint)"></i><i style="width:${b.down / tot * 100}%;background:var(--down)"></i></div>
+          <div class="chart xs" id="ix"></div></div>
+        <div><h3 style="margin-bottom:6px">產業近一個月表現</h3><div class="ind">
+          ${inds.slice(0, 6).map((x) => `<span>${esc(x.industry)} <span class="faint small">${x.n} 檔</span></span><span class="num ${signCls(x.ret_1m)}">${pctTxt(x.ret_1m)}</span>`).join("")}
+          ${inds.length > 8 ? `<span class="faint small" style="grid-column:1/-1">⋯</span>` + inds.slice(-2).map((x) => `<span>${esc(x.industry)} <span class="faint small">${x.n} 檔</span></span><span class="num ${signCls(x.ret_1m)}">${pctTxt(x.ret_1m)}</span>`).join("") : ""}
+        </div></div></div></section>
+    <section class="card"><div class="card-h"><h2>怎麼判斷「到達買點」？</h2></div>
+      <div class="flow"><span class="k">① 體質：AI 分數夠高</span><em>＋</em><span class="k">② 時機：出現進場訊號</span><em>＋</em><span class="k">③ 沒有過熱風險</span><em>＝</em><span>到達買點</span></div>
+      <p class="muted small" style="margin:10px 0 0">體質看財務品質、成長、估值、動能、趨勢五個因子；進場訊號包括 ${Object.values(SNAP.triggers).join("、")}。只符合體質、還沒出現訊號的列為「觀察中」。</p></section>`;
+  bindCards($("#bc"));
+  $("#hs").onsubmit = (e) => { e.preventDefault(); const q = $("#hq").value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => q && s.name.includes(q)); if (hit) location.hash = `#/stock/${hit.stock_id}`; else $("#hq").setCustomValidity && ($("#hq").value = "", $("#hq").placeholder = `找不到「${q}」，請換個代號或名稱`); };
+  if (hasLWC() && SNAP.index_series?.length) {
+    const c = mkChart($("#ix"));
+    c.addAreaSeries({ lineColor: css("--accent-2"), topColor: css("--accent-soft"), bottomColor: "transparent", lineWidth: 2, priceLineVisible: false }).setData(SNAP.index_series);
+    c.timeScale().fitContent();
+  }
+}
+
+// ---------- 今日買點 ----------
+function pageBuy() {
+  const tab = store.get("buytab", "buy");
+  const rule = SNAP.buy_point;
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">好公司 × 好時機</div><h1>今日買點雷達</h1>
+      <p class="lead">先用 AI 評分確認公司體質，再看股價是否出現進場訊號。兩者都符合、又沒有過熱風險，才標示「到達買點」。</p></section>
+    <section class="card"><div class="three">
+      <div><h3>① 體質條件</h3><p>通過 AI ${esc(SNAP.ai_modes[rule.mode].name)}硬性條件，且 AI 分數 ≥ ${rule.min_score}</p></div>
+      <div><h3>② 進場訊號（任一）</h3><p>${Object.values(SNAP.triggers).map(esc).join("、")}</p></div>
+      <div><h3>③ 沒有過熱風險</h3><p>RSI ≤ 80、距月線乖離 ≤ 15%、融資 20 日增幅 ≤ 20%</p></div></div></section>
+    <section><div class="toolbar" style="margin-bottom:12px"><div class="seg" id="bt">
+      <button data-t="buy">到達買點（${SNAP.stocks.filter((s) => s.timing?.status === "buy").length}）</button>
+      <button data-t="watch">觀察中（${SNAP.stocks.filter((s) => s.timing?.status === "watch").length}）</button></div>
+      <span class="muted small">觀察中：體質符合、趨勢仍在，但還沒出現進場訊號或有過熱風險</span></div>
+      <div class="cards" id="bl"></div></section>
+    <p class="muted small">「到達買點」是依規則判斷的技術時機，不代表一定上漲。請搭配個股頁的風險提示與參考停損價做資金控管。</p>`;
+  const draw = (t) => {
+    store.set("buytab", t);
+    $$("#bt button").forEach((b) => b.classList.toggle("on", b.dataset.t === t));
+    const rows = SNAP.stocks.filter((s) => s.timing?.status === t).sort((a, b) => b.ai.modes.balanced.score - a.ai.modes.balanced.score);
+    $("#bl").innerHTML = rows.map(stockCard).join("") || '<div class="card empty">目前沒有股票</div>';
+    bindCards($("#bl"));
+  };
+  $("#bt").onclick = (e) => { const b = e.target.closest("button"); if (b) draw(b.dataset.t); };
+  draw(tab);
+}
+
+// ---------- 策略雷達 ----------
+function pageRadar() {
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">照投資方法找股票</div><h1>策略雷達</h1>
+      <p class="lead">每個雷達都是一套有研究背景、條件公開的選股方法。點進去看符合的股票，或套用到條件選股自己調整。</p></section>
+    ${["核心策略", "進階策略"].map((g) => `<section><div class="card-h"><h2>${g}</h2>${g === "核心策略" ? '<span class="muted small">依開發優先順序排列，不是績效排名</span>' : ""}</div>
+      <div class="grid-s">${SNAP.strategies.filter((s) => s.group === g).map((s) => {
+        const buys = SNAP.stocks.filter((r) => r.strategies.includes(s.id) && r.timing?.status === "buy").length;
+        return `<a class="scard" href="#/s/${s.id}"><div class="row"><h3>${esc(s.name)}</h3><span class="pill warn">${esc(s.status || "尚未驗證")}</span></div>
+          <p>${esc(s.tagline)}</p>
+          <div class="row"><span class="small muted">${s.conditions.length} 項條件${buys ? `・<span class="up">${buys} 檔到達買點</span>` : ""}</span><span><span class="cnt">${s.count}</span> <span class="muted small">檔符合</span></span></div></a>`; }).join("")}</div></section>`).join("")}`;
+}
+function pageStrategy(id) {
+  const s = SNAP.strategies.find((x) => x.id === id);
+  if (!s) return pageRadar();
+  const rows = SNAP.stocks.filter((r) => r.strategies.includes(id)), k = s.rank_by;
+  rows.sort((a, b) => ((a[k] ?? -1e18) - (b[k] ?? -1e18)) * (s.rank_asc ? 1 : -1));
+  const cols = [...new Set(s.conditions.map((c) => c.m).concat([k]).filter((m) => CAT[m] && !["close", "composite"].includes(m)))].slice(0, 6);
+  $("#app").innerHTML = `
+    <section><a href="#/radar">← 策略雷達</a><h1 style="margin-top:6px">${esc(s.name)}</h1><p class="lead">${esc(s.tagline)}</p></section>
+    <section class="card three"><div><h3>核心概念</h3><p>${esc(s.concept)}</p></div><div><h3>研究依據</h3><p>${esc(s.evidence)}</p></div><div><h3>主要風險</h3><p>${esc(s.risks)}</p></div></section>
+    <section class="card"><div class="card-h"><h2>篩選條件（全部符合）</h2><button class="btn ghost" id="toS">套用到條件選股並修改 →</button></div>
+      <div class="trg">${s.conditions.map((c) => `<span class="pill acc">${esc(c.label)}${c.skip_financial ? "（金融業不適用）" : ""}</span>`).join("")}</div>
+      <p class="muted small" style="margin:10px 0 0">排名依據：${esc(nm(k))}${s.rank_asc ? "（低到高）" : "（高到低）"}・回測狀態：${esc(s.status || "尚未驗證")}</p></section>
+    <section class="card"><div class="card-h"><h2>符合的股票 <span class="num">${rows.length}</span> 檔</h2><span class="muted small">「買點」欄顯示這些股票目前的進場時機</span></div><div id="sT"></div></section>`;
+  const draw = () => { $("#sT").innerHTML = stockTable(rows, cols); bindRows($("#sT"), rows, draw); };
+  draw();
+  $("#toS").onclick = () => { store.set("draft", { name: s.name, logic: "AND", conds: [{ m: "base_ok", op: "is", v: true }].concat(s.conditions.map(stripLabel)), template: { name: s.name, concept: s.concept, evidence: s.evidence, risks: s.risks } }); location.hash = "#/screener"; };
+}
+
+// ---------- AI 智慧選股 ----------
+let aiRan = false;
+const STEPS = ["取得最新已公布的台股資料", "分析公司財務品質", "分析營收與獲利成長", "分析估值是否合理", "分析股價動能與趨勢", "排除不符合風險與流動性條件的股票", "計算綜合評分、產生排行榜", "整理每檔股票的優勢與風險"];
+function aiTable(rows, mode) {
+  if (!rows.length) return '<div class="empty">沒有股票通過這個模式的硬性條件</div>';
+  return `<div class="tbl"><table><thead><tr><th>排名</th><th>股票</th><th class="r">收盤</th><th class="r">漲跌</th><th class="r">綜合分數</th><th>買點</th><th>AI 評估</th><th>主要原因</th><th>風險提示</th></tr></thead><tbody>
+    ${rows.map((s) => { const r = s.ai.modes[mode].rank; return `<tr class="link" data-id="${s.stock_id}">
+      <td><span class="medal ${r <= 3 ? "m" + r : ""}">${r}</span></td><td>${stockCell(s)}</td>
+      <td class="r num">${fmtNum(s.close)}</td><td class="r num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</td>
+      <td class="r">${scoreBar(s.ai.modes[mode].score)}</td><td>${stPill(s)}</td><td><span class="pill acc">${esc(s.ai.tag)}</span></td>
+      <td class="wrap reason">${esc(s.ai.strengths[0] || "—")}</td>
+      <td>${s.ai.risks.length ? `<span class="pill warn" title="${esc(s.ai.risks.join("\n"))}">${s.ai.risks.length} 項</span>` : '<span class="faint small">無明顯</span>'}</td></tr>`; }).join("")}</tbody></table></div>`;
+}
+function pageAI() {
+  const mode = store.get("aimode", "balanced"), M = SNAP.ai_modes;
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">系統 A</div><h1>AI 智慧選股</h1><p class="lead">選一種模式，按下開始。系統會用同一套資料自動完成分析，並說明每檔股票入選的原因與需要注意的風險。</p></section>
+    <section class="modes" id="modes">${Object.entries(M).map(([k, m]) => `<button class="mode ${k === mode ? "on" : ""}" data-m="${k}"><b>${esc(m.name)}</b><span>${esc(m.tagline)}</span>${weightBar(m.weights)}</button>`).join("")}</section>
+    <section class="card"><div class="go"><div><h2 id="mname"></h2><p class="muted small" id="mdesc" style="margin:4px 0 0"></p></div>
+      <button class="btn lg" id="run">開始 AI 智慧選股</button></div>
+      <ul class="steps" id="steps" style="margin-top:14px">${STEPS.map((s) => `<li>${s}</li>`).join("")}</ul></section>
+    <section class="card" id="res" hidden><div class="card-h"><h2 id="rh"></h2><span class="muted small">滑過「風險提示」可看細節，點股票看完整分析報告</span></div><div id="rt"></div></section>
+    <section class="card" id="spec"></section>`;
+  const show = (k) => {
+    const m = M[k];
+    $("#mname").textContent = `${m.name}：${m.tagline}`; $("#mdesc").textContent = m.desc;
+    const rows = SNAP.stocks.filter((s) => s.ai.modes[k].rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank);
+    $("#rh").innerHTML = `${esc(m.name)}關注排行榜 <span class="muted small" style="font-weight:400">${rows.length} 檔通過硬性條件，顯示前 ${Math.min(30, rows.length)} 名</span>`;
+    const top = rows.slice(0, 30);
+    $("#rt").innerHTML = aiTable(top, k); bindRows($("#rt"), top, () => {});
+    $("#spec").innerHTML = specHtml(k);
+    $("#toScreener").onclick = () => { store.set("draft", { name: `AI ${m.name}條件`, logic: "AND", conds: m.hard.concat(m.reference).map(stripLabel), fromAI: k }); location.hash = "#/screener"; };
+  };
+  const reveal = () => { $$("#steps li").forEach((li) => li.classList.add("done")); $("#res").hidden = false; };
+  $("#modes").onclick = (e) => { const b = e.target.closest(".mode"); if (!b) return; store.set("aimode", b.dataset.m); $$(".mode").forEach((x) => x.classList.toggle("on", x === b)); show(b.dataset.m); };
+  $("#run").onclick = () => {
+    const li = $$("#steps li"); li.forEach((x) => x.classList.remove("done")); $("#res").hidden = true; $("#run").disabled = true;
+    const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    li.forEach((x, i) => setTimeout(() => { x.classList.add("done"); if (i === li.length - 1) { reveal(); aiRan = true; $("#run").disabled = false; $("#run").textContent = "重新分析"; $("#res").scrollIntoView({ behavior: fast ? "auto" : "smooth" }); } }, fast ? 0 : 160 * (i + 1)));
+  };
+  show(mode);
+  if (aiRan) { reveal(); $("#run").textContent = "重新分析"; }
+}
+const stripLabel = (c) => ({ m: c.m, op: c.op, v: c.v, skip_financial: c.skip_financial });
+function specHtml(k, s) {
+  const m = SNAP.ai_modes[k];
+  const row = (c, kind) => `<tr><td>${kind}</td><td>${esc(nm(c.m))}</td><td>${esc(c.label)}</td>${s ? `<td class="r num">${CAT[c.m] ? fmt(c.m, s[c.m]) : (s[c.m] == null ? "—" : s[c.m] === true ? "是" : s[c.m] === false ? "否" : fmtNum(s[c.m], 1))}</td><td>${resTxt(check(c, s))}</td>` : ""}</tr>`;
+  return `<div class="card-h"><h2>${s ? "AI 模型條件與這檔股票的結果" : "查看 AI 使用的選股條件"}</h2>${s ? "" : '<button class="btn ghost" id="toScreener">用 AI 策略建立我的篩選器 →</button>'}</div>
+    <div class="two"><div><h3 style="margin-bottom:4px">排名依據：五個因子的加權分數</h3>${weightBar(m.weights)}
+      <p class="muted small">每個因子是這檔股票在全市場可投資股票中的百分位，再依權重加總。這是連續的相對排名，無法完整轉換成「大於／小於」條件。</p></div>
+      <div class="banner info small">帶入篩選器的是下方的「硬性條件」與「參考條件」。篩選器的結果會接近、但不會等於 AI 排行榜，因為篩選器沒有因子加權排名。</div></div>
+    <div class="tbl" style="margin-top:10px"><table><thead><tr><th>類型</th><th>指標</th><th>AI 模型條件</th>${s ? '<th class="r">股票數值</th><th>結果</th>' : ""}</tr></thead><tbody>
+      ${m.hard.map((c) => row(c, '<span class="pill acc">硬性</span>')).join("")}${m.reference.map((c) => row(c, '<span class="pill">參考</span>')).join("")}</tbody></table></div>
+    <p class="muted small" style="margin:8px 0 0">硬性條件：不符合就不進排行榜。參考條件：說明模型偏好的典型特徵，只顯示符合與否，不影響排名。</p>`;
+}
+
+// ---------- 條件選股 ----------
+const GROUPS = [["基本面", ["財務品質"]], ["成長面", ["成長"]], ["估值面", ["估值"]], ["技術面", ["趨勢", "突破", "技術輔助"]], ["動能面", ["動能"]],
+  ["籌碼面", ["籌碼"]], ["股利", ["股利"]], ["風險面", ["風險"]], ["交易條件", ["價格", "流動性"]], ["綜合評分", ["綜合評分"]]];
+const BOOL = new Set(["ma_bull", "brk_20", "brk_60", "brk_120", "brk_252", "bb_break", "rev_accel", "price_up_margin_down", "disposition", "long_term_loss"]);
+const EXTRA = [["base_ok", "通過基本門檻"], ["is_financial", "金融業"]];
+function metricOptions(sel) {
+  const byCat = {};
+  SNAP.catalog.forEach((c) => (byCat[c.category] = byCat[c.category] || []).push(c));
+  return GROUPS.map(([g, cats]) => `<optgroup label="${g}">${cats.flatMap((c) => byCat[c] || []).map((c) => `<option value="${c.key}" ${c.key === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</optgroup>`).join("") +
+    `<optgroup label="其他">${EXTRA.map(([k, n]) => `<option value="${k}" ${k === sel ? "selected" : ""}>${n}</option>`).join("")}</optgroup>`;
+}
+const isBoolM = (k) => BOOL.has(k) || k === "base_ok" || k === "is_financial";
+const PRICE_METRICS = ["close", "ma5", "ma10", "ma20", "ma60", "ma120", "ma240", "high_52w", "low_52w"];
+let draft = null;
+function defaultDraft() { return { name: "我的成長股策略", logic: "AND", conds: [{ m: "roe", op: ">", v: 15 }, { m: "eps_ttm", op: ">", v: 0 }, { m: "rev_yoy", op: ">", v: 20 }, { m: "close", op: ">m", v: "ma60" }, { m: "avg_value_20", op: ">", v: 3e7 }] }; }
+function condRow(c, i) {
+  const bool = isBoolM(c.m), cmp = c.op === ">m" || c.op === "<m";
+  const ops = bool ? ["is"] : PRICE_METRICS.includes(c.m) ? [">", ">=", "<", "<=", ">m", "<m", "between"] : [">", ">=", "<", "<=", "between"];
+  const sc = isBig(c.m) ? 1e4 : 1, unit = isBig(c.m) ? "萬元" : unitOf(c.m);
+  let val;
+  if (bool) val = `<select data-i="${i}" data-f="v"><option value="true" ${c.v !== false ? "selected" : ""}>是</option><option value="false" ${c.v === false ? "selected" : ""}>否</option></select>`;
+  else if (cmp) val = `<select data-i="${i}" data-f="v">${PRICE_METRICS.filter((k) => k !== c.m).map((k) => `<option value="${k}" ${k === c.v ? "selected" : ""}>${esc(nm(k))}</option>`).join("")}</select>`;
+  else if (c.op === "between") val = `<input type="number" step="any" data-i="${i}" data-f="v0" value="${(c.v?.[0] ?? 0) / sc}" aria-label="下限"><span>~</span><input type="number" step="any" data-i="${i}" data-f="v1" value="${(c.v?.[1] ?? 0) / sc}" aria-label="上限"><span>${esc(unit)}</span>`;
+  else val = `<input type="number" step="any" data-i="${i}" data-f="v" value="${(c.v ?? 0) / sc}" aria-label="門檻"><span>${esc(unit)}</span>`;
+  return `<div class="crow"><select data-i="${i}" data-f="m" aria-label="指標">${metricOptions(c.m)}</select>
+    <select data-i="${i}" data-f="op" aria-label="運算">${ops.map((o) => `<option value="${o}" ${o === c.op ? "selected" : ""}>${OPS[o]}</option>`).join("")}</select>
+    <div class="val">${val}</div><button class="icon-btn" data-del="${i}" title="刪除條件" aria-label="刪除條件">✕</button></div>`;
+}
+function normalize(c) {
+  if (isBoolM(c.m)) { c.op = "is"; if (typeof c.v !== "boolean") c.v = true; }
+  else if ((c.op === ">m" || c.op === "<m") && !PRICE_METRICS.includes(c.m)) { c.op = ">"; c.v = 0; }
+  else if (c.op === "is") { c.op = ">"; c.v = 0; }
+  if ((c.op === ">m" || c.op === "<m") && typeof c.v !== "string") c.v = c.m === "ma60" ? "ma120" : "ma60";
+  if (c.op === "between" && !Array.isArray(c.v)) c.v = [0, typeof c.v === "number" ? c.v : 0];
+  if (!["between", ">m", "<m", "is"].includes(c.op) && typeof c.v !== "number") c.v = Array.isArray(c.v) ? c.v[1] : 0;
+  return c;
+}
+function runConds(d) {
+  const conds = d.conds;
+  if (!conds.length) return [];
+  return SNAP.stocks.filter((s) => s.is_common && (d.logic === "OR" ? conds.some((c) => check(c, s) === true) : conds.every((c) => { const r = check(c, s); return r === true || r === "na"; })));
+}
+const saved = () => store.get("strategies", []);
+function pageScreener() {
+  draft = store.get("draft", null) || defaultDraft();
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">系統 B</div><h1>專業條件選股</h1><p class="lead">自己制定選股策略，網站自動執行。選指標、設門檻，條件可以設定為全部符合或任一符合。</p></section>
+    <div class="side">
+      <div style="display:grid;gap:16px;min-width:0">
+        <section class="card">
+          <div id="aiNote"></div>
+          <div class="toolbar" style="margin-bottom:10px"><input type="text" id="sname" aria-label="策略名稱" style="flex:1;min-width:180px;font-weight:500">
+            <div class="seg" id="logic"><button data-l="AND">全部符合 AND</button><button data-l="OR">任一符合 OR</button></div></div>
+          <div id="conds"></div>
+          <div class="toolbar" style="margin-top:12px"><button class="btn ghost sm" id="add">＋ 新增條件</button><span class="faint small">指標依基本面、成長面、估值面、技術面、動能面、籌碼面、風險面、交易條件分類</span></div>
+          <div class="toolbar" style="margin-top:16px"><button class="btn" id="go">開始篩選</button><button class="btn ghost" id="save">儲存策略</button><button class="btn ghost" id="saveas">另存新策略</button><button class="btn ghost" id="clear">清空條件</button></div>
+        </section>
+        <section class="card"><div class="card-h"><h2 id="rh">篩選結果</h2><button class="btn ghost" id="ask">請 AI 分析我的篩選結果</button></div>
+          <div id="ana"></div><div id="rt"></div></section>
+        <section class="card" id="cmp" hidden></section>
+      </div>
+      <aside style="display:grid;gap:16px">
+        <section class="card"><div class="card-h"><h2>我的策略</h2><span class="faint small">存在這個瀏覽器</span></div><div class="list" id="mine"></div>
+          <div class="toolbar" style="margin-top:10px" id="cmpBar"></div></section>
+        <section class="card"><div class="card-h"><h2>策略範本</h2><span class="faint small">研究型策略，套用後可修改</span></div><div class="list" id="tpl"></div></section>
+      </aside>
+    </div>`;
+  const draw = () => {
+    $("#sname").value = draft.name;
+    $$("#logic button").forEach((b) => b.classList.toggle("on", b.dataset.l === draft.logic));
+    $("#conds").innerHTML = draft.conds.map(condRow).join("") || '<div class="empty">還沒有條件，按「新增條件」或從右側套用範本</div>';
+    $("#aiNote").innerHTML = draft.fromAI ? `<div class="banner info small" style="margin-bottom:12px">已帶入 AI ${esc(SNAP.ai_modes[draft.fromAI].name)}的硬性與參考條件。AI 排行榜另外使用五因子加權排名，篩選結果不會與排行榜完全相同。</div>` :
+      draft.template ? `<div class="banner info small" style="margin-bottom:12px"><b>${esc(draft.template.name)}</b>：${esc(draft.template.concept)}<br><span class="muted">研究依據：${esc(draft.template.evidence)}　主要風險：${esc(draft.template.risks)}</span></div>` : "";
+    store.set("draft", draft);
+  };
+  const results = () => {
+    const rows = runConds(draft).sort((a, b) => (b.ai.modes.balanced.score ?? -1) - (a.ai.modes.balanced.score ?? -1));
+    const cols = [...new Set(draft.conds.map((c) => c.m).filter((m) => CAT[m] && !["close", "base_ok"].includes(m)))].slice(0, 7);
+    const total = SNAP.stocks.filter((s) => s.is_common).length;
+    $("#rh").innerHTML = `篩選結果 <span class="num">${rows.length}</span> 檔 <span class="muted small" style="font-weight:400">／${total} 檔・${draft.conds.length} 項條件・${draft.logic === "AND" ? "全部符合" : "任一符合"}・依 AI 均衡分數排序</span>`;
+    $("#rt").innerHTML = stockTable(rows, cols); bindRows($("#rt"), rows, () => { $("#rt").innerHTML = stockTable(rows, cols); });
+    $("#ana").innerHTML = "";
+    return rows;
+  };
+  const drawSide = () => {
+    const list = saved();
+    $("#mine").innerHTML = list.length ? list.map((s, i) => `<div class="li"><span><label class="chk"><input type="checkbox" data-cmp="${i}" aria-label="比較"></label> <a href="javascript:void 0" data-load="${i}">${esc(s.name)}</a> <span class="faint small">${s.conds.length} 項・${s.logic}</span></span>
+      <span class="acts"><button class="icon-btn" data-copy="${i}" title="複製">⧉</button><button class="icon-btn" data-rm="${i}" title="刪除">✕</button></span></div>`).join("") : '<div class="faint small">還沒有儲存的策略。設定條件後按「儲存策略」。</div>';
+    $("#cmpBar").innerHTML = list.length >= 2 ? '<button class="btn sm ghost" id="cmpGo">比較勾選的兩個策略</button>' : "";
+    const cg = $("#cmpGo"); if (cg) cg.onclick = compare;
+    $("#tpl").innerHTML = SNAP.strategies.map((t) => `<div class="li"><span><a href="javascript:void 0" data-tpl="${t.id}">${esc(t.name)}</a><br><span class="faint small">${esc(t.tagline)}</span></span><span class="pill">${t.count} 檔</span></div>`).join("");
+  };
+  const compare = () => {
+    const pick = $$("[data-cmp]:checked").map((x) => saved()[+x.dataset.cmp]);
+    if (pick.length !== 2) { $("#cmp").hidden = false; $("#cmp").innerHTML = '<div class="muted">請在「我的策略」勾選剛好兩個策略。</div>'; return; }
+    const [a, b] = pick.map(runConds), ia = new Set(a.map((s) => s.stock_id)), ib = new Set(b.map((s) => s.stock_id));
+    const both = a.filter((s) => ib.has(s.stock_id)), onlyA = a.filter((s) => !ib.has(s.stock_id)), onlyB = b.filter((s) => !ia.has(s.stock_id));
+    const avg = (rows, k) => { const v = rows.map((s) => s[k]).filter((x) => x != null); return v.length ? v.reduce((p, q) => p + q, 0) / v.length : null; };
+    const names = (rows) => rows.slice(0, 12).map((s) => `<a href="#/stock/${s.stock_id}">${s.stock_id} ${esc(s.name)}</a>`).join("、") + (rows.length > 12 ? ` 等 ${rows.length} 檔` : "") || '<span class="faint">無</span>';
+    $("#cmp").hidden = false;
+    $("#cmp").innerHTML = `<div class="card-h"><h2>策略比較</h2></div><div class="tbl"><table><thead><tr><th></th><th class="r">${esc(pick[0].name)}</th><th class="r">${esc(pick[1].name)}</th></tr></thead><tbody>
+      <tr><td>符合檔數</td><td class="r num">${a.length}</td><td class="r num">${b.length}</td></tr>
+      ${["roe", "rev_yoy", "per", "dy", "ret_6m", "vol_1y"].map((k) => `<tr><td>平均${esc(nm(k))}</td><td class="r num">${fmt(k, avg(a, k))}</td><td class="r num">${fmt(k, avg(b, k))}</td></tr>`).join("")}
+      <tr><td>平均 AI 均衡分數</td><td class="r num">${fmtNum(avg(a.map((s) => ({ x: s.ai.modes.balanced.score })), "x"), 1)}</td><td class="r num">${fmtNum(avg(b.map((s) => ({ x: s.ai.modes.balanced.score })), "x"), 1)}</td></tr>
+      </tbody></table></div>
+      <p style="margin:10px 0 4px"><b>兩者都選到（${both.length}）：</b>${names(both)}</p><p style="margin:4px 0"><b>只有「${esc(pick[0].name)}」（${onlyA.length}）：</b>${names(onlyA)}</p><p style="margin:4px 0"><b>只有「${esc(pick[1].name)}」（${onlyB.length}）：</b>${names(onlyB)}</p>`;
+    $("#cmp").scrollIntoView({ behavior: "smooth" });
+  };
+  $("#sname").oninput = (e) => { draft.name = e.target.value; store.set("draft", draft); };
+  $("#logic").onclick = (e) => { const b = e.target.closest("button"); if (b) { draft.logic = b.dataset.l; draw(); results(); } };
+  $("#conds").onchange = (e) => {
+    const i = +e.target.dataset.i, f = e.target.dataset.f, c = draft.conds[i]; if (!c) return;
+    const sc = isBig(c.m) ? 1e4 : 1;
+    if (f === "m") { c.m = e.target.value; c.op = isBoolM(c.m) ? "is" : ">"; c.v = isBoolM(c.m) ? true : 0; normalize(c); draw(); return; }
+    if (f === "op") { c.op = e.target.value; normalize(c); draw(); return; }
+    if (f === "v") c.v = isBoolM(c.m) ? e.target.value === "true" : (c.op === ">m" || c.op === "<m") ? e.target.value : +e.target.value * sc;
+    if (f === "v0") c.v[0] = +e.target.value * sc;
+    if (f === "v1") c.v[1] = +e.target.value * sc;
+    store.set("draft", draft);
+  };
+  $("#conds").onclick = (e) => { const b = e.target.closest("[data-del]"); if (b) { draft.conds.splice(+b.dataset.del, 1); draw(); } };
+  $("#add").onclick = () => { draft.conds.push({ m: "roe", op: ">", v: 15 }); draw(); };
+  $("#clear").onclick = () => { draft = { name: "新策略", logic: "AND", conds: [] }; draw(); results(); };
+  $("#go").onclick = () => { results(); $("#rt").scrollIntoView({ behavior: "smooth", block: "nearest" }); };
+  const doSave = (asNew) => {
+    const list = saved(), now = new Date().toISOString().slice(0, 10);
+    const item = { name: draft.name || "未命名策略", logic: draft.logic, conds: JSON.parse(JSON.stringify(draft.conds)), updated: now };
+    const i = asNew ? -1 : list.findIndex((s) => s.name === item.name);
+    if (asNew && list.some((s) => s.name === item.name)) item.name += "（副本）";
+    if (i >= 0) list[i] = item; else list.push(item);
+    store.set("strategies", list); draft.name = item.name; draw(); drawSide();
+  };
+  $("#save").onclick = () => doSave(false);
+  $("#saveas").onclick = () => doSave(true);
+  $("aside").onclick = (e) => {
+    const t = e.target.closest("[data-load],[data-copy],[data-rm],[data-tpl]"); if (!t) return;
+    const list = saved();
+    if (t.dataset.load) { const s = list[+t.dataset.load]; draft = { name: s.name, logic: s.logic, conds: JSON.parse(JSON.stringify(s.conds)) }; draw(); results(); }
+    if (t.dataset.copy) { const s = list[+t.dataset.copy]; list.push({ ...JSON.parse(JSON.stringify(s)), name: s.name + "（副本）" }); store.set("strategies", list); drawSide(); }
+    if (t.dataset.rm) { list.splice(+t.dataset.rm, 1); store.set("strategies", list); drawSide(); }
+    if (t.dataset.tpl) { const s = SNAP.strategies.find((x) => x.id === t.dataset.tpl);
+      draft = { name: s.name, logic: "AND", conds: [{ m: "base_ok", op: "is", v: true }].concat(s.conditions.map(stripLabel)), template: { name: s.name, concept: s.concept, evidence: s.evidence, risks: s.risks } }; draw(); results(); }
+  };
+  $("#ask").onclick = () => { const rows = results(); $("#ana").innerHTML = analyze(draft, rows); };
+  draw(); drawSide(); results();
+}
+
+// ---------- 系統分析篩選結果（依規則自動產生） ----------
+const STYLE = { quality: ["roe", "roa", "gross_margin", "op_margin", "debt_ratio", "ocf_ttm", "fcf_ttm", "ocf_to_ni", "roe_years_15", "earnings_cv", "equity_multiplier", "fscore", "ni_ttm", "score_quality"],
+  growth: ["rev_yoy", "rev_yoy_prev", "rev_yoy_3m", "rev_ytd_yoy", "rev_accel", "eps_q_yoy", "op_q_yoy", "gm_q_change", "score_growth"],
+  value: ["per", "pbr", "dy", "earnings_yield", "book_to_price", "fcf_yield", "per_pctile_1y", "magic_rank", "score_value"],
+  momentum: ["mom_12_1", "rs_rank", "ret_1m", "ret_3m", "ret_6m", "ret_12m", "score_momentum"],
+  trend: ["close", "ma5", "ma20", "ma60", "ma120", "ma240", "ma60_slope_20", "ma_bull", "dist_ma60", "brk_20", "brk_60", "brk_120", "brk_252", "vol_ratio", "bb_break", "rsi", "k", "macd_hist", "score_trend"],
+  chips: ["foreign_5d", "trust_5d", "foreign_streak", "trust_streak", "inst_20d", "inst_ratio_5d", "margin_chg_20d", "price_up_margin_down"],
+  dividend: ["div_years", "payout", "div_growth_3y"], risk: ["vol_1y", "vol_1y_pct", "downside_vol", "beta", "mdd_1y", "disposition", "long_term_loss", "base_ok"],
+  liquidity: ["avg_value_20", "history_days", "base_ok"] };
+const STYLE_NAME = { quality: "品質型", growth: "成長型", value: "價值型", momentum: "動能型", trend: "趨勢／技術型", chips: "籌碼型", dividend: "配息型", risk: "風險控制", liquidity: "流動性控制" };
+function analyze(d, rows) {
+  const used = d.conds.map((c) => c.m), total = SNAP.stocks.filter((s) => s.is_common);
+  const groups = Object.keys(STYLE).filter((g) => used.some((m) => STYLE[g].includes(m) || (g === "trend" && (d.conds.find((c) => c.m === m)?.op || "").endsWith("m"))));
+  const styles = groups.filter((g) => !["risk", "liquidity"].includes(g)).map((g) => STYLE_NAME[g]);
+  const avg = (rs, k) => { const v = rs.map((s) => s[k]).filter((x) => x != null); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const uncovered = [];
+  if (!groups.includes("liquidity")) uncovered.push("沒有限制成交金額，可能選到流動性差、不易買賣的股票（建議加入「20 日平均成交金額」或「通過基本門檻」）。");
+  if (!groups.includes("value")) uncovered.push("沒有估值條件，可能選到股價已經很貴的公司。");
+  if (!used.some((m) => ["eps_ttm", "ni_ttm", "roe", "roa", "op_income_q", "long_term_loss", "base_ok"].includes(m))) uncovered.push("沒有獲利條件，可能選到虧損公司。");
+  if (!groups.includes("trend") && !groups.includes("momentum")) uncovered.push("沒有價格趨勢條件，可能選到股價仍在下跌的股票。");
+  if (!groups.includes("risk") || (groups.includes("risk") && !used.some((m) => ["vol_1y", "vol_1y_pct", "beta", "mdd_1y", "downside_vol"].includes(m)))) uncovered.push("沒有波動度條件（年化波動率、Beta、最大回撤），無法控制價格風險。");
+  if (!used.includes("base_ok") && !used.includes("disposition")) uncovered.push("沒有排除處置股票與長期虧損股。");
+  const strict = [];
+  const pass = d.conds.map((c) => ({ c, n: total.filter((s) => { const r = check(c, s); return r === true || r === "na"; }).length }));
+  const share = rows.length / (total.length || 1);
+  if (!rows.length) strict.push("目前沒有任何股票符合，條件過度嚴格。");
+  else if (rows.length < 5 && d.logic === "AND") strict.push(`只有 ${rows.length} 檔符合，條件偏嚴格，結果容易受單一公司影響。`);
+  else if (share > 0.3) strict.push(`有 ${(share * 100).toFixed(0)}% 的股票符合，條件偏寬鬆，篩選效果有限。`);
+  else strict.push(`${rows.length} 檔符合（約全市場 ${(share * 100).toFixed(1)}%），嚴格程度適中。`);
+  const tight = pass.slice().sort((a, b) => a.n - b.n)[0];
+  if (tight && d.logic === "AND") strict.push(`最嚴格的條件是「${condLabel(tight.c)}」，單獨只有 ${tight.n} 檔符合。`);
+  const ind = {}; rows.forEach((s) => ind[s.industry || "未分類"] = (ind[s.industry || "未分類"] || 0) + 1);
+  const inds = Object.entries(ind).sort((a, b) => b[1] - a[1]);
+  const conc = inds.length && rows.length >= 3 && inds[0][1] / rows.length >= 0.4;
+  const fs = ["quality", "growth", "value", "momentum", "trend"].map((f) => [f, avg(rows, "score_" + f), avg(total.filter((s) => s.base_ok), "score_" + f)]);
+  const lean = fs.filter(([, a, b]) => a != null && b != null && a - b > 10).map(([f]) => FL[f]);
+  return `<div class="analysis card" style="background:var(--bg);border-color:transparent;margin-bottom:14px">
+    <div class="card-h" style="margin:0"><h2>系統分析</h2><span class="faint small">依你的條件與結果自動產生，不是預測</span></div>
+    <div><h3>投資風格</h3><p style="margin:2px 0">${styles.length ? `這套條件偏向 <b>${styles.join("＋")}</b>` : "條件主要是風險與流動性控制，沒有明顯的選股風格"}${lean.length ? `；結果在 <b>${lean.join("、")}</b> 的平均分數明顯高於全市場。` : "。"}</p></div>
+    ${rows.length ? `<div><h3>可能選到的公司</h3><p style="margin:2px 0">平均 ROE ${fmt("roe", avg(rows, "roe"))}、月營收年增 ${fmt("rev_yoy", avg(rows, "rev_yoy"))}、本益比 ${fmt("per", avg(rows, "per"))} 倍、近 6 個月報酬 ${fmt("ret_6m", avg(rows, "ret_6m"))}。
+      主要產業：${inds.slice(0, 3).map(([k, v]) => `${esc(k)} ${v} 檔`).join("、")}。</p></div>` : ""}
+    <div><h3>條件嚴格程度</h3><ul>${strict.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>
+    ${conc ? `<div><h3>產業集中</h3><p style="margin:2px 0" class="down">結果有 ${(inds[0][1] / rows.length * 100).toFixed(0)}% 集中在 ${esc(inds[0][0])}，容易受單一產業循環影響。</p></div>` : ""}
+    <div><h3>尚未涵蓋的風險</h3>${uncovered.length ? `<ul>${uncovered.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : '<p style="margin:2px 0">主要風險面向都有涵蓋。</p>'}</div>
+  </div>`;
+}
+
+// ---------- 觀察清單 ----------
+function pageWatch() {
+  const w = watch(), ids = Object.keys(w).filter((id) => BYID[id]);
+  $("#app").innerHTML = `<section><h1>觀察清單</h1><p class="lead">在任何股票旁按 ☆ 加入。清單存在這個瀏覽器，會記錄加入時的價格，方便追蹤後續變化。</p></section>
+    <section class="card">${ids.length ? `<div class="tbl"><table><thead><tr><th>股票</th><th>加入日</th><th class="r">加入價</th><th class="r">現價</th><th class="r">加入後漲跌</th><th class="r">AI 均衡分數</th><th>AI 評估</th><th>風險提示</th></tr></thead><tbody>
+      ${ids.map((id) => { const s = BYID[id], x = w[id], ch = x.price ? (s.close / x.price - 1) * 100 : null; return `<tr class="link" data-id="${id}"><td>${stockCell(s)}</td><td class="num">${esc(x.added || "—")}</td>
+        <td class="r num">${fmtNum(x.price)}</td><td class="r num">${fmtNum(s.close)}</td><td class="r num ${signCls(ch)}">${pctTxt(ch)}</td>
+        <td class="r">${scoreBar(s.ai.modes.balanced.score)}</td><td><span class="pill acc">${esc(s.ai.tag)}</span></td><td class="wrap reason">${esc(s.ai.risks.join("；") || "無明顯")}</td></tr>`; }).join("")}</tbody></table></div>`
+      : '<div class="empty">還沒有觀察的股票。到 <a href="#/ai">AI 智慧選股</a> 或 <a href="#/screener">條件選股</a> 按 ☆ 加入。</div>'}</section>`;
+  bindRows($("#app"), [], () => {});
+}
+
+// ---------- 指標資料庫 ----------
+function pageCatalog() {
+  const cats = [...new Set(SNAP.catalog.map((c) => c.category))];
+  $("#app").innerHTML = `<section><h1>指標資料庫</h1><p class="lead">AI 選股與條件選股共用的指標定義：計算公式、資料來源、更新頻率、篩選方向、初始參數、研究依據、適用限制與回測狀態。</p></section>
+    <section class="card"><div class="toolbar" style="margin-bottom:10px"><input type="search" id="cq" placeholder="搜尋指標" aria-label="搜尋指標">
+      <div class="seg" id="cseg" style="flex-wrap:wrap"><button class="on" data-c="">全部</button>${cats.map((c) => `<button data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div></div><div class="tbl" id="cT"></div></section>`;
+  let cat = "";
+  const draw = () => {
+    const q = $("#cq").value.trim(), rows = SNAP.catalog.filter((c) => (!cat || c.category === cat) && (!q || (c.name + c.key + c.formula).includes(q)));
+    $("#cT").innerHTML = `<table><thead><tr><th>指標</th><th>分類</th><th>計算公式</th><th>資料來源</th><th>更新</th><th>篩選方向</th><th>初始參數</th><th>研究依據</th><th>適用限制</th><th>回測</th></tr></thead><tbody>
+      ${rows.map((c) => `<tr><td><b>${esc(c.name)}</b><div class="faint num small">${esc(c.key)}</div></td><td>${esc(c.category)}</td><td class="wrap">${esc(c.formula)}</td><td class="wrap">${esc(c.source)}</td><td>${esc(c.freq)}</td>
+        <td class="wrap">${esc(c.direction)}</td><td class="wrap">${esc(c.default)}</td><td class="wrap">${esc(c.evidence)}</td><td class="wrap">${esc(c.limits)}</td><td><span class="pill warn">${esc(c.status)}</span></td></tr>`).join("")}</tbody></table>`;
+  };
+  $("#cq").oninput = draw;
+  $("#cseg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; cat = b.dataset.c; $$("#cseg button").forEach((x) => x.classList.toggle("on", x === b)); draw(); };
+  draw();
+}
+
+// ---------- 個股頁 ----------
+const POS = ["創新高", "新高", "成長", "年增", "大單", "接單", "調升", "調高", "上修", "利多", "看旺", "擴產", "優於預期", "轉盈", "加碼", "受惠", "突破", "目標價"];
+const NEG = ["衰退", "年減", "下滑", "下修", "調降", "利空", "砍單", "虧損", "轉虧", "疲軟", "減產", "低於預期", "庫存調整", "違約", "訴訟", "裁罰", "處分", "停工", "轉讓持股", "下調"];
+const tone = (t) => { const p = POS.filter((w) => t.includes(w)).length, n = NEG.filter((w) => t.includes(w)).length; return p > n ? 1 : n > p ? -1 : 0; };
+function maSeries(px, n) { const out = []; let sum = 0; for (let i = 0; i < px.length; i++) { sum += px[i].close; if (i >= n) sum -= px[i - n].close; if (i >= n - 1) out.push({ time: px[i].date, value: sum / n }); } return out; }
+
+async function pageStock(id) {
+  const s = BYID[id];
+  if (!s) { $("#app").innerHTML = `<div class="card empty">找不到 ${esc(id)}</div>`; return; }
+  $("#app").innerHTML = `<div class="card empty">載入 ${esc(id)} ${esc(s.name)}…</div>`;
+  const d = await loadStock(id);
+  if (!d) { $("#app").innerHTML = `<div class="card empty">${esc(id)} 沒有詳細資料</div>`; return; }
+  const M = SNAP.ai_modes, mode = store.get("aimode", "balanced");
+  const stats = [["per", "本益比"], ["pbr", "股價淨值比"], ["dy", "殖利率"], ["roe", "ROE"], ["eps_ttm", "近四季 EPS"], ["rev_yoy", "月營收年增"],
+    ["avg_value_20", "20 日均成交金額"], ["vol_1y", "年化波動"], ["beta", "Beta"], ["mdd_1y", "一年最大回撤"], ["high_52w", "52 週高"], ["low_52w", "52 週低"]];
+  $("#app").innerHTML = `
+    <section class="s-head"><div><a href="javascript:history.back()">← 返回</a>
+        <h1 style="margin-top:4px">${starBtn(id)}<span class="num">${s.stock_id}</span> ${esc(s.name)} ${stPill(s)}</h1>
+        <div class="muted small">${esc(s.industry || "")}・${s.market === "tpex" ? "上櫃" : "上市"}・資料日 <span class="num">${s.date}</span>・成交 <span class="num">${fmtNum(s.volume_lots, 0)}</span> 張</div></div>
+      <div style="text-align:right"><div class="px">${fmtNum(s.close)}</div><div class="num ${signCls(s.chg_pct)}" style="font-size:15px">${pctTxt(s.chg_pct)}</div></div></section>
+    ${s.exclude_reasons?.length ? `<div class="banner bad">未通過基本門檻：${s.exclude_reasons.map(esc).join("、")}</div>` : ""}
+    <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
+    <section class="two">
+      <div class="card"><div class="card-h"><h2>六面向評分</h2><span class="muted small">虛線 = 全市場中位數 50</span></div>
+        <div style="display:grid;place-items:center">${radar(s, 300)}</div>
+        <div class="msc" style="justify-content:center">${Object.entries(M).map(([k, m]) => `<div><span>AI ${esc(m.name)}</span><b>${s.ai.modes[k].score == null ? "—" : fmtNum(s.ai.modes[k].score, 1)}</b> <span>${s.ai.modes[k].rank ? `第 ${s.ai.modes[k].rank} 名` : "未入榜"}</span></div>`).join("")}</div></div>
+      <div class="card"><div class="card-h"><h2>AI 解讀</h2><span class="pill acc">${esc(s.ai.tag)}</span></div>
+        <h3 class="ok">優勢</h3><ul style="margin:4px 0 12px;padding-left:18px;font-size:13px">${s.ai.strengths.map((x) => `<li>${esc(x)}</li>`).join("") || '<li class="muted">沒有特別突出的項目</li>'}</ul>
+        <h3 class="down">風險提示</h3><ul style="margin:4px 0 12px;padding-left:18px;font-size:13px">${s.ai.risks.map((x) => `<li>${esc(x)}</li>`).join("") || '<li class="muted">目前沒有偵測到明顯風險訊號</li>'}</ul>
+        <h3>進場時機檢查</h3>
+        ${Object.entries(SNAP.triggers).map(([k, l]) => `<div class="ck">${mark(s[k] == null ? null : !!s[k])}<span>${esc(l)}</span><span></span></div>`).join("")}
+        ${(s.timing?.hot || []).map((h) => `<div class="ck"><span class="down">⚠</span><span class="down">${esc(h)}</span><span></span></div>`).join("")}
+        <p class="faint small" style="margin:10px 0 0">解讀由數據規則自動產生，不是預測。參考停損價 ${fmtNum(s.stop_ref)}（MA20 與近 10 日低點取低者）。</p></div>
+    </section>
+    <section class="card"><div class="toolbar" style="margin-bottom:8px">
+        <div class="seg" id="rng">${["1M", "3M", "6M", "1Y", "2Y"].map((r) => `<button data-r="${r}" class="${r === store.get("rng", "6M") ? "on" : ""}">${r}</button>`).join("")}</div>
+        <div class="seg" id="typ"><button data-t="candle" class="${store.get("typ", "candle") === "candle" ? "on" : ""}">K 線</button><button data-t="line" class="${store.get("typ", "candle") === "line" ? "on" : ""}">折線</button></div>
+        ${[5, 20, 60, 120, 240].map((n) => `<label class="chk"><input type="checkbox" data-ma="${n}" ${store.get("ma", [20, 60]).includes(n) ? "checked" : ""}><i style="background:var(--ma${n})"></i>MA${n}</label>`).join("")}
+      </div><div class="chart" id="pc"></div></section>
+    <section class="stats">${stats.map(([k, l]) => `<div class="stat"><span>${l}</span><b>${fmt(k, s[k])}</b></div>`).join("")}</section>
+    <section class="card"><div class="toolbar" style="justify-content:space-between;margin-bottom:6px"><span></span><div class="seg" id="specSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="spec"></div></section>
+    <section class="two">
+      <div class="card"><div class="card-h"><h2>月營收</h2><span class="muted small">柱：營收（億）・線：年增率 %</span></div><div class="chart sm" id="rc"></div></div>
+      <div class="card"><div class="card-h"><h2>季度 EPS</h2><span class="muted small">單季，元</span></div><div class="chart sm" id="ec"></div></div></section>
+    <section class="card"><div class="card-h"><h2>季度財報摘要</h2><span class="muted small">ROE ${fmt("roe", s.roe)}・ROA ${fmt("roa", s.roa)}・負債比 ${fmt("debt_ratio", s.debt_ratio)}・F-Score ${s.fscore ?? "—"}/${s.fscore_n ?? 9}</span></div><div class="tbl">${finTable(d.financials)}</div></section>
+    <section class="two">
+      <div class="card"><div class="card-h"><h2>三大法人買賣超</h2><span class="muted small">每日合計，張</span></div><div class="chart sm" id="ic"></div>
+        <div class="muted small" style="margin-top:6px">外資 5 日 ${fmt("foreign_5d", s.foreign_5d)}・投信 5 日 ${fmt("trust_5d", s.trust_5d)}・外資連買 ${s.foreign_streak ?? "—"} 日・投信連買 ${s.trust_streak ?? "—"} 日・融資 20 日 ${fmt("margin_chg_20d", s.margin_chg_20d)}</div></div>
+      <div class="card"><div class="card-h"><h2>本益比走勢</h2><span class="muted small">一年位階 ${s.per_pctile_1y == null ? "—" : fmtNum(s.per_pctile_1y, 0) + "%"}</span></div><div class="chart sm" id="vc"></div></div></section>
+    <section class="two">
+      <div class="card"><div class="card-h"><h2>技術面參考</h2></div><div class="stats">
+        ${[["rsi", "RSI(14)"], ["k", "K 值"], ["macd_hist", "MACD 柱"], ["vol_ratio", "量比"], ["dist_ma60", "季線乖離"], ["stop_ref", "參考停損價"]].map(([k, l]) => `<div class="stat"><span>${l}</span><b>${k === "stop_ref" ? fmtNum(s[k]) : fmt(k, s[k])}</b></div>`).join("")}</div>
+        <p class="muted small" style="margin:8px 0 0">參考停損價 = MA20 與近 10 日最低價取低者，僅供風險控管參考。</p></div>
+      <div class="card"><div class="card-h"><h2>股利紀錄</h2><span class="muted small">連續配息 ${s.div_years ?? "—"} 年・發放率 ${fmt("payout", s.payout)}</span></div>
+        <div class="tbl"><table><thead><tr><th>年度</th><th class="r">現金股利</th><th class="r">股票股利</th></tr></thead><tbody>
+        ${(d.dividends || []).slice(-8).reverse().map((x) => `<tr><td class="num">${x.year}</td><td class="r num">${fmtNum(x.cash)}</td><td class="r num">${fmtNum(x.stock)}</td></tr>`).join("") || '<tr><td colspan="3" class="empty">無資料</td></tr>'}</tbody></table></div></div></section>
+    <section class="two">
+      <div class="card"><div class="card-h"><h2>策略範本檢查</h2><span class="muted small">符合 ${s.strategies.length} / ${SNAP.strategies.length}</span></div>
+        ${SNAP.strategies.map((st) => { const ok = s.strategies.includes(st.id); return `<details class="strat"${ok ? " open" : ""}><summary>${ok ? '<span class="pill good">符合</span>' : '<span class="pill">未符合</span>'} ${esc(st.name)}</summary>
+          ${st.conditions.map((c) => `<div class="ck">${mark(check(c, s))}<span>${esc(c.label)}</span><span class="num muted">${CAT[c.m] ? fmt(c.m, s[c.m]) : ""}</span></div>`).join("")}</details>`; }).join("")}</div>
+      <div class="card"><div class="card-h"><h2>近期新聞</h2><span class="muted small">標題關鍵字判讀，僅供參考</span></div>
+        <ul class="news">${(d.news || []).map((n) => { const t = tone(n.title); return `<li><span class="num faint">${esc(n.date)}</span><span>${t ? `<span class="pill ${t > 0 ? "good" : "bad"}">${t > 0 ? "偏多" : "偏空"}</span> ` : ""}${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : esc(n.title)} <span class="faint">${esc(n.source || "")}</span></span></li>`; }).join("") || '<li class="muted">沒有近期新聞</li>'}</ul></div></section>`;
+  const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
+  drawSpec(mode);
+  $("#specSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("aimode", b.dataset.m); $$("#specSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawSpec(b.dataset.m); };
+  drawPrice(d.prices);
+  $("#rng").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("rng", b.dataset.r); $$("#rng button").forEach((x) => x.classList.toggle("on", x === b)); drawPrice(d.prices); };
+  $("#typ").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("typ", b.dataset.t); $$("#typ button").forEach((x) => x.classList.toggle("on", x === b)); drawPrice(d.prices); };
+  $$("[data-ma]").forEach((x) => x.onchange = () => { store.set("ma", $$("[data-ma]:checked").map((y) => +y.dataset.ma)); drawPrice(d.prices); });
+  drawSmall(d);
+}
+function drawPrice(px) {
+  if (!hasLWC()) { $("#pc").innerHTML = '<div class="empty">圖表元件無法載入（需要連網）</div>'; return; }
+  if (priceChart) { priceChart.remove(); charts = charts.filter((c) => c !== priceChart); }
+  const days = { "1M": 22, "3M": 66, "6M": 130, "1Y": 252, "2Y": 520 }[store.get("rng", "6M")];
+  const typ = store.get("typ", "candle"), mas = store.get("ma", [20, 60]);
+  const c = priceChart = mkChart($("#pc")), up = css("--up"), dn = css("--down"), view = px.slice(-days), from = view[0]?.date;
+  if (typ === "candle") c.addCandlestickSeries({ upColor: up, downColor: dn, borderUpColor: up, borderDownColor: dn, wickUpColor: up, wickDownColor: dn }).setData(view.map((p) => ({ time: p.date, open: p.open, high: p.high, low: p.low, close: p.close })));
+  else c.addAreaSeries({ lineColor: css("--accent-2"), topColor: css("--accent-soft"), bottomColor: "transparent", lineWidth: 2 }).setData(view.map((p) => ({ time: p.date, value: p.close })));
+  mas.forEach((n) => c.addLineSeries({ color: css(`--ma${n}`), lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }).setData(maSeries(px, n).filter((x) => x.time >= from)));
+  const v = c.addHistogramSeries({ priceFormat: { type: "volume" }, priceScaleId: "v", lastValueVisible: false, priceLineVisible: false });
+  c.priceScale("v").applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
+  v.setData(view.map((p) => ({ time: p.date, value: p.volume / 1000, color: (p.close >= p.open ? up : dn) + "55" })));
+  c.priceScale("right").applyOptions({ scaleMargins: { top: 0.06, bottom: 0.22 } });
+  c.timeScale().fitContent();
+}
+function finTable(f) {
+  if (!f?.length) return '<div class="empty">無財報資料</div>';
+  const pct = (a, b) => a != null && b ? fmtNum(a / b * 100, 1) + "%" : "—";
+  return `<table><thead><tr><th>期間</th><th class="r">營收</th><th class="r">毛利率</th><th class="r">營益率</th><th class="r">淨利</th><th class="r">EPS</th><th class="r">營業現金流</th><th class="r">負債比</th></tr></thead><tbody>
+    ${f.slice(-8).reverse().map((x) => `<tr><td class="num">${x.period}</td><td class="r num">${money(x.revenue)}</td><td class="r num">${pct(x.gross_profit, x.revenue)}</td><td class="r num">${pct(x.operating_income, x.revenue)}</td>
+      <td class="r num">${money(x.net_income)}</td><td class="r num">${fmtNum(x.eps)}</td><td class="r num">${money(x.ocf)}</td><td class="r num">${pct(x.total_liabilities, x.total_assets)}</td></tr>`).join("")}</tbody></table>`;
+}
+function drawSmall(d) {
+  if (!hasLWC()) return;
+  const up = css("--up"), dn = css("--down"), acc = css("--accent-2"), rv = d.revenue || [];
+  if (rv.length) {
+    const c = mkChart($("#rc"), { leftPriceScale: { visible: true, borderVisible: false } }), map = Object.fromEntries(rv.map((x) => [x.ym, x.revenue])), last = rv.slice(-24);
+    c.addHistogramSeries({ color: acc + "88", priceFormat: { type: "price", precision: 1, minMove: 0.1 } }).setData(last.map((x) => ({ time: x.ym + "-01", value: x.revenue / 1e8 })));
+    c.addLineSeries({ color: up, lineWidth: 2, priceScaleId: "left", priceLineVisible: false }).setData(last.map((x) => { const [y, m] = x.ym.split("-"), p = map[`${+y - 1}-${m}`]; return p ? { time: x.ym + "-01", value: (x.revenue / p - 1) * 100 } : null; }).filter(Boolean));
+    c.timeScale().fitContent();
+  } else $("#rc").innerHTML = '<div class="empty">無月營收資料</div>';
+  const f = (d.financials || []).filter((x) => x.eps != null);
+  if (f.length) { const c = mkChart($("#ec")); c.addHistogramSeries({ priceLineVisible: false }).setData(f.map((x) => ({ time: x.period_end, value: x.eps, color: x.eps >= 0 ? up : dn }))); c.timeScale().fitContent(); }
+  else $("#ec").innerHTML = '<div class="empty">無 EPS 資料</div>';
+  const inst = d.institutional || [];
+  if (inst.length) { const c = mkChart($("#ic")); c.addHistogramSeries({ priceLineVisible: false }).setData(inst.map((x) => { const t = (x.foreign_net + x.trust_net + x.dealer_net) / 1000; return { time: x.date, value: t, color: t >= 0 ? up : dn }; })); c.timeScale().fitContent(); }
+  else $("#ic").innerHTML = '<div class="empty">無法人資料</div>';
+  const val = (d.valuation || []).filter((x) => x.per > 0);
+  if (val.length) { const c = mkChart($("#vc")); c.addLineSeries({ color: acc, lineWidth: 2, priceLineVisible: false }).setData(val.map((x) => ({ time: x.date, value: x.per }))); c.timeScale().fitContent(); }
+  else $("#vc").innerHTML = '<div class="empty">無本益比資料（虧損或無資料）</div>';
+}
+
+// ---------- 路由 ----------
+function route() {
+  charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
+  const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
+  $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === (p === "stock" ? "__" : p === "s" ? "radar" : p || "")));
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, stock: () => pageStock(arg) }[p] || pageHome)();
+  window.scrollTo(0, 0);
+}
+$("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
+$("#q").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const q = e.target.value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => s.name.includes(q)); if (hit) { location.hash = `#/stock/${hit.stock_id}`; e.target.value = ""; } });
+window.addEventListener("hashchange", route);
+loadSnap().then((ok) => ok && route());
+</script>
+</body>
+</html>
