@@ -47,8 +47,40 @@ class TpexSource:
             return [], []
         return tables[0]["fields"], tables[0]["data"]
 
+    # 上櫃每日收盤行情的端點還沒在真實環境確認過哪一個可用，依序嘗試，記住第一個成功的。
+    # 2026-10-08 GitHub 實測：/afterTrading/dailyQ 回傳的不是 JSON。
+    QUOTE_PATHS = ["/afterTrading/dailyQuotes", "/afterTrading/otc", "legacy", "/afterTrading/dailyQ"]
+    LEGACY = "https://www.tpex.org.tw/web/stock/aftertrading/daily_close_quotes/stk_quote_result.php"
+    _quote_path: str | None = None
+
+    def _legacy_quotes(self, d: date) -> tuple[list[str], list[list]]:
+        """舊版櫃買網站：aaData 固定欄位 代號、名稱、收盤、漲跌、開盤、最高、最低、均價、成交股數、成交金額…"""
+        wait = self.interval - (time.time() - self._last)
+        if wait > 0:
+            time.sleep(wait)
+        try:
+            js = http.get(self.s, self.LEGACY, params={"l": "zh-tw", "o": "json", "d": f"{d.year - 1911}/{d:%m/%d}"}).json()
+        finally:
+            self._last = time.time()
+        data = js.get("aaData") or js.get("tables", [{}])[0].get("data") or []
+        return ["代號", "名稱", "收盤", "漲跌", "開盤", "最高", "最低", "均價", "成交股數", "成交金額"], data
+
+    def _quote_table(self, d: date) -> tuple[list[str], list[list]]:
+        paths = [self._quote_path] if self._quote_path else self.QUOTE_PATHS
+        last_err = None
+        for p in paths:
+            try:
+                f, data = self._legacy_quotes(d) if p == "legacy" else self._table(p, d)
+            except (ValueError, KeyError, requests.HTTPError) as e:
+                last_err = e
+                continue
+            if data:
+                type(self)._quote_path = p
+            return f, data
+        raise last_err or ValueError("櫃買行情所有端點都失敗")
+
     def daily_quotes(self, d: date) -> tuple[list[dict], float | None]:
-        f, data = self._table("/afterTrading/dailyQ", d)
+        f, data = self._quote_table(d)
         if not data:
             return [], None
         c = {k: _col(f, k) for k in ("代號", "名稱", "收盤", "開盤", "最高", "最低")}

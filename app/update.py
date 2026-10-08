@@ -259,11 +259,24 @@ def _latest_only(cfg: dict, errors: list) -> None:
         _openapi_fallback(con, cfg, errors)
 
 
+def _group(errors: list) -> list:
+    """同一個來源、同一種錯誤只列一行，附上發生天數，例如「tpex_quotes（29 天）：HTTP 403」。"""
+    out, seen = [], {}
+    for e in errors:
+        key = re.sub(r" \d{4}-\d{2}-\d{2}", "", e)
+        if key in seen:
+            seen[key][1] += 1
+        else:
+            seen[key] = [len(out), 1]
+            out.append(key)
+    return [m if seen[m][1] == 1 else m.replace(":", f"（{seen[m][1]} 次）:", 1) for m in out]
+
+
 def _publish(errors: list, progress=None, final: bool = False) -> None:
     """寫入更新狀態；有任何真實行情就重算快照（沒有就不產生，避免顯示假的或空的排行榜）。"""
     with db.connect() as con:
         has_prices = con.execute("SELECT COUNT(*) FROM prices").fetchone()[0] > 0
-        msgs = (["沒有取得任何真實行情，未產生選股結果"] if not has_prices else []) + errors
+        msgs = (["沒有取得任何真實行情，未產生選股結果"] if not has_prices else []) + _group(errors)
         db.set_meta(con, "last_update", config.now().isoformat(timespec="seconds"))
         db.set_meta(con, "source", "live")
         db.set_meta(con, "update_state", "done" if final else "running")

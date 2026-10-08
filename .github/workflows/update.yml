@@ -46,6 +46,10 @@ jobs:
           key: stocks-db-${{ github.run_id }}
           restore-keys: stocks-db-
 
+      - name: 連線診斷（結果發布在網站的 data/probe.json）
+        continue-on-error: true
+        run: python -m app.probe
+
       - name: 更新資料（先抓最新收盤價，再回補歷史）
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}

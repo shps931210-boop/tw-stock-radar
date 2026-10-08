@@ -31,6 +31,9 @@ if (config.DATA_DIR / "stocks.db").exists():
     {"no_data": True, "last_attempt": last, "errors": errors[:15],
      "detail": "還沒有成功取得真實行情，所以沒有選股結果。下一次排程更新成功後會自動出現。"}, ensure_ascii=False), "utf-8")
 
+if (config.DATA_DIR / "probe.json").exists():  # 連線診斷結果（python -m app.probe）
+    shutil.copy(config.DATA_DIR / "probe.json", out / "data" / "probe.json")
+
 snap_path = config.DATA_DIR / "snapshot.json"
 if snap_path.exists():
     shutil.copy(snap_path, out / "data" / "snapshot.json")
