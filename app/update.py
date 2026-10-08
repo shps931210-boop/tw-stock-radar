@@ -34,6 +34,11 @@ def is_common_stock(sid: str) -> bool:
     return bool(re.fullmatch(r"[1-9]\d{3}", sid))
 
 
+def is_tracked(sid: str) -> bool:
+    """只存普通股與 ETF（00 開頭），權證、可轉債等幾萬檔不存，資料庫與網站才不會過大。"""
+    return is_common_stock(sid) or bool(re.fullmatch(r"00\d{2,4}[A-Z]?", sid))
+
+
 def _need(con, source: str, d: date) -> bool:
     """這一天這個資料是否還需要抓。抓過但沒資料的日子，3 天後就當作休市不再重試。"""
     row = con.execute("SELECT ok FROM fetch_log WHERE source=? AND key=?", (source, d.isoformat())).fetchone()
@@ -58,6 +63,13 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
             ("margin", "margin", "margin"), ("val", "valuation", "valuation")]
 
     with db.connect() as con:
+        # 清掉以前存進來的權證等非追蹤代號
+        junk = [r[0] for r in con.execute("SELECT stock_id FROM stocks") if not is_tracked(r[0])]
+        for i in range(0, len(junk), 500):
+            q = ",".join("?" * len(junk[i:i + 500]))
+            for t in ("prices", "valuation", "institutional", "margin", "stocks"):
+                con.execute(f"DELETE FROM {t} WHERE stock_id IN ({q})", junk[i:i + 500])
+        con.commit()
         todo = [(s, d, j) for s in srcs for j in jobs for d in days
                 if (j[0] == "quotes" or d >= flow_cut) and _need(con, f"{s.market}_{j[0]}", d)]
         dead = set()  # 解析失敗的 (市場, 資料) 本次不再重試
@@ -81,6 +93,7 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
             ds = d.isoformat()
             if key == "quotes":
                 rows, taiex = res
+                rows = [r for r in rows if is_tracked(r["stock_id"])]
                 if taiex:
                     db.upsert(con, "index_prices", [{"date": ds, "close": taiex}])
                 for r in rows:
@@ -123,6 +136,7 @@ def _openapi_fallback(con, cfg: dict, errors: list) -> None:
             continue
         if day:  # 官方實際公布到哪一天：用來判斷網站資料是否過期（自動涵蓋國定假日與颱風假）
             db.set_meta(con, f"official_latest_{mkt}", day)
+        rows = [r for r in rows if is_tracked(r["stock_id"])]
         if not day or not rows or (have and day <= have):
             continue
         for r in rows:

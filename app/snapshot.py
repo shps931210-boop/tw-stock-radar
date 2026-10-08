@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import math
 from datetime import datetime
 
@@ -146,7 +147,7 @@ def build(demo: bool = False) -> dict:
         "weights": w, "factor_label": FACTOR_LABEL, "base_filter": bf,
         "strategies": [{**s, "count": sum(s["id"] in r["strategies"] for r in rows)} for s in STRATEGIES],
         "catalog": CATALOG,
-        "stocks": rows,
+        "stocks": [r for r in rows if r["is_common"] or re.fullmatch(r"00\d{2,4}[A-Z]?", r["stock_id"])],
     }
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")

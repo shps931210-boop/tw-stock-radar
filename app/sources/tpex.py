@@ -24,6 +24,16 @@ def _col(fields: list[str], *keywords: str, exclude: tuple[str, ...] = ()) -> in
     raise KeyError(f"櫃買中心欄位找不到 {keywords}，實際欄位：{fields}")
 
 
+def _check_date(got, want: date) -> None:
+    """回應的資料日必須是要求的那一天；有些端點會忽略日期參數直接回傳最新一天，存進去就變成錯的歷史資料。"""
+    if not got:
+        return
+    digits = "".join(ch for ch in str(got) if ch.isdigit())
+    ok = {want.strftime("%Y%m%d"), f"{want.year - 1911}{want:%m%d}"}
+    if digits not in ok:
+        raise ValueError(f"櫃買回傳的資料日 {got} 不是要求的 {want}，略過以免存錯日期")
+
+
 class TpexSource:
     market = "tpex"
 
@@ -45,6 +55,7 @@ class TpexSource:
         tables = js.get("tables") or []
         if not tables or not tables[0].get("data"):
             return [], []
+        _check_date(js.get("date") or tables[0].get("date"), d)
         return tables[0]["fields"], tables[0]["data"]
 
     # 上櫃每日收盤行情的端點還沒在真實環境確認過哪一個可用，依序嘗試，記住第一個成功的。
@@ -62,7 +73,10 @@ class TpexSource:
             js = http.get(self.s, self.LEGACY, params={"l": "zh-tw", "o": "json", "d": f"{d.year - 1911}/{d:%m/%d}"}).json()
         finally:
             self._last = time.time()
-        data = js.get("aaData") or js.get("tables", [{}])[0].get("data") or []
+        t = (js.get("tables") or [{}])[0]
+        data = js.get("aaData") or t.get("data") or []
+        if data:
+            _check_date(js.get("date") or t.get("date"), d)
         return ["代號", "名稱", "收盤", "漲跌", "開盤", "最高", "最低", "均價", "成交股數", "成交金額"], data
 
     def _quote_table(self, d: date) -> tuple[list[str], list[list]]:
