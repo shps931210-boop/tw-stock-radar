@@ -18,6 +18,36 @@ FACTORS = {
     "growth": [("rev_yoy_3m", 1), ("rev_yoy", 1), ("eps_q_yoy", 1), ("op_q_yoy", 1)],
     "value": [("earnings_yield", 1), ("book_to_price", 1), ("fcf_yield", 1)],
 }
+# 每個因子的必要欄位與最少可用項目數：只有一兩項資料剛好很高的公司，不能被當成完整的高分
+REQUIRED = {
+    "quality": (["roe", "roa"], 3),
+    "growth": (["rev_yoy", "rev_yoy_3m"], 3),
+    "value": (["earnings_yield", "book_to_price"], 2),
+}
+TREND_MIN = 4  # 五項趨勢檢查至少要有四項能算
+ITEM_LABEL = {"roe": "ROE", "roa": "ROA", "op_margin": "營業利益率", "ocf_to_assets": "營業現金流", "debt_ratio": "負債比",
+              "rev_yoy_3m": "近三月營收", "rev_yoy": "月營收年增", "eps_q_yoy": "EPS 年增", "op_q_yoy": "營業利益年增",
+              "earnings_yield": "本益比", "book_to_price": "股價淨值比", "fcf_yield": "自由現金流", "mom_12_1": "一年股價"}
+FIN_COLS = ["roe", "roa", "op_margin", "ocf_to_assets", "debt_ratio", "eps_q_yoy", "op_q_yoy", "fcf_yield"]
+REV_COLS = ["rev_yoy", "rev_yoy_3m"]
+VAL_COLS = ["earnings_yield", "book_to_price", "fcf_yield"]
+VAL_MAX_LAG = 3  # 本益比資料最多比股價晚幾個交易日
+
+
+def expected_fin_end(today) -> str:
+    """依法定公告期限（Q1 5/15、Q2 8/14、Q3 11/14、年報 3/31），加 10 天緩衝，推算現在至少應該有哪一季的財報。"""
+    from datetime import date, timedelta
+    y = today.year
+    cands = [(date(y - 1, 9, 30), date(y - 1, 11, 14)), (date(y - 1, 12, 31), date(y, 3, 31)),
+             (date(y, 3, 31), date(y, 5, 15)), (date(y, 6, 30), date(y, 8, 14)), (date(y, 9, 30), date(y, 11, 14))]
+    ok = [end for end, due in cands if due + timedelta(days=10) <= today]
+    return max(ok).isoformat()
+
+
+def expected_rev_ym(today) -> str:
+    """月營收在次月 10 日前公告，加 5 天緩衝：15 日以後應該有上個月，之前至少要有前兩個月。"""
+    p = pd.Period(today, "M") - (1 if today.day > 15 else 2)
+    return str(p)
 FACTOR_LABEL = {"quality": "財務品質", "growth": "成長能力", "value": "估值合理性", "momentum": "股價動能", "trend": "趨勢確認"}
 
 
@@ -68,15 +98,50 @@ def build(demo: bool = False) -> dict:
     # ---------- 第三層：橫斷面百分位與多因子評分 ----------
     df["rs_rank"] = _pctrank(df.get("mom_12_1"), base) if "mom_12_1" in df else None
     df["vol_1y_pct"] = _pctrank(df.get("vol_1y"), base) if "vol_1y" in df else None
+    # ---------- 資料新鮮度：過期的財報、營收、本益比不能當成最新資料計分 ----------
+    today = config.today()
+    fin_exp, rev_exp = expected_fin_end(today), expected_rev_ym(today)
+    older = lambda col, exp: df[col].map(lambda x: isinstance(x, str) and x < exp) if col in df else False
+    df["fin_stale"] = older("fin_period_end", fin_exp)
+    df["rev_stale"] = older("rev_ym", rev_exp)
+    if "val_date" in df:
+        pdates = sorted(set(df["date"].dropna()))
+        lag = df["val_date"].map(lambda d: len(pdates) - int(np.searchsorted(pdates, d, side="right")) if isinstance(d, str) else None)
+        df["val_stale"] = lag.notna() & (lag > VAL_MAX_LAG)
+    else:
+        df["val_stale"] = False
+    S_in = df.copy()  # 計分用：過期欄位當作缺資料
+    for flag, cols in (("fin_stale", FIN_COLS), ("rev_stale", REV_COLS), ("val_stale", VAL_COLS)):
+        for c in cols:
+            if c in S_in:
+                S_in.loc[S_in[flag].astype(bool), c] = np.nan
+
+    # ---------- 第三層：橫斷面百分位與多因子評分 ----------
+    df["rs_rank"] = _pctrank(df.get("mom_12_1"), base) if "mom_12_1" in df else None
+    df["vol_1y_pct"] = _pctrank(df.get("vol_1y"), base) if "vol_1y" in df else None
     nonfin = base & ~df["is_financial"]
+    gaps = {f: [[] for _ in range(len(df))] for f in list(FACTORS) + ["momentum", "trend"]}
     for f, parts in FACTORS.items():
-        cols = []
+        cols, have = [], []
         for k, sign in parts:
-            if k in df:
-                mask = nonfin if k in ("debt_ratio", "op_margin") else base
-                cols.append(_pctrank(df[k], mask & df[k].notna(), sign))
-        df[f"score_{f}"] = pd.concat(cols, axis=1).mean(axis=1, skipna=True) if cols else np.nan
+            if k not in S_in:
+                S_in[k] = np.nan
+            applies = nonfin if k in ("debt_ratio", "op_margin") else base  # 金融業不比負債比、營業利益率
+            cols.append(_pctrank(S_in[k], applies & S_in[k].notna(), sign))
+            have.append((S_in[k].notna() & applies).rename(k))
+        H = pd.concat(have, axis=1)
+        req, need = REQUIRED[f]
+        ok = H[req].all(axis=1) & (H.sum(axis=1) >= need)
+        df[f"score_{f}"] = pd.concat(cols, axis=1).mean(axis=1, skipna=True).where(ok)
+        for i in np.flatnonzero(~ok.to_numpy()):
+            fin = bool(df["is_financial"].iloc[i])
+            gaps[f][i] = [ITEM_LABEL[k] for k, _ in parts if not H[k].iloc[i]
+                          and not (fin and k in ("debt_ratio", "op_margin"))][:3]
     df["score_momentum"] = df["rs_rank"]
+    if "mom_12_1" in df:
+        for i, v in enumerate(df["mom_12_1"]):
+            if pd.isna(v):
+                gaps["momentum"][i] = ["一年股價"]
     chip_cols = [_pctrank(df[k], base & df[k].notna(), sg) for k, sg in (("inst_ratio_5d", 1), ("margin_chg_20d", -1)) if k in df]
     df["score_chips"] = pd.concat(chip_cols, axis=1).mean(axis=1, skipna=True) if chip_cols else np.nan
     tchecks = []
@@ -85,13 +150,38 @@ def build(demo: bool = False) -> dict:
             tchecks.append((df[a] > df[b]).where(df[b].notna()))
     if "ma60_slope_20" in df:
         tchecks.append((df["ma60_slope_20"] > 0).where(df["ma60_slope_20"].notna()))
-    df["score_trend"] = (pd.concat(tchecks, axis=1).astype(float).mean(axis=1) * 100).where(base) if tchecks else np.nan
+    if tchecks:
+        T = pd.concat(tchecks, axis=1).astype(float)
+        df["score_trend"] = (T.mean(axis=1) * 100).where(base & (T.notna().sum(axis=1) >= TREND_MIN))
+        for i, n in enumerate(T.notna().sum(axis=1)):
+            if n < TREND_MIN:
+                gaps["trend"][i] = ["歷史股價天數"]
+    else:
+        df["score_trend"] = np.nan
     w = cfg["composite_weights"]
     S = pd.DataFrame({k: df[f"score_{k}"] for k in w})
     W = pd.DataFrame({k: np.where(S[k].notna(), v, 0.0) for k, v in w.items()})
     df["coverage"] = S.notna().sum(axis=1)
-    # 資料完整性：五個因子都要有分數才列入綜合排名；缺的因子不當作 0 分，也不用其他因子硬補
+    # 資料完整度：五個因子內所有子項目中，有幾成拿得到「未過期」的資料
+    items = [k for parts in FACTORS.values() for k, _ in parts] + ["mom_12_1"]
+    df["data_completeness"] = (pd.concat([S_in[k].notna() if k in S_in else pd.Series(False, index=df.index) for k in items], axis=1)
+                               .mean(axis=1) * 100).round(0)
+    # 資料完整性：五個因子都要通過必要欄位檢查才列入綜合排名；缺的因子不當作 0 分，也不用其他因子硬補
     df["missing_factors"] = [[FACTOR_LABEL[k] for k in w if pd.isna(row[k])] for _, row in S.iterrows()]
+    stale_note = []
+    for i, r in df.iterrows():
+        n = []
+        if r.get("fin_stale"):
+            n.append(f"財報停在 {r.get('fin_period')}（應已公布到 {fin_exp[:7]}）")
+        if r.get("rev_stale"):
+            n.append(f"月營收停在 {r.get('rev_ym')}")
+        if r.get("val_stale"):
+            n.append(f"本益比資料停在 {r.get('val_date')}")
+        stale_note.append(n)
+    df["stale_notes"] = stale_note
+    pos = {k: i for i, k in enumerate(df.index)}
+    df["missing_detail"] = [[f"{FACTOR_LABEL[k]}（缺{'、'.join(gaps[k][pos[ix]]) or '必要資料'}）" for k in w if pd.isna(S.loc[ix, k])]
+                            for ix in df.index]
     df["complete"] = df["missing_factors"].map(len) == 0
     df["composite"] = ((S.fillna(0) * W).sum(axis=1) / W.sum(axis=1).replace(0, np.nan)).where(base & df["complete"])
     if "earnings_yield" in df and "roa" in df:
@@ -109,6 +199,24 @@ def build(demo: bool = False) -> dict:
         rows.append(rec)
     ai_model.annotate(rows)
     ai_model.timing(rows, cfg.get("buy_point", {}))
+
+    with db.connect(dbname) as con:
+        official = None if demo else db.get_meta(con, "official_latest_twse")
+        adj_mkts = [] if demo else [m for m in ("twse", "tpex") if con.execute(
+            "SELECT 1 FROM fetch_log WHERE source=? AND ok=1", (f"{m}_exrights",)).fetchone()]
+    # 發布阻擋：股價明確落後官方公布日時，不產生新的 AI 排名與技術訊號（避免用舊行情當成今天的建議）
+    price_day = max((r.get("date") or "" for r in rows), default="")
+    blocked = None
+    if not demo:
+        exp = official or _expected_date()
+        behind = _weekdays_between(price_day, exp)
+        if (official and behind >= 1) or behind >= 2:
+            blocked = f"股價資料停在 {price_day}，{'官方已公布到' if official else '推估應有'} {exp}，暫停產生 AI 排名與技術訊號"
+            for r in rows:
+                for v in r["ai"]["modes"].values():
+                    v["rank"] = None
+                r["timing"].update(status="none", blocked=True)
+                r["composite_blocked"] = True
 
     with db.connect(dbname) as con:
         meta = {k: db.get_meta(con, k) for k in ("last_update", "source", "last_errors", "updated_prices",
@@ -131,6 +239,10 @@ def build(demo: bool = False) -> dict:
         "health": health,
         "history": {"days": hist_days, "need": bf["min_history_days"], "ready": hist_days >= bf["min_history_days"]}, "expected_date": None if demo else (meta["official_latest_twse"] or _expected_date()),
         "expected_basis": None if demo else ("official" if meta["official_latest_twse"] else "estimate"),
+        "rankings_blocked": blocked,
+        "adjusted_markets": adj_mkts,
+        "freshness_rule": {"fin_expected": expected_fin_end(config.today()), "rev_expected": expected_rev_ym(config.today()),
+                           "chip_max_lag": metrics.CHIP_MAX_LAG, "val_max_lag": VAL_MAX_LAG},
         "data_dates": {
             "prices": max((r.get("date") or "" for r in rows), default=None),
             "revenue": _mode([r.get("rev_ym") for r in common]),
@@ -176,6 +288,18 @@ def _expected_date() -> str:
     while d.weekday() >= 5:
         d -= timedelta(days=1)
     return d.isoformat()
+
+
+def _weekdays_between(a: str, b: str) -> int:
+    """a 之後到 b（含）有幾個平日；a >= b 時為 0。"""
+    from datetime import date, timedelta
+    if not a or not b or a >= b:
+        return 0
+    d, end, n = date.fromisoformat(a), date.fromisoformat(b), 0
+    while d < end:
+        d += timedelta(days=1)
+        n += d.weekday() < 5
+    return n
 
 
 def _mode(xs):

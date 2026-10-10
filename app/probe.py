@@ -44,6 +44,9 @@ def main():
         _probe(f"{TPEX}/www/zh-tw/afterTrading/dailyQ", {"date": slash, "response": "json"}),
         _probe(f"{TPEX}/web/stock/aftertrading/daily_close_quotes/stk_quote_result.php", {"l": "zh-tw", "o": "json", "d": roc}),
         _probe(f"{TPEX}/openapi/v1/tpex_mainboard_daily_close_quotes", {}),
+        _probe(f"{TPEX}/www/zh-tw/bulletin/exDailyQ", {"startDate": "2026/07/01", "endDate": "2026/07/31", "response": "json"}),
+        _probe(f"{TPEX}/web/stock/exright/dailyquo/exDailyQ_result.php", {"l": "zh-tw", "o": "json", "d": "115/07/01", "ed": "115/07/31"}),
+        _probe("https://www.twse.com.tw/rwd/zh/exRight/TWT49U", {"startDate": "20260701", "endDate": "20260731", "response": "json"}),
     ]
     for p in probes:  # OpenAPI 很大，只留摘要
         p["head"] = p.get("head", "")[:300]

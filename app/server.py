@@ -4,12 +4,14 @@
 """
 from __future__ import annotations
 
+import hmac
 import json
+import os
 import threading
 import time
 from datetime import datetime
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 
 from . import config, db, update
@@ -18,6 +20,18 @@ app = FastAPI(title="股栗子")
 STATIC = config.ROOT / "static"
 JOB = {"running": False, "stage": "", "done": 0, "total": 0, "msg": "", "started": None, "finished": None, "errors": []}
 _lock = threading.Lock()
+_last_manual = 0.0
+MANUAL_COOLDOWN = 600  # 手動更新至少間隔 10 分鐘
+
+
+def _require_admin(request: Request, token: str | None) -> None:
+    """更新資料只限管理員：有設定環境變數 ADMIN_TOKEN 時要帶 X-Admin-Token；沒設定時只接受本機連線。"""
+    want = os.environ.get("ADMIN_TOKEN")
+    if want:
+        if not token or not hmac.compare_digest(token, want):
+            raise HTTPException(403, "需要管理員權限才能更新資料")
+    elif (request.client.host if request.client else "") not in ("127.0.0.1", "::1", "localhost", "testclient"):
+        raise HTTPException(403, "只有本機可以觸發更新；公開部署請設定 ADMIN_TOKEN")
 
 
 def _snapshot_path(demo: bool):
@@ -105,9 +119,15 @@ def _run_update(daily=True, fundamentals=True):
 
 
 @app.post("/api/update")
-def run_update(fundamentals: bool = True):
+def run_update(request: Request, fundamentals: bool = True, x_admin_token: str | None = Header(None)):
+    global _last_manual
+    _require_admin(request, x_admin_token)
+    if time.time() - _last_manual < MANUAL_COOLDOWN:
+        raise HTTPException(429, "剛剛更新過，請 10 分鐘後再試")
     if not _run_update(True, fundamentals):
         raise HTTPException(409, "更新正在進行中")
+    _last_manual = time.time()
+    print(f"[{config.now():%Y-%m-%d %H:%M:%S}] 手動更新 from {request.client.host if request.client else '?'}", flush=True)
     return {"started": True}
 
 

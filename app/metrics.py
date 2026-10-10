@@ -29,12 +29,14 @@ def _pct(a, b):
     return (a / b - 1) * 100
 
 
-def _growth(a, b):
-    """可處理基期為負的成長率：(a-b)/|b|"""
+def _turn(a, b):
+    """基期為負或零時，成長率沒有意義：回傳（成長率, 標籤）。標籤：虧轉盈、盈轉虧、持續虧損。"""
     a, b = _f(a), _f(b)
-    if a is None or b is None or b == 0:
-        return None
-    return (a - b) / abs(b) * 100
+    if a is None or b is None:
+        return None, None
+    if b <= 0:
+        return None, ("虧轉盈" if a > 0 else "持續虧損")
+    return (a - b) / b * 100, ("盈轉虧" if a <= 0 else None)
 
 
 def _streak(arr) -> int:
@@ -126,6 +128,7 @@ def fundamental_metrics(fin: pd.DataFrame, rev: pd.DataFrame, div: pd.DataFrame,
     # ---- 估值（每日）----
     if len(val):
         last = val.iloc[-1]
+        m["val_date"] = last["date"]
         m["per"] = _f(last["per"]) if _f(last["per"]) and last["per"] > 0 else None
         m["pbr"] = _f(last["pbr"]) if _f(last["pbr"]) and last["pbr"] > 0 else None
         m["dy"] = _f(last["dy"])
@@ -167,6 +170,7 @@ def fundamental_metrics(fin: pd.DataFrame, rev: pd.DataFrame, div: pd.DataFrame,
             i = len(f) - 1 - back
             return _f(f[k].iloc[i]) if i >= 0 else None
         m["fin_period"] = f["period"].iloc[-1]
+        m["fin_period_end"] = f["period_end"].iloc[-1]
         rev_t, gp_t, op_t, ni_t = ttm("revenue"), ttm("gross_profit"), ttm("operating_income"), ttm("net_income")
         m["eps_ttm"], m["ni_ttm"] = ttm("eps"), ni_t
         m["ocf_ttm"] = ttm("ocf")
@@ -177,6 +181,7 @@ def fundamental_metrics(fin: pd.DataFrame, rev: pd.DataFrame, div: pd.DataFrame,
         avg = lambda a, b: (a + b) / 2 if a and b else a
         if ni_t is not None and eq:
             m["roe"] = ni_t / avg(eq, eq4) * 100
+            m["roe_basis"] = "平均權益" if eq4 else "期末權益"
         if ni_t is not None and ta:
             m["roa"] = ni_t / avg(ta, ta4) * 100
         if rev_t:
@@ -191,14 +196,14 @@ def fundamental_metrics(fin: pd.DataFrame, rev: pd.DataFrame, div: pd.DataFrame,
         m["op_income_q"] = at("operating_income")
         m["ni_q"] = at("net_income")
         if len(f) >= 5:
-            m["eps_q_yoy"] = _growth(at("eps"), at("eps", 4))
-            m["op_q_yoy"] = _growth(at("operating_income"), at("operating_income", 4))
+            m["eps_q_yoy"], m["eps_q_turn"] = _turn(at("eps"), at("eps", 4))
+            m["op_q_yoy"], m["op_q_turn"] = _turn(at("operating_income"), at("operating_income", 4))
             gq = lambda b: (at("gross_profit", b) / at("revenue", b) * 100) if at("gross_profit", b) is not None and at("revenue", b) else None
             if gq(0) is not None and gq(4) is not None:
                 m["gm_q_change"] = gq(0) - gq(4)
         if len(f) >= 8:
             ni_p, rev_p, gp_p = ttm("net_income", 4), ttm("revenue", 4), ttm("gross_profit", 4)
-            m["eps_ttm_yoy"] = _growth(m["eps_ttm"], ttm("eps", 4))
+            m["eps_ttm_yoy"], m["eps_ttm_turn"] = _turn(m["eps_ttm"], ttm("eps", 4))
             m["long_term_loss"] = (ni_t is not None and ni_p is not None and ni_t < 0 and ni_p < 0)
             nis = col("net_income").iloc[-8:]
             if nis.notna().all() and abs(nis.mean()) > 0:
@@ -222,7 +227,8 @@ def fundamental_metrics(fin: pd.DataFrame, rev: pd.DataFrame, div: pd.DataFrame,
             ]
             avail = [t for t in tests if t[0] is not None]
             m["fscore_n"] = len(avail)
-            m["fscore"] = sum(1 for _, fn in avail if fn()) if len(avail) >= 6 else None
+            # 標準 F-Score 九項都要能算；缺任何一項就不給分數，避免看起來像完整的 F-Score
+            m["fscore"] = sum(1 for _, fn in avail if fn()) if len(avail) == len(tests) else None
         if len(f) >= 12:
             hits = 0
             for end in (0, 4, 8):
@@ -256,26 +262,86 @@ def fundamental_metrics(fin: pd.DataFrame, rev: pd.DataFrame, div: pd.DataFrame,
     return m
 
 
+CHIP_MAX_LAG = 1  # 法人、融資資料最多可以比股價晚幾個交易日（融資 21:00 才公布，14:40 那次會晚一天）
+
+
+def _aligned(flow: pd.DataFrame, px: pd.DataFrame, n: int, cols: list[str]):
+    """把籌碼資料和股價依交易日合併，取最近 n 個「連續」交易日。
+    回傳 (合併後資料, 籌碼最新日期, 落後交易日數)；日期不連續或落後太多時合併資料為 None。"""
+    if not len(flow):
+        return None, None, None
+    pdates = px["date"].tolist()
+    last = flow["date"].max()
+    lag = len(pdates) - np.searchsorted(pdates, last, side="right")
+    if lag > CHIP_MAX_LAG:
+        return None, last, lag
+    j = px[["date", "close", "volume"]].merge(flow[["date"] + cols], on="date", how="inner").sort_values("date")
+    j = j[j["date"] <= last]
+    end = pdates.index(last) if last in pdates else None
+    if end is None or end + 1 < n or len(j) < n:
+        return None, last, lag
+    if j["date"].iloc[-n:].tolist() != pdates[end - n + 1:end + 1]:  # 中間缺了某幾天的籌碼資料
+        return None, last, lag
+    return j.iloc[-n:].reset_index(drop=True), last, lag
+
+
 def chip_metrics(inst: pd.DataFrame, mg: pd.DataFrame, px: pd.DataFrame) -> dict:
+    """籌碼指標一律用「同一天」的股價與籌碼計算；籌碼資料落後或缺日時，該指標顯示為尚未更新（None）。"""
     m: dict = {}
-    if len(inst) >= 5:
+    if not len(px):
+        return m
+    px = px.sort_values("date").reset_index(drop=True)
+    cols = ["foreign_net", "trust_net", "dealer_net"]
+    if len(inst):
         i = inst.sort_values("date")
-        m["foreign_5d"] = float(i["foreign_net"].iloc[-5:].sum() / 1000)
-        m["trust_5d"] = float(i["trust_net"].iloc[-5:].sum() / 1000)
-        m["inst_20d"] = float(i[["foreign_net", "trust_net", "dealer_net"]].iloc[-20:].sum().sum() / 1000)
-        m["foreign_streak"] = _streak(i["foreign_net"])
-        m["trust_streak"] = _streak(i["trust_net"])
-        m["foreign_trust_same_day"] = bool(i["foreign_net"].iloc[-1] > 0 and i["trust_net"].iloc[-1] > 0)
-        vol5 = px["volume"].iloc[-5:].sum() if len(px) >= 5 else 0
-        if vol5:
-            m["inst_ratio_5d"] = float(i[["foreign_net", "trust_net", "dealer_net"]].iloc[-5:].sum().sum() / vol5 * 100)
-    if len(mg) >= 20 and len(px) >= 20:
+        j5, m["inst_date"], m["inst_lag"] = _aligned(i, px, 5, cols)
+        j20, _, _ = _aligned(i, px, 20, cols)
+        if j5 is not None:
+            m["foreign_5d"] = float(j5["foreign_net"].sum() / 1000)
+            m["trust_5d"] = float(j5["trust_net"].sum() / 1000)
+            m["foreign_trust_same_day"] = bool(j5["foreign_net"].iloc[-1] > 0 and j5["trust_net"].iloc[-1] > 0)
+            vol5 = j5["volume"].sum()
+            if vol5:
+                m["inst_ratio_5d"] = float(j5[cols].sum().sum() / vol5 * 100)
+            full = i[i["date"] <= m["inst_date"]]
+            m["foreign_streak"] = _streak(full["foreign_net"])
+            m["trust_streak"] = _streak(full["trust_net"])
+        if j20 is not None:
+            m["inst_20d"] = float(j20[cols].sum().sum() / 1000)
+    if len(mg):
         g = mg.sort_values("date")
-        m["margin_chg_20d"] = _pct(g["margin_bal"].iloc[-1], g["margin_bal"].iloc[-20])
-        p20 = _pct(px["close"].iloc[-1], px["close"].iloc[-20])
-        if m["margin_chg_20d"] is not None and p20 is not None:
-            m["price_up_margin_down"] = p20 > 0 and m["margin_chg_20d"] < 0
+        j, m["margin_date"], m["margin_lag"] = _aligned(g, px, 20, ["margin_bal"])
+        if j is not None:
+            m["margin_chg_20d"] = _pct(j["margin_bal"].iloc[-1], j["margin_bal"].iloc[0])
+            p20 = _pct(j["close"].iloc[-1], j["close"].iloc[0])
+            if m["margin_chg_20d"] is not None and p20 is not None:
+                m["price_up_margin_down"] = p20 > 0 and m["margin_chg_20d"] < 0
     return m
+
+
+def adjust_prices(px: pd.DataFrame, ex: pd.DataFrame) -> tuple[pd.DataFrame, int]:
+    """依除權息參考價還原歷史股價（向後調整：最新價不變，除權息日以前的價格乘上 參考價/前收盤）。
+    證交所公布的前收盤與資料庫不一致（差超過 1%）時，不用這筆，避免用錯資料。"""
+    if not len(ex) or len(px) < 2:
+        return px, 0
+    px = px.sort_values("date").reset_index(drop=True)
+    dates = px["date"].tolist()
+    factor = np.ones(len(px))
+    used = 0
+    for _, e in ex.iterrows():
+        k = np.searchsorted(dates, e["date"])  # 除權息日（或之後第一個交易日）的位置
+        if k == 0 or k >= len(dates):
+            continue  # 除權息日在資料範圍外，或還沒發生
+        prev = px["close"].iloc[k - 1]
+        if not prev or abs(prev / e["prev_close"] - 1) > 0.01:
+            continue
+        factor[:k] *= e["ref_price"] / e["prev_close"]
+        used += 1
+    if used:
+        px = px.copy()
+        for c in ("open", "high", "low", "close"):
+            px[c] = px[c] * factor
+    return px, used
 
 
 def compute_all(dbname: str = "stocks.db", stock_ids: list[str] | None = None) -> pd.DataFrame:
@@ -293,10 +359,11 @@ def compute_all(dbname: str = "stocks.db", stock_ids: list[str] | None = None) -
         val, inst, mg = q("valuation"), q("institutional"), q("margin")
         disp = set(db.read(con, "SELECT stock_id FROM disposition")["stock_id"])
         idx = db.read(con, "SELECT * FROM index_prices ORDER BY date")
+        ex = db.read(con, "SELECT * FROM exrights" + where, params)
     idx_s = idx.set_index("date")["close"] if len(idx) else None
     G = lambda df: {k: g for k, g in df.groupby("stock_id")} if len(df) else {}
     pxg, fing, revg, divg = G(px.sort_values("date")), G(fin), G(rev.sort_values("ym")), G(div)
-    valg, instg, mgg = G(val.sort_values("date")), G(inst), G(mg)
+    valg, instg, mgg, exg = G(val.sort_values("date")), G(inst), G(mg), G(ex)
     empty = pd.DataFrame()
     info = stocks.set_index("stock_id").to_dict("index") if len(stocks) else {}
     rows = []
@@ -307,9 +374,11 @@ def compute_all(dbname: str = "stocks.db", stock_ids: list[str] | None = None) -
         m["is_common"] = bool(len(sid) == 4 and sid[0] != "0" and sid.isdigit())
         m["is_financial"] = "金融" in m["industry"]
         m["disposition"] = sid in disp
-        m.update(price_metrics(p, idx_s))
+        adj, m["adj_events"] = adjust_prices(p, exg.get(sid, empty))
+        m.update(price_metrics(adj, idx_s))
+        m["close"] = float(p["close"].iloc[-1])  # 顯示用的收盤價永遠是實際成交價
         m.update(fundamental_metrics(fing.get(sid, empty), revg.get(sid, empty), divg.get(sid, empty), valg.get(sid, empty)))
-        m.update(chip_metrics(instg.get(sid, empty), mgg.get(sid, empty), p))
+        m.update(chip_metrics(instg.get(sid, empty), mgg.get(sid, empty), p))  # 籌碼與量用原始成交資料
         rows.append(m)
     df = pd.DataFrame(rows)
     for c in df.columns:  # 全部為 None 的欄位轉成數值 NaN，布林與文字欄位保留

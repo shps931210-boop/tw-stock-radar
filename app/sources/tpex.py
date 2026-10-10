@@ -153,6 +153,31 @@ class TpexSource:
         return [{"stock_id": str(r[sid]).strip(), "per": num(r[pe]), "pbr": num(r[pb]), "dy": num(r[dy])}
                 for r in data]
 
+    # 上櫃除權息計算結果表，端點尚未在真實環境核對，依序嘗試
+    EX_PATHS = ["/bulletin/exDailyQ", "/stock/exright/dailyquo/exDailyQ"]
+    EX_LEGACY = "https://www.tpex.org.tw/web/stock/exright/dailyquo/exDailyQ_result.php"
+
+    def ex_rights(self, start: date, end: date) -> list[dict]:
+        from .twse import parse_ex_rights
+        last_err = None
+        for p in self.EX_PATHS:
+            try:
+                js = http.get(self.s, f"{BASE}{p}", params={"startDate": start.strftime("%Y/%m/%d"),
+                              "endDate": end.strftime("%Y/%m/%d"), "response": "json"}).json()
+                t = (js.get("tables") or [{}])[0]
+                if t.get("fields"):
+                    return parse_ex_rights(t["fields"], t.get("data") or [])
+            except (ValueError, KeyError, requests.RequestException) as e:
+                last_err = e
+        try:
+            js = http.get(self.s, self.EX_LEGACY, params={"l": "zh-tw", "o": "json", "d": f"{start.year - 1911}/{start:%m/%d}",
+                                                          "ed": f"{end.year - 1911}/{end:%m/%d}"}).json()
+            if not js.get("fields"):  # 沒有欄位名稱就不猜欄位位置
+                raise KeyError(f"櫃買除權息舊端點沒有欄位名稱：{list(js)[:10]}")
+            return parse_ex_rights(js["fields"], js.get("aaData") or [])
+        except (ValueError, KeyError, requests.RequestException) as e:
+            raise last_err or e
+
 
 # ---------- 櫃買中心 OpenAPI（備援，欄位尚未核對） ----------
 OPENAPI = "https://www.tpex.org.tw/openapi/v1"

@@ -118,6 +118,14 @@ class TwseSource:
         return [{"stock_id": r[i["證券代號"]].strip(), "per": num(r[i["本益比"]]), "pbr": num(r[i["股價淨值比"]]),
                  "dy": num(r[i["殖利率(%)"]])} for r in js.get("data", [])]
 
+    def ex_rights(self, start: date, end: date) -> list[dict]:
+        """除權息計算結果表 TWT49U：除權息日、前一日收盤、除權息參考價（2026-10-10 核對過欄位）。"""
+        js = self._get("/rwd/zh/exRight/TWT49U", {"startDate": start.strftime("%Y%m%d"), "endDate": end.strftime("%Y%m%d"),
+                                                  "response": "json"})
+        if not self._ok(js):
+            return []
+        return parse_ex_rights(js.get("fields") or [], js.get("data") or [])
+
     def disposition(self) -> list[dict]:
         """目前處置中的股票（OpenAPI）。"""
         r = http.get(self.s, "https://openapi.twse.com.tw/v1/announcement/punish")
@@ -132,6 +140,35 @@ class TwseSource:
             out.append({"stock_id": x["Code"].strip(), "period": x.get("DispositionPeriod", ""),
                         "reason": x.get("ReasonsOfDisposition", "")})
         return out
+
+
+def any_date(s) -> str | None:
+    """'115年07月01日'、'115/07/01'、'1150701'、'2026-07-01' → '2026-07-01'"""
+    d = re.findall(r"\d+", str(s or ""))
+    if len(d) == 1 and len(d[0]) in (7, 8):
+        d = [d[0][:-4], d[0][-4:-2], d[0][-2:]]
+    if len(d) < 3:
+        return None
+    y = int(d[0]) + (1911 if int(d[0]) < 1000 else 0)
+    return f"{y}-{int(d[1]):02d}-{int(d[2]):02d}"
+
+
+def parse_ex_rights(fields: list, data: list) -> list[dict]:
+    """依欄位名稱找出：日期、代號、除權息前收盤價、除權息參考價（上市、上櫃共用）。"""
+    f = [str(x).replace(" ", "") for x in fields]
+    def col(*keys, exclude=()):
+        for i, x in enumerate(f):
+            if all(k in x for k in keys) and not any(e in x for e in exclude):
+                return i
+        raise KeyError(f"除權息欄位找不到 {keys}，實際欄位：{fields}")
+    di, si = col("日期"), col("代號")
+    pi, ri = col("前收盤"), col("參考價", exclude=("減除", "開盤"))
+    out = []
+    for r in data:
+        day, prev, ref = any_date(r[di]), num(r[pi]), num(r[ri])
+        if day and prev and ref and 0 < ref <= prev:
+            out.append({"stock_id": str(r[si]).strip(), "date": day, "prev_close": prev, "ref_price": ref})
+    return out
 
 
 # ---------- 證交所 OpenAPI（備援） ----------

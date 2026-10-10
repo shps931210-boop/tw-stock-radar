@@ -121,39 +121,103 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
 
 
 def _openapi_fallback(con, cfg: dict, errors: list) -> None:
-    """主要來源沒抓到最新一天時，改用官方 OpenAPI 補上最近一個交易日（只有一天，不能回補歷史）。"""
+    """用官方 OpenAPI 補上最近一個交易日（只有一天，不能回補歷史）。
+
+    股價與本益比分開判斷：股價那天已經有了，也照樣同步本益比；
+    當天只存了部分股票時（例如主要來源中途失敗），用 OpenAPI 的完整清單補齊。
+    """
     from .sources import tpex as P
     from .sources import twse as T
     plan = [("twse", T.openapi_quotes, T.openapi_valuation)]
     if "tpex" in cfg["markets"]:
         plan.append(("tpex", P.openapi_quotes, None))
     for mkt, quotes, valuation in plan:
-        have = con.execute("SELECT MAX(p.date) FROM prices p JOIN stocks s USING(stock_id) WHERE s.market=?", (mkt,)).fetchone()[0]
         try:
             day, rows = quotes()
         except Exception as e:
             errors.append(f"{mkt} OpenAPI 行情: {http.describe(e)}")
-            continue
+            day, rows = None, []
         if day:  # 官方實際公布到哪一天：用來判斷網站資料是否過期（自動涵蓋國定假日與颱風假）
             db.set_meta(con, f"official_latest_{mkt}", day)
         rows = [r for r in rows if is_tracked(r["stock_id"])]
-        if not day or not rows or (have and day <= have):
-            continue
-        for r in rows:
-            con.execute("INSERT OR IGNORE INTO stocks (stock_id, name, market, industry) VALUES (?,?,?,'')",
-                        (r["stock_id"], r.pop("name"), mkt))
-            r["date"] = day
-        db.upsert(con, "prices", rows)
-        db.log_fetch(con, f"{mkt}_quotes", day, True)
-        db.log_fetch(con, f"{mkt}_openapi", day, True)
+        if day and rows:
+            _sync_quotes(con, mkt, day, rows, errors)
         if valuation:
             try:
                 vday, vrows = valuation()
-                db.upsert(con, "valuation", [{**r, "date": vday or day} for r in vrows])
-                db.log_fetch(con, f"{mkt}_val", vday or day, bool(vrows))
+                vday = vday or day
+                vrows = [r for r in vrows if is_tracked(r["stock_id"])]
+                have = con.execute("SELECT COUNT(*) FROM valuation v JOIN stocks s USING(stock_id) WHERE s.market=? AND v.date=?",
+                                   (mkt, vday)).fetchone()[0] if vday else 0
+                if vday and len(vrows) > have:
+                    db.upsert(con, "valuation", [{**r, "date": vday} for r in vrows])
+                    db.log_fetch(con, f"{mkt}_val", vday, True)
             except Exception as e:
                 errors.append(f"{mkt} OpenAPI 本益比: {http.describe(e)}")
         con.commit()
+
+
+def _prev_count(con, mkt: str, day: str) -> int:
+    """前一個交易日這個市場有幾檔行情，用來檢查今天是否完整。"""
+    r = con.execute("SELECT COUNT(*) FROM prices p JOIN stocks s USING(stock_id) WHERE s.market=? AND p.date="
+                    "(SELECT MAX(p2.date) FROM prices p2 JOIN stocks s2 USING(stock_id) WHERE s2.market=? AND p2.date<?)",
+                    (mkt, mkt, day)).fetchone()
+    return r[0] if r else 0
+
+
+def _sync_quotes(con, mkt: str, day: str, rows: list[dict], errors: list) -> None:
+    have = con.execute("SELECT MAX(p.date) FROM prices p JOIN stocks s USING(stock_id) WHERE s.market=?", (mkt,)).fetchone()[0]
+    if have and day < have:
+        return  # OpenAPI 比資料庫舊（例如快取），不覆蓋
+    n_have = con.execute("SELECT COUNT(*) FROM prices p JOIN stocks s USING(stock_id) WHERE s.market=? AND p.date=?",
+                         (mkt, day)).fetchone()[0]
+    if n_have >= len(rows):
+        return  # 這一天已經完整
+    for r in rows:
+        con.execute("INSERT OR IGNORE INTO stocks (stock_id, name, market, industry) VALUES (?,?,?,'')",
+                    (r["stock_id"], r.pop("name"), mkt))
+        r["date"] = day
+    if n_have:  # 主要來源已存的股票不覆蓋，只補缺的
+        got = {x[0] for x in con.execute("SELECT stock_id FROM prices WHERE date=?", (day,))}
+        rows = [r for r in rows if r["stock_id"] not in got]
+    db.upsert(con, "prices", rows)
+    total = n_have + len(rows)
+    prev = _prev_count(con, mkt, day)
+    if prev and total < prev * 0.9:  # 比前一天少一成以上，視為不完整：保留資料但不標記成功，下次會再補
+        errors.append(f"{mkt} OpenAPI 行情 {day}: 只有 {total} 檔，前一個交易日有 {prev} 檔，資料可能不完整")
+        return
+    db.log_fetch(con, f"{mkt}_quotes", day, True)
+    db.log_fetch(con, f"{mkt}_openapi", day, True)
+
+
+def update_exrights(cfg: dict, errors: list) -> None:
+    """除權息參考價：用來把歷史股價還原，讓均線、報酬率、波動率不會因為除息缺口失真。
+    每個月抓一次；本月與上個月每次都重抓（可能有新公告）。"""
+    srcs = [TwseSource(cfg["twse_interval_sec"])] + ([TpexSource(cfg["twse_interval_sec"])] if "tpex" in cfg["markets"] else [])
+    today = config.today()
+    first = (today - timedelta(days=cfg["price_backfill_days"] * 7 // 5 + 31)).replace(day=1)
+    months = []
+    m = first
+    while m <= today:
+        nxt = (m.replace(day=28) + timedelta(days=4)).replace(day=1)
+        months.append((m, min(nxt - timedelta(days=1), today)))
+        m = nxt
+    with db.connect() as con:
+        for s in srcs:
+            tag = f"{s.market}_exrights"
+            for a, b in months:
+                key = a.strftime("%Y-%m")
+                recent = (today - a).days < 62
+                if not recent and con.execute("SELECT 1 FROM fetch_log WHERE source=? AND key=? AND ok=1", (tag, key)).fetchone():
+                    continue
+                try:
+                    rows = [r for r in s.ex_rights(a, b) if is_tracked(r["stock_id"])]
+                except Exception as e:
+                    errors.append(f"{tag}: {http.describe(e)}")
+                    break  # 這個市場的端點不能用，本次不再試其他月份
+                db.upsert(con, "exrights", rows)
+                db.log_fetch(con, tag, key, True)
+                con.commit()
 
 
 def update_revenue_bulk(cfg: dict, errors: list) -> None:
@@ -254,7 +318,8 @@ def run(daily: bool = True, fundamentals: bool = True, progress=None) -> list[st
     stages = []
     if daily:
         stages.append(("最新收盤價", lambda: _latest_only(cfg, errors)))
-        stages.append(("回補歷史股價與籌碼", lambda: (update_daily(cfg, progress, errors), update_revenue_bulk(cfg, errors))))
+        stages.append(("回補歷史股價與籌碼", lambda: (update_daily(cfg, progress, errors), update_exrights(cfg, errors),
+                                                          update_revenue_bulk(cfg, errors))))
     if fundamentals:
         stages.append(("財報與營收", lambda: update_fundamentals(cfg, progress, errors)))
     for i, (name, fn) in enumerate(stages, 1):

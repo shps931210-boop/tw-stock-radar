@@ -27,7 +27,7 @@ MODES = {
         "desc": "五個因子依品質 30%、成長 25%、估值 20%、動能 15%、趨勢 10% 加權，只要求基本的獲利與資料完整度。",
         "weights": {"quality": 0.30, "growth": 0.25, "value": 0.20, "momentum": 0.15, "trend": 0.10},
         "hard": [C("base_ok", "is", True, "通過基本門檻（流動性、處置、長期虧損）"), C("eps_ttm", ">", 0, "近四季 EPS > 0"),
-                 C("coverage", ">=", 4, "至少 4 個因子有資料")],
+                 C("complete", "is", True, "五個因子的必要資料都齊全且未過期")],
         "reference": [C("roe", ">", 15, "ROE > 15%"), C("rev_yoy", ">", 10, "月營收年增 > 10%"), C("close", ">m", "ma60", "收盤 > MA60"),
                       C("per", "between", [0, 25], "本益比 < 25"), C("ocf_ttm", ">", 0, "營業現金流 > 0")],
     },
@@ -92,7 +92,11 @@ def strengths(r: dict) -> list[str]:
 def risks(r: dict) -> list[str]:
     out = []
     if r.get("base_ok") and r.get("missing_factors"):
-        out.append(f"資料不足：缺少{'、'.join(r['missing_factors'])}資料，暫不列入完整綜合排名")
+        out.append(f"資料不足：{'；'.join(r.get('missing_detail') or r['missing_factors'])}，暫不列入完整綜合排名")
+    for n in r.get("stale_notes") or []:
+        out.append(f"資料過期：{n}，不列入計分")
+    if r.get("eps_q_turn") in ("盈轉虧", "持續虧損"):
+        out.append(f"單季獲利{r['eps_q_turn']}")
     if r.get("score_value") is not None and r["score_value"] < 30:
         out.append(f"估值偏貴：本益比 {_n(r.get('per'))} 倍，在全市場屬於較高水位")
     if r.get("rev_yoy") is not None and r["rev_yoy"] < 0:
@@ -113,8 +117,6 @@ def risks(r: dict) -> list[str]:
         out.append("獲利波動大：近 8 季淨利起伏明顯")
     if r.get("fcf_ttm") is not None and r["fcf_ttm"] < 0:
         out.append("近四季自由現金流為負")
-    if (r.get("coverage") or 5) < 4:
-        out.append("部分財報資料不足，評分可信度較低")
     if r.get("exclude_reasons"):
         out.append("未通過基本門檻：" + "、".join(r["exclude_reasons"]))
     return out
@@ -145,7 +147,7 @@ def annotate(rows: list[dict]) -> None:
                 r["ai"]["modes"][mode] = {"score": score(r, mode), "rank": None}
 
 
-# ---------------- 進場時機：好公司 × 好時機 = 到達買點 ----------------
+# ---------------- 今日技術訊號：體質 × 技術型態（尚未經回測驗證，不是買進建議） ----------------
 TRIGGERS = {
     "sig_ma_cross": "MA5 黃金交叉 MA20（3 日內）",
     "sig_kd_cross": "KD 低檔黃金交叉（K < 40）",
@@ -158,7 +160,9 @@ TIMING_RISKS = [("rsi", 80, "RSI 過熱（> 80）"), ("dist_ma20", 15, "距月�
 
 def buy_rule(cfg: dict) -> dict:
     return {"min_score": cfg.get("min_score", 55), "mode": cfg.get("mode", "balanced"),
-            "desc": "體質條件：通過 AI 均衡型硬性條件且分數 ≥ {s}；時機條件：至少出現一個進場訊號；且沒有過熱風險。".format(s=cfg.get("min_score", 55))}
+            "desc": "體質條件：通過 AI 均衡型硬性條件且分數 ≥ {s}；技術條件：至少出現一個技術訊號；且沒有過熱風險。"
+                    "這套規則尚未經台股歷史回測驗證，沒有勝率與出場規則，只是技術型態提醒。".format(s=cfg.get("min_score", 55)),
+            "backtested": False}
 
 
 def timing(rows: list[dict], cfg: dict) -> None:
@@ -185,16 +189,16 @@ def summary(r: dict) -> str:
         return f"未通過基本門檻（{'、'.join(r['exclude_reasons'])}），不列入選股。"
     body = a["tag"] if a["tag"] not in ("資料不足", "各項表現普通") else "體質表現普通"
     if t.get("status") == "buy":
-        when = f"目前出現「{TRIGGERS[t['triggers'][0]]}」進場訊號"
+        when = f"目前出現「{TRIGGERS[t['triggers'][0]]}」技術訊號（尚未經回測驗證）"
     elif t.get("hot"):
         when = f"但{t['hot'][0]}，建議等待拉回"
     elif t.get("status") == "watch":
-        when = "趨勢仍在，但還沒出現明確的進場訊號，可列入觀察"
+        when = "趨勢仍在，但還沒出現技術訊號，可列入觀察"
     elif r.get("missing_factors"):
-        return f"資料不足（缺少{'、'.join(r['missing_factors'])}），暫不列入完整綜合排名與買點判斷。"
+        return f"資料不足（{'；'.join(r.get('missing_detail') or r['missing_factors'])}），暫不列入完整綜合排名與技術訊號。"
     elif not t.get("quality_ok"):
-        when = "AI 體質分數未達買點門檻"
+        when = "AI 體質分數未達技術訊號的門檻"
     else:
-        when = "趨勢偏弱，目前不是進場時機"
+        when = "趨勢偏弱，沒有技術訊號"
     risk = f"；需留意{a['risks'][0].split('：')[0]}" if a["risks"] else ""
     return f"{body}，{when}{risk}。"

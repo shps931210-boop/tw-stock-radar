@@ -37,6 +37,8 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
+      - name: 自動測試（資料對齊、完整性、備援同步；失敗就不更新網站）
+        run: python -m unittest discover tests
 
       # 資料庫存在 Actions 快取（7 天沒用到或容量滿會被清掉，屆時自動重新回補）。
       # 長期使用建議改存到持久化儲存，見 README。

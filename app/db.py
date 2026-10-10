@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS news (stock_id TEXT, date TEXT, title TEXT, source TE
 CREATE TABLE IF NOT EXISTS disposition (stock_id TEXT PRIMARY KEY, period TEXT, reason TEXT, updated TEXT);
 CREATE TABLE IF NOT EXISTS fetch_log (source TEXT, key TEXT, fetched_at TEXT, ok INTEGER,
   PRIMARY KEY (source, key));
+CREATE TABLE IF NOT EXISTS exrights (stock_id TEXT, date TEXT, prev_close REAL, ref_price REAL,
+  PRIMARY KEY (stock_id, date));
 CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT);
 """
 
