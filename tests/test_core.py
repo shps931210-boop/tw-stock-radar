@@ -254,10 +254,13 @@ class Tracking(unittest.TestCase):
 
 
 class Backtest(unittest.TestCase):
-    def test_signals_match_live_definition(self):
-        from app import backtest
+    @classmethod
+    def setUpClass(cls):  # 不依賴其他測試先建好示範資料庫
         from app.sources import demo
         demo.build()
+
+    def test_signals_match_live_definition(self):
+        from app import backtest
         snap = {s["stock_id"]: s for s in snapshot.build(demo=True)["stocks"]}
         with db.connect("demo.db") as con:
             px = db.read(con, "SELECT * FROM prices ORDER BY stock_id, date")
