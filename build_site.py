@@ -13,6 +13,28 @@ from pathlib import Path
 from app import config, db
 from app.server import stock_detail
 
+def quality(snap: dict) -> dict:
+    """資料品質摘要（data/quality.json）：完整度、排名數、缺資料原因，方便遠端檢查。"""
+    from collections import Counter
+    st = snap["stocks"]
+    base = [r for r in st if r.get("base_ok")]
+    pick = ("close", "date", "adj_events", "data_completeness", "missing_detail", "stale_notes", "fscore", "fscore_n",
+            "inst_date", "inst_lag", "margin_lag", "fin_period", "rev_ym", "val_date", "composite", "verdict")
+    return {
+        "generated_at": snap.get("generated_at"), "rankings_blocked": snap.get("rankings_blocked"),
+        "adjusted_markets": snap.get("adjusted_markets"), "freshness_rule": snap.get("freshness_rule"),
+        "stocks": len(st), "base_ok": len(base), "complete": sum(bool(r.get("complete")) for r in base),
+        "ranked": {m: sum(1 for r in st if r["ai"]["modes"][m]["rank"]) for m in snap.get("ai_modes", {})},
+        "signals": Counter(r.get("timing", {}).get("status") for r in st),
+        "adjusted_stocks": sum(1 for r in st if (r.get("adj_events") or 0) > 0),
+        "chips_ok": sum(r.get("inst_ratio_5d") is not None for r in base),
+        "missing": Counter(m.split("（")[0] for r in base for m in r.get("missing_detail") or []).most_common(),
+        "stale": Counter(n.split(" ")[0] for r in base for n in r.get("stale_notes") or []).most_common(),
+        "samples": {r["stock_id"]: {k: r.get(k) for k in pick} | {"ai": r["ai"]["modes"].get("balanced"), "summary": r["ai"].get("summary")}
+                    for r in st if r["stock_id"] in ("2330", "2303", "2317", "2454", "6488")},
+    }
+
+
 root = Path(__file__).parent
 out = root / "site"
 shutil.rmtree(out, ignore_errors=True)
@@ -42,6 +64,7 @@ if snap_path.exists():
     for sid in ids:
         (out / "data" / "stock" / f"{sid}.json").write_text(
             json.dumps(stock_detail(sid, "stocks.db"), ensure_ascii=False, separators=(",", ":")), "utf-8")
+    (out / "data" / "quality.json").write_text(json.dumps(quality(snap), ensure_ascii=False, indent=1), "utf-8")
     print(f"已產生 site/（{len(ids)} 檔個股資料）")
 else:
     print("沒有真實資料快照，site/ 只會顯示資料取得失敗")
