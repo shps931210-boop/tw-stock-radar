@@ -29,6 +29,10 @@ def _pct(a, b):
     return (a / b - 1) * 100
 
 
+def is_common_id(sid: str) -> bool:
+    return bool(len(sid) == 4 and sid[0] != "0" and sid.isdigit())
+
+
 def _turn(a, b):
     """基期為負或零時，成長率沒有意義：回傳（成長率, 標籤）。標籤：虧轉盈、盈轉虧、持續虧損。"""
     a, b = _f(a), _f(b)
@@ -371,7 +375,7 @@ def compute_all(dbname: str = "stocks.db", stock_ids: list[str] | None = None) -
         p = p.reset_index(drop=True)
         m = {"stock_id": sid, "name": info.get(sid, {}).get("name", sid),
              "industry": info.get(sid, {}).get("industry") or "", "market": info.get(sid, {}).get("market") or ""}
-        m["is_common"] = bool(len(sid) == 4 and sid[0] != "0" and sid.isdigit())
+        m["is_common"] = is_common_id(sid)
         m["is_financial"] = "金融" in m["industry"]
         m["disposition"] = sid in disp
         adj, m["adj_events"] = adjust_prices(p, exg.get(sid, empty))

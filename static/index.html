@@ -212,6 +212,21 @@ details.strat summary::-webkit-details-marker { display: none; }
 .tile .n small { font: 400 13px var(--f-body); color: var(--muted); margin-left: 4px; }
 .tile.hot { background: var(--hero); color: var(--hero-ink); border-color: var(--hero); }
 .tile.hot .q, .tile.hot .n small { color: var(--hero-muted); }
+.scan { display: grid; gap: 4px; }
+.entry.ai h2 { color: var(--hero-ink); }
+.scan .li { padding: 8px 10px; cursor: pointer; }
+.scan .li b { font-weight: 500; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--muted); margin-top: 10px; }
+.meta-row b { color: var(--ink); font-weight: 500; }
+.tiles.sm .tile { padding: 14px 16px; } .tiles.sm .tile b { font-size: 15px; } .tiles.sm .tile .n { font-size: 22px; }
+.bd { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px 24px; align-items: center; }
+@media (max-width: 640px) { .bd { grid-template-columns: minmax(0, 1fr); } }
+.bd .total { text-align: center; } .bd .total b { font: 500 46px/1 var(--f-num); display: block; } .bd .total span { font-size: 12px; color: var(--muted); }
+.frow { display: grid; grid-template-columns: 76px minmax(0, 1fr) 36px 118px; gap: 10px; align-items: center; font-size: 13px; padding: 4px 0; }
+.frow .track { position: relative; height: 10px; background: var(--chip); border-radius: 5px; overflow: hidden; }
+.frow .track i { position: absolute; inset: 0 auto 0 0; border-radius: 5px; }
+.frow .track em { position: absolute; left: 50%; top: -2px; bottom: -2px; border-left: 1.5px dashed var(--faint); }
+.frow .c { font-size: 11px; color: var(--muted); text-align: right; white-space: nowrap; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: 12px; }
 .scard2 { display: grid; gap: 8px; padding: 14px 16px; border-radius: var(--r); border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
 .scard2:hover { border-color: var(--accent-2); }
@@ -255,6 +270,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <a href="#/radar" data-r="radar">策略雷達</a>
       <a href="#/screener" data-r="screener">條件選股</a>
       <a href="#/watch" data-r="watch">觀察清單<span class="cnt" id="wcnt">0</span></a>
+      <a href="#/trust" data-r="trust">可信度</a>
     </nav>
     <div class="search"><input id="q" type="search" list="stockList" placeholder="搜尋代號或名稱，如 2330" autocomplete="off" aria-label="搜尋股票"><datalist id="stockList"></datalist></div>
   </div>
@@ -484,21 +500,36 @@ function weightBar(w) {
 function pageHome() {
   const m = SNAP.market, b = SNAP.breadth, tot = b.up + b.down + b.flat || 1, inds = SNAP.industries || [];
   const buys = SNAP.stocks.filter((s) => s.timing?.status === "buy").sort((a, b) => b.ai.modes.balanced.score - a.ai.modes.balanced.score);
-  const watching = SNAP.stocks.filter((s) => s.timing?.status === "watch").length;
-  const aiN = SNAP.stocks.filter((s) => s.ai.modes.balanced.rank).length;
+  const ranked = SNAP.stocks.filter((s) => s.ai.modes.balanced.rank).sort((a, b) => a.ai.modes.balanced.rank - b.ai.modes.balanced.rank);
+  const complete = SNAP.stocks.filter((s) => s.base_ok && s.complete).length;
+  const tr = SNAP.track || { days: 0 };
   $("#app").innerHTML = `
-    <section style="display:grid;gap:12px"><div class="eyebrow">${SNAP.source === "demo" ? "模擬資料示範" : `台灣上市櫃股票・${SNAP.data_dates.prices || ""} 收盤後分析`}</div>
-      <h1>今天，哪些好公司出現技術訊號？</h1>
-      <p class="lead" style="margin:0">輸入股票直接看分析，或從下面四個入口開始。所有結果都用同一套資料與規則計算。</p>
-      <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看分析</button></form></section>
-    <section class="tiles">
-      <a class="tile hot" href="#/buy"><span class="q">體質 × 技術訊號</span><b>今日出現技術訊號</b><span class="n">${buys.length}<small>檔</small></span><span class="q">另有 ${watching} 檔觀察中</span></a>
-      <a class="tile" href="#/ai"><span class="q">不懂指標也能用</span><b>AI 智慧選股</b><span class="n">${aiN}<small>檔入榜</small></span><span class="q">穩健／均衡／積極三種模式</span></a>
-      <a class="tile" href="#/radar"><span class="q">照投資方法找</span><b>策略雷達</b><span class="n">${SNAP.strategies.length}<small>種策略</small></span><span class="q">價值、品質、成長、動能…</span></a>
-      <a class="tile" href="#/screener"><span class="q">自己制定規則</span><b>自訂條件選股</b><span class="n">70+<small>個指標</small></span><span class="q">AND／OR、儲存與比較</span></a>
+    <section class="hero"><div><div class="eyebrow">${SNAP.source === "demo" ? "模擬資料示範" : `${SNAP.data_dates.prices || ""} 收盤後分析`}</div>
+      <h1 style="margin-top:6px">讓 AI 幫你整理值得關注的台股</h1>
+      <p class="lead">每天收盤後，用財務品質、成長、估值、股價動能、趨勢五個面向替上市櫃股票排序。每天的結果都會保存下來，之後可以回頭檢查表現。</p></div>
+      <div class="entries">
+        <a class="entry ai" href="#/ai" style="color:inherit;text-decoration:none"><span class="who">不用懂指標</span><h2>AI 自動選股</h2>
+          <p class="muted" style="margin:0">選穩健、均衡或積極，直接看排行榜，每檔都寫出入選原因和風險。</p><span class="btn">查看 AI 排行榜</span></a>
+        <a class="entry" href="#/screener" style="color:inherit;text-decoration:none"><span class="who">有自己的想法</span><h2>自訂條件選股</h2>
+          <p class="muted" style="margin:0">從 70 多個指標挑條件，組合成自己的策略，可以儲存和比較。</p><span class="btn ghost">建立我的策略</span></a>
+      </div></section>
+    <section class="card"><div class="card-h"><h2>今日 AI 市場掃描</h2><a href="#/ai">看完整排行榜 →</a></div>
+      <p class="muted small" style="margin:0 0 8px">均衡型模型前 5 名。分數是和其他股票比較的相對排名（0～100），不是上漲機率。</p>
+      <div class="scan" id="scan">${ranked.slice(0, 5).map((s) => `<div class="li" data-id="${s.stock_id}"><span><span class="medal ${s.ai.modes.balanced.rank <= 3 ? "m" + s.ai.modes.balanced.rank : ""}">${s.ai.modes.balanced.rank}</span>
+          <b class="num">${s.stock_id}</b> ${esc(s.name)} <span class="pill acc">${esc(s.ai.tag)}</span></span><span class="num"><b>${fmtNum(s.ai.modes.balanced.score, 1)}</b> 分</span></div>`).join("")
+        || `<div class="empty">${SNAP.rankings_blocked ? esc(SNAP.rankings_blocked) : "目前沒有資料完整、可以排名的股票"}</div>`}</div>
+      <div class="meta-row"><span>資料日期 <b class="num">${SNAP.data_dates.prices || "—"}</b></span><span>模型版本 <b>${esc(SNAP.model?.version || "—")}</b></span>
+        <span>比較對象 <b class="num">${SNAP.universe.base_ok}</b> 檔通過基本門檻的普通股</span><span>資料完整、可排名 <b class="num">${complete}</b> 檔</span>
+        <a href="#/trust">資料和模型可信度 →</a></div></section>
+    <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看分析</button></form>
+    <section class="tiles sm">
+      <a class="tile" href="#/buy"><span class="q">體質 × 技術訊號</span><b>今日技術訊號</b><span class="n">${buys.length}<small>檔</small></span></a>
+      <a class="tile" href="#/radar"><span class="q">照投資方法找</span><b>策略雷達</b><span class="n">${SNAP.strategies.length}<small>種策略</small></span></a>
+      <a class="tile" href="#/trust"><span class="q">選股紀錄與歷史統計</span><b>可信度中心</b><span class="n">${tr.days}<small>天紀錄</small></span></a>
+      <a class="tile" href="#/catalog"><span class="q">公式、來源、限制</span><b>指標資料庫</b><span class="n">${SNAP.catalog.length}<small>個指標</small></span></a>
     </section>
-    <section><div class="card-h"><h2>今日出現技術訊號</h2><a href="#/buy">看全部與觀察中的股票 →</a></div>
-      <div class="cards" id="bc">${buys.slice(0, 6).map(stockCard).join("") || '<div class="card empty">今天沒有股票同時符合體質與時機條件</div>'}</div></section>
+    ${buys.length ? `<section><div class="card-h"><h2>今日出現技術訊號</h2><a href="#/buy">看全部與觀察中的股票 →</a></div>
+      <div class="cards" id="bc">${buys.slice(0, 3).map(stockCard).join("")}</div></section>` : ""}
     <section class="card"><div class="card-h"><h2>今日市場概況</h2><span class="muted small">資料日 ${SNAP.data_dates.prices || "—"}</span></div>
       <div class="mkt">
         <div><div class="kpis">
@@ -510,17 +541,86 @@ function pageHome() {
         <div><h3 style="margin-bottom:6px">產業近一個月表現</h3><div class="ind">
           ${inds.slice(0, 6).map((x) => `<span>${esc(x.industry)} <span class="faint small">${x.n} 檔</span></span><span class="num ${signCls(x.ret_1m)}">${pctTxt(x.ret_1m)}</span>`).join("")}
           ${inds.length > 8 ? `<span class="faint small" style="grid-column:1/-1">⋯</span>` + inds.slice(-2).map((x) => `<span>${esc(x.industry)} <span class="faint small">${x.n} 檔</span></span><span class="num ${signCls(x.ret_1m)}">${pctTxt(x.ret_1m)}</span>`).join("") : ""}
-        </div></div></div></section>
-    <section class="card"><div class="card-h"><h2>怎麼判斷「技術訊號」？</h2></div>
-      <div class="flow"><span class="k">① 體質：AI 分數夠高</span><em>＋</em><span class="k">② 時機：出現技術訊號</span><em>＋</em><span class="k">③ 沒有過熱風險</span><em>＝</em><span>出現技術訊號</span></div>
-      <p class="muted small" style="margin:10px 0 0">體質看財務品質、成長、估值、動能、趨勢五個因子；技術訊號包括 ${Object.values(SNAP.triggers).join("、")}。只符合體質、還沒出現訊號的列為「觀察中」。</p></section>`;
-  bindCards($("#bc"));
+        </div></div></div></section>`;
+  if ($("#bc")) bindCards($("#bc"));
+  $("#scan").onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; };
   $("#hs").onsubmit = (e) => { e.preventDefault(); const q = $("#hq").value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => q && s.name.includes(q)); if (hit) location.hash = `#/stock/${hit.stock_id}`; else $("#hq").setCustomValidity && ($("#hq").value = "", $("#hq").placeholder = `找不到「${q}」，請換個代號或名稱`); };
   if (hasLWC() && SNAP.index_series?.length) {
     const c = mkChart($("#ix"));
     c.addAreaSeries({ lineColor: css("--accent-2"), topColor: css("--accent-soft"), bottomColor: "transparent", lineWidth: 2, priceLineVisible: false }).setData(SNAP.index_series);
     c.timeScale().fitContent();
   }
+}
+
+// ---------- 個股 AI 分數拆解 ----------
+function breakdown(s, md) {
+  const m = SNAP.ai_modes[md], w = m.weights, sc = s.ai.modes[md], tw = Object.values(w).reduce((a, b) => a + b, 0);
+  const ks = Object.keys(w).sort((a, b) => w[b] - w[a]);
+  const has = ks.filter((k) => s["score_" + k] != null);
+  const contrib = (k) => s["score_" + k] * w[k] / tw;
+  const best = [...has].sort((a, b) => contrib(b) - contrib(a))[0], worst = [...has].sort((a, b) => s["score_" + a] - s["score_" + b])[0];
+  const rows = ks.map((k) => { const v = s["score_" + k]; return `<div class="frow"><span>${FL[k]}</span>
+      <span class="track"><i style="width:${v ?? 0}%;background:${FC[k]}"></i><em></em></span><b class="num r">${v == null ? "—" : fmtNum(v, 0)}</b>
+      <span class="c">權重 ${Math.round(w[k] * 100)}%${v == null ? "" : `・貢獻 ${fmtNum(contrib(k), 1)}`}</span></div>`; }).join("");
+  const why = sc.score == null ? (s.missing_detail?.length ? `資料不足，暫不排名：${s.missing_detail.map(esc).join("；")}` : "未通過基本門檻，不計算分數。")
+    : `加分最多的是「${FL[best]}」（貢獻 ${fmtNum(contrib(best), 1)} 分）${worst !== best && s["score_" + worst] < 50 ? `；拖累最多的是「${FL[worst]}」，只有 ${fmtNum(s["score_" + worst], 0)} 分，低於全市場中位數` : ""}。`;
+  return `<div class="bd"><div class="total"><b>${sc.score == null ? "—" : fmtNum(sc.score, 1)}</b><span>/ 100・${esc(m.name)}</span><br>
+      <span>${sc.rank ? `第 ${sc.rank} 名` : SNAP.rankings_blocked ? "暫停排名" : "未入榜"}</span></div><div>${rows}</div></div>
+    <p style="margin:12px 0 0;font-size:14px">${why}</p>
+    <p class="faint small" style="margin:6px 0 0">每個因子是和 ${SNAP.universe.base_ok} 檔通過基本門檻的上市櫃普通股比較的百分位（虛線 = 中位數 50），總分 = 各因子分數 × 權重。
+      計算於 ${(SNAP.generated_at || "").slice(0, 16).replace("T", " ")}，股價資料日 ${s.date}，資料完整度 ${s.data_completeness ?? "—"}%，模型 ${esc(SNAP.model?.version || "")}。</p>`;
+}
+
+// ---------- 可信度中心 ----------
+function btTable(h) {
+  const bt = SNAP.backtest;
+  if (!bt?.ready) return `<p class="muted">${esc(bt?.reason || "歷史資料不足，還不能統計")}</p>`;
+  const row = (label, x) => `<tr><td>${esc(label)}</td><td class="r num">${x?.n ? x.n.toLocaleString() : "—"}</td>
+    <td class="r num ${signCls(x?.avg)}">${x?.n ? pctTxt(x.avg) : "—"}</td><td class="r num ${signCls(x?.excess)}">${x?.n ? pctTxt(x.excess) : "—"}</td>
+    <td class="r num">${x?.n ? fmtNum(x.win, 1) + "%" : "—"}</td></tr>`;
+  return `<div class="tbl"><table><thead><tr><th>訊號</th><th class="r">樣本數</th><th class="r">平均報酬</th><th class="r">平均超額報酬</th><th class="r">贏過大盤比例</th></tr></thead><tbody>
+    ${bt.signals.map((x) => row(x.label, x["h" + h])).join("")}
+    <tr style="color:var(--muted)">${row("對照：所有股票、所有日子", bt.baseline[h]).slice(4)}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">期間 ${bt.start} ～ ${bt.end}，持有 ${h} 個交易日，已扣交易成本 ${bt.cost_pct}%。${esc(bt.note)}</p>`;
+}
+function pageTrust() {
+  const d = SNAP.data_dates, q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h])), fr = SNAP.freshness_rule || {};
+  const base = SNAP.stocks.filter((s) => s.base_ok), comp = base.filter((s) => s.complete).length;
+  const miss = {}; base.forEach((s) => (s.missing_factors || []).forEach((f) => (miss[f] = (miss[f] || 0) + 1)));
+  const stale = base.filter((s) => (s.stale_notes || []).length).length;
+  const tr = SNAP.track || { days: 0, logs: [] }, h = store.get("bth", "20");
+  const g = (x) => x?.avg == null ? "—" : `<span class="${signCls(x.avg)}">${pctTxt(x.avg)}</span>`;
+  const gx = (x) => x?.excess == null ? "—" : `<span class="${signCls(x.excess)}">${pctTxt(x.excess)}</span>`;
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">資料、模型、績效都攤開來看</div><h1>可信度中心</h1>
+      <p class="lead">這一頁回答三個問題：資料是不是最新、完整的？用的是哪一版模型？過去選出來的股票表現如何？</p></section>
+    <section class="two">
+      <div class="card"><div class="card-h"><h2>資料狀態</h2>${SNAP.rankings_blocked ? '<span class="pill bad">暫停排名</span>' : '<span class="pill acc">正常</span>'}</div>
+        <div class="kpis"><div class="kpi"><span>上市股價</span><b>${q.twse_quotes?.last_ok || d.prices || "—"}</b></div><div class="kpi"><span>上櫃股價</span><b>${q.tpex_quotes?.last_ok || "—"}</b></div>
+          <div class="kpi"><span>歷史股價</span><b>${SNAP.history?.days ?? "—"} 天</b></div></div>
+        <div class="tbl" style="margin-top:12px"><table><thead><tr><th>資料</th><th>最後成功</th><th></th></tr></thead><tbody>
+          ${(SNAP.health || []).map((x) => `<tr><td>${esc(x.label)}</td><td class="num">${x.last_ok || "從未成功"}</td><td>${x.last_ok && x.last_ok >= (d.prices || "") ? '<span class="ok">✓</span>' : '<span class="down">落後</span>'}</td></tr>`).join("")}
+          <tr><td>月營收</td><td class="num">${d.revenue || "—"}</td><td></td></tr><tr><td>財報</td><td class="num">${d.financials || "—"}</td><td></td></tr></tbody></table></div>
+        <p class="faint small" style="margin:8px 0 0">股價${(SNAP.adjusted_markets || []).length ? `已還原除權息（${SNAP.adjusted_markets.map((m) => m === "twse" ? "上市" : "上櫃").join("、")}）` : "尚未還原除權息"}。只有盤後資料，沒有盤中即時報價。</p></div>
+      <div class="card"><div class="card-h"><h2>資料完整度</h2></div>
+        <div class="kpis"><div class="kpi"><span>通過基本門檻</span><b>${base.length}</b></div><div class="kpi"><span>資料完整、可排名</span><b>${comp}</b></div><div class="kpi"><span>有過期資料</span><b>${stale}</b></div></div>
+        <h3 style="margin:14px 0 6px">資料不足的原因（檔數）</h3>
+        <div class="ind">${Object.entries(miss).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<span>缺${esc(k)}</span><span class="num">${n}</span>`).join("") || '<span class="muted">沒有</span>'}</div>
+        <p class="faint small" style="margin:10px 0 0">規則：五個因子的必要資料都要有、而且沒過期才排名，缺的不當作 0 分。財報至少要有 ${fr.fin_expected?.slice(0, 7) || "—"} 季、月營收至少要有 ${fr.rev_expected || "—"}；法人、融資最多晚 ${fr.chip_max_lag ?? 1} 個交易日。</p></div>
+    </section>
+    <section class="card"><div class="card-h"><h2>每日選股紀錄</h2><span class="muted small">每天第一次完整更新後保存，之後不能修改</span></div>
+      ${tr.logs?.length ? `<div class="tbl"><table><thead><tr><th>選股日</th><th>模型</th><th class="r">已過交易日</th><th class="r">大盤</th><th class="r">均衡型前 20 名</th><th class="r">超額</th><th class="r">技術訊號股</th><th class="r">超額</th></tr></thead><tbody>
+        ${tr.logs.map((L) => `<tr><td class="num">${L.date}</td><td>${esc(L.model_version || "")}</td><td class="r num">${L.held_days}</td><td class="r num ${signCls(L.index_ret)}">${pctTxt(L.index_ret)}</td>
+          <td class="r num">${g(L.groups.balanced)}</td><td class="r num">${gx(L.groups.balanced)}</td><td class="r num">${L.groups.signals?.n ? g(L.groups.signals) : "—"}</td><td class="r num">${L.groups.signals?.n ? gx(L.groups.signals) : "—"}</td></tr>`).join("")}</tbody></table></div>
+        <p class="faint small" style="margin:8px 0 0">報酬是從選股日收盤到最新收盤（還原除權息、未扣交易成本），超額 = 平均報酬 − 同期加權指數。紀錄天數還少時，結果很容易受單一事件影響。</p>`
+        : `<p class="muted" style="margin:0">從下一次完整更新開始，每天會保存當天各模式的前 20 名和技術訊號股票，累積幾天後這裡會顯示它們後來的表現。</p>`}
+      <p class="small" style="margin:8px 0 0"><a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/picks" target="_blank" rel="noopener">在 GitHub 查看原始紀錄 →</a></p></section>
+    <section class="card"><div class="card-h"><h2>技術訊號歷史統計</h2><div class="seg" id="bth">${["5", "20"].map((x) => `<button data-h="${x}" class="${x === h ? "on" : ""}">持有 ${x} 天</button>`).join("")}</div></div>
+      <p class="muted small" style="margin:0 0 8px">過去出現這個訊號後，股價接下來的表現。完整的「體質 × 技術訊號」規則還不能回測，因為沒有保存每一天當時已公布的財報。</p>
+      <div id="btw">${btTable(h)}</div></section>
+    <section class="card"><div class="card-h"><h2>模型版本</h2><span class="pill acc">目前 ${esc(SNAP.model?.version || "—")}</span></div>
+      <ul class="news">${(SNAP.model?.changelog || []).map((c) => `<li><span class="num">${esc(c.version)}・${esc(c.date)}</span><span>${esc(c.note)}</span></li>`).join("")}</ul></section>`;
+  $("#bth").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("bth", b.dataset.h); $$("#bth button").forEach((x) => x.classList.toggle("on", x === b)); $("#btw").innerHTML = btTable(b.dataset.h); };
 }
 
 // ---------- 今日技術訊號 ----------
@@ -539,7 +639,9 @@ function pageBuy() {
       <button data-t="watch">觀察中（${SNAP.stocks.filter((s) => s.timing?.status === "watch").length}）</button></div>
       <span class="muted small">觀察中：體質符合、趨勢仍在，但還沒出現技術訊號或有過熱風險</span></div>
       <div class="cards" id="bl"></div></section>
-    <div class="banner warn"><b>這些訊號規則還沒有經過台股歷史回測。</b>目前沒有勝率、報酬率或持有期間的統計，所以它只代表「股價出現了某種技術型態」，不是買進建議，也沒有設定出場規則。回測完成後會在這裡顯示每種訊號的歷史樣本數與表現。</div>`;
+    <section class="card"><div class="card-h"><h2>這些訊號過去的表現</h2><a href="#/trust">可信度中心 →</a></div>
+      ${btTable("20")}</section>
+    <div class="banner warn"><b>完整規則還沒有經過回測。</b>上表只統計技術訊號本身；加上體質條件後的完整規則，要等累積每天的選股紀錄才能驗證。它只代表「股價出現了某種技術型態」，不是買進建議，也沒有設定出場規則。</div>`;
   const draw = (t) => {
     store.set("buytab", t);
     $$("#bt button").forEach((b) => b.classList.toggle("on", b.dataset.t === t));
@@ -885,6 +987,7 @@ async function pageStock(id) {
     ${s.base_ok && !s.complete ? `<div class="banner warn">資料不足，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
     <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
+    <section class="card"><div class="card-h"><h2>AI 分數怎麼來的</h2><div class="seg" id="bdSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="bd"></div></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>六面向評分</h2><span class="muted small">虛線 = 全市場中位數 50</span></div>
         <div style="display:grid;place-items:center">${radar(s, 300)}</div>
@@ -927,6 +1030,9 @@ async function pageStock(id) {
         <ul class="news">${(d.news || []).map((n) => { const t = tone(n.title); return `<li><span class="num faint">${esc(n.date)}</span><span>${t ? `<span class="pill ${t > 0 ? "good" : "bad"}">${t > 0 ? "偏多" : "偏空"}</span> ` : ""}${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : esc(n.title)} <span class="faint">${esc(n.source || "")}</span></span></li>`; }).join("") || '<li class="muted">沒有近期新聞</li>'}</ul></div></section>`;
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
+  const drawBd = (md) => { $("#bd").innerHTML = breakdown(s, md); };
+  drawBd(mode);
+  $("#bdSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; $$("#bdSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawBd(b.dataset.m); };
   $("#specSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("aimode", b.dataset.m); $$("#specSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawSpec(b.dataset.m); };
   drawPrice(d.prices);
   $("#rng").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("rng", b.dataset.r); $$("#rng button").forEach((x) => x.classList.toggle("on", x === b)); drawPrice(d.prices); };
@@ -981,7 +1087,7 @@ function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === (p === "stock" ? "__" : p === "s" ? "radar" : p || "")));
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });

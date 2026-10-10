@@ -9,7 +9,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from . import ai_model, config, db, metrics
+from . import ai_model, backtest, config, db, metrics, track
 from .catalog import C as CATALOG
 from .strategies import STRATEGIES, passes
 
@@ -240,6 +240,9 @@ def build(demo: bool = False) -> dict:
         "history": {"days": hist_days, "need": bf["min_history_days"], "ready": hist_days >= bf["min_history_days"]}, "expected_date": None if demo else (meta["official_latest_twse"] or _expected_date()),
         "expected_basis": None if demo else ("official" if meta["official_latest_twse"] else "estimate"),
         "rankings_blocked": blocked,
+        "model": {"version": ai_model.MODEL_VERSION, "changelog": ai_model.CHANGELOG},
+        "backtest": _backtest(dbname, price_day),
+        "track": {"days": 0, "logs": []} if demo else track.performance(dbname),
         "adjusted_markets": adj_mkts,
         "freshness_rule": {"fin_expected": expected_fin_end(config.today()), "rev_expected": expected_rev_ym(config.today()),
                            "chip_max_lag": metrics.CHIP_MAX_LAG, "val_max_lag": VAL_MAX_LAG},
@@ -288,6 +291,19 @@ def _expected_date() -> str:
     while d.weekday() >= 5:
         d -= timedelta(days=1)
     return d.isoformat()
+
+
+def _backtest(dbname: str, price_day: str) -> dict:
+    """技術訊號歷史統計很花時間，同一個資料日只算一次（存在 data/backtest_*.json）。"""
+    cache = config.DATA_DIR / f"backtest_{dbname.split('.')[0]}.json"
+    if cache.exists():
+        old = json.loads(cache.read_text("utf-8"))
+        if old.get("end") == price_day:
+            return old
+    res = backtest.run(dbname)
+    if res.get("ready"):
+        cache.write_text(json.dumps(res, ensure_ascii=False), "utf-8")
+    return res
 
 
 def _weekdays_between(a: str, b: str) -> int:

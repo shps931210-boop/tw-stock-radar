@@ -213,6 +213,66 @@ class Snapshot(unittest.TestCase):
         self.assertFalse(self.snap["buy_point"]["backtested"])
 
 
+class Tracking(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+        from app import track
+        from app.sources import demo
+        demo.build()
+        self.snap = snapshot.build(demo=True)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.old, track.HISTORY = track.HISTORY, Path(self.tmp.name)
+
+    def tearDown(self):
+        from app import track
+        track.HISTORY = self.old
+        self.tmp.cleanup()
+
+    def test_record_is_write_once_and_skips_demo(self):
+        from app import track
+        self.assertIsNone(track.record(self.snap))  # 示範資料不記錄
+        live = {**self.snap, "source": "live"}
+        self.assertIsNotNone(track.record(live))
+        self.assertIsNone(track.record(live))  # 同一天不覆寫
+        self.assertIsNone(track.record({**live, "rankings_blocked": "x", "data_dates": {"prices": "2099-01-01"}}))
+
+    def test_performance_against_index(self):
+        import json
+        from app import track
+        with db.connect("demo.db") as con:
+            d0 = con.execute("SELECT date FROM index_prices ORDER BY date DESC LIMIT 1 OFFSET 10").fetchone()[0]
+            c0 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (d0,)).fetchone()[0]
+            c1 = con.execute("SELECT close FROM prices WHERE stock_id='2330' ORDER BY date DESC LIMIT 1").fetchone()[0]
+        log = {"date": d0, "model_version": "test", "picks": {"balanced": [{"stock_id": "2330"}]}, "signals": []}
+        (track.HISTORY / f"{d0}.json").write_text(json.dumps(log), "utf-8")
+        perf = track.performance("demo.db")
+        g = perf["logs"][0]["groups"]["balanced"]
+        self.assertEqual(perf["logs"][0]["held_days"], 10)
+        self.assertAlmostEqual(g["avg"], round((c1 / c0 - 1) * 100, 2), places=2)
+        self.assertAlmostEqual(g["excess"], round(g["avg"] - perf["logs"][0]["index_ret"], 2), places=1)
+
+
+class Backtest(unittest.TestCase):
+    def test_signals_match_live_definition(self):
+        from app import backtest
+        from app.sources import demo
+        demo.build()
+        snap = {s["stock_id"]: s for s in snapshot.build(demo=True)["stocks"]}
+        with db.connect("demo.db") as con:
+            px = db.read(con, "SELECT * FROM prices ORDER BY stock_id, date")
+        for sid, p in px.groupby("stock_id"):
+            last = backtest.signals(p.reset_index(drop=True)).iloc[-1]
+            for k, v in last.items():
+                self.assertEqual(bool(v), bool(snap[sid].get(k)), f"{sid} {k}")
+
+    def test_run_reports_samples(self):
+        from app import backtest
+        r = backtest.run("demo.db")
+        self.assertTrue(r["ready"])
+        self.assertGreater(r["baseline"][20]["n"], 0)
+
+
 class AdminAuth(unittest.TestCase):
     def test_remote_request_needs_token(self):
         import os

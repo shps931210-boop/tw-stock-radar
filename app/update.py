@@ -362,8 +362,10 @@ def _publish(errors: list, progress=None, final: bool = False) -> None:
         db.set_meta(con, "last_errors", "\n".join(msgs[:30]))
     if has_prices:
         _say(progress, "重新計算指標", 0, 0)
-        from . import snapshot
-        snapshot.build()
+        from . import snapshot, track
+        snap = snapshot.build()
+        if final and (saved := track.record(snap)):
+            _say(progress, f"已保存今日選股紀錄 {saved}", 0, 0)
 
 
 def main():

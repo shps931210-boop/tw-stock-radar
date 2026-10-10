@@ -11,6 +11,13 @@ from __future__ import annotations
 
 from .strategies import C, check
 
+MODEL_VERSION = "v1.1"
+CHANGELOG = [
+    {"version": "v1.1", "date": "2026-10-10", "note": "各因子設定必要欄位；過期財報、營收、本益比不計分；籌碼與股價同日對齊；"
+     "股價還原除權息；F-Score 九項齊全才給分；「今日買點」改為「今日技術訊號」。"},
+    {"version": "v1.0", "date": "2026-10-08", "note": "第一版：五因子百分位加權、三種模式、技術訊號。"},
+]
+
 MODES = {
     "stable": {
         "name": "穩健型", "tagline": "重視財務品質與風險控制",
