@@ -237,20 +237,48 @@ class Tracking(unittest.TestCase):
         self.assertIsNone(track.record(live))  # 同一天不覆寫
         self.assertIsNone(track.record({**live, "rankings_blocked": "x", "data_dates": {"prices": "2099-01-01"}}))
 
-    def test_performance_against_index(self):
+    def test_performance_next_day_open_and_fixed_horizons(self):
         import json
         from app import track
         with db.connect("demo.db") as con:
-            d0 = con.execute("SELECT date FROM index_prices ORDER BY date DESC LIMIT 1 OFFSET 10").fetchone()[0]
-            c0 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (d0,)).fetchone()[0]
-            c1 = con.execute("SELECT close FROM prices WHERE stock_id='2330' ORDER BY date DESC LIMIT 1").fetchone()[0]
+            days = [r[0] for r in con.execute("SELECT date FROM index_prices ORDER BY date DESC LIMIT 12")][::-1]
+            d0, entry, last = days[0], days[1], days[-1]
+            o = con.execute("SELECT open FROM prices WHERE stock_id='2330' AND date=?", (entry,)).fetchone()[0]
+            c1 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (last,)).fetchone()[0]
+            c5 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (days[5],)).fetchone()[0]
         log = {"date": d0, "model_version": "test", "picks": {"balanced": [{"stock_id": "2330"}]}, "signals": []}
         (track.HISTORY / f"{d0}.json").write_text(json.dumps(log), "utf-8")
         perf = track.performance("demo.db")
-        g = perf["logs"][0]["groups"]["balanced"]
-        self.assertEqual(perf["logs"][0]["held_days"], 10)
-        self.assertAlmostEqual(g["avg"], round((c1 / c0 - 1) * 100, 2), places=2)
-        self.assertAlmostEqual(g["excess"], round(g["avg"] - perf["logs"][0]["index_ret"], 2), places=1)
+        row = perf["logs"][0]
+        self.assertEqual(perf["observed"], last)
+        self.assertAlmostEqual(row["track"]["balanced"]["avg"], round((c1 / o - 1 - track.COST) * 100, 2), places=2)
+        self.assertAlmostEqual(row["fixed"]["balanced"][5]["avg"], round((c5 / o - 1 - track.COST) * 100, 2), places=2)
+        self.assertIsNone(row["fixed"]["balanced"][20])  # 還沒滿 20 天
+        self.assertEqual(perf["scorecard"]["balanced"][5]["cohorts"], 1)
+
+    def test_correction_version_saved_when_list_changes(self):
+        from app import track
+        live = {**self.snap, "source": "live"}
+        self.assertTrue(track.record(live).endswith(".json"))
+        bal = live["stocks"]
+        first = next(x for x in bal if x["ai"]["modes"]["balanced"]["rank"] == 1)
+        changed = {**live, "stocks": [{**x, "ai": {**x["ai"], "modes": {**x["ai"]["modes"], "balanced": {"score": 1, "rank": None}}}}
+                                      if x is first else x for x in bal]}
+        p = track.record(changed)
+        self.assertTrue(p.endswith(".v2.json"))
+        self.assertEqual(len(track.load()), 1)  # 成績單只用首次發布版
+        self.assertEqual(len(track.load(first_only=False)), 2)
+
+    def test_changes_against_previous_day(self):
+        import json
+        from app import track
+        top = sorted((x for x in self.snap["stocks"] if x["ai"]["modes"]["balanced"]["rank"]), key=lambda x: x["ai"]["modes"]["balanced"]["rank"])
+        prev = [{"stock_id": x["stock_id"], "name": x["name"], "rank": i + 1, "factors": {}} for i, x in enumerate(top[1:21])]
+        prev.append({"stock_id": "9999", "name": "測試", "rank": 21, "factors": {}})
+        (track.HISTORY / "2000-01-03.json").write_text(json.dumps({"date": "2000-01-03", "picks": {"balanced": prev}, "signals": []}), "utf-8")
+        c = track.changes(self.snap)
+        self.assertIn(top[0]["stock_id"], [x["stock_id"] for x in c["new"]])
+        self.assertIn("9999", [x["stock_id"] for x in c["dropped"]])
 
 
 class Backtest(unittest.TestCase):

@@ -48,6 +48,16 @@ jobs:
           key: stocks-db-${{ github.run_id }}
           restore-keys: stocks-db-
 
+      # 快取被 GitHub 清掉時（7 天沒用或容量滿），改從 Release 裡的備份還原，不必重新回補一年資料
+      - name: 快取不見時，從備份還原資料庫
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f data/stocks.db ]; then
+            gh release download db-backup -p stocks.db.gz -D data && gunzip -f data/stocks.db.gz && echo "已從備份還原資料庫" || echo "沒有備份，從頭回補"
+          fi
+
+      # 連線診斷只用來查問題，失敗不影響更新；資料是否可用由後面的「檢查資料是否最新」把關
       - name: 連線診斷（結果發布在網站的 data/probe.json）
         continue-on-error: true
         run: python -m app.probe
@@ -56,6 +66,16 @@ jobs:
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python -m app.update
+
+      - name: 備份資料庫到 GitHub Release
+        continue-on-error: true      # 備份失敗不影響網站更新
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -c "import sqlite3,sys; c=sqlite3.connect('data/stocks.db'); r=c.execute('PRAGMA integrity_check').fetchone()[0]; n=c.execute('SELECT COUNT(*) FROM prices').fetchone()[0]; print('integrity', r, 'prices', n); sys.exit(0 if r == 'ok' and n > 0 else 1)"
+          gzip -c data/stocks.db > stocks.db.gz
+          gh release view db-backup >/dev/null 2>&1 || gh release create db-backup --prerelease --title "資料庫備份" --notes "每次更新成功後自動上傳的 SQLite 資料庫（只有公開市場資料），Actions 快取被清除時用來還原。"
+          gh release upload db-backup stocks.db.gz --clobber
 
       - uses: actions/cache/save@v4
         if: always()

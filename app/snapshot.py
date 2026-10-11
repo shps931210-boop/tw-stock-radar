@@ -127,7 +127,13 @@ def build(demo: bool = False) -> dict:
             if k not in S_in:
                 S_in[k] = np.nan
             applies = nonfin if k in ("debt_ratio", "op_margin") else base  # 金融業不比負債比、營業利益率
-            cols.append(_pctrank(S_in[k], applies & S_in[k].notna(), sign))
+            # 品質與估值：金融業只和金融業比、其他產業和非金融業比（銀行的 ROA、股價淨值比和一般公司差很多）
+            if f in ("quality", "value"):
+                fin = df["is_financial"].astype(bool)
+                cols.append(pd.concat([_pctrank(S_in[k], applies & S_in[k].notna() & g, sign) for g in (fin, ~fin)], axis=1)
+                            .bfill(axis=1).iloc[:, 0])
+            else:
+                cols.append(_pctrank(S_in[k], applies & S_in[k].notna(), sign))
             have.append((S_in[k].notna() & applies).rename(k))
         H = pd.concat(have, axis=1)
         req, need = REQUIRED[f]
@@ -184,6 +190,12 @@ def build(demo: bool = False) -> dict:
                             for ix in df.index]
     df["complete"] = df["missing_factors"].map(len) == 0
     df["composite"] = ((S.fillna(0) * W).sum(axis=1) / W.sum(axis=1).replace(0, np.nan)).where(base & df["complete"])
+    # 產業內排名：同產業至少 5 檔有綜合分數才排
+    df["industry_rank"] = df.groupby("industry")["composite"].rank(ascending=False, method="min")
+    df["industry_n"] = df.groupby("industry")["composite"].transform("count")
+    small = (df["industry_n"] < 5) | (df["industry"].fillna("") == "")
+    df.loc[small, ["industry_rank", "industry_n"]] = np.nan
+    df["market_rank_pct"] = df["composite"].rank(pct=True) * 100
     if "earnings_yield" in df and "roa" in df:
         ok = base & ~df["is_financial"] & df["earnings_yield"].notna() & df["roa"].notna()
         combo = df["earnings_yield"].where(ok).rank(ascending=False) + df["roa"].where(ok).rank(ascending=False)
@@ -242,7 +254,7 @@ def build(demo: bool = False) -> dict:
         "rankings_blocked": blocked,
         "model": {"version": ai_model.MODEL_VERSION, "changelog": ai_model.CHANGELOG},
         "backtest": _backtest(dbname, price_day),
-        "track": {"days": 0, "logs": []} if demo else track.performance(dbname),
+        "track": {"days": 0, "logs": [], "scorecard": {}} if demo else track.performance(dbname),
         "adjusted_markets": adj_mkts,
         "freshness_rule": {"fin_expected": expected_fin_end(config.today()), "rev_expected": expected_rev_ym(config.today()),
                            "chip_max_lag": metrics.CHIP_MAX_LAG, "val_max_lag": VAL_MAX_LAG},
@@ -264,6 +276,7 @@ def build(demo: bool = False) -> dict:
         "catalog": CATALOG,
         "stocks": [r for r in rows if r["is_common"] or re.fullmatch(r"00\d{2,4}[A-Z]?", r["stock_id"])],
     }
+    out["changes"] = None if demo else track.changes(out)
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out
@@ -298,7 +311,7 @@ def _backtest(dbname: str, price_day: str) -> dict:
     cache = config.DATA_DIR / f"backtest_{dbname.split('.')[0]}.json"
     if cache.exists():
         old = json.loads(cache.read_text("utf-8"))
-        if old.get("end") == price_day:
+        if old.get("end") == price_day and old.get("method") == backtest.METHOD:
             return old
     res = backtest.run(dbname)
     if res.get("ready"):

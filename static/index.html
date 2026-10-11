@@ -521,6 +521,7 @@ function pageHome() {
       <div class="meta-row"><span>資料日期 <b class="num">${SNAP.data_dates.prices || "—"}</b></span><span>模型版本 <b>${esc(SNAP.model?.version || "—")}</b></span>
         <span>比較對象 <b class="num">${SNAP.universe.base_ok}</b> 檔通過基本門檻的普通股</span><span>資料完整、可排名 <b class="num">${complete}</b> 檔</span>
         <a href="#/trust">資料和模型可信度 →</a></div></section>
+    ${changesCard()}
     <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看分析</button></form>
     <section class="tiles sm">
       <a class="tile" href="#/buy"><span class="q">體質 × 技術訊號</span><b>今日技術訊號</b><span class="n">${buys.length}<small>檔</small></span></a>
@@ -543,7 +544,7 @@ function pageHome() {
           ${inds.length > 8 ? `<span class="faint small" style="grid-column:1/-1">⋯</span>` + inds.slice(-2).map((x) => `<span>${esc(x.industry)} <span class="faint small">${x.n} 檔</span></span><span class="num ${signCls(x.ret_1m)}">${pctTxt(x.ret_1m)}</span>`).join("") : ""}
         </div></div></div></section>`;
   if ($("#bc")) bindCards($("#bc"));
-  $("#scan").onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; };
+  $$(".scan").forEach((el) => el.onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
   $("#hs").onsubmit = (e) => { e.preventDefault(); const q = $("#hq").value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => q && s.name.includes(q)); if (hit) location.hash = `#/stock/${hit.stock_id}`; else $("#hq").setCustomValidity && ($("#hq").value = "", $("#hq").placeholder = `找不到「${q}」，請換個代號或名稱`); };
   if (hasLWC() && SNAP.index_series?.length) {
     const c = mkChart($("#ix"));
@@ -567,8 +568,22 @@ function breakdown(s, md) {
   return `<div class="bd"><div class="total"><b>${sc.score == null ? "—" : fmtNum(sc.score, 1)}</b><span>/ 100・${esc(m.name)}</span><br>
       <span>${sc.rank ? `第 ${sc.rank} 名` : SNAP.rankings_blocked ? "暫停排名" : "未入榜"}</span></div><div>${rows}</div></div>
     <p style="margin:12px 0 0;font-size:14px">${why}</p>
-    <p class="faint small" style="margin:6px 0 0">每個因子是和 ${SNAP.universe.base_ok} 檔通過基本門檻的上市櫃普通股比較的百分位（虛線 = 中位數 50），總分 = 各因子分數 × 權重。
+    ${s.industry_rank ? `<p style="margin:6px 0 0;font-size:13px">在「${esc(s.industry)}」${s.industry_n} 檔有分數的股票中排第 ${s.industry_rank} 名，全市場贏過 ${fmtNum(s.market_rank_pct, 0)}% 的股票。</p>` : ""}
+    <p class="faint small" style="margin:6px 0 0">${s.is_financial ? "金融股的財務品質與估值只和金融股比較。" : ""}每個因子是和 ${SNAP.universe.base_ok} 檔通過基本門檻的上市櫃普通股比較的百分位（虛線 = 中位數 50），總分 = 各因子分數 × 權重。
       計算於 ${(SNAP.generated_at || "").slice(0, 16).replace("T", " ")}，股價資料日 ${s.date}，資料完整度 ${s.data_completeness ?? "—"}%，模型 ${esc(SNAP.model?.version || "")}。</p>`;
+}
+
+function changesCard() {
+  const c = SNAP.changes;
+  if (!c || (!c.new.length && !c.dropped.length && !c.moved.length)) return "";
+  const why = (d) => d?.driver ? `<span class="faint small">${FL[d.driver.factor]} ${d.driver.change > 0 ? "+" : ""}${fmtNum(d.driver.change, 0)} 分</span>` : "";
+  const li = (x, right) => `<div class="li" data-id="${x.stock_id}"><span><b class="num">${x.stock_id}</b> ${esc(x.name)} ${why(x)}</span><span class="small">${right}</span></div>`;
+  return `<section class="card"><div class="card-h"><h2>和 ${c.since} 相比</h2><span class="muted small">AI 均衡型前 20 名的變化・灰字是分數變化最大的面向</span></div>
+    <div class="three">
+      <div><h3><span class="up">新進榜</span> ${c.new.length}</h3><div class="scan">${c.new.map((x) => li(x, `第 ${x.rank} 名`)).join("") || '<span class="faint small">沒有</span>'}</div></div>
+      <div><h3><span class="down">掉出榜</span> ${c.dropped.length}</h3><div class="scan">${c.dropped.map((x) => li(x, esc(x.why))).join("") || '<span class="faint small">沒有</span>'}</div></div>
+      <div><h3>排名變動</h3><div class="scan">${c.moved.map((x) => li(x, `${x.was} → ${x.rank}`)).join("") || '<span class="faint small">沒有</span>'}</div></div>
+    </div></section>`;
 }
 
 // ---------- 可信度中心 ----------
@@ -582,6 +597,17 @@ function btTable(h) {
     ${bt.signals.map((x) => row(x.label, x["h" + h])).join("")}
     <tr style="color:var(--muted)">${row("對照：所有股票、所有日子", bt.baseline[h]).slice(4)}</tbody></table></div>
     <p class="faint small" style="margin:8px 0 0">期間 ${bt.start} ～ ${bt.end}，持有 ${h} 個交易日，已扣交易成本 ${bt.cost_pct}%。${esc(bt.note)}</p>`;
+}
+function scorecard(tr) {
+  const sc = tr.scorecard || {}, H = tr.horizons || [5, 20, 60];
+  const names = Object.assign({}, Object.fromEntries(Object.entries(SNAP.ai_modes).map(([k, m]) => [k, "AI " + m.name + "前 20 名"])), { signals: "技術訊號股" });
+  const any = Object.values(sc).some((x) => Object.keys(x).length);
+  if (!any) return `<p class="muted" style="margin:0">還沒有選股日滿 5 個交易日，所以還沒有成績。最早的紀錄是 ${tr.first || "—"}，滿 5、20、60 個交易日後會依序出現。</p>`;
+  const cell = (x) => x ? `<td class="r num"><span class="${signCls(x.excess)}">${pctTxt(x.excess)}</span><br><span class="faint small">報酬 ${pctTxt(x.avg)}・${x.cohorts} 次</span></td>` : '<td class="r faint">未到期</td>';
+  return `<div class="tbl"><table><thead><tr><th>名單</th>${H.map((h) => `<th class="r">持有 ${h} 天<br><span class="faint">平均超額報酬</span></th>`).join("")}<th class="r">贏過大盤的次數比例<br><span class="faint">20 天</span></th><th class="r">最大回撤<br><span class="faint">最差一次・20 天</span></th></tr></thead><tbody>
+    ${Object.keys(names).filter((k) => sc[k]).map((k) => `<tr><td>${esc(names[k])}</td>${H.map((h) => cell(sc[k][h])).join("")}
+      <td class="r num">${sc[k][20] ? fmtNum(sc[k][20].beat_cohorts, 0) + "%" : "—"}</td><td class="r num">${sc[k][20] ? pctTxt(sc[k][20].worst_mdd) : "—"}</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">每個選股日的名單等權重持有，超額報酬 = 名單平均報酬 − 同期加權指數。加權指數沒有開盤價，基準從選股日收盤起算，會有一晚的時間差。紀錄天數少時結果容易受單一事件影響。</p>`;
 }
 function pageTrust() {
   const d = SNAP.data_dates, q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h])), fr = SNAP.freshness_rule || {};
@@ -608,13 +634,17 @@ function pageTrust() {
         <div class="ind">${Object.entries(miss).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<span>缺${esc(k)}</span><span class="num">${n}</span>`).join("") || '<span class="muted">沒有</span>'}</div>
         <p class="faint small" style="margin:10px 0 0">規則：五個因子的必要資料都要有、而且沒過期才排名，缺的不當作 0 分。財報至少要有 ${fr.fin_expected?.slice(0, 7) || "—"} 季、月營收至少要有 ${fr.rev_expected || "—"}；法人、融資最多晚 ${fr.chip_max_lag ?? 1} 個交易日。</p></div>
     </section>
-    <section class="card"><div class="card-h"><h2>每日選股紀錄</h2><span class="muted small">每天第一次完整更新後保存，之後不能修改</span></div>
-      ${tr.logs?.length ? `<div class="tbl"><table><thead><tr><th>選股日</th><th>模型</th><th class="r">已過交易日</th><th class="r">大盤</th><th class="r">均衡型前 20 名</th><th class="r">超額</th><th class="r">技術訊號股</th><th class="r">超額</th></tr></thead><tbody>
-        ${tr.logs.map((L) => `<tr><td class="num">${L.date}</td><td>${esc(L.model_version || "")}</td><td class="r num">${L.held_days}</td><td class="r num ${signCls(L.index_ret)}">${pctTxt(L.index_ret)}</td>
-          <td class="r num">${g(L.groups.balanced)}</td><td class="r num">${gx(L.groups.balanced)}</td><td class="r num">${L.groups.signals?.n ? g(L.groups.signals) : "—"}</td><td class="r num">${L.groups.signals?.n ? gx(L.groups.signals) : "—"}</td></tr>`).join("")}</tbody></table></div>
-        <p class="faint small" style="margin:8px 0 0">報酬是從選股日收盤到最新收盤（還原除權息、未扣交易成本），超額 = 平均報酬 − 同期加權指數。紀錄天數還少時，結果很容易受單一事件影響。</p>`
+    <section class="card"><div class="card-h"><h2>AI 選股成績單</h2><span class="muted small">固定規則：隔天開盤買進、持有 5／20／60 個交易日、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
+      ${scorecard(tr)}</section>
+    <section class="card"><div class="card-h"><h2>入選後股價追蹤</h2><span class="muted small">觀察日 ${tr.observed || "—"}</span></div>
+      ${tr.logs?.length ? `<div class="tbl"><table><thead><tr><th>選股日</th><th>模型</th><th class="r">持有天數</th><th class="r">大盤</th><th class="r">均衡型前 20 名</th><th class="r">相對大盤</th><th class="r">技術訊號股</th><th class="r">相對大盤</th><th class="r">未計入</th></tr></thead><tbody>
+        ${tr.logs.map((L) => { const b = L.track.balanced || {}, g2 = L.track.signals || {}; return `<tr><td class="num">${L.date}</td><td>${esc(L.model_version || "")}</td><td class="r num">${b.held ?? "—"}</td>
+          <td class="r num ${signCls(b.bench)}">${b.bench == null ? "—" : pctTxt(b.bench)}</td><td class="r num">${g(b)}</td><td class="r num">${gx(b)}</td>
+          <td class="r num">${g2.priced ? g(g2) : "—"}</td><td class="r num">${g2.priced ? gx(g2) : "—"}</td><td class="r num">${(b.missing || 0) + (g2.missing || 0) || ""}</td></tr>`; }).join("")}</tbody></table></div>
+        <p class="faint small" style="margin:8px 0 0">這是「入選後股價追蹤」：從選股日隔天開盤到觀察日收盤的變化（還原除權息、已扣交易成本），每一天的持有天數不同，不能直接當成投資績效。「未計入」是觀察日沒有成交（例如停牌）的檔數。</p>`
         : `<p class="muted" style="margin:0">從下一次完整更新開始，每天會保存當天各模式的前 20 名和技術訊號股票，累積幾天後這裡會顯示它們後來的表現。</p>`}
-      <p class="small" style="margin:8px 0 0"><a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/picks" target="_blank" rel="noopener">在 GitHub 查看原始紀錄 →</a></p></section>
+      <p class="small" style="margin:8px 0 0"><a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/picks" target="_blank" rel="noopener">在 GitHub 查看原始紀錄 →</a>
+        <span class="faint">每天第一次發布的名單存成「日期.json」；同一天稍後名單有變，另存「日期.v2.json」補正版。成績單只用第一次發布的名單。</span></p></section>
     <section class="card"><div class="card-h"><h2>技術訊號歷史統計</h2><div class="seg" id="bth">${["5", "20"].map((x) => `<button data-h="${x}" class="${x === h ? "on" : ""}">持有 ${x} 天</button>`).join("")}</div></div>
       <p class="muted small" style="margin:0 0 8px">過去出現這個訊號後，股價接下來的表現。完整的「體質 × 技術訊號」規則還不能回測，因為沒有保存每一天當時已公布的財報。</p>
       <div id="btw">${btTable(h)}</div></section>
@@ -985,6 +1015,9 @@ async function pageStock(id) {
       <div style="text-align:right"><div class="px">${fmtNum(s.close)}</div><div class="num ${signCls(s.chg_pct)}" style="font-size:15px">${pctTxt(s.chg_pct)}</div></div></section>
     ${s.exclude_reasons?.length ? `<div class="banner bad">未通過基本門檻：${s.exclude_reasons.map(esc).join("、")}</div>` : ""}
     ${s.base_ok && !s.complete ? `<div class="banner warn">資料不足，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
+    <div class="meta-row" style="margin-top:0">${[["股價", s.date], ["法人", s.inst_date], ["融資", s.margin_date], ["本益比", s.val_date], ["月營收", s.rev_ym], ["財報", s.fin_period]]
+      .map(([l, v]) => `<span>${l} <b class="num">${v || "—"}</b></span>`).join("")}<span>資料完整度 <b class="num">${s.data_completeness ?? "—"}%</b></span>
+      ${s.industry_rank ? `<span>產業內 <b class="num">${s.industry_rank} / ${s.industry_n}</b>（${esc(s.industry)}）</span>` : ""}</div>
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
     <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
     <section class="card"><div class="card-h"><h2>AI 分數怎麼來的</h2><div class="seg" id="bdSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="bd"></div></section>
