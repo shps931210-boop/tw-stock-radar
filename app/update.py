@@ -72,6 +72,18 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
         con.commit()
         todo = [(s, d, j) for s in srcs for j in jobs for d in days
                 if (j[0] == "quotes" or d >= flow_cut) and _need(con, f"{s.market}_{j[0]}", d)]
+        # 較舊的歷史股價（超過約一年半）每次只補一部分，分幾天慢慢補齊，避免單次執行超過時間限制
+        old_cut = last - timedelta(days=cfg.get("recent_backfill_days", 420))
+        cap = cfg.get("history_dates_per_run", 60)
+        left = {s.market: cap for s in srcs}
+        keep = []
+        for t in todo:
+            if t[1] < old_cut:
+                if left[t[0].market] <= 0:
+                    continue
+                left[t[0].market] -= 1
+            keep.append(t)
+        todo = keep
         dead = set()  # 解析失敗的 (市場, 資料) 本次不再重試
         for n, (s, d, (key, fn, table)) in enumerate(todo, 1):
             tag = f"{s.market}_{key}"
@@ -195,7 +207,7 @@ def update_exrights(cfg: dict, errors: list) -> None:
     每個月抓一次；本月與上個月每次都重抓（可能有新公告）。"""
     srcs = [TwseSource(cfg["twse_interval_sec"])] + ([TpexSource(cfg["twse_interval_sec"])] if "tpex" in cfg["markets"] else [])
     today = config.today()
-    first = (today - timedelta(days=cfg["price_backfill_days"] * 7 // 5 + 31)).replace(day=1)
+    first = (today - timedelta(days=cfg["price_backfill_days"] + 31)).replace(day=1)
     months = []
     m = first
     while m <= today:

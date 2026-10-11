@@ -600,7 +600,13 @@ function btTable(h) {
     ${sl.map((k) => `<th class="r">再多 ${k}% 滑價<br><span class="faint">超額報酬</span></th>`).join("")}<th class="r">買不到<br><span class="faint">漲停鎖死、量太少</span></th></tr></thead><tbody>
     ${bt.signals.map((x) => row(x.label, x["h" + h])).join("")}
     <tr style="color:var(--muted)">${row("對照：所有股票、所有日子", bt.baseline[h]).slice(4)}</tbody></table></div>
-    <p class="faint small" style="margin:8px 0 0">期間 ${bt.start} ～ ${bt.end}，持有 ${h} 個交易日，已扣交易成本 ${bt.cost_pct}%。${esc(bt.note)}</p>`;
+    <h3 style="margin:14px 0 6px">穩定度檢查：平均超額報酬分段來看</h3>
+    <div class="tbl"><table><thead><tr><th>訊號</th>${(bt.years || []).map((y) => `<th class="r">${y} 年</th>`).join("")}<th class="r">大盤多頭時</th><th class="r">大盤空頭時</th><th class="r">上線後<br><span class="faint">樣本外</span></th></tr></thead><tbody>
+    ${[...bt.signals.map((x) => [x.label, x["h" + h]]), ["對照：所有股票", bt.baseline[h]]].map(([label, x]) => { const sp = x?.split || {};
+      const c = (v) => !v?.n ? '<td class="r faint">—</td>' : `<td class="r num"><span class="${signCls(v.excess)}">${pctTxt(v.excess)}</span><br><span class="faint small">${v.n.toLocaleString()} 筆</span></td>`;
+      return `<tr><td>${esc(label)}</td>${(bt.years || []).map((y) => c(sp[y])).join("")}${c(sp.bull)}${c(sp.bear)}${c(sp.live)}</tr>`; }).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">期間 ${bt.start} ～ ${bt.end}，訊號隔天開盤買進、訊號日之後第 ${h} 個交易日收盤賣出（進場日算第 1 天），已扣交易成本 ${bt.cost_pct}%。
+    多頭、空頭是看訊號當天加權指數在 120 日均線之上或之下。「上線後」只算 ${esc(bt.release || "")} 訊號規則公開之後的訊號，是真正沒有被拿來調整規則的樣本；筆數還少時看不出結論。${esc(bt.note)}</p>`;
 }
 const BENCH_TXT = (b) => b === "0050" ? "0050（還原除權息、含股利），和個股同樣從隔天開盤算到出場日收盤" : "加權指數（資料庫暫時沒有 0050，從選股日收盤算起，有一晚的時間差）";
 function trackNames() {
@@ -615,24 +621,38 @@ function scorecard(tr) {
   const hs = H.filter((h) => keys.some((k) => sc[k][h]));
   const skipTxt = (x) => { const L = tr.skip_labels || {}; const parts = Object.entries(x.skip || {}).filter(([, n]) => n).map(([k, n]) => `${L[k] || k} ${n}`);
     return (parts.join("、") || "沒有") + (x.stale_exit ? `；出場日停牌、用最後成交價 ${x.stale_exit}` : ""); };
-  return `<div class="tbl"><table><thead><tr><th>名單</th>${H.map((h) => `<th class="r">持有 ${h} 天<br><span class="faint">平均超額報酬</span></th>`).join("")}<th class="r">贏過基準的次數比例<br><span class="faint">20 天</span></th><th class="r">最大回撤<br><span class="faint">最差一次・20 天</span></th></tr></thead><tbody>
+  return `<div class="tbl"><table><thead><tr><th>名單</th>${H.map((h) => `<th class="r">第 ${h} 個交易日出場<br><span class="faint">平均超額報酬</span></th>`).join("")}<th class="r">贏過基準的次數比例<br><span class="faint">20 天</span></th><th class="r">最大回撤<br><span class="faint">最差一次・20 天</span></th></tr></thead><tbody>
     ${keys.map((k) => `<tr${k === "universe" ? ' style="color:var(--muted)"' : ""}><td>${esc(names[k])}</td>${H.map((h) => cell(sc[k][h])).join("")}
       <td class="r num">${sc[k][20] ? fmtNum(sc[k][20].beat_cohorts, 0) + "%" : "—"}</td><td class="r num">${sc[k][20] ? pctTxt(sc[k][20].worst_mdd) : "—"}</td></tr>`).join("")}</tbody></table></div>
-    <h3 style="margin:14px 0 6px">壓力測試與未計入的股票（持有 ${hs[hs.length - 1] || 5} 天）</h3>
-    <div class="tbl"><table><thead><tr><th>名單</th>${sl.map((k) => `<th class="r">再多 ${k}% 滑價<br><span class="faint">超額報酬</span></th>`).join("")}<th class="r">未計入比例</th><th>原因</th></tr></thead><tbody>
+    <h3 style="margin:14px 0 6px">壓力測試與未計入的股票（第 ${hs[hs.length - 1] || 5} 個交易日出場）</h3>
+    <div class="tbl"><table><thead><tr><th>名單</th>${sl.map((k) => `<th class="r">再多 ${k}% 滑價<br><span class="faint">超額報酬</span></th>`).join("")}<th class="r">只算有實際出場價的股票<br><span class="faint">超額報酬</span></th><th class="r">用最後成交價估算</th><th class="r">買不到、不計入</th><th>原因</th></tr></thead><tbody>
     ${keys.map((k) => { const x = sc[k][hs[hs.length - 1]]; return x ? `<tr><td>${esc(names[k])}</td>${sl.map((s2) => `<td class="r num ${signCls(x.slip?.[s2])}">${x.slip?.[s2] == null ? "—" : pctTxt(x.slip[s2])}</td>`).join("")}
+      <td class="r num ${signCls(x.real_excess)}">${x.real_excess == null ? "—" : pctTxt(x.real_excess)}</td><td class="r num">${x.est_pct ?? 0}%</td>
       <td class="r num">${x.missing_pct ?? 0}%</td><td class="small">${esc(skipTxt(x))}</td></tr>` : ""; }).join("")}</tbody></table></div>
+    ${Object.values(sc).some((x) => Object.values(x).some((y) => y.other_basis)) ? `<p class="small down" style="margin:8px 0 0">有些選股日缺少 0050 價格，改用加權指數比較；這些紀錄沒有併入上面的平均，避免混用不同基準。</p>` : ""}
+    ${tr.bench_coverage?.missing ? `<p class="small down" style="margin:8px 0 0">0050 資料缺 ${tr.bench_coverage.missing} 個交易日（${esc(tr.bench_coverage.missing_dates.join("、"))}），用到這些日子的紀錄改用加權指數，並且不併入平均。</p>` : ""}
     <p class="faint small" style="margin:8px 0 0">每個選股日的名單等權重持有。超額報酬 = 名單平均報酬 − 同期基準：${BENCH_TXT(tr.bench)}。基準不扣交易成本，對選股比較嚴格。
-    「比全市場」= 名單平均報酬 − 當天所有可排名股票的平均報酬，用來看前 20 名是不是真的比整體好。進場日沒有成交、漲停鎖死、成交金額低於 ${fmtNum((tr.thin_value || 3e6) / 1e4, 0)} 萬元的股票實際上買不到，不計入；已買進但出場日停牌或下市的股票仍然計入，用最後成交價。紀錄天數少時結果容易受單一事件影響。</p>`;
+    「第 5 個交易日出場」是選股日隔天開盤買進（算第 1 天），第 5 個交易日收盤賣出。
+    「比全市場」= 名單平均報酬 − 當天所有可排名股票的平均報酬，用來看前 20 名是不是真的比整體好。進場日沒有成交、漲停鎖死、成交金額低於 ${fmtNum((tr.thin_value || 3e6) / 1e4, 0)} 萬元的股票實際上買不到，不計入；
+    已買進但出場日停牌或下市的股票仍然計入，用最後成交價估算，但這個價格不一定賣得到，所以另外列出「只算有實際出場價的股票」的結果和估算的比例。紀錄天數少時結果容易受單一事件影響。</p>`;
 }
 function modelCompare(tr) {
   const bm = tr.by_model || {}, vs = Object.keys(bm);
   if (!vs.length) return "";
   const H = tr.horizons || [5, 20, 60], c = (x) => x ? `<span class="${signCls(x.excess)}">${pctTxt(x.excess)}</span><span class="faint small">${x.vs_universe != null ? `・比全市場 ${pctTxt(x.vs_universe)}` : ""}・${x.cohorts} 次</span>` : '<span class="faint">未到期</span>';
   return `<section class="card"><div class="card-h"><h2>模型版本比較</h2><span class="muted small">AI 均衡型前 20 名・同一套交易規則</span></div>
-    <div class="tbl"><table><thead><tr><th>模型</th><th>選股期間</th><th class="r">天數</th>${H.map((h) => `<th class="r">持有 ${h} 天<br><span class="faint">超額報酬</span></th>`).join("")}<th class="r">最大回撤<br><span class="faint">最差一次・20 天</span></th></tr></thead><tbody>
+    <div class="tbl"><table><thead><tr><th>模型</th><th>選股期間</th><th class="r">天數</th>${H.map((h) => `<th class="r">第 ${h} 個交易日出場<br><span class="faint">超額報酬</span></th>`).join("")}<th class="r">最大回撤<br><span class="faint">最差一次・20 天</span></th></tr></thead><tbody>
     ${vs.map((v) => { const b = bm[v].scorecard?.balanced || {}; return `<tr><td>${esc(v)}</td><td class="num">${bm[v].first} ～ ${bm[v].last}</td><td class="r num">${bm[v].days}</td>${H.map((h) => `<td class="r num">${c(b[h])}</td>`).join("")}<td class="r num">${b[20] ? pctTxt(b[20].worst_mdd) : "—"}</td></tr>`; }).join("")}</tbody></table></div>
     <p class="faint small" style="margin:8px 0 0">每一版只用它實際上線後、當天就公開存檔的名單計算，不會用新模型回頭重算舊日期，避免「調參數讓過去看起來更好」。不同版本的期間不同、市場環境不同，直接比超額報酬不公平，請優先看「比全市場」：同一天、同一批可排名股票當對照。次數少於 20 次前，差異多半只是運氣。</p></section>`;
+}
+function industryCard(tr) {
+  const bi = tr.by_industry || {}, hs = Object.keys(bi);
+  if (!hs.length) return "";
+  const h = hs[hs.length - 1], rows = bi[h];
+  return `<section class="card"><div class="card-h"><h2>產業別表現</h2><span class="muted small">AI 均衡型前 20 名・第 ${h} 個交易日出場</span></div>
+    <div class="tbl"><table><thead><tr><th>產業</th><th class="r">入選次數</th><th class="r">平均超額報酬</th><th class="r">贏過基準比例</th></tr></thead><tbody>
+    ${rows.map((x) => `<tr><td>${esc(x.industry)}</td><td class="r num">${x.n}</td><td class="r num ${signCls(x.excess)}">${pctTxt(x.excess)}</td><td class="r num">${fmtNum(x.beat, 0)}%</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">每一檔、每一次入選各算一筆（已扣交易成本，減去同期基準）。同一產業的股票常常一起漲跌，入選次數少於 30 次的產業，差異多半只是運氣，不能當成模型在這個產業比較準。</p></section>`;
 }
 function backupCard() {
   const b = SNAP.backup;
@@ -665,9 +685,10 @@ function pageTrust() {
         <div class="ind">${Object.entries(miss).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<span>缺${esc(k)}</span><span class="num">${n}</span>`).join("") || '<span class="muted">沒有</span>'}</div>
         <p class="faint small" style="margin:10px 0 0">規則：五個因子的必要資料都要有、而且沒過期才排名，缺的不當作 0 分。財報至少要有 ${fr.fin_expected?.slice(0, 7) || "—"} 季、月營收至少要有 ${fr.rev_expected || "—"}；法人、融資最多晚 ${fr.chip_max_lag ?? 1} 個交易日。</p></div>
     </section>
-    <section class="card"><div class="card-h"><h2>AI 選股成績單</h2><span class="muted small">固定規則：隔天開盤買進、持有 5／20／60 個交易日、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
+    <section class="card"><div class="card-h"><h2>AI 選股成績單</h2><span class="muted small">固定規則：隔天開盤買進、第 5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
     ${modelCompare(tr)}
+    ${industryCard(tr)}
     <section class="card"><div class="card-h"><h2>入選後股價追蹤</h2><span class="muted small">觀察日 ${tr.observed || "—"}</span></div>
       ${tr.logs?.length ? `<div class="tbl"><table><thead><tr><th>選股日</th><th>模型</th><th class="r">持有天數</th><th class="r">基準</th><th class="r">均衡型前 20 名</th><th class="r">相對基準</th><th class="r">技術訊號股</th><th class="r">相對基準</th><th class="r">未計入</th></tr></thead><tbody>
         ${tr.logs.map((L) => { const b = L.track.balanced || {}, g2 = L.track.signals || {}; return `<tr><td class="num">${L.date}</td><td>${esc(L.model_version || "")}</td><td class="r num">${b.held ?? "—"}</td>
@@ -677,7 +698,7 @@ function pageTrust() {
         : `<p class="muted" style="margin:0">從下一次完整更新開始，每天會保存當天各模式的前 20 名和技術訊號股票，累積幾天後這裡會顯示它們後來的表現。</p>`}
       <p class="small" style="margin:8px 0 0"><a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/picks" target="_blank" rel="noopener">在 GitHub 查看原始紀錄 →</a>
         <span class="faint">每天第一次發布的名單存成「日期.json」；同一天稍後的更新只要名單、排名、分數、因子分數、模型版本或資料日期有任何改變，就另存「日期.v2.json」補正版並寫明原因，舊檔不覆寫。成績單只用第一次發布的名單。</span></p></section>
-    <section class="card"><div class="card-h"><h2>技術訊號歷史統計</h2><div class="seg" id="bth">${["5", "20"].map((x) => `<button data-h="${x}" class="${x === h ? "on" : ""}">持有 ${x} 天</button>`).join("")}</div></div>
+    <section class="card"><div class="card-h"><h2>技術訊號歷史統計</h2><div class="seg" id="bth">${["5", "20"].map((x) => `<button data-h="${x}" class="${x === h ? "on" : ""}">第 ${x} 個交易日出場</button>`).join("")}</div></div>
       <p class="muted small" style="margin:0 0 8px">過去出現這個訊號後，股價接下來的表現。完整的「體質 × 技術訊號」規則還不能回測，因為沒有保存每一天當時已公布的財報。</p>
       <div id="btw">${btTable(h)}</div></section>
     <section class="card"><div class="card-h"><h2>模型版本</h2><span class="pill acc">目前 ${esc(SNAP.model?.version || "—")}</span></div>

@@ -7,14 +7,17 @@
 
 成績單的計算方式（固定規則，所有紀錄一致）
 - 進場：選股日的「下一個交易日開盤價」（名單在收盤後才產生，當天收盤價買不到）。
-- 出場：進場後第 5、20、60 個交易日的收盤價；還沒到期的期間不計入。
+- 出場：選股日之後第 5、20、60 個交易日的收盤價（進場日算第 1 天，所以「5 天」= 進場日開盤到第 5 個交易日收盤）；
+  還沒到期的期間不計入。回測（app/backtest.py）用同一個定義。
 - 扣交易成本 0.585%（手續費 0.1425% × 2 ＋ 證交稅 0.3%），用還原除權息股價。
 - 基準：元大台灣50（0050，還原除權息，含股利）在「同一段期間」的報酬：進場日開盤 → 出場日收盤，
   和個股完全相同。資料庫沒有 0050 時才退回加權指數（選股日收盤 → 出場日收盤），並標示出來。
-  基準不扣交易成本，對 AI 選股比較嚴格。
+  基準不扣交易成本，對 AI 選股比較嚴格。每一筆都記錄實際用的基準；成績單只合併同一種基準，不混算。
 - 可交易性：進場日沒有成交（停牌、下市）、漲停鎖死（開高低同價且漲幅 ≥ 9.5%）、
   進場日成交金額太少的股票，實際上買不到，不計入，並分類列出檔數與比例。
-- 已買進但出場日沒有成交（停牌、下市）的股票仍然計入，用出場日以前最後一個成交價，避免只留下活著的股票。
+- 已買進但出場日沒有成交的股票仍然計入，用出場日以前最後一個成交價估算，避免只留下活著的股票；
+  分成「之後已恢復交易（停牌）」和「之後都沒有成交（停牌中或下市）」兩類，並另外列出只算「有實際出場價」股票的結果，
+  因為最後成交價不一定賣得到。進場日或持有期間沒有任何有效價格的股票（資料異常）不計入並列出。
 - 滑價敏感度：另外列出每筆交易再多 0.2%、0.5% 成本時的結果。
 - 全市場對照：當天所有可排名股票等權重持有的表現，用來比較「前 20 名」是否真的比整體好。
 - 等權重組合的最大回撤：持有期間每天的組合淨值相對前高的最大跌幅。
@@ -38,7 +41,9 @@ BENCH_ID = "0050"
 LIMIT_UP = 0.095
 THIN_VALUE = 3e6       # 進場日成交金額低於 300 萬元，視為買不到
 SLIPS = (0.002, 0.005)
-SKIP_LABELS = {"not_traded": "進場日沒有成交（停牌、下市）", "limit_up": "漲停鎖死買不到", "thin": "成交量太少"}
+SKIP_LABELS = {"not_traded": "進場日沒有成交（停牌、下市）", "limit_up": "漲停鎖死買不到", "thin": "成交量太少",
+               "no_price": "沒有有效價格（資料異常）"}
+STALE_LABELS = {"resumed": "出場日停牌、之後已恢復交易", "no_later": "出場日後都沒有成交（停牌中或下市）"}
 
 
 def benchmark(con, first: str | None = None) -> tuple[pd.DataFrame, str]:
@@ -186,8 +191,9 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
     else:
         b, basis = float(idx[exit_] / idx[day] - 1), "taiex_close"
     path_dates = dates[(dates >= entry) & (dates <= exit_)]
-    rets, paths, stale = [], [], 0
+    rets, real, paths, per = [], [], [], {}
     skip = {k: 0 for k in SKIP_LABELS}
+    stale = {k: 0 for k in STALE_LABELS}
     for p in group:
         s = series.get(p["stock_id"])
         why = untradable(s, entry)
@@ -195,15 +201,24 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
             skip[why] += 1
             continue
         o = s.at[entry, "open"]
-        if pd.isna(o) or o <= 0:
+        if not (pd.notna(o) and o > 0):
             o = s.at[entry, "close"]
-        held = s["close"].loc[entry:exit_].dropna()
-        if exit_ not in s.index or pd.isna(s.at[exit_, "close"]):
-            stale += 1  # 出場日沒有成交（停牌、下市）：用最後成交價，仍然計入
-        rets.append(held.iloc[-1] / o - 1 - COST)
-        paths.append(s["close"].reindex(path_dates).ffill() / o)
-    base = {"n": len(group), "missing": sum(skip.values()), "skip": skip, "stale_exit": stale,
-            "missing_pct": _p(sum(skip.values()) / len(group)) if group else None, "basis": basis, "exit": exit_}
+        held = s["close"].loc[entry:exit_]
+        held = held[held > 0].dropna()
+        if not (pd.notna(o) and o > 0) or held.empty:
+            skip["no_price"] += 1  # 沒有有效的進場價或結算價：不計入，列在資料品質統計
+            continue
+        r = float(held.iloc[-1] / o - 1 - COST)
+        if held.index[-1] != exit_:  # 出場日沒有成交：用最後成交價估算
+            stale["resumed" if (s.index > exit_).any() else "no_later"] += 1
+        else:
+            real.append(r)
+        rets.append(r)
+        per[p["stock_id"]] = r
+        paths.append(s["close"].where(s["close"] > 0).reindex(path_dates).ffill() / o)
+    n_skip = sum(skip.values())
+    base = {"n": len(group), "missing": n_skip, "skip": skip, "stale_exit": sum(stale.values()), "stale": stale,
+            "missing_pct": _p(n_skip / len(group)) if group else None, "basis": basis, "exit": exit_, "_per": per}
     if not rets:
         return {**base, "priced": 0}
     nav = pd.concat(paths, axis=1).mean(axis=1)
@@ -212,22 +227,27 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
     return {**base, "priced": len(r), "entry": entry, "held": len(path_dates),
             "avg": _p(r.mean()), "median": _p(np.median(r)), "bench": _p(b), "excess": _p(r.mean() - b),
             "win": _p((r > 0).mean()), "beat": _p((r > b).mean()), "mdd": _p(mdd),
+            "est_pct": _p(1 - len(real) / len(r)),
+            "real_excess": _p(np.mean(real) - b) if real else None, "real_n": len(real),
             "slip": {f"{x * 100:g}": {"excess": _p(r.mean() - x - b), "beat": _p((r - x > b).mean())} for x in SLIPS}}
 
 
-def _card(rows: list[dict], names: list[str]) -> dict:
-    """成績單：所有已到期的選股日，各期間的平均。"""
+def _card(rows: list[dict], names: list[str], basis: str) -> dict:
+    """成績單：所有已到期的選股日，各期間的平均。只合併基準是 basis 的紀錄，其他基準的次數另外列出。"""
     card = {}
     for name in names:
         card[name] = {}
         for h in HORIZONS:
-            cs = [(r, r["fixed"][name][h]) for r in rows if (r["fixed"].get(name) or {}).get(h) and r["fixed"][name][h].get("priced")]
+            done = [(r, r["fixed"][name][h]) for r in rows if (r["fixed"].get(name) or {}).get(h) and r["fixed"][name][h].get("priced")]
+            cs = [(r, x) for r, x in done if x["basis"] == basis]
             if not cs:
                 continue
             c = [x for _, x in cs]
             m = lambda k: float(np.mean([x[k] for x in c]))
             uni = [x["avg"] - r["fixed"]["universe"][h]["avg"] for r, x in cs
                    if name != "universe" and ((r["fixed"].get("universe") or {}).get(h) or {}).get("priced")]
+            real = [x["real_excess"] for x in c if x.get("real_excess") is not None]
+            priced = sum(x["priced"] for x in c)
             total = sum(x["n"] for x in c)
             card[name][h] = {"cohorts": len(c), "avg": round(m("avg"), 2), "excess": round(m("excess"), 2),
                              "beat_cohorts": _p(np.mean([x["excess"] > 0 for x in c])), "win": round(m("win"), 2),
@@ -235,8 +255,12 @@ def _card(rows: list[dict], names: list[str]) -> dict:
                              "slip": {k: round(float(np.mean([x["slip"][k]["excess"] for x in c])), 2) for k in c[0]["slip"]},
                              "vs_universe": round(float(np.mean(uni)), 2) if uni else None, "vs_universe_n": len(uni),
                              "missing_pct": _p(sum(x["missing"] for x in c) / total) if total else None,
-                             "skip": {k: sum(x["skip"][k] for x in c) for k in SKIP_LABELS},
-                             "stale_exit": sum(x["stale_exit"] for x in c)}
+                             "skip": {k: sum(x["skip"].get(k, 0) for x in c) for k in SKIP_LABELS},
+                             "stale_exit": sum(x["stale_exit"] for x in c),
+                             "stale": {k: sum(x["stale"].get(k, 0) for x in c) for k in STALE_LABELS},
+                             "est_pct": _p(sum(x["stale_exit"] for x in c) / priced) if priced else None,
+                             "real_excess": round(float(np.mean(real)), 2) if real else None,
+                             "other_basis": len(done) - len(cs)}
     return card
 
 
@@ -262,13 +286,45 @@ def performance(dbname: str = "stocks.db") -> dict:
             row["fixed"][name] = {h: _cohort(g, d, series, idx, bench, h, obs) for h in HORIZONS}
         rows.append(row)
     names = list(dict.fromkeys(k for L in logs for k, _ in groups(L)))
+    basis = bench[1] if bench[1] == BENCH_ID else "taiex_close"
     by_model = {}
     for mv in dict.fromkeys(r["model_version"] or "v1.0" for r in rows):
         sub = [r for r in rows if (r["model_version"] or "v1.0") == mv]
-        by_model[mv] = {"days": len(sub), "first": sub[0]["date"], "last": sub[-1]["date"], "scorecard": _card(sub, names)}
+        by_model[mv] = {"days": len(sub), "first": sub[0]["date"], "last": sub[-1]["date"], "scorecard": _card(sub, names, basis)}
+    industry = _by_industry(logs, rows, basis)
+    for r in rows:  # 個股明細只用來算產業，不放進網站資料
+        for c in [r["track"].get(k) for k in r["track"]] + [x for g in r["fixed"].values() for x in g.values()]:
+            if c:
+                c.pop("_per", None)
+    # 0050 資料完整度：觀察期間每個交易日都要有 0050 的開盤、收盤價
+    span = idx.index[idx.index >= logs[0]["date"]]
+    bp = bench[0]
+    gaps = [d for d in span if d not in bp.index or not (bp.at[d, "open"] > 0 and bp.at[d, "close"] > 0)] if bench[1] == BENCH_ID else list(span)
     return {"days": len(logs), "first": logs[0]["date"], "observed": obs, "horizons": list(HORIZONS),
-            "cost_pct": round(COST * 100, 3), "bench": bench[1], "slips": [f"{x * 100:g}" for x in SLIPS],
-            "skip_labels": SKIP_LABELS, "thin_value": THIN_VALUE, "logs": rows[::-1], "scorecard": _card(rows, names), "by_model": by_model}
+            "cost_pct": round(COST * 100, 3), "bench": bench[1], "basis": basis,
+            "bench_coverage": {"days": len(span), "missing": len(gaps), "missing_dates": gaps[:10]},
+            "slips": [f"{x * 100:g}" for x in SLIPS], "skip_labels": SKIP_LABELS, "stale_labels": STALE_LABELS,
+            "thin_value": THIN_VALUE, "logs": rows[::-1], "scorecard": _card(rows, names, basis), "by_model": by_model,
+            "by_industry": industry}
+
+
+def _by_industry(logs: list[dict], rows: list[dict], basis: str) -> dict:
+    """AI 均衡型入選股票依產業分組：每一檔、每一次入選的超額報酬平均（最短的已到期期間，和最長的已到期期間）。"""
+    out = {}
+    for h in HORIZONS:
+        acc = {}
+        for L, r in zip(logs, rows):
+            c = (r["fixed"].get("balanced") or {}).get(h)
+            if not c or not c.get("priced") or c["basis"] != basis:
+                continue
+            ind = {p["stock_id"]: p.get("industry") for p in L["picks"].get("balanced", [])}
+            for sid, ret in c["_per"].items():
+                acc.setdefault(ind.get(sid) or "未分類", []).append(ret * 100 - c["bench"])
+        if acc:
+            out[h] = sorted(({"industry": k, "n": len(v), "excess": round(float(np.mean(v)), 2),
+                              "beat": round(float(np.mean([x > 0 for x in v]) * 100), 1)} for k, v in acc.items()),
+                            key=lambda x: -x["n"])
+    return out
 
 
 def changes(snap: dict) -> dict | None:

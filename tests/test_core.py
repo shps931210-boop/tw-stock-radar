@@ -293,28 +293,42 @@ class Tracking(unittest.TestCase):
     def test_untradable_entries_counted_and_stale_exit_kept(self):
         from app import track
         from app.sources import demo
-        days = self._log(["2330", "2317", "2454", "2308"])
+        days = self._log(["2330", "2317", "2454", "2308", "2382", "2412"])
         entry, exit_ = days[1], days[5]
         with db.connect("demo.db") as con:
             prev = con.execute("SELECT close FROM prices WHERE stock_id='2317' AND date=?", (days[0],)).fetchone()[0]
             up = round(prev * 1.1, 1)
             con.execute("UPDATE prices SET open=?, high=?, low=?, close=? WHERE stock_id='2317' AND date=?", (up, up, up, up, entry))
-            con.execute("DELETE FROM prices WHERE stock_id='2454' AND date=?", (exit_,))   # 出場日停牌
+            con.execute("DELETE FROM prices WHERE stock_id='2454' AND date=?", (exit_,))   # 出場日停牌，之後恢復交易
             con.execute("DELETE FROM prices WHERE stock_id='2308' AND date=?", (entry,))   # 進場日沒有成交
+            con.execute("UPDATE prices SET close=NULL WHERE stock_id='2382' AND date>=?", (entry,))  # 有開盤價、沒有任何收盤價
+            con.execute("DELETE FROM prices WHERE stock_id='2412' AND date>?", (days[3],))  # 之後都沒有成交（下市）
             last = con.execute("SELECT close FROM prices WHERE stock_id='2454' AND date=?", (days[4],)).fetchone()[0]
             o = con.execute("SELECT open FROM prices WHERE stock_id='2454' AND date=?", (entry,)).fetchone()[0]
             con.commit()
         try:
             c = track.performance("demo.db")["logs"][0]["fixed"]["balanced"][5]
-            self.assertEqual(c["n"], 4)
-            self.assertEqual(c["priced"], 2)
-            self.assertEqual(c["skip"], {"not_traded": 1, "limit_up": 1, "thin": 0})
-            self.assertEqual(c["stale_exit"], 1)
+            self.assertEqual(c["n"], 6)
+            self.assertEqual(c["priced"], 3)
+            self.assertEqual(c["skip"], {"not_traded": 1, "limit_up": 1, "thin": 0, "no_price": 1})
+            self.assertEqual(c["stale"], {"resumed": 1, "no_later": 1})
+            self.assertEqual(c["real_n"], 1)
+            self.assertAlmostEqual(c["est_pct"], 66.67, places=2)
             self.assertEqual(c["missing_pct"], 50.0)
+            self.assertNotIn("_per", c)
             s = track._prices(["2454"], days[0], "demo.db")[0]["2454"]
             self.assertAlmostEqual(s["close"].loc[:exit_].iloc[-1] / s.at[entry, "open"], last / o, places=6)
         finally:
             demo.build()
+
+    def test_scorecard_does_not_mix_benchmarks(self):
+        from app import track
+        mk = lambda basis, ex: {"basis": basis, "priced": 1, "n": 1, "avg": 1.0, "excess": ex, "win": 100.0, "mdd": -1.0, "missing": 0,
+                                "skip": {}, "stale": {}, "stale_exit": 0, "real_excess": ex, "slip": {"0.2": {"excess": ex - 0.2}}}
+        rows = [{"fixed": {"balanced": {5: mk("0050", 1.0), 20: None, 60: None}}},
+                {"fixed": {"balanced": {5: mk("taiex_close", 9.0), 20: None, 60: None}}}]
+        c = track._card(rows, ["balanced"], "0050")["balanced"][5]
+        self.assertEqual((c["cohorts"], c["excess"], c["other_basis"]), (1, 1.0, 1))
 
     def test_correction_reasons_include_scores_and_data_dates(self):
         from app import track
@@ -366,6 +380,9 @@ class Backtest(unittest.TestCase):
         self.assertGreater(r["baseline"][20]["n"], 0)
         self.assertEqual(r["bench"], "0050")
         self.assertIn("blocked", r["signals"][0]["h20"])
+        sp = r["baseline"][20]["split"]
+        self.assertEqual(sum(sp[y]["n"] for y in r["years"] if y in sp), r["baseline"][20]["n"])  # 各年份加起來等於全部
+        self.assertIn("bull", sp)
 
 
 class AdminAuth(unittest.TestCase):

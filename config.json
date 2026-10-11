@@ -4,7 +4,9 @@
     "twse",
     "tpex"
   ],
-  "price_backfill_days": 420,
+  "price_backfill_days": 1100,
+  "recent_backfill_days": 420,
+  "history_dates_per_run": 60,
   "flow_backfill_days": 60,
   "twse_interval_sec": 3.5,
   "finmind_interval_sec": 0.7,
