@@ -1,4 +1,4 @@
-"""檢查資料是否最新：python -m app.check（GitHub Actions 用，過期或有來源失敗就回傳錯誤碼，GitHub 會寄失敗通知）。"""
+"""檢查資料是否最新、備份是否成功：python -m app.check（GitHub Actions 用，過期或有來源失敗就回傳錯誤碼，GitHub 會寄失敗通知）。"""
 import json
 import sys
 
@@ -19,6 +19,11 @@ def main() -> int:
     for h in s.get("health", []):
         if h["source"] in ("twse_quotes", "tpex_quotes") and (not h["last_ok"] or h["last_ok"] < (price or "")):
             problems.append(f"{h['label']}最後成功：{h['last_ok'] or '從未成功'}")
+    b = config.DATA_DIR / "backup_status.json"
+    if b.exists():
+        bs = json.loads(b.read_text("utf-8"))
+        if not bs.get("ok"):
+            problems.append("資料庫備份或還原測試失敗：" + "；".join(bs.get("problems") or ["原因不明"]) + f"（最後一次成功：{bs.get('last_ok') or '從未'}）")
     if not s.get("history", {}).get("ready", True):
         print(f"⏳ 歷史股價回補中：{s['history']['days']}/{s['history']['need']} 天")
     for x in problems:

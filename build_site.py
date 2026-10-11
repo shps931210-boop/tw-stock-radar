@@ -22,7 +22,9 @@ def quality(snap: dict) -> dict:
             "inst_date", "inst_lag", "margin_lag", "fin_period", "rev_ym", "val_date", "composite", "verdict")
     return {
         "generated_at": snap.get("generated_at"), "rankings_blocked": snap.get("rankings_blocked"),
-        "adjusted_markets": snap.get("adjusted_markets"), "freshness_rule": snap.get("freshness_rule"),
+        "adjusted_markets": snap.get("adjusted_markets"), "freshness_rule": snap.get("freshness_rule"), "backup": snap.get("backup"),
+        "bench": {"track": (snap.get("track") or {}).get("bench"), "backtest": (snap.get("backtest") or {}).get("bench")},
+        "scorecard": (snap.get("track") or {}).get("scorecard"),
         "stocks": len(st), "base_ok": len(base), "complete": sum(bool(r.get("complete")) for r in base),
         "ranked": {m: sum(1 for r in st if r["ai"]["modes"][m]["rank"]) for m in snap.get("ai_modes", {})},
         "signals": Counter(r.get("timing", {}).get("status") for r in st),
@@ -57,9 +59,11 @@ if (config.DATA_DIR / "probe.json").exists():  # 連線診斷結果（python -m 
     shutil.copy(config.DATA_DIR / "probe.json", out / "data" / "probe.json")
 
 snap_path = config.DATA_DIR / "snapshot.json"
+backup_path = config.DATA_DIR / "backup_status.json"  # python -m app.backup status 寫的
 if snap_path.exists():
-    shutil.copy(snap_path, out / "data" / "snapshot.json")
     snap = json.loads(snap_path.read_text("utf-8"))
+    snap["backup"] = json.loads(backup_path.read_text("utf-8")) if backup_path.exists() else None
+    (out / "data" / "snapshot.json").write_text(json.dumps(snap, ensure_ascii=False, separators=(",", ":")), "utf-8")
     ids = [s["stock_id"] for s in snap["stocks"] if s.get("is_common")]
     for sid in ids:
         (out / "data" / "stock" / f"{sid}.json").write_text(

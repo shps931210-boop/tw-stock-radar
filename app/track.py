@@ -9,8 +9,14 @@
 - 進場：選股日的「下一個交易日開盤價」（名單在收盤後才產生，當天收盤價買不到）。
 - 出場：進場後第 5、20、60 個交易日的收盤價；還沒到期的期間不計入。
 - 扣交易成本 0.585%（手續費 0.1425% × 2 ＋ 證交稅 0.3%），用還原除權息股價。
-- 基準：同期加權指數（選股日收盤 → 出場日收盤；加權指數是價格指數、沒有開盤價，會有一晚的時間差）。
-- 所有股票用同一個「觀察日」的價格；觀察日沒有成交（停牌等）的股票不計入，並列出檔數。
+- 基準：元大台灣50（0050，還原除權息，含股利）在「同一段期間」的報酬：進場日開盤 → 出場日收盤，
+  和個股完全相同。資料庫沒有 0050 時才退回加權指數（選股日收盤 → 出場日收盤），並標示出來。
+  基準不扣交易成本，對 AI 選股比較嚴格。
+- 可交易性：進場日沒有成交（停牌、下市）、漲停鎖死（開高低同價且漲幅 ≥ 9.5%）、
+  進場日成交金額太少的股票，實際上買不到，不計入，並分類列出檔數與比例。
+- 已買進但出場日沒有成交（停牌、下市）的股票仍然計入，用出場日以前最後一個成交價，避免只留下活著的股票。
+- 滑價敏感度：另外列出每筆交易再多 0.2%、0.5% 成本時的結果。
+- 全市場對照：當天所有可排名股票等權重持有的表現，用來比較「前 20 名」是否真的比整體好。
 - 等權重組合的最大回撤：持有期間每天的組合淨值相對前高的最大跌幅。
 """
 from __future__ import annotations
@@ -28,6 +34,24 @@ TOP_N = 20
 COST = 0.001425 * 2 + 0.003
 HORIZONS = (5, 20, 60)
 FACTORS = ("quality", "growth", "value", "momentum", "trend")
+BENCH_ID = "0050"
+LIMIT_UP = 0.095
+THIN_VALUE = 3e6       # 進場日成交金額低於 300 萬元，視為買不到
+SLIPS = (0.002, 0.005)
+SKIP_LABELS = {"not_traded": "進場日沒有成交（停牌、下市）", "limit_up": "漲停鎖死買不到", "thin": "成交量太少"}
+
+
+def benchmark(con, first: str | None = None) -> tuple[pd.DataFrame, str]:
+    """基準的開盤、收盤價（還原除權息）。有 0050 用 0050，否則用加權指數收盤價。回傳 (價格, 種類)。"""
+    q = "SELECT * FROM prices WHERE stock_id=?" + (" AND date >= ?" if first else "") + " ORDER BY date"
+    px = db.read(con, q, (BENCH_ID, first) if first else (BENCH_ID,))
+    if len(px) >= 2:
+        ex = db.read(con, "SELECT * FROM exrights WHERE stock_id=?", (BENCH_ID,))
+        adj, _ = metrics.adjust_prices(px.reset_index(drop=True), ex)
+        b = adj.set_index("date")[["open", "close"]].astype(float)
+        b["open"] = b["open"].where(b["open"] > 0, b["close"])
+        return b, BENCH_ID
+    return pd.DataFrame(columns=["open", "close"], dtype=float), "taiex"
 
 
 def _snapshot_picks(snap: dict) -> tuple[dict, list]:
@@ -56,21 +80,50 @@ def record(snap: dict) -> str | None:
         return None
     from .ai_model import MODEL_VERSION
     picks, sigs = _snapshot_picks(snap)
+    universe = sorted(s["stock_id"] for s in snap["stocks"] if s.get("is_common") and s["ai"]["modes"]["balanced"]["rank"])
+    out = {"date": day, "model_version": MODEL_VERSION, "generated_at": snap.get("generated_at"),
+           "data_dates": snap.get("data_dates"), "taiex": (snap.get("market") or {}).get("taiex"),
+           "universe": snap.get("universe"), "picks": picks, "signals": sigs, "universe_ids": universe}
     old = _versions(day)
     if old:
-        last = json.loads(old[-1].read_text("utf-8"))
-        same = all([p["stock_id"] for p in last["picks"].get(m, [])] == [p["stock_id"] for p in picks[m]] for m in picks)
-        if same and [x["stock_id"] for x in last["signals"]] == [x["stock_id"] for x in sigs]:
-            return None  # 名單沒變，不用另存
+        reasons = diff_reasons(json.loads(old[-1].read_text("utf-8")), out)
+        if not reasons:
+            return None  # 名單、分數、因子、模型、資料日期都沒變，不用另存
         path = HISTORY / f"{day}.v{len(old) + 1}.json"
+        out["reasons"] = reasons
     else:
         path = HISTORY / f"{day}.json"
-    out = {"date": day, "version": len(old) + 1, "kind": "首次發布" if not old else "補正版",
-           "model_version": MODEL_VERSION, "generated_at": snap.get("generated_at"),
-           "taiex": (snap.get("market") or {}).get("taiex"), "universe": snap.get("universe"), "picks": picks, "signals": sigs}
+    out = {"version": len(old) + 1, "kind": "首次發布" if not old else "補正版", **out}
     HISTORY.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, ensure_ascii=False, indent=1), "utf-8")
     return str(path)
+
+
+def _sig(log: dict) -> dict:
+    r1 = lambda x: None if x is None else round(float(x), 1)
+    return {
+        "picks": {m: [(p["stock_id"], p.get("rank"), r1(p.get("score"))) for p in g] for m, g in log.get("picks", {}).items()},
+        "factors": {m: [tuple(r1((p.get("factors") or {}).get(f)) for f in FACTORS) for p in g] for m, g in log.get("picks", {}).items()},
+        "signals": [(x["stock_id"], r1(x.get("score"))) for x in log.get("signals", [])],
+    }
+
+
+def diff_reasons(last: dict, new: dict) -> list[str]:
+    """補正版要記錄的差異：名單、排名、分數（差 0.1 以上）、因子分數、模型版本、資料日期。"""
+    a, b = _sig(last), _sig(new)
+    ids = lambda x: {m: [p[0] for p in g] for m, g in x["picks"].items()}
+    out = []
+    if ids(a) != ids(b) or [x[0] for x in a["signals"]] != [x[0] for x in b["signals"]]:
+        out.append("名單")
+    elif a["picks"] != b["picks"] or a["signals"] != b["signals"]:
+        out.append("排名或分數")
+    if a["factors"] != b["factors"]:
+        out.append("因子分數")
+    if last.get("model_version") != new.get("model_version"):
+        out.append("模型版本")
+    if (last.get("data_dates") or {}) != (new.get("data_dates") or {}):
+        out.append("資料日期")
+    return out
 
 
 def load(first_only: bool = True) -> list[dict]:
@@ -85,18 +138,35 @@ def load(first_only: bool = True) -> list[dict]:
 def _prices(ids: list[str], first: str, dbname: str):
     with db.connect(dbname) as con:
         q = ",".join("?" * len(ids))
-        px = db.read(con, f"SELECT * FROM prices WHERE stock_id IN ({q}) AND date >= ? ORDER BY date", tuple(ids) + (first,)) if ids else pd.DataFrame()
+        # 從選股日前幾天開始讀，進場日才有前一天收盤價可以判斷漲停
+        start = (pd.Timestamp(first) - pd.Timedelta(days=14)).strftime("%Y-%m-%d")
+        px = db.read(con, f"SELECT * FROM prices WHERE stock_id IN ({q}) AND date >= ? ORDER BY date", tuple(ids) + (start,)) if ids else pd.DataFrame()
         ex = db.read(con, f"SELECT * FROM exrights WHERE stock_id IN ({q})", tuple(ids)) if ids else pd.DataFrame()
         idx = db.read(con, "SELECT * FROM index_prices WHERE date >= ? ORDER BY date", (first,))
+        bench = benchmark(con, start)
     exg = {k: g for k, g in ex.groupby("stock_id")} if len(ex) else {}
     series = {}
     for sid, p in (px.groupby("stock_id") if len(px) else []):
         adj, _ = metrics.adjust_prices(p.reset_index(drop=True), exg.get(sid, pd.DataFrame()))
-        series[sid] = adj.set_index("date")[["open", "close"]]
-    return series, (idx.set_index("date")["close"] if len(idx) else pd.Series(dtype=float))
+        adj = adj.set_index("date")[["open", "high", "low", "close", "value"]].astype(float)
+        adj["prev"] = adj["close"].shift(1)
+        series[sid] = adj
+    return series, (idx.set_index("date")["close"] if len(idx) else pd.Series(dtype=float)), bench
 
 
-def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, h: int | None, obs: str):
+def untradable(s: pd.DataFrame, entry: str) -> str | None:
+    """進場日買不買得到：沒有成交、漲停鎖死、成交金額太少。買得到回傳 None。"""
+    if s is None or entry not in s.index:
+        return "not_traded"
+    o, hi, lo, prev, val = (s.at[entry, k] for k in ("open", "high", "low", "prev", "value"))
+    if pd.notna(prev) and prev > 0 and pd.notna(o) and o >= prev * (1 + LIMIT_UP) and hi == lo == o:
+        return "limit_up"
+    if pd.notna(val) and val < THIN_VALUE:
+        return "thin"
+    return None
+
+
+def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h: int | None, obs: str):
     """一組股票從 day 隔日開盤進場、持有 h 天（None = 持有到觀察日）的結果。"""
     dates = idx.index[idx.index > day]
     if not len(dates):
@@ -110,58 +180,95 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, h: int | 
         return None  # 還沒到期
     if exit_ < entry or day not in idx.index:
         return None
+    bp, kind = bench
+    if kind == BENCH_ID and entry in bp.index and exit_ in bp.index:
+        b, basis = float(bp.at[exit_, "close"] / bp.at[entry, "open"] - 1), BENCH_ID
+    else:
+        b, basis = float(idx[exit_] / idx[day] - 1), "taiex_close"
     path_dates = dates[(dates >= entry) & (dates <= exit_)]
-    rets, paths, missing = [], [], 0
+    rets, paths, stale = [], [], 0
+    skip = {k: 0 for k in SKIP_LABELS}
     for p in group:
         s = series.get(p["stock_id"])
-        if s is None or entry not in s.index or exit_ not in s.index:
-            missing += 1  # 進場日或觀察日沒有成交
+        why = untradable(s, entry)
+        if why:
+            skip[why] += 1
             continue
         o = s.at[entry, "open"]
         if pd.isna(o) or o <= 0:
             o = s.at[entry, "close"]
-        rets.append(s.at[exit_, "close"] / o - 1 - COST)
+        held = s["close"].loc[entry:exit_].dropna()
+        if exit_ not in s.index or pd.isna(s.at[exit_, "close"]):
+            stale += 1  # 出場日沒有成交（停牌、下市）：用最後成交價，仍然計入
+        rets.append(held.iloc[-1] / o - 1 - COST)
         paths.append(s["close"].reindex(path_dates).ffill() / o)
+    base = {"n": len(group), "missing": sum(skip.values()), "skip": skip, "stale_exit": stale,
+            "missing_pct": _p(sum(skip.values()) / len(group)) if group else None, "basis": basis, "exit": exit_}
     if not rets:
-        return {"n": len(group), "priced": 0, "missing": missing, "exit": exit_}
-    bench = float(idx[exit_] / idx[day] - 1)
+        return {**base, "priced": 0}
     nav = pd.concat(paths, axis=1).mean(axis=1)
     mdd = float((nav / nav.cummax() - 1).min()) if len(nav) else 0.0
     r = np.array(rets)
-    return {"n": len(group), "priced": len(r), "missing": missing, "entry": entry, "exit": exit_, "held": len(path_dates),
-            "avg": _p(r.mean()), "median": _p(np.median(r)), "bench": _p(bench), "excess": _p(r.mean() - bench),
-            "win": _p((r > 0).mean()), "beat": _p((r > bench).mean()), "mdd": _p(mdd)}
+    return {**base, "priced": len(r), "entry": entry, "held": len(path_dates),
+            "avg": _p(r.mean()), "median": _p(np.median(r)), "bench": _p(b), "excess": _p(r.mean() - b),
+            "win": _p((r > 0).mean()), "beat": _p((r > b).mean()), "mdd": _p(mdd),
+            "slip": {f"{x * 100:g}": {"excess": _p(r.mean() - x - b), "beat": _p((r - x > b).mean())} for x in SLIPS}}
+
+
+def _card(rows: list[dict], names: list[str]) -> dict:
+    """成績單：所有已到期的選股日，各期間的平均。"""
+    card = {}
+    for name in names:
+        card[name] = {}
+        for h in HORIZONS:
+            cs = [(r, r["fixed"][name][h]) for r in rows if (r["fixed"].get(name) or {}).get(h) and r["fixed"][name][h].get("priced")]
+            if not cs:
+                continue
+            c = [x for _, x in cs]
+            m = lambda k: float(np.mean([x[k] for x in c]))
+            uni = [x["avg"] - r["fixed"]["universe"][h]["avg"] for r, x in cs
+                   if name != "universe" and ((r["fixed"].get("universe") or {}).get(h) or {}).get("priced")]
+            total = sum(x["n"] for x in c)
+            card[name][h] = {"cohorts": len(c), "avg": round(m("avg"), 2), "excess": round(m("excess"), 2),
+                             "beat_cohorts": _p(np.mean([x["excess"] > 0 for x in c])), "win": round(m("win"), 2),
+                             "worst_mdd": min(x["mdd"] for x in c), "basis": sorted({x["basis"] for x in c}),
+                             "slip": {k: round(float(np.mean([x["slip"][k]["excess"] for x in c])), 2) for k in c[0]["slip"]},
+                             "vs_universe": round(float(np.mean(uni)), 2) if uni else None, "vs_universe_n": len(uni),
+                             "missing_pct": _p(sum(x["missing"] for x in c) / total) if total else None,
+                             "skip": {k: sum(x["skip"][k] for x in c) for k in SKIP_LABELS},
+                             "stale_exit": sum(x["stale_exit"] for x in c)}
+    return card
 
 
 def performance(dbname: str = "stocks.db") -> dict:
     logs = load()
     if not logs:
         return {"days": 0, "logs": [], "scorecard": {}}
-    groups = lambda L: list(L["picks"].items()) + [("signals", L["signals"])]
+
+    def groups(L):
+        g = list(L["picks"].items()) + [("signals", L["signals"])]
+        if L.get("universe_ids"):
+            g.append(("universe", [{"stock_id": x} for x in L["universe_ids"]]))
+        return g
     ids = sorted({p["stock_id"] for L in logs for _, g in groups(L) for p in g})
-    series, idx = _prices(ids, logs[0]["date"], dbname)
+    series, idx, bench = _prices(ids, logs[0]["date"], dbname)
     obs = idx.index[-1] if len(idx) else None
     rows = []
     for L in logs:
         d = L["date"]
         row = {"date": d, "model_version": L.get("model_version"), "track": {}, "fixed": {}}
         for name, g in groups(L):
-            row["track"][name] = _cohort(g, d, series, idx, None, obs) if obs else None
-            row["fixed"][name] = {h: _cohort(g, d, series, idx, h, obs) for h in HORIZONS}
+            row["track"][name] = _cohort(g, d, series, idx, bench, None, obs) if obs else None
+            row["fixed"][name] = {h: _cohort(g, d, series, idx, bench, h, obs) for h in HORIZONS}
         rows.append(row)
-    # 成績單：所有已到期的選股日，各期間的平均
-    card = {}
-    for name in [k for k, _ in groups(logs[-1])]:
-        card[name] = {}
-        for h in HORIZONS:
-            cs = [r["fixed"][name][h] for r in rows if r["fixed"].get(name, {}).get(h) and r["fixed"][name][h].get("priced")]
-            if cs:
-                card[name][h] = {"cohorts": len(cs), "avg": _p(np.mean([c["avg"] for c in cs]) / 100),
-                                 "excess": _p(np.mean([c["excess"] for c in cs]) / 100),
-                                 "beat_cohorts": _p(np.mean([c["excess"] > 0 for c in cs])),
-                                 "win": _p(np.mean([c["win"] for c in cs]) / 100), "worst_mdd": min(c["mdd"] for c in cs)}
+    names = list(dict.fromkeys(k for L in logs for k, _ in groups(L)))
+    by_model = {}
+    for mv in dict.fromkeys(r["model_version"] or "v1.0" for r in rows):
+        sub = [r for r in rows if (r["model_version"] or "v1.0") == mv]
+        by_model[mv] = {"days": len(sub), "first": sub[0]["date"], "last": sub[-1]["date"], "scorecard": _card(sub, names)}
     return {"days": len(logs), "first": logs[0]["date"], "observed": obs, "horizons": list(HORIZONS),
-            "cost_pct": round(COST * 100, 3), "logs": rows[::-1], "scorecard": card}
+            "cost_pct": round(COST * 100, 3), "bench": bench[1], "slips": [f"{x * 100:g}" for x in SLIPS],
+            "skip_labels": SKIP_LABELS, "thin_value": THIN_VALUE, "logs": rows[::-1], "scorecard": _card(rows, names), "by_model": by_model}
 
 
 def changes(snap: dict) -> dict | None:

@@ -68,7 +68,8 @@ jobs:
         run: python -m app.update
 
       - name: 備份資料庫到 GitHub Release
-        continue-on-error: true      # 備份失敗不影響網站更新
+        id: backup
+        continue-on-error: true      # 備份失敗不影響網站更新，但會記錄下來，最後一步讓這次執行標成失敗並寄信
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -76,6 +77,22 @@ jobs:
           gzip -c data/stocks.db > stocks.db.gz
           gh release view db-backup >/dev/null 2>&1 || gh release create db-backup --prerelease --title "資料庫備份" --notes "每次更新成功後自動上傳的 SQLite 資料庫（只有公開市場資料），Actions 快取被清除時用來還原。"
           gh release upload db-backup stocks.db.gz --clobber
+
+      # 還原測試：把剛上傳的備份下載回來解壓縮，做完整性檢查並比對筆數、最新日期，確定真的還原得回來
+      - name: 備份還原測試
+        id: restore
+        if: steps.backup.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf "$RUNNER_TEMP/rt" && mkdir -p "$RUNNER_TEMP/rt"
+          gh release download db-backup -p stocks.db.gz -D "$RUNNER_TEMP/rt"
+          python -m app.backup verify "$RUNNER_TEMP/rt/stocks.db.gz"
+
+      - name: 記錄備份狀態（網站可信度頁會顯示）
+        if: always()
+        run: python -m app.backup status "${{ steps.backup.outcome }}" "${{ steps.restore.outcome }}"
 
       - uses: actions/cache/save@v4
         if: always()
@@ -102,8 +119,8 @@ jobs:
         with:
           path: site
 
-      # 資料過期或來源失敗時讓這次執行標成失敗，GitHub 會寄通知信；網站仍會發布並在頂端顯示警告
-      - name: 檢查資料是否最新
+      # 資料過期、來源失敗或備份失敗時讓這次執行標成失敗，GitHub 會寄通知信；網站仍會發布並在頂端顯示警告
+      - name: 檢查資料是否最新、備份是否成功
         run: python -m app.check
 
   deploy:

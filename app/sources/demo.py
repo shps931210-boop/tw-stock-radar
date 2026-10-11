@@ -52,6 +52,14 @@ def build(path_name: str = "demo.db", days: int = 520) -> str:
 
     with db.connect(path_name) as con:
         db.upsert(con, "index_prices", [{"date": d, "close": round(20000 * np.exp(m), 2)} for d, m in zip(ds, mkt)])
+        # 0050：成績單與回測的基準（跟著模擬大盤走，加一點開盤跳空）
+        r = _rng("0050", "p")
+        etf = 150 * np.exp(mkt + 0.00005 * np.arange(days))
+        eo = etf * np.exp(np.r_[0, np.diff(mkt)] * 0.3 + r.normal(0, 0.002, days))
+        db.upsert(con, "stocks", [{"stock_id": "0050", "name": "元大台灣50", "industry": "ETF", "market": "twse"}])
+        db.upsert(con, "prices", [{"stock_id": "0050", "date": d, "open": round(float(a), 2), "high": round(float(max(a, c)) * 1.003, 2),
+                                   "low": round(float(min(a, c)) * 0.997, 2), "close": round(float(c), 2), "volume": 2e7, "value": float(2e7 * c)}
+                                  for d, a, c in zip(ds, eo, etf)])
         for sid, name, ind in STOCKS:
             r = _rng(sid, "p")
             fin = ind == "金融保險業"

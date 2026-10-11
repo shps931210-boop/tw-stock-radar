@@ -269,6 +269,68 @@ class Tracking(unittest.TestCase):
         self.assertEqual(len(track.load()), 1)  # 成績單只用首次發布版
         self.assertEqual(len(track.load(first_only=False)), 2)
 
+    def _log(self, ids, n=12):
+        import json
+        from app import track
+        with db.connect("demo.db") as con:
+            days = [r[0] for r in con.execute("SELECT date FROM index_prices ORDER BY date DESC LIMIT ?", (n,))][::-1]
+        log = {"date": days[0], "model_version": "test", "picks": {"balanced": [{"stock_id": x} for x in ids]}, "signals": []}
+        (track.HISTORY / f"{days[0]}.json").write_text(json.dumps(log), "utf-8")
+        return days
+
+    def test_benchmark_uses_same_period_as_stocks(self):
+        from app import track
+        days = self._log(["2330"])
+        with db.connect("demo.db") as con:
+            bo = con.execute("SELECT open FROM prices WHERE stock_id='0050' AND date=?", (days[1],)).fetchone()[0]
+            bc = con.execute("SELECT close FROM prices WHERE stock_id='0050' AND date=?", (days[5],)).fetchone()[0]
+        c = track.performance("demo.db")["logs"][0]["fixed"]["balanced"][5]
+        self.assertEqual(c["basis"], "0050")
+        self.assertAlmostEqual(c["bench"], round((bc / bo - 1) * 100, 2), places=2)
+        self.assertAlmostEqual(c["excess"], round(c["avg"] - c["bench"], 2), delta=0.02)
+        self.assertAlmostEqual(c["slip"]["0.5"]["excess"], round(c["excess"] - 0.5, 2), delta=0.02)
+
+    def test_untradable_entries_counted_and_stale_exit_kept(self):
+        from app import track
+        from app.sources import demo
+        days = self._log(["2330", "2317", "2454", "2308"])
+        entry, exit_ = days[1], days[5]
+        with db.connect("demo.db") as con:
+            prev = con.execute("SELECT close FROM prices WHERE stock_id='2317' AND date=?", (days[0],)).fetchone()[0]
+            up = round(prev * 1.1, 1)
+            con.execute("UPDATE prices SET open=?, high=?, low=?, close=? WHERE stock_id='2317' AND date=?", (up, up, up, up, entry))
+            con.execute("DELETE FROM prices WHERE stock_id='2454' AND date=?", (exit_,))   # 出場日停牌
+            con.execute("DELETE FROM prices WHERE stock_id='2308' AND date=?", (entry,))   # 進場日沒有成交
+            last = con.execute("SELECT close FROM prices WHERE stock_id='2454' AND date=?", (days[4],)).fetchone()[0]
+            o = con.execute("SELECT open FROM prices WHERE stock_id='2454' AND date=?", (entry,)).fetchone()[0]
+            con.commit()
+        try:
+            c = track.performance("demo.db")["logs"][0]["fixed"]["balanced"][5]
+            self.assertEqual(c["n"], 4)
+            self.assertEqual(c["priced"], 2)
+            self.assertEqual(c["skip"], {"not_traded": 1, "limit_up": 1, "thin": 0})
+            self.assertEqual(c["stale_exit"], 1)
+            self.assertEqual(c["missing_pct"], 50.0)
+            s = track._prices(["2454"], days[0], "demo.db")[0]["2454"]
+            self.assertAlmostEqual(s["close"].loc[:exit_].iloc[-1] / s.at[entry, "open"], last / o, places=6)
+        finally:
+            demo.build()
+
+    def test_correction_reasons_include_scores_and_data_dates(self):
+        from app import track
+        live = {**self.snap, "source": "live"}
+        track.record(live)
+        first = next(x for x in live["stocks"] if x["ai"]["modes"]["balanced"]["rank"] == 1)
+        bump = {**live, "stocks": [{**x, "ai": {**x["ai"], "modes": {**x["ai"]["modes"], "balanced": {**x["ai"]["modes"]["balanced"],
+                "score": x["ai"]["modes"]["balanced"]["score"] + 0.3}}}} if x is first else x for x in live["stocks"]]}
+        import json
+        p = track.record(bump)
+        self.assertTrue(p.endswith(".v2.json"))
+        self.assertEqual(json.loads(open(p, encoding="utf-8").read())["reasons"], ["排名或分數"])
+        p = track.record({**bump, "data_dates": {**bump["data_dates"], "institutional": "2099-01-01"}})
+        self.assertEqual(json.loads(open(p, encoding="utf-8").read())["reasons"], ["資料日期"])
+        self.assertIsNone(track.record({**bump, "data_dates": {**bump["data_dates"], "institutional": "2099-01-01"}}))
+
     def test_changes_against_previous_day(self):
         import json
         from app import track
@@ -302,6 +364,8 @@ class Backtest(unittest.TestCase):
         r = backtest.run("demo.db")
         self.assertTrue(r["ready"])
         self.assertGreater(r["baseline"][20]["n"], 0)
+        self.assertEqual(r["bench"], "0050")
+        self.assertIn("blocked", r["signals"][0]["h20"])
 
 
 class AdminAuth(unittest.TestCase):
