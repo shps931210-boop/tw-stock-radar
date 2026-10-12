@@ -172,6 +172,11 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 @media (max-width: 640px) { .crow { grid-template-columns: 1fr 1fr; } }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
 .seg button { border: 0; background: transparent; padding: 4px 12px; font-size: 13px; cursor: pointer; color: var(--muted); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 2px; }
+.opt { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 14px; cursor: pointer; text-align: left; }
+.opt small { display: block; color: var(--muted); font-size: 12px; }
+.opt.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+.pref h3 { margin: 14px 0 2px; font-size: 15px; }
 .seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .list { display: grid; gap: 4px; }
@@ -271,6 +276,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <a href="#/" data-r="">首頁</a>
       <a href="#/buy" data-r="buy">今日技術訊號</a>
       <a href="#/ai" data-r="ai">AI 選股</a>
+      <a href="#/mine" data-r="mine">我的排行</a>
       <a href="#/radar" data-r="radar">策略雷達</a>
       <a href="#/screener" data-r="screener">條件選股</a>
       <a href="#/watch" data-r="watch">觀察清單<span class="cnt" id="wcnt">0</span></a>
@@ -791,7 +797,7 @@ function aiTable(rows, mode) {
 function pageAI() {
   const mode = store.get("aimode", "balanced"), M = SNAP.ai_modes;
   $("#app").innerHTML = `
-    <section><div class="eyebrow">系統 A</div><h1>AI 智慧選股</h1><p class="lead">選一種模式，按下開始。系統會用同一套資料自動完成分析，並說明每檔股票入選的原因與需要注意的風險。</p></section>
+    <section><div class="eyebrow">系統 A</div><h1>AI 智慧選股</h1><p class="lead">選一種模式，按下開始。系統會用同一套資料自動完成分析，並說明每檔股票入選的原因與需要注意的風險。想照自己的偏好排序，可以看 <a href="#/mine">我的排行</a>。</p></section>
     <section class="modes" id="modes">${Object.entries(M).map(([k, m]) => `<button class="mode ${k === mode ? "on" : ""}" data-m="${k}"><b>${esc(m.name)}</b><span>${esc(m.tagline)}</span>${weightBar(m.weights)}</button>`).join("")}</section>
     <section class="card"><div class="go"><div><h2 id="mname"></h2><p class="muted small" id="mdesc" style="margin:4px 0 0"></p></div>
       <button class="btn lg" id="run">開始 AI 智慧選股</button></div>
@@ -1034,6 +1040,95 @@ function pageWatch() {
         <td class="r num">${fmtNum(x.price)}</td><td class="r num">${fmtNum(s.close)}</td><td class="r num ${signCls(ch)}">${pctTxt(ch)}</td>
         <td class="r">${scoreBar(s.ai.modes.balanced.score)}</td><td><span class="pill acc">${esc(s.ai.tag)}</span></td><td class="wrap reason">${esc(s.ai.risks.join("；") || "無明顯")}</td></tr>`; }).join("")}</tbody></table></div>`
       : '<div class="empty">還沒有觀察的股票。到 <a href="#/ai">AI 智慧選股</a> 或 <a href="#/screener">條件選股</a> 按 ☆ 加入。</div>'}</section>`;
+  bindRows($("#app"), [], () => {});
+}
+
+// ---------- 我的 AI 排行（個人化，偏好存在這個瀏覽器） ----------
+// 只改「排序」：先用固定的品質、風險門檻篩出合格股票，再依偏好重新加權。原本的客觀分數、風險提示都不變。
+const HORIZON = {
+  short: { name: "短期", desc: "偏重股價動能與趨勢", w: { momentum: .35, trend: .30, growth: .15, quality: .10, value: .10 } },
+  mid: { name: "中期", desc: "兼顧成長、估值與趨勢", w: { growth: .25, value: .20, trend: .20, quality: .20, momentum: .15 } },
+  long: { name: "長期", desc: "偏重財務品質與基本面", w: { quality: .40, value: .25, growth: .20, trend: .10, momentum: .05 } },
+};
+const PSTYLE = { quality: "品質型", growth: "成長型", value: "價值型", dividend: "高股息型", momentum: "動能型" };
+const PRISK = {
+  low: { name: "偏保守", desc: "排除波動最大的 30%、虧損股", vol: 70 },
+  mid: { name: "均衡", desc: "排除波動最大的 15%、虧損股", vol: 85 },
+  high: { name: "偏積極", desc: "不限波動，但仍排除虧損股", vol: 101 },
+};
+const PREF0 = { horizon: "mid", styles: [], risk: "mid", learn: true, hidden: {} };
+const pref = () => ({ ...PREF0, ...store.get("pref", {}) });
+const MIN_QUALITY = 30, MIN_VALUE = 3e7;
+function mineGate(s, risk) {
+  if (!s.is_common || !s.complete || !s.base_ok) return "資料不完整";
+  if (s.disposition) return "處置股";
+  if (s.long_term_loss || !(s.eps_ttm > 0)) return "虧損";
+  if ((s.score_quality ?? 0) < MIN_QUALITY) return "財務品質太低";
+  if (!((s.avg_value_20 ?? 0) > MIN_VALUE)) return "成交量太少";
+  if ((s.vol_1y_pct ?? 100) > PRISK[risk].vol) return "波動太大";
+  return null;
+}
+function mineRank(P) {
+  const w = { ...HORIZON[P.horizon].w };
+  P.styles.forEach((k) => { w[k] = (w[k] || 0) + .15; });
+  const tot = Object.values(w).reduce((a, b) => a + b, 0);
+  Object.keys(w).forEach((k) => (w[k] /= tot));
+  const out = { gated: {}, w };
+  const ok = SNAP.stocks.filter((s) => { const g = mineGate(s, P.risk); if (g) { if (s.is_common && s.complete) out.gated[g] = (out.gated[g] || 0) + 1; } return !g; });
+  // 高股息：用合格股票中殖利率的百分位當分數
+  const dys = ok.map((s) => s.dy || 0).sort((a, b) => a - b);
+  const dyPct = (v) => { let lo = 0, hi = dys.length; while (lo < hi) { const m = (lo + hi) >> 1; dys[m] < v ? lo = m + 1 : hi = m; } return dys.length > 1 ? lo / (dys.length - 1) * 100 : 50; };
+  const wl = watch(), indCnt = {};
+  if (P.learn) Object.keys(wl).forEach((id) => { const x = BYID[id]; if (x?.industry) indCnt[x.industry] = (indCnt[x.industry] || 0) + 1; });
+  out.indCnt = indCnt;
+  out.rows = ok.filter((s) => !P.hidden[s.stock_id]).map((s) => {
+    const parts = Object.entries(w).map(([k, x]) => { const v = k === "dividend" ? dyPct(s.dy || 0) : (s["score_" + k] ?? 0); return { k, v, c: x * v }; });
+    const learn = P.learn && indCnt[s.industry] ? Math.min(3, indCnt[s.industry]) : 0;  // 觀察清單同產業：最多加 3 分，只影響排序
+    return { s, score: parts.reduce((a, b) => a + b.c, 0) + learn, parts: parts.sort((a, b) => b.c - a.c), learn };
+  }).sort((a, b) => b.score - a.score);
+  out.hiddenN = Object.keys(P.hidden).length;
+  return out;
+}
+function mineWhy(r, P) {
+  const nameOf = (k) => k === "dividend" ? "殖利率" : FL[k];
+  const top = r.parts.slice(0, 2).map((x) => `${nameOf(x.k)} ${fmtNum(x.v, 0)} 分`).join("、");
+  const st = P.styles.filter((k) => (k === "dividend" ? (r.s.dy || 0) >= 4 : (r.s["score_" + k] ?? 0) >= 70)).map((k) => PSTYLE[k]);
+  return `${HORIZON[P.horizon].name}觀點最看重的${top}${st.length ? `；符合你選的${st.join("、")}` : ""}${r.learn ? `；你的觀察清單有 ${r.learn} 檔同是${r.s.industry}` : ""}。`;
+}
+function pageMine() {
+  const P = pref(), R = mineRank(P), top = R.rows.slice(0, 30);
+  const opt = (g, k, name, desc, on) => `<button class="opt ${on ? "on" : ""}" data-g="${g}" data-k="${k}">${name}${desc ? `<small>${desc}</small>` : ""}</button>`;
+  const gated = Object.entries(R.gated).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k} ${n}`).join("、");
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">個人化</div><h1>我的 AI 排行</h1><p class="lead">選你關心的期間、風格和風險，系統從「通過品質與風險門檻」的股票裡，依你的偏好重新排序。
+      每檔股票的客觀分數和風險提示都不會因為你的偏好而改變。</p></section>
+    <section class="card pref"><div class="card-h"><h2>我的偏好</h2><button class="btn ghost sm" id="preset">重設偏好</button></div>
+      <h3>主要關注期間</h3><div class="opts">${Object.entries(HORIZON).map(([k, h]) => opt("horizon", k, h.name, h.desc, P.horizon === k)).join("")}</div>
+      <h3>偏好的風格 <span class="faint small" style="font-weight:400">可複選，也可以都不選</span></h3><div class="opts">${Object.entries(PSTYLE).map(([k, n]) => opt("styles", k, n, "", P.styles.includes(k))).join("")}</div>
+      <h3>風險偏好</h3><div class="opts">${Object.entries(PRISK).map(([k, r]) => opt("risk", k, r.name, r.desc, P.risk === k)).join("")}</div>
+      <h3>從觀察清單學習</h3><div class="opts">${opt("learn", "1", "開啟", "觀察清單裡的產業排前面一點（最多 +3 分）", P.learn)}${opt("learn", "0", "關閉", "只看上面的設定", !P.learn)}</div>
+      <p class="faint small" style="margin:10px 0 0">偏好只存在這台裝置的瀏覽器，不會上傳。換手機或清除瀏覽資料會不見。</p></section>
+    <section class="card"><div class="card-h"><h2>專屬我的排行</h2><span class="muted small">${R.rows.length} 檔合格，顯示前 ${top.length} 名</span></div>
+      ${top.length ? `<div class="tbl"><table><thead><tr><th>排名</th><th>股票</th><th class="r">收盤</th><th class="r">我的排序分數</th><th class="r">全市場 AI 均衡</th><th>為什麼推薦我這檔</th><th>風險提示</th><th></th></tr></thead><tbody>
+        ${top.map((r, i) => { const s = r.s; return `<tr class="link" data-id="${s.stock_id}"><td><span class="medal ${i < 3 ? "m" + (i + 1) : ""}">${i + 1}</span></td><td>${stockCell(s)}</td>
+          <td class="r num">${fmtNum(s.close)}</td><td class="r">${scoreBar(r.score)}</td><td class="r num">${s.ai.modes.balanced.rank ? `第 ${s.ai.modes.balanced.rank} 名` : '<span class="faint">未入榜</span>'}</td>
+          <td class="wrap reason">${esc(mineWhy(r, P))}</td><td class="wrap reason">${s.ai.risks.length ? `<span style="color:var(--warn)">${esc(s.ai.risks.join("；"))}</span>` : '<span class="faint small">無明顯</span>'}</td>
+          <td><button class="btn ghost sm" data-hide="${s.stock_id}" title="不想看到這檔">隱藏</button></td></tr>`; }).join("")}</tbody></table></div>`
+      : '<div class="empty">沒有股票同時通過門檻，請把風險偏好放寬一點。</div>'}
+      ${R.hiddenN ? `<p class="small" style="margin:8px 0 0">已隱藏 ${R.hiddenN} 檔。<button class="btn ghost sm" id="unhide">全部恢復</button></p>` : ""}
+      <p class="faint small" style="margin:8px 0 0">門檻（所有人一樣）：資料完整、近四季有獲利、財務品質分數 ≥ ${MIN_QUALITY}、20 日均成交金額 &gt; 3,000 萬、不是處置股，再依風險偏好排除波動大的股票。
+        這次被排除：${esc(gated || "沒有")}。<br>「我的排序分數」= 各因子全市場百分位依你的偏好加權（目前權重：${Object.entries(R.w).sort((a, b) => b[1] - a[1]).map(([k, x]) => `${k === "dividend" ? "殖利率" : FL[k]} ${fmtNum(x * 100, 0)}%`).join("、")}），只用來排順序，不是上漲機率，也不是買賣建議。
+        這個排行還沒有回測，和「AI 選股」的三種模式不同，沒有列入成績單。</p></section>`;
+  $$(".opt").forEach((b) => b.onclick = () => {
+    const Q = pref(), g = b.dataset.g, k = b.dataset.k;
+    if (g === "styles") Q.styles = Q.styles.includes(k) ? Q.styles.filter((x) => x !== k) : Q.styles.concat(k);
+    else if (g === "learn") Q.learn = k === "1";
+    else Q[g] = k;
+    store.set("pref", Q); pageMine();
+  });
+  $("#preset").onclick = () => { store.set("pref", { ...PREF0, hidden: pref().hidden }); pageMine(); };
+  if ($("#unhide")) $("#unhide").onclick = () => { store.set("pref", { ...pref(), hidden: {} }); pageMine(); };
+  $$("[data-hide]").forEach((b) => b.onclick = (e) => { e.stopPropagation(); const Q = pref(); Q.hidden[b.dataset.hide] = new Date().toISOString().slice(0, 10); store.set("pref", Q); pageMine(); });
   bindRows($("#app"), [], () => {});
 }
 
@@ -1303,7 +1398,7 @@ function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === (p === "stock" ? "__" : p === "s" ? "radar" : p || "")));
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
