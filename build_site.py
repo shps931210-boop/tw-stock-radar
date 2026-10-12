@@ -45,7 +45,8 @@ shutil.rmtree(out, ignore_errors=True)
 (out / "data" / "stock").mkdir(parents=True)
 
 html = (root / "static" / "index.html").read_text("utf-8")
-html = html.replace("<script>\nconst STATIC", "<script>window.STATIC_SITE = true;</script>\n<script>\nconst STATIC", 1)
+chat = json.loads((root / "chat.json").read_text("utf-8")).get("url") if (root / "chat.json").exists() else None  # AI 問答網址（部署 AI 問答時寫入）
+html = html.replace("<script>\nconst STATIC", f"<script>window.STATIC_SITE = true; window.CHAT_URL = {json.dumps(chat)};</script>\n<script>\nconst STATIC", 1)
 (out / "index.html").write_text(html, "utf-8")
 
 errors, last = [], None

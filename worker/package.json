@@ -1,0 +1,15 @@
+{
+  "name": "gulizi-chat",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "test": "node --test test.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.133.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
+  }
+}

@@ -67,6 +67,10 @@ nav .cnt { font-size: 11px; background: var(--chip); border-radius: 999px; paddi
 .btn:hover { text-decoration: none; filter: brightness(1.08); }
 .btn.ghost { background: transparent; color: var(--accent); }
 .btn.sm { padding: 3px 10px; font-size: 12px; }
+.chat-log { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
+.chat-log .q { align-self: flex-end; max-width: 85%; background: var(--accent-soft); padding: 8px 12px; border-radius: 14px 14px 4px 14px; font-size: 14px; }
+.chat-log .a { align-self: flex-start; max-width: 100%; background: var(--chip); padding: 10px 14px; border-radius: 14px 14px 14px 4px; font-size: 14px; white-space: pre-wrap; line-height: 1.7; }
+.chat-form { display: flex; gap: 8px; } .chat-form input { flex: 1; min-width: 0; font-size: 16px; padding: 9px 16px; border-radius: 999px; }
 .btn.lg { padding: 11px 26px; font-size: 16px; }
 .btn:disabled { opacity: .5; cursor: default; }
 .icon-btn { border: 0; background: none; cursor: pointer; color: var(--faint); padding: 2px 6px; font-size: 16px; line-height: 1; }
@@ -1052,6 +1056,42 @@ const NEG = ["衰退", "年減", "下滑", "下修", "調降", "利空", "砍單
 const tone = (t) => { const p = POS.filter((w) => t.includes(w)).length, n = NEG.filter((w) => t.includes(w)).length; return p > n ? 1 : n > p ? -1 : 0; };
 function maSeries(px, n) { const out = []; let sum = 0; for (let i = 0; i < px.length; i++) { sum += px[i].close; if (i >= n) sum -= px[i - n].close; if (i >= n - 1) out.push({ time: px[i].date, value: sum / n }); } return out; }
 
+// ---------- AI 個股問答（Cloudflare Worker，網址由部署流程寫入 window.CHAT_URL） ----------
+const CHATS = {};
+function chatCard(id) {
+  if (!window.CHAT_URL) return "";
+  const ex = ["這檔比較適合長期還是短期？", "最近財報和營收的重點是什麼？", "它最大的風險在哪裡？"];
+  return `<section class="card" id="chat"><div class="card-h"><h2>問 AI 這檔股票</h2><span class="muted small">只根據網站上的資料回答</span></div>
+    <div class="chips" style="display:flex;gap:6px;flex-wrap:wrap">${ex.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+    <div class="chat-log" id="chatLog"></div>
+    <form class="chat-form" id="chatForm"><input type="text" id="chatIn" maxlength="500" placeholder="輸入你想問的，例如：毛利率為什麼下降？" autocomplete="off"><button class="btn" id="chatBtn">送出</button></form>
+    <p class="faint small" style="margin:8px 0 0">AI 會讀這檔股票在網站上的最新資料再回答，可能出錯，也不是投資建議。每人每分鐘最多 5 個問題。</p></section>`;
+}
+function bindChat(id) {
+  if (!window.CHAT_URL || !$("#chatForm")) return;
+  const hist = (CHATS[id] = CHATS[id] || []), log = $("#chatLog");
+  const draw = () => { log.innerHTML = hist.map((m) => `<div class="${m.role === "user" ? "q" : "a"}">${esc(m.content)}</div>`).join(""); };
+  const ask = async (q) => {
+    q = q.trim(); if (!q || $("#chatBtn").disabled) return;
+    hist.push({ role: "user", content: q }, { role: "assistant", content: "思考中…" }); draw();
+    $("#chatIn").value = ""; $("#chatBtn").disabled = true;
+    const ans = hist[hist.length - 1], el = log.lastElementChild;
+    try {
+      const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stock_id: id, messages: hist.slice(0, -1) }) });
+      if (!r.ok) { ans.content = (await r.json().catch(() => ({}))).error || "AI 暫時無法回答，請稍後再試。"; }
+      else {
+        const rd = r.body.getReader(), dec = new TextDecoder(); ans.content = "";
+        for (;;) { const { done, value } = await rd.read(); if (done) break; ans.content += dec.decode(value, { stream: true }); el.textContent = ans.content; }
+      }
+    } catch { ans.content = "連不上 AI 服務，請檢查網路後再試。"; }
+    if (!ans.content.trim()) ans.content = "AI 沒有回答，請再試一次。";
+    draw(); $("#chatBtn").disabled = false;
+  };
+  draw();
+  $("#chatForm").onsubmit = (e) => { e.preventDefault(); ask($("#chatIn").value); };
+  $$("#chat [data-q]").forEach((b) => (b.onclick = () => ask(b.dataset.q)));
+}
 function profileCard(p) {
   if (!p) return "";
   const dot = { good: "ok", mid: "", weak: "down", na: "faint" }, word = { good: "佳", mid: "普通", weak: "弱", na: "—" };
@@ -1085,6 +1125,7 @@ async function pageStock(id) {
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
     <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
     ${profileCard(d.profile)}
+    ${chatCard(id)}
     <section class="card"><div class="card-h"><h2>AI 分數怎麼來的</h2><div class="seg" id="bdSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="bd"></div></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>六面向評分</h2><span class="muted small">虛線 = 全市場中位數 50</span></div>
@@ -1130,6 +1171,7 @@ async function pageStock(id) {
   drawSpec(mode);
   const drawBd = (md) => { $("#bd").innerHTML = breakdown(s, md); };
   drawBd(mode);
+  bindChat(id);
   $("#bdSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; $$("#bdSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawBd(b.dataset.m); };
   $("#specSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("aimode", b.dataset.m); $$("#specSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawSpec(b.dataset.m); };
   drawPrice(d.prices);

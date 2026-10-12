@@ -84,6 +84,7 @@ def stock_detail(sid: str, dbname: str, row: dict | None = None) -> dict:
         }
     if row and row.get("is_common"):
         out["profile"] = profile.build(row)
+        out["row"] = {k: v for k, v in row.items() if k not in ("spark", "strategies")}  # AI 問答用的指標摘要
     return json.loads(json.dumps(out, default=str).replace("NaN", "null"))
 
 

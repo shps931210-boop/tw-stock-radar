@@ -1,0 +1,17 @@
+# 股栗子 AI 個股問答（Cloudflare Worker）。由 GitHub Actions「部署 AI 問答」自動部署。
+# 金鑰 ANTHROPIC_API_KEY 存在 Cloudflare 的 secret，不寫在這裡。
+name = "gulizi-chat"
+main = "index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SITE = "https://shps931210-boop.github.io/tw-stock-radar"
+ALLOWED_ORIGIN = "https://shps931210-boop.github.io"
+MODEL = "claude-opus-5-5"   # 想省錢可改成 claude-haiku-5-5（約便宜 40 倍，分析較簡單）
+
+# 每個 IP 每分鐘最多 5 個問題，避免被陌生人大量使用（總花費上限請在 Anthropic Console 設定）
+[[ratelimits]]
+name = "LIMITER"
+namespace_id = "1001"
+simple = { limit = 5, period = 60 }
