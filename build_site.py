@@ -62,6 +62,24 @@ def supabase_config() -> dict | None:
     return {"url": url.rstrip("/"), "key": key}
 
 
+def public_data(snap: dict) -> dict:
+    """公開 JSON：產業熱力圖、選股成績單。每個檔案都有 schema_version、generated_at、data_as_of、source、warnings。"""
+    tr = snap.get("track") or {}
+    head = {"schema_version": 1, "generated_at": snap.get("generated_at"), "data_as_of": (snap.get("data_dates") or {}).get("prices")}
+    defs = {"entry": "選股日隔天開盤價", "exit": "選股日之後第 N 個交易日收盤價（進場日算第 1 天）",
+            "cost_pct": tr.get("cost_pct"), "bench": "0050 還原除權息（總報酬），同一段期間：進場日開盤 → 出場日收盤",
+            "on_time": f"名單要在進場日 {tr.get('open_at', '09:00')} 前產生才計入", "lists": "只用首次發布版名單"}
+    warn = (["紀錄天數還少，結果容易受單一事件影響"] if (tr.get("days") or 0) < 20 else []) + (["有選股日缺 0050 價格，標示無法比較"] if (tr.get("bench_coverage") or {}).get("missing") else [])
+    return {
+        "industry/latest.json": snap.get("sectors") or {**head, "industries": [], "warnings": ["沒有產業資料"]},
+        "performance/summary.json": {**head, "source": "history/picks 首次發布版名單 + 證交所／櫃買中心收盤行情", "definitions": defs, "warnings": warn,
+                                     "coverage": {"days": tr.get("days"), "first": tr.get("first"), "observed": tr.get("observed"), "late_days": tr.get("late_days")},
+                                     "horizons": tr.get("horizons"), "model_hash": tr.get("model_hash"),
+                                     "scorecard": tr.get("scorecard"), "by_model": tr.get("by_model"), "by_industry": tr.get("by_industry")},
+        "performance/cohorts.json": {**head, "source": "history/picks", "definitions": defs, "warnings": warn, "cohorts": tr.get("logs", [])},
+    }
+
+
 root = Path(__file__).parent
 out = root / "site"
 shutil.rmtree(out, ignore_errors=True)
@@ -96,6 +114,9 @@ if snap_path.exists():
         (out / "data" / "stock" / f"{sid}.json").write_text(
             json.dumps(stock_detail(sid, "stocks.db", rows[sid]), ensure_ascii=False, separators=(",", ":")), "utf-8")
     (out / "data" / "quality.json").write_text(json.dumps(quality(snap), ensure_ascii=False, indent=1), "utf-8")
+    for path, data in public_data(snap).items():  # 給其他程式讀的公開資料（不含任何會員資料）
+        (out / "data" / path).parent.mkdir(parents=True, exist_ok=True)
+        (out / "data" / path).write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), "utf-8")
     print(f"已產生 site/（{len(ids)} 檔個股資料）")
 else:
     print("沒有真實資料快照，site/ 只會顯示資料取得失敗")

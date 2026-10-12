@@ -69,7 +69,8 @@ def price_metrics(px: pd.DataFrame, idx: pd.Series | None) -> dict:
     m["chg_pct"] = _pct(c[-1], c[-2])
     m["avg_value_20"] = float(np.nanmean(val[-20:]))
     m["volume_lots"] = v[-1] / 1000
-    for k, d in (("ret_1m", 21), ("ret_3m", 63), ("ret_6m", 126), ("ret_12m", 252)):
+    m["value_1d"] = _f(val[-1])
+    for k, d in (("ret_5d", 5), ("ret_20d", 20), ("ret_1m", 21), ("ret_3m", 63), ("ret_6m", 126), ("ret_12m", 252)):
         m[k] = _pct(c[-1], c[-d - 1]) if n > d else None
     m["mom_12_1"] = _pct(c[-22], c[-253]) if n >= 253 else None
     s = pd.Series(c)
@@ -303,6 +304,9 @@ def chip_metrics(inst: pd.DataFrame, mg: pd.DataFrame, px: pd.DataFrame) -> dict
         if j5 is not None:
             m["foreign_5d"] = float(j5["foreign_net"].sum() / 1000)
             m["trust_5d"] = float(j5["trust_net"].sum() / 1000)
+            # 估算金額：每天的買賣超股數 × 當天收盤價（不是實際成交金額，產業熱力圖用）
+            m["foreign_5d_value"] = float((j5["foreign_net"] * j5["close"]).sum())
+            m["trust_5d_value"] = float((j5["trust_net"] * j5["close"]).sum())
             m["foreign_trust_same_day"] = bool(j5["foreign_net"].iloc[-1] > 0 and j5["trust_net"].iloc[-1] > 0)
             vol5 = j5["volume"].sum()
             if vol5:

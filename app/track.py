@@ -40,7 +40,7 @@ from . import config, db, metrics
 HISTORY = config.ROOT / "history" / "picks"
 TOP_N = 20
 COST = 0.001425 * 2 + 0.003
-HORIZONS = (5, 20, 60)
+HORIZONS = (1, 5, 20, 60)
 FACTORS = ("quality", "growth", "value", "momentum", "trend")
 BENCH_ID = "0050"
 LIMIT_UP = 0.095
@@ -62,8 +62,11 @@ def benchmark(con, first: str | None = None) -> tuple[pd.DataFrame, str]:
         adj, _ = metrics.adjust_prices(px.reset_index(drop=True), ex)
         b = adj.set_index("date")[["open", "close"]].astype(float)
         b["open"] = b["open"].where(b["open"] > 0, b["close"])
+        raw = px.set_index("date")[["open", "close"]].astype(float)  # 未還原：價格報酬（不含配息）
+        b["open_raw"] = raw["open"].where(raw["open"] > 0, raw["close"])
+        b["close_raw"] = raw["close"]
         return b, BENCH_ID
-    return pd.DataFrame(columns=["open", "close"], dtype=float), "taiex"
+    return pd.DataFrame(columns=["open", "close", "open_raw", "close_raw"], dtype=float), "taiex"
 
 
 def model_hash() -> str:
@@ -213,11 +216,13 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
     if exit_ < entry or day not in idx.index:
         return None
     bp, kind = bench
-    b, basis = None, NO_BENCH  # 基準固定是 0050；缺價格就標示無法比較，不換別的指數
+    b, basis, b_price = None, NO_BENCH, None  # 基準固定是 0050；缺價格就標示無法比較，不換別的指數
     if kind == BENCH_ID and entry in bp.index and exit_ in bp.index:
         o, c = bp.at[entry, "open"], bp.at[exit_, "close"]
         if pd.notna(o) and o > 0 and pd.notna(c) and c > 0:
             b, basis = float(c / o - 1), BENCH_ID
+            ro, rc = bp.at[entry, "open_raw"], bp.at[exit_, "close_raw"]
+            b_price = float(rc / ro - 1) if pd.notna(ro) and ro > 0 and pd.notna(rc) and rc > 0 else None
     path_dates = dates[(dates >= entry) & (dates <= exit_)]
     rets, real, paths, per = [], [], [], {}
     skip = {k: 0 for k in SKIP_LABELS}
@@ -258,9 +263,30 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
            "bench": None, "excess": None, "beat": None, "real_excess": None, "slip": None}
     if b is None:
         return out
-    return {**out, "bench": _p(b), "excess": _p(r.mean() - b), "beat": _p((r > b).mean()),
+    return {**out, "bench": _p(b), "bench_price": _p(b_price) if b_price is not None else None, "excess": _p(r.mean() - b), "beat": _p((r > b).mean()),
             "real_excess": _p(np.mean(real) - b) if real else None,
             "slip": {f"{x * 100:g}": {"excess": _p(r.mean() - x - b), "beat": _p((r - x > b).mean())} for x in SLIPS}}
+
+
+def attribution(per: dict, uni: dict, ind: dict) -> dict | None:
+    """簡化產業歸因（等權）：名單平均報酬 − 全市場（當天可排名股票）平均報酬 = 產業配置 + 同產業選股。
+    產業配置 = 名單裡每檔股票「所屬產業的全市場平均報酬」的平均 − 全市場平均（選到強勢產業的貢獻）；
+    同產業選股 = 每檔股票報酬 − 所屬產業平均報酬，再平均（在產業內挑得好不好）。等權重，兩項相加剛好等於總差異。"""
+    if not per or len(uni) < 20:
+        return None
+    by = {}
+    for sid, r in uni.items():
+        by.setdefault(ind.get(sid) or "未分類", []).append(r)
+    avg = {k: float(np.mean(v)) for k, v in by.items()}
+    u = float(np.mean(list(uni.values())))
+    keep = [(sid, r) for sid, r in per.items() if sid in uni]
+    if not keep:
+        return None
+    alloc = float(np.mean([avg[ind.get(sid) or "未分類"] - u for sid, _ in keep]))
+    sel = float(np.mean([r - avg[ind.get(sid) or "未分類"] for sid, r in keep]))
+    small = sum(1 for sid, _ in keep if len(by[ind.get(sid) or "未分類"]) < 5)
+    return {"universe": _p(u), "allocation": _p(alloc), "selection": _p(sel), "total": _p(alloc + sel),
+            "n": len(keep), "small_industry": small}
 
 
 def _card(rows: list[dict], names: list[str]) -> dict:
@@ -299,8 +325,18 @@ def _card(rows: list[dict], names: list[str]) -> dict:
                              "real_excess": round(float(np.mean(real)), 2) if real else None,
                              "real_avg": round(float(np.mean([x["real_avg"] for x in c if x.get("real_avg") is not None])), 2)
                              if any(x.get("real_avg") is not None for x in c) else None,
-                             "no_bench": no_bench, "late": len(late)}
+                             "no_bench": no_bench, "late": len(late),
+                             "bench": round(m("bench"), 2), "bench_price": round(float(np.mean(bp)), 2) if (bp := [x["bench_price"] for x in c if x.get("bench_price") is not None]) else None,
+                             "attr": _attr_mean([x.get("attr") for x in c])}
     return card
+
+
+def _attr_mean(xs: list) -> dict | None:
+    xs = [x for x in xs if x]
+    if not xs:
+        return None
+    return {**{k: round(float(np.mean([x[k] for x in xs])), 2) for k in ("universe", "allocation", "selection", "total")},
+            "cohorts": len(xs), "small_industry": sum(x["small_industry"] for x in xs), "n": sum(x["n"] for x in xs)}
 
 
 def performance(dbname: str = "stocks.db") -> dict:
@@ -328,6 +364,16 @@ def performance(dbname: str = "stocks.db") -> dict:
             row["fixed"][name] = {h: _cohort(g, d, series, idx, bench, h, obs) for h in HORIZONS}
         rows.append(row)
     names = list(dict.fromkeys(k for L in logs for k, _ in groups(L)))
+    with db.connect(dbname) as con:  # 產業別（目前的分類；歷史上改過分類的股票會用新分類）
+        q = ",".join("?" * len(ids))
+        ind = dict(con.execute(f"SELECT stock_id, industry FROM stocks WHERE stock_id IN ({q})", tuple(ids)).fetchall()) if ids else {}
+    for r in rows:
+        for h in HORIZONS:
+            u = (r["fixed"].get("universe") or {}).get(h)
+            for name in r["fixed"]:
+                c = r["fixed"][name].get(h)
+                if c and name != "universe" and u and u.get("priced"):
+                    c["attr"] = attribution(c.get("_per", {}), u.get("_per", {}), ind)
     by_model = {}
     for mv in dict.fromkeys(r["model_version"] or "v1.0" for r in rows):
         sub = [r for r in rows if (r["model_version"] or "v1.0") == mv]

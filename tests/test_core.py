@@ -338,13 +338,32 @@ class Tracking(unittest.TestCase):
     def test_scorecard_only_counts_0050_and_on_time_lists(self):
         from app import track
         mk = lambda basis, ex: {"basis": basis, "priced": 1, "n": 1, "avg": 1.0, "excess": ex, "win": 100.0, "mdd": -1.0, "missing": 0,
-                                "skip": {}, "stale": {}, "stale_exit": 0, "real_excess": ex, "real_avg": 1.0,
+                                "skip": {}, "stale": {}, "stale_exit": 0, "real_excess": ex, "real_avg": 1.0, "bench": 0.5,
                                 "slip": {"0.2": {"excess": ex - 0.2}} if ex is not None else None}
         rows = [{"on_time": True, "fixed": {"balanced": {5: mk("0050", 1.0), 20: None, 60: None}}},
                 {"on_time": True, "fixed": {"balanced": {5: mk("unavailable", None), 20: None, 60: None}}},
                 {"on_time": False, "fixed": {"balanced": {5: mk("0050", 9.0), 20: None, 60: None}}}]
         c = track._card(rows, ["balanced"])["balanced"][5]
         self.assertEqual((c["cohorts"], c["excess"], c["no_bench"], c["late"]), (1, 1.0, 1, 1))
+
+    def test_sector_heatmap_uses_same_day_and_counts_coverage(self):
+        from app import sectors
+        snap = {"data_dates": {"prices": "2099-01-02"}, "stocks": [
+            {"stock_id": "1", "name": "a", "is_common": True, "industry": "X", "date": "2099-01-02", "chg_pct": 2.0, "ret_5d": 1.0, "ret_20d": 3.0, "market_cap": 100, "value_1d": 10, "avg_value_20": 5, "ai": {"modes": {"balanced": {"rank": 1, "score": 80}}}},
+            {"stock_id": "2", "name": "b", "is_common": True, "industry": "X", "date": "2099-01-02", "chg_pct": -1.0, "ret_5d": 1.0, "ret_20d": 1.0, "market_cap": 300, "value_1d": 10, "avg_value_20": 15},
+            {"stock_id": "3", "name": "c", "is_common": True, "industry": "X", "date": "2099-01-01", "chg_pct": 9.0},   # 停牌：不算報酬，算覆蓋率
+            {"stock_id": "4", "name": "d", "is_common": True, "industry": None, "date": "2099-01-02", "chg_pct": 1.0}]}
+        r = sectors.build(snap, "demo.db")
+        x = next(i for i in r["industries"] if i["industry"] == "X")
+        self.assertEqual((x["n_total"], x["n"]), (3, 2))
+        self.assertAlmostEqual(x["coverage"], 66.7, places=1)
+        self.assertEqual(x["ret"]["1d"]["eq"], 0.5)
+        self.assertEqual(x["ret"]["1d"]["cap"], round((2 * 100 - 1 * 300) / 400, 2))
+        self.assertEqual((x["ret"]["1d"]["up"], x["ret"]["1d"]["down"]), (1, 1))
+        self.assertEqual(x["value"]["ratio"], 1.0)
+        self.assertIsNone(x["flows"]["foreign_5d"])  # 沒有籌碼資料就留空，不當成 0
+        self.assertEqual(x["top"][0]["stock_id"], "1")
+        self.assertTrue(any(i["industry"] == "未分類" for i in r["industries"]))
 
     def test_missing_0050_is_not_compared_with_other_index(self):
         from app import track
@@ -361,6 +380,18 @@ class Tracking(unittest.TestCase):
         finally:
             from app.sources import demo
             demo.build()
+
+    def test_industry_attribution_adds_up_and_matches_hand_calc(self):
+        from app import track
+        uni = {f"A{i}": 0.02 for i in range(10)} | {f"B{i}": -0.01 for i in range(10)} | {"A0": 0.06, "B0": 0.03}
+        ind = {k: ("半導體" if k.startswith("A") else "航運") for k in uni}
+        # 名單：A0（+6%）、B0（+3%）。半導體平均 (0.06+0.02*9)/10=2.4%，航運平均 (0.03-0.01*9)/10=-0.6%，全市場 0.9%
+        a = track.attribution({"A0": 0.06, "B0": 0.03}, uni, ind)
+        self.assertAlmostEqual(a["universe"], 0.9, places=2)
+        self.assertAlmostEqual(a["allocation"], ((2.4 - 0.9) + (-0.6 - 0.9)) / 2, places=2)   # 0
+        self.assertAlmostEqual(a["selection"], ((6 - 2.4) + (3 + 0.6)) / 2, places=2)          # 3.6
+        self.assertAlmostEqual(a["total"], 4.5 - 0.9, places=2)                                # 名單平均 − 全市場
+        self.assertIsNone(track.attribution({"A0": 0.06}, {"A0": 0.06}, ind))                  # 樣本太少不算
 
     def test_on_time_requires_list_before_entry_open(self):
         from app import track

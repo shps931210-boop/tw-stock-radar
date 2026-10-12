@@ -9,7 +9,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from . import ai_model, backtest, config, db, metrics, track
+from . import ai_model, backtest, config, db, metrics, sectors, track
 from .catalog import C as CATALOG
 from .strategies import STRATEGIES, passes
 
@@ -277,6 +277,10 @@ def build(demo: bool = False) -> dict:
         "stocks": [r for r in rows if r["is_common"] or re.fullmatch(r"00\d{2,4}[A-Z]?", r["stock_id"])],
     }
     out["changes"] = None if demo else track.changes(out)
+    try:
+        out["sectors"] = sectors.build(out, dbname)
+    except Exception as e:  # 產業熱力圖失敗不影響選股結果
+        out["sectors"] = {"schema_version": 1, "industries": [], "warnings": [f"產業熱力圖計算失敗：{e}"]}
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out
