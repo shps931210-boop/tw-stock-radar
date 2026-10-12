@@ -71,3 +71,22 @@ class Deadlines(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TpexForecast(unittest.TestCase):
+    F = ["除權息日期", "代號", "名稱", "除權息", "每股無償配股率", "現金增資配股率", "現金增資認購價", "現金股利", "公開承銷股數", "員工認購股數", "原股東認購股數", "按持股比例仟股認購", "參考價試算"]
+
+    def test_parse_and_sources_are_separate(self):
+        rows = events.parse_tpex(self.F, [["115/10/19", "00694B", "富邦美債1-3", "除息", "0.00000000", "0", "0.00", "尚未公告", "0", "0", "0", "0", ""],
+                                          ["115/10/20", "6488", "環球晶", "除權息", "0.05", "0", "0", "3.5", "0", "0", "0", "0", ""]])
+        self.assertEqual(rows[0]["date"], "2026-10-19")
+        self.assertIsNone(rows[0]["cash"])
+        self.assertEqual(rows[1]["kind"], "權息")
+        self.assertIn("除權息", events._title(rows[1]))
+        con = sqlite3.connect(":memory:")
+        con.executescript(db.SCHEMA)
+        self.addCleanup(con.close)
+        events.store_exdiv(con, rows, date(2026, 10, 12), events.SRC_TPEX, events.TPEX_PAGE)
+        events.store_exdiv(con, [], date(2026, 10, 12))   # 上市這次沒有資料：不影響上櫃事件
+        st = dict(con.execute("SELECT stock_id, status FROM events").fetchall())
+        self.assertEqual(st, {"00694B": "confirmed", "6488": "confirmed"})
