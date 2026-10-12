@@ -138,9 +138,13 @@ AI 模型定義在 `app/ai_model.py`：每個模式有「硬性條件」（不�
 
 `price_backfill_days` 設為 1100 天（約三年）。最近 `recent_backfill_days`（420 天）以內一次補齊；更舊的日期每次執行只補 `history_dates_per_run`（60 個日期／市場），分幾天慢慢補完，避免單次執行超過 GitHub Actions 的時間限制。技術訊號統計會依年份、大盤多空（加權指數在 120 日均線上下）、訊號規則上線後（樣本外）分開列出。
 
-## 問 AI 這檔股票（選用，需要付費金鑰）
+## 問問這檔股票
 
-股票頁的「問 AI 這檔股票」由 `worker/`（Cloudflare Worker）回答：讀網站上這檔股票的公開資料（`data/stock/代號.json`，含個股性質卡），交給 Claude 回答並即時傳回。
+預設是免費版：股票頁的「問問這檔股票」在瀏覽器裡依問題關鍵字（長期短期、財報、營收、風險、估值、股利、法人、技術面、AI 分數），用固定規則整理網站資料回答（`static/index.html` 的 `qaAnswer`），不花錢、不需要帳號。
+
+### 選用：改由 AI 回答（需要付費金鑰）
+
+設定後改由 `worker/`（Cloudflare Worker）回答：讀網站上這檔股票的公開資料（`data/stock/代號.json`，含個股性質卡），交給 Claude 回答並即時傳回。
 
 - 金鑰 `ANTHROPIC_API_KEY` 只存在 Cloudflare 的 secret，網站與 repository 都看不到；只接受股栗子網站來的請求，每個 IP 每分鐘最多 5 題。總花費上限請在 Anthropic Console 設定。
 - 模型在 `worker/wrangler.toml` 的 `MODEL`（預設 `claude-opus-5-5`；改 `claude-haiku-5-5` 約便宜 40 倍）。

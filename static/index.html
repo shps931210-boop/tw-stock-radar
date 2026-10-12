@@ -1056,25 +1056,96 @@ const NEG = ["衰退", "年減", "下滑", "下修", "調降", "利空", "砍單
 const tone = (t) => { const p = POS.filter((w) => t.includes(w)).length, n = NEG.filter((w) => t.includes(w)).length; return p > n ? 1 : n > p ? -1 : 0; };
 function maSeries(px, n) { const out = []; let sum = 0; for (let i = 0; i < px.length; i++) { sum += px[i].close; if (i >= n) sum -= px[i - n].close; if (i >= n - 1) out.push({ time: px[i].date, value: sum / n }); } return out; }
 
-// ---------- AI 個股問答（Cloudflare Worker，網址由部署流程寫入 window.CHAT_URL） ----------
+// ---------- 個股問答 ----------
+// 免費版：在瀏覽器裡用規則、直接拿網站資料回答（不花錢、不需要帳號）。
+// 有設定付費 AI（window.CHAT_URL，見 worker/）時改由 AI 回答。
 const CHATS = {};
-function chatCard(id) {
-  if (!window.CHAT_URL) return "";
-  const ex = ["這檔比較適合長期還是短期？", "最近財報和營收的重點是什麼？", "它最大的風險在哪裡？"];
-  return `<section class="card" id="chat"><div class="card-h"><h2>問 AI 這檔股票</h2><span class="muted small">只根據網站上的資料回答</span></div>
-    <div class="chips" style="display:flex;gap:6px;flex-wrap:wrap">${ex.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
-    <div class="chat-log" id="chatLog"></div>
-    <form class="chat-form" id="chatForm"><input type="text" id="chatIn" maxlength="500" placeholder="輸入你想問的，例如：毛利率為什麼下降？" autocomplete="off"><button class="btn" id="chatBtn">送出</button></form>
-    <p class="faint small" style="margin:8px 0 0">AI 會讀這檔股票在網站上的最新資料再回答，可能出錯，也不是投資建議。每人每分鐘最多 5 個問題。</p></section>`;
+const QA_TOPICS = [
+  { key: "horizon", label: "適合長期還是短期？", re: /長期|短期|波段|適合|性質|類型|存股|放著|抱/ },
+  { key: "finance", label: "財報體質好嗎？", re: /財報|獲利|賺|EPS|毛利|ROE|體質|現金|負債|虧/i },
+  { key: "revenue", label: "營收有在成長嗎？", re: /營收|成長|衰退|業績/ },
+  { key: "risk", label: "有什麼風險？", re: /風險|注意|缺點|危險|壞|擔心/ },
+  { key: "value", label: "股價貴不貴？", re: /貴|便宜|估值|本益比|淨值比|PE|PB|價值/i },
+  { key: "dividend", label: "股利怎麼樣？", re: /股利|股息|殖利率|配息|配股|領/ },
+  { key: "chips", label: "法人在買還是賣？", re: /法人|外資|投信|自營|籌碼|融資|主力/ },
+  { key: "tech", label: "技術面怎麼看？", re: /技術|趨勢|均線|線型|KD|MACD|RSI|買點|進場|漲|跌|突破/i },
+  { key: "score", label: "AI 分數怎麼來的？", re: /分數|排名|名次|AI|評分/i },
+];
+function qaAnswer(s, d, q) {
+  const P = d.profile || {}, F = Object.fromEntries((P.finance || []).map((x) => [x.topic, x]));
+  const n = (v, k = 1) => fmtNum(v, k), pct = (v) => (v == null ? "—" : `${n(v)}%`);
+  const A = {
+    horizon: () => `${P.horizon ? `【${P.horizon.label}】${P.horizon.why}` : "資料不足，先不判斷。"}\n` +
+      (P.styles?.length ? `這檔的類型：${P.styles.map((x) => `「${x.label}」（${x.why}）`).join("；")}。` : "沒有特別明顯的類型，各項表現接近市場平均。"),
+    finance: () => {
+      const fs = (d.financials || []).filter((f) => f.eps != null), q = fs[fs.length - 1], q4 = fs[fs.length - 5];
+      return ["獲利能力", "現金流", "財務結構"].filter((k) => F[k]).map((k) => `・${k}：${F[k].text}`).join("\n") +
+        (q ? `\n・最新一季（${q.period}）EPS ${n(q.eps, 2)} 元${q4 ? `，去年同季 ${n(q4.eps, 2)} 元` : ""}；近四季 EPS 合計 ${n(s.eps_ttm, 2)} 元。` : "") +
+        (s.fscore != null ? `\n・F-Score ${s.fscore}/9（9 項財務體檢通過幾項，越高越好）。` : "");
+    },
+    revenue: () => {
+      const r = d.revenue || [], last = r[r.length - 1];
+      const yoy = (i) => { const a = r[i], b = r.find((x) => x.ym === `${+a.ym.slice(0, 4) - 1}${a.ym.slice(4)}`); return b?.revenue ? (a.revenue / b.revenue - 1) * 100 : null; };
+      const lines = r.slice(-3).map((x, i) => `${x.ym}：${n(x.revenue / 1e8, 2)} 億（年增 ${pct(yoy(r.length - 3 + i))}）`);
+      return (last ? `最近 3 個月營收：\n${lines.join("\n")}\n` : "") +
+        `近 3 個月合計年增 ${pct(s.rev_yoy_3m)}，今年累計年增 ${pct(s.rev_ytd_yoy)}。` +
+        (s.rev_yoy_3m == null ? "" : s.rev_yoy_3m >= 10 ? "營收明顯成長。" : s.rev_yoy_3m >= 0 ? "營收小幅成長。" : "營收在衰退，要留意原因。") +
+        (s.rev_high_12m ? "最新月營收創近 12 個月新高。" : "");
+    },
+    risk: () => {
+      const rs = [...(s.ai?.risks || [])];
+      (P.styles || []).filter((x) => ["高波動", "景氣循環型", "虧損中"].includes(x.label)).forEach((x) => rs.push(`${x.label}：${x.why}`));
+      if (s.mdd_1y != null) rs.push(`過去一年最大跌幅 ${pct(s.mdd_1y)}（從高點跌下來最多跌了多少）`);
+      (s.stale_notes || []).forEach((x) => rs.push(`資料過期：${x}`));
+      return rs.length ? rs.map((x) => `・${x}`).join("\n") : "目前沒有偵測到明顯的風險訊號，但這不代表沒有風險。";
+    },
+    value: () => `本益比 ${n(s.per)} 倍、股價淨值比 ${n(s.pbr, 2)} 倍、殖利率 ${pct(s.dy)}。` +
+      (s.per_pctile_1y != null ? `\n現在的本益比比過去一年 ${n(s.per_pctile_1y, 0)}% 的時間還高，` + (s.per_pctile_1y >= 80 ? "以它自己的歷史來看偏貴。" : s.per_pctile_1y <= 20 ? "以它自己的歷史來看偏便宜。" : "在它自己歷史的中間位置。") : "") +
+      (s.score_value != null ? `\n估值分數 ${n(s.score_value, 0)}（全市場百分位，越高代表越便宜）。` : "") +
+      "\n本益比低不一定是好事，可能是市場預期獲利會變差，要搭配營收和財報一起看。",
+    dividend: () => {
+      const dv = (d.dividends || []).slice(-5).map((x) => `${x.year} 年 ${n(x.cash, 2)} 元${x.stock ? `＋股票 ${n(x.stock, 2)} 元` : ""}`);
+      return `${F["股利"]?.text || `殖利率 ${pct(s.dy)}。`}` + (dv.length ? `\n最近幾年現金股利：${dv.join("、")}。` : "") +
+        (s.div_growth_3y != null ? `\n近 3 年股利平均每年成長 ${pct(s.div_growth_3y)}。` : "");
+    },
+    chips: () => s.foreign_5d == null ? "網站目前沒有這檔的法人資料。" :
+      `（${s.inst_date || "—"} 為止）\n・外資近 5 日${s.foreign_5d >= 0 ? "買超" : "賣超"} ${n(Math.abs(s.foreign_5d), 0)} 張${s.foreign_streak ? `，已連續買 ${s.foreign_streak} 天` : ""}\n` +
+      `・投信近 5 日${(s.trust_5d ?? 0) >= 0 ? "買超" : "賣超"} ${n(Math.abs(s.trust_5d ?? 0), 0)} 張${s.trust_streak ? `，已連續買 ${s.trust_streak} 天` : ""}\n` +
+      (s.inst_ratio_5d != null ? `・三大法人 5 日買賣超占成交量 ${pct(s.inst_ratio_5d)}\n` : "") +
+      (s.margin_chg_20d != null ? `・融資 20 日變化 ${pctTxt(s.margin_chg_20d)}${s.margin_chg_20d > 20 ? "，散戶借錢買的增加很快，要小心" : ""}` : ""),
+    tech: () => `收盤 ${n(s.close, 2)} 元（${s.date}），近 1 個月 ${pctTxt(s.ret_1m)}、近 3 個月 ${pctTxt(s.ret_3m)}。\n` +
+      `・均線${s.ma_bull ? "多頭排列（短中長期均線由上往下排，趨勢向上）" : "沒有多頭排列"}；離月線 ${pctTxt(s.dist_ma20)}、離季線 ${pctTxt(s.dist_ma60)}\n` +
+      `・RSI ${n(s.rsi, 0)}${s.rsi >= 80 ? "，短線過熱" : s.rsi <= 30 ? "，短線偏弱、跌深" : ""}\n` +
+      `・今日技術訊號：${s.timing?.triggers?.length ? s.timing.triggers.map((k) => SNAP.triggers[k] || k).join("、") : "沒有"}${(s.timing?.hot || []).length ? `；過熱提醒：${s.timing.hot.join("、")}` : ""}\n` +
+      `・52 週區間 ${n(s.low_52w, 2)}～${n(s.high_52w, 2)} 元\n技術訊號還沒經過回測驗證，只是型態提醒。`,
+    score: () => Object.entries(SNAP.ai_modes).map(([k, m]) => `・AI ${m.name}：${s.ai.modes[k].score == null ? "不計分" : n(s.ai.modes[k].score, 1) + " 分"}${s.ai.modes[k].rank ? `，第 ${s.ai.modes[k].rank} 名` : ""}`).join("\n") +
+      `\n五個因子（全市場百分位，50 是中位數）：體質 ${n(s.score_quality, 0)}、成長 ${n(s.score_growth, 0)}、估值 ${n(s.score_value, 0)}、動能 ${n(s.score_momentum, 0)}、趨勢 ${n(s.score_trend, 0)}。下方「AI 分數怎麼來的」有每一項的權重。`,
+  };
+  const hits = QA_TOPICS.filter((t) => t.re.test(q)).slice(0, 3);
+  if (!hits.length) return `這個問題我還不會回答。我目前能回答：${QA_TOPICS.map((t) => t.label).join("、")}。可以點上面的按鈕，或換個說法問。`;
+  return hits.map((t) => (hits.length > 1 ? `【${t.label}】\n` : "") + A[t.key]()).join("\n\n") +
+    `\n\n資料日：股價 ${s.date || "—"}・月營收 ${s.rev_ym || "—"}・財報 ${s.fin_period || "—"}。以上由規則根據網站資料自動整理，不是投資建議。`;
 }
-function bindChat(id) {
-  if (!window.CHAT_URL || !$("#chatForm")) return;
+function chatCard(id) {
+  const ai = !!window.CHAT_URL;
+  const ex = ai ? ["這檔比較適合長期還是短期？", "最近財報和營收的重點是什麼？", "它最大的風險在哪裡？"] : QA_TOPICS.map((t) => t.label);
+  return `<section class="card" id="chat"><div class="card-h"><h2>問問這檔股票</h2><span class="muted small">${ai ? "AI 根據網站資料回答" : "免費・根據網站資料自動回答"}</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${ex.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+    <div class="chat-log" id="chatLog"></div>
+    <form class="chat-form" id="chatForm"><input type="text" id="chatIn" maxlength="500" placeholder="${ai ? "輸入你想問的，例如：毛利率為什麼下降？" : "例如：這檔適合存股嗎？"}" autocomplete="off"><button class="btn" id="chatBtn">送出</button></form>
+    <p class="faint small" style="margin:8px 0 0">${ai ? "AI 會讀這檔股票在網站上的最新資料再回答，可能出錯，也不是投資建議。每人每分鐘最多 5 個問題。"
+      : "這是免費的自動問答：依你問題裡的關鍵字（例如長期、財報、營收、風險、股利、法人），用固定規則整理網站上的資料回答，不是真人或 AI 聊天，也不是投資建議。"}</p></section>`;
+}
+function bindChat(id, s, d) {
+  if (!$("#chatForm")) return;
   const hist = (CHATS[id] = CHATS[id] || []), log = $("#chatLog");
   const draw = () => { log.innerHTML = hist.map((m) => `<div class="${m.role === "user" ? "q" : "a"}">${esc(m.content)}</div>`).join(""); };
   const ask = async (q) => {
     q = q.trim(); if (!q || $("#chatBtn").disabled) return;
+    $("#chatIn").value = "";
+    if (!window.CHAT_URL) { hist.push({ role: "user", content: q }, { role: "assistant", content: qaAnswer(s, d, q) }); draw(); log.lastElementChild.scrollIntoView({ block: "nearest" }); return; }
     hist.push({ role: "user", content: q }, { role: "assistant", content: "思考中…" }); draw();
-    $("#chatIn").value = ""; $("#chatBtn").disabled = true;
+    $("#chatBtn").disabled = true;
     const ans = hist[hist.length - 1], el = log.lastElementChild;
     try {
       const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json" },
@@ -1171,7 +1242,7 @@ async function pageStock(id) {
   drawSpec(mode);
   const drawBd = (md) => { $("#bd").innerHTML = breakdown(s, md); };
   drawBd(mode);
-  bindChat(id);
+  bindChat(id, s, d);
   $("#bdSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; $$("#bdSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawBd(b.dataset.m); };
   $("#specSeg").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("aimode", b.dataset.m); $$("#specSeg button").forEach((x) => x.classList.toggle("on", x === b)); drawSpec(b.dataset.m); };
   drawPrice(d.prices);
