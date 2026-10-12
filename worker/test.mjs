@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { checkQuota } from "./auth.js";
+import { checkQuota, costOf, recordCost } from "./auth.js";
 import { MAX_CHARS, MAX_TURNS, buildContext, cleanMessages, validId } from "./prompt.js";
 
 test("只接受 4 位數股票代號", () => {
@@ -55,4 +55,17 @@ test("AI 問答要登入、要通過每日額度，檢查失敗一律拒絕", as
   assert.equal((await checkQuota(env, "Bearer tok", res(200, { ok: false, reason: "site" }))).status, 429);
   assert.equal((await checkQuota(env, "Bearer tok", res(500, {}))).status, 503);
   assert.equal((await checkQuota(env, "Bearer tok", async () => { throw new Error("down"); })).status, 503);
+});
+
+test("依 Token 用量計算花費並回報；不認得的模型用較貴的價格估算", async () => {
+  const u = { input_tokens: 1000, output_tokens: 500, cache_read_input_tokens: 4000, cache_creation_input_tokens: 0 };
+  assert.equal(costOf("claude-opus-5-5", u), (1000 * 4 + 500 * 20 + 4000 * 0.2) / 1e6);
+  assert.equal(costOf("claude-haiku-5-5", u), (1000 * 0.1 + 500 * 0.5 + 4000 * 0.01) / 1e6);
+  assert.equal(costOf("some-new-model", u), costOf("claude-opus-5-5", u));
+  const env = { SUPABASE_URL: "https://x.supabase.co", SUPABASE_KEY: "sb_publishable_x" };
+  let body = null;
+  assert.equal(await recordCost(env, "Bearer tok", 0.0148, async (url, init) => { assert.ok(url.endsWith("/rpc/record_ai_cost")); body = JSON.parse(init.body); return { ok: true }; }), true);
+  assert.deepEqual(body, { p_cost: 0.0148 });
+  assert.equal(await recordCost(env, "", 0.01, async () => ({ ok: true })), false);
+  assert.equal(await recordCost(env, "Bearer tok", 0.01, async () => { throw new Error("down"); }), false);
 });

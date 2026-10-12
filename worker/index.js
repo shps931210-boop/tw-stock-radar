@@ -3,7 +3,7 @@
 // 只回答登入的會員：每次都用會員的登入憑證向 Supabase 確認身分並扣一題額度（每人、全站每天都有上限，見 supabase/schema.sql）。
 // Origin 檢查和每分鐘次數限制只是額外的防護，不能當成身分驗證。
 import Anthropic from "@anthropic-ai/sdk";
-import { checkQuota } from "./auth.js";
+import { checkQuota, costOf, recordCost } from "./auth.js";
 import { SYSTEM, buildContext, cleanMessages, validId } from "./prompt.js";
 
 const cors = (env) => ({
@@ -57,7 +57,7 @@ export default {
     const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
     const stream = client.beta.messages.stream({
       model: env.MODEL || "claude-opus-5-5",
-      max_tokens: 4000,
+      max_tokens: 1500,  // 每題輸出上限（回答約 300 字，留空間給思考）；花費上限見 supabase/schema.sql
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default", // 安全機制拒答時，由 Anthropic 自動改用建議的備援模型重試
       output_config: { effort: "medium" },
@@ -78,6 +78,9 @@ export default {
           if (ev.type === "content_block_delta" && ev.delta.type === "text_delta") await w.write(enc.encode(ev.delta.text));
         }
         const final = await stream.finalMessage();
+        const usd = costOf(final.model, final.usage);
+        console.log("usage", final.model, JSON.stringify(final.usage), usd);
+        await recordCost(env, req.headers.get("Authorization"), usd);
         if (final.stop_reason === "refusal") await w.write(enc.encode("\n（這個問題 AI 無法回答，請換個方式問。）"));
         else if (final.stop_reason === "max_tokens") await w.write(enc.encode("\n（回答太長被截斷了，可以請它精簡一點。）"));
       } catch (e) {

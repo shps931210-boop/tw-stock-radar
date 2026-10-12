@@ -1396,41 +1396,49 @@ function alertEvents(snap, watchIds, rules, state, today) {
 let alertBusy = null, alertAgain = false;
 const alertRules = () => ({ ...alertDefaults(), ...store.get("alert_rules", {}) });
 function renderNcnt() { const n = store.get("notif", []).filter((x) => !x.read_at).length, el = $("#ncnt"); if (el) { el.hidden = !n; el.textContent = n > 99 ? "99+" : n; } }
+let ENGINE = null;  // 後端通知服務狀態（data/alerts/engine.json）
+const engineOn = () => !!(ENGINE && ENGINE.enabled);
 async function runAlerts() {
   if (!SNAP) return;
   if (alertBusy) { alertAgain = true; return alertBusy; }  // 正在跑（例如剛登入）：跑完再用新帳號跑一次
   const uid = UID;
   alertBusy = (async () => {
-    let rules = alertRules(), state = store.get("alert_state", null);
-    if (sb && user) {  // 登入：規則和比較基準以雲端為準，多台裝置不會重複通知
-      const [r, st] = await Promise.all([sb.from("alert_rules").select("rule_type,enabled,params"), sb.from("alert_processing_state").select("data_date,baseline").maybeSingle()]);
+    if (ENGINE === null) ENGINE = SITE ? await fetch("data/alerts/engine.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})) : {};
+    let rules = alertRules(), cloud = null;
+    if (sb && user) {  // 登入：規則存在雲端；正式通知由後端排程產生，這裡只讀取
+      const [r, n] = await Promise.all([sb.from("alert_rules").select("rule_type,enabled,params"),
+        sb.from("user_notifications").select("id,event_key,rule_type,stock_id,title,body,data_date,created_at,read_at").order("created_at", { ascending: false }).limit(PLAN_LIMITS.free.keep)]);
       if (!r.error && r.data?.length) { rules = { ...alertDefaults(), ...Object.fromEntries(r.data.map((x) => [x.rule_type, { enabled: x.enabled, params: x.params || {} }])) }; store.set("alert_rules", rules); }
-      if (!st.error && st.data) state = { date: st.data.data_date, base: st.data.baseline || {} };
+      if (!n.error) cloud = n.data.map((x) => ({ id: x.id, key: x.event_key, type: x.rule_type, stock_id: x.stock_id, title: x.title, body: x.body, data_date: x.data_date, created_at: x.created_at, read_at: x.read_at, src: "server" }));
     }
     if (UID !== uid) return;  // 中途切換帳號：不要把這一份寫到另一個帳號
-    const { notes, state: next } = alertEvents(SNAP, Object.keys(watch()), rules, state, twToday());
-    const local = store.get("notif", []), have = new Set(local.map((x) => x.key));
-    const fresh = notes.filter((x) => !have.has(x.key)).map((x) => ({ ...x, created_at: new Date().toISOString(), read_at: null }));
-    if (sb && user) {
-      if (notes.length) await sb.from("user_notifications").upsert(notes.map((x) => ({ user_id: user.id, event_key: x.key, rule_type: x.type, stock_id: x.stock_id, title: x.title.slice(0, 200), body: (x.body || "").slice(0, 1000), data_date: x.data_date })), { onConflict: "user_id,event_key", ignoreDuplicates: true });
-      if (next.date) await sb.from("alert_processing_state").upsert({ user_id: user.id, data_date: next.date, baseline: next.base, updated_at: new Date().toISOString() });
-      const { data, error } = await sb.from("user_notifications").select("id,event_key,rule_type,stock_id,title,body,data_date,created_at,read_at").order("created_at", { ascending: false }).limit(PLAN_LIMITS.free.keep);
-      if (!error) store.set("notif", data.map((x) => ({ id: x.id, key: x.event_key, type: x.rule_type, stock_id: x.stock_id, title: x.title, body: x.body, data_date: x.data_date, created_at: x.created_at, read_at: x.read_at })));
-      else store.set("notif", fresh.concat(local).slice(0, PLAN_LIMITS.free.keep));
-    } else store.set("notif", fresh.concat(local).slice(0, PLAN_LIMITS.free.keep));
-    if (next.date) store.set("alert_state", next);
+    const prevKeys = new Set(store.get("notif", []).map((x) => x.key));
+    let list;
+    if (cloud && engineOn()) list = cloud;  // 後端已啟用：只顯示後端產生的正式通知
+    else {  // 未登入，或後端還沒啟用：在這個瀏覽器產生，只存在這台裝置
+      const local = store.get("notif", []).filter((x) => x.src !== "server"), have = new Set(local.map((x) => x.key));
+      const { notes, state: next } = alertEvents(SNAP, Object.keys(watch()), rules, store.get("alert_state", null), twToday());
+      if (next.date) store.set("alert_state", next);
+      const fresh = notes.filter((x) => !have.has(x.key)).map((x) => ({ ...x, created_at: new Date().toISOString(), read_at: null, src: "local" }));
+      const cl = cloud || [], ck = new Set(cl.map((x) => x.key));
+      list = cl.concat(fresh.concat(local).filter((x) => !ck.has(x.key))).sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""));
+    }
+    list = list.slice(0, PLAN_LIMITS.free.keep);
+    store.set("notif", list);
     renderNcnt();
-    if (fresh.length && location.hash !== "#/alerts") toast(`有 ${fresh.length} 則新通知，點上方「通知」查看。`);
+    const nNew = list.filter((x) => !x.read_at && !prevKeys.has(x.key)).length;
+    if (nNew && location.hash !== "#/alerts") toast(`有 ${nNew} 則新通知，點上方「通知」查看。`);
     if (location.hash === "#/alerts") pageAlerts(); else if (location.hash === "#/me") pageMe();
   })();
-  try { await alertBusy; } catch (e) { console.warn("警報產生失敗", e); } finally { alertBusy = null; }
+  try { await alertBusy; } catch (e) { console.warn("讀取通知失敗", e); } finally { alertBusy = null; }
   if (alertAgain) { alertAgain = false; return runAlerts(); }
 }
 async function markRead(keys) {
   const now = new Date().toISOString(), set = new Set(keys);
   store.set("notif", store.get("notif", []).map((x) => (set.has(x.key) && !x.read_at ? { ...x, read_at: now } : x)));
   renderNcnt();
-  if (sb && user && keys.length) await sb.from("user_notifications").update({ read_at: now }).in("event_key", keys).is("read_at", null);
+  const srv = store.get("notif", []).filter((x) => set.has(x.key) && x.src === "server").map((x) => x.key);
+  if (sb && user && srv.length) { const { error } = await sb.from("user_notifications").update({ read_at: now }).in("event_key", srv).is("read_at", null); if (error) toast(`已讀狀態沒有存到雲端：${error.message}`); }
 }
 async function saveRule(k, patch) {
   const rules = alertRules(); rules[k] = { ...rules[k], ...patch, params: { ...rules[k].params, ...(patch.params || {}) } };
@@ -1441,8 +1449,8 @@ function pageAlerts() {
   const list = store.get("notif", []), rules = alertRules(), nw = Object.keys(watch()).length, unread = list.filter((x) => !x.read_at);
   const when = (x) => x.created_at ? new Date(x.created_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
   $("#app").innerHTML = `
-    <section><div class="eyebrow">${user ? "已登入・通知會在你的每台裝置同步" : "未登入・通知只存在這台裝置"}</div><h1>通知</h1>
-      <p class="lead">依你的<a href="#/watch">觀察清單</a>（${nw} 檔）自動提醒。每次盤後資料更新後，打開網站就會檢查一次；同一件事只通知一次。</p></section>
+    <section><div class="eyebrow">${user && engineOn() ? "已登入・通知由網站後端在每次盤後更新時產生，每台裝置都看得到" : user ? "已登入・後端通知服務還沒啟用，通知暫時在這台裝置產生" : "未登入・通知在這個瀏覽器產生，只存在這台裝置"}</div><h1>通知</h1>
+      <p class="lead">依你的<a href="#/watch">觀察清單</a>（${nw} 檔）自動提醒，同一件事只通知一次。${user && engineOn() ? `你沒打開網站也會產生（後端最後執行：${esc((ENGINE.ran_at || "—").slice(0, 16).replace("T", " "))}${ENGINE.ok ? "" : "，上次失敗，會在下次更新重試"}）。` : "目前是打開網站時才檢查；登入並啟用後端通知後，沒打開網站也會產生。"}</p></section>
     <section class="card"><div class="card-h"><h2>最新通知</h2>${unread.length ? `<button class="btn ghost sm" id="readAll">全部標為已讀（${unread.length}）</button>` : ""}</div>
       ${!nw ? '<div class="empty">觀察清單是空的。先在股票旁邊按 ☆ 加入觀察清單，之後就會收到通知。</div>'
         : list.length ? list.map((x) => `<a class="nt" href="#/stock/${esc(x.stock_id)}" data-key="${esc(x.key)}" style="display:block;padding:10px 0;border-top:1px solid var(--line);color:inherit;text-decoration:none">
@@ -1494,12 +1502,15 @@ async function pushState() {
     let res = ver
       ? await sb.from("user_state").update(body).eq("user_id", user.id).eq("version", ver).select("version")
       : await sb.from("user_state").insert({ user_id: user.id, ...body }).select("version");
-    if (res.error && res.error.code !== "23505") { syncMsg = `同步失敗：${res.error.message}（會再試）`; return; }
+    if (res.error && res.error.code !== "23505") {  // 網路中斷等：修改保留在這台（標記未同步），30 秒後或網路恢復時重試
+      syncMsg = `同步失敗：${res.error.message}（修改保留在這台，會自動重試）`; setTimeout(() => { if (meta("dirty") && !pushT) pushT = setTimeout(pushState, 0); }, 30000); return; }
     if (res.error || !res.data?.length) {  // 版本號對不上：另一台裝置剛改過
+      const mine = localState();
       const { data } = await sb.from("user_state").select("watch,strategies,pref,version").eq("user_id", user.id).maybeSingle();
       if (data) applyRemote(data);
+      meta("conflict", { at: new Date().toISOString(), local: mine });  // 這台沒存到的修改先保留，可以重新套用
       syncMsg = `已載入雲端最新資料 ${nowTxt()}`;
-      toast("另一台裝置剛更新過資料，已改成雲端最新版本。你剛剛在這台的修改沒有存到，請再改一次。");
+      toast("另一台裝置剛更新過資料，已改成雲端版本。你在這台的修改已暫存，可到「帳號」頁比較後重新套用。");
       refreshView(); return;
     }
     meta("ver", res.data[0].version); meta("dirty", false);
@@ -1516,6 +1527,37 @@ async function pullState() {
   if (data) { if (data.version !== meta("ver")) { applyRemote(data); refreshView(); } syncMsg = `已同步 ${nowTxt()}`; }
   else { meta("ver", 0); await pushState(); }
   offerImport();
+}
+// 同步衝突：比較暫存的本機修改和雲端版本，可以合併套用（自選股、策略取聯集，偏好以這台為準）
+function conflictDiff(c) {
+  const R = localState(), L = c.local, ids = (o) => new Set(Object.keys(o || {}));
+  const lw = ids(L.watch), rw = ids(R.watch), ln = new Set((L.strategies || []).map((x) => x.name)), rn = new Set((R.strategies || []).map((x) => x.name));
+  return { addW: [...lw].filter((x) => !rw.has(x)), onlyRemoteW: [...rw].filter((x) => !lw.has(x)), addS: [...ln].filter((x) => !rn.has(x)),
+    prefChanged: JSON.stringify(L.pref || {}) !== JSON.stringify(R.pref || {}) };
+}
+function applyConflict(c) {
+  const R = localState(), L = c.local, names = new Set((L.strategies || []).map((x) => x.name));
+  store.set("watch", { ...R.watch, ...L.watch });
+  store.set("strategies", (L.strategies || []).concat((R.strategies || []).filter((x) => !names.has(x.name))));
+  store.set("pref", { ...R.pref, ...L.pref, hidden: { ...(R.pref.hidden || {}), ...(L.pref.hidden || {}) } });
+  meta("conflict", null); toast("已把這台的修改合併進雲端版本，正在同步。"); refreshView();
+}
+function conflictCard() {
+  const c = meta("conflict"); if (!c) return "";
+  const d = conflictDiff(c), nm = (id) => `${id}${BYID[id] ? " " + BYID[id].name : ""}`;
+  return `<section class="card" style="border-color:var(--warn)"><h2 style="margin-top:0">有沒存到雲端的修改</h2>
+    <p class="small" style="margin:0 0 6px">${esc(new Date(c.at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei" }))} 同步時，另一台裝置剛改過資料，所以這台的修改先暫存起來。和目前的雲端版本相比：</p>
+    <ul class="small" style="margin:0 0 8px;padding-left:18px">
+      <li>這台多出的自選股：${d.addW.length ? esc(d.addW.map(nm).join("、")) : "沒有"}</li>
+      <li>雲端有、這台暫存裡沒有的自選股（合併後會保留）：${d.onlyRemoteW.length ? esc(d.onlyRemoteW.map(nm).join("、")) : "沒有"}</li>
+      <li>這台多出的策略：${d.addS.length ? esc(d.addS.join("、")) : "沒有"}</li>
+      <li>個人化選股偏好：${d.prefChanged ? "不同（合併後以這台為準）" : "相同"}</li></ul>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="cfApply">合併套用這台的修改</button><button class="btn ghost sm" id="cfDrop">捨棄暫存，用雲端版本</button></div></section>`;
+}
+function bindConflict(after) {
+  const c = meta("conflict"); if (!c) return;
+  if ($("#cfApply")) $("#cfApply").onclick = () => { applyConflict(c); after(); };
+  if ($("#cfDrop")) $("#cfDrop").onclick = () => { meta("conflict", null); toast("已捨棄暫存的修改。"); after(); };
 }
 function guestState() {
   const g = (k, d) => { try { return JSON.parse(localStorage.getItem("yx_" + k) ?? "null") ?? d; } catch (e) { return d; } };
@@ -1547,8 +1589,21 @@ async function initAuth() {
     if (user?.id !== was) { syncMsg = ""; setTimeout(async () => { refreshView(); if (user) await pullState(); runAlerts(); }, 0); }  // 不在 callback 裡等待，避免卡住
   });
   if (new URLSearchParams(location.search).has("code")) setTimeout(() => history.replaceState(null, "", location.pathname + location.hash), 2000);
+  window.addEventListener("online", () => { if (meta("dirty")) pushState(); });
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullState(); else if (pushT) pushState(); });
   renderAcct();
+}
+async function deleteAccount() {
+  const em = user?.email || "";
+  if (!confirm(`確定要永久刪除 ${em} 的帳號和所有雲端資料嗎？無法復原。`)) return;
+  if (prompt(`請輸入你的 Email（${em}）確認刪除：`)?.trim().toLowerCase() !== em.toLowerCase()) return toast("Email 不一致，沒有刪除。");
+  clearTimeout(pushT); pushT = null;
+  const { data, error } = await sb.rpc("delete_my_account");
+  if (error || !data?.ok) return toast(`刪除失敗：${error?.message || "請重新登入後再試"}`);
+  const pre = `yx_u_${UID}_`;
+  try { Object.keys(localStorage).filter((k) => k.startsWith(pre)).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
+  await sb.auth.signOut().catch(() => {});
+  toast("帳號和雲端資料已刪除。");
 }
 async function logout() {
   if (pushT || pushing) await pushState();  // 還沒上傳的修改先存好再登出
@@ -1558,12 +1613,17 @@ function pageAccount() {
   if (!SUPA) { $("#app").innerHTML = '<section class="card"><div class="empty">網站還沒有開啟會員功能。所有功能都可以不登入使用，資料會存在這台裝置。</div></section>'; return; }
   const what = `<p class="faint small" style="margin:10px 0 0">會同步：觀察清單、自訂條件選股策略、我的 AI 排行偏好（含隱藏的股票）。只存你的 Email 和這些設定，每個人只能讀到自己的資料。不登入也能使用所有功能。</p>`;
   if (user) {
-    $("#app").innerHTML = `<section><h1>我的帳號</h1></section><section class="card"><div class="card-h"><h2>${esc(user.email || "")}</h2><span class="muted small">${esc(syncMsg || "同步中…")}</span></div>
+    $("#app").innerHTML = `<section><h1>我的帳號</h1></section>${conflictCard()}<section class="card"><div class="card-h"><h2>${esc(user.email || "")}</h2><span class="muted small">${esc(syncMsg || "同步中…")}</span></div>
       <p style="margin:0">在其他手機、電腦用同一個 Email 登入，就會看到一樣的觀察清單和設定。</p>
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" id="syncNow">立即同步</button><button class="btn ghost" id="logout">登出</button></div>${what}
+      <details style="margin-top:12px"><summary class="small muted">刪除帳號</summary>
+        <p class="small" style="margin:6px 0">會永久刪除這個帳號，以及雲端上的自選股、策略、偏好、通知、通知規則和 AI 問答用量紀錄，<b>無法復原</b>。這台裝置上這個帳號的資料也會一起清除。</p>
+        <button class="btn ghost sm" id="delAcct" style="color:var(--down);border-color:var(--down)">永久刪除我的帳號</button></details>
       <p class="faint small" style="margin:6px 0 0">每個帳號的資料分開存放；登出後會回到未登入時的資料，不會把這個帳號的清單留給下一個人用。</p></section>`;
     $("#syncNow").onclick = async () => { if (meta("dirty")) await pushState(); else await pullState(); pageAccount(); };
     $("#logout").onclick = logout;
+    $("#delAcct").onclick = deleteAccount;
+    bindConflict(pageAccount);
     return;
   }
   $("#app").innerHTML = `<section><h1>登入股栗子</h1><p class="lead">用 Email 登入，就能在不同裝置同步你的觀察清單和設定。不需要密碼。</p></section>

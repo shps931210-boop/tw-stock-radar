@@ -1,0 +1,475 @@
+[
+ {
+  "name": "第一次只記錄基準",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 5
+       }
+      }
+     },
+     "timing": {
+      "status": "none",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": []
+   }
+  },
+  "watch": [
+   "2330"
+  ],
+  "rules": {},
+  "state": null,
+  "today": "2026-10-12",
+  "keys": [],
+  "state_out": {
+   "date": "2026-10-12",
+   "base": {
+    "2330": {
+     "s": 70,
+     "r": 5,
+     "ok": true,
+     "ex": []
+    }
+   }
+  }
+ },
+ {
+  "name": "和上一個資料日比較",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 5
+       }
+      }
+     },
+     "timing": {
+      "status": "buy",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    },
+    {
+     "stock_id": "2317",
+     "name": "股2317",
+     "date": "2026-10-12",
+     "base_ok": false,
+     "exclude_reasons": [
+      "負債比過高"
+     ],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 58,
+        "rank": 31
+       }
+      }
+     },
+     "timing": {
+      "status": "none",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    },
+    {
+     "stock_id": "1101",
+     "name": "股1101",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 90,
+        "rank": 1
+       }
+      }
+     },
+     "timing": {
+      "status": "none",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": []
+   }
+  },
+  "watch": [
+   "2330",
+   "2317"
+  ],
+  "rules": {},
+  "state": {
+   "date": "2026-10-11",
+   "base": {
+    "2330": {
+     "s": 55,
+     "r": 40,
+     "ok": true,
+     "ex": []
+    },
+    "2317": {
+     "s": 60,
+     "r": 30,
+     "ok": true,
+     "ex": []
+    }
+   }
+  },
+  "today": "2026-10-12",
+  "keys": [
+   "risk:2317:2026-10-12",
+   "score:2330:2026-10-12",
+   "signal:2330:2026-10-12",
+   "top:2330:2026-10-12"
+  ]
+ },
+ {
+  "name": "同一個資料日重跑不產生比較通知、基準不變",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 5
+       }
+      }
+     },
+     "timing": {
+      "status": "none",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": []
+   }
+  },
+  "watch": [
+   "2330"
+  ],
+  "rules": {},
+  "state": {
+   "date": "2026-10-12",
+   "base": {
+    "2330": {
+     "s": 55,
+     "r": 40,
+     "ok": true,
+     "ex": []
+    }
+   }
+  },
+  "today": "2026-10-12",
+  "keys": [],
+  "state_out": {
+   "date": "2026-10-12",
+   "base": {
+    "2330": {
+     "s": 55,
+     "r": 40,
+     "ok": true,
+     "ex": []
+    }
+   }
+  }
+ },
+ {
+  "name": "關閉規則、預設門檻 10 分",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 30
+       }
+      }
+     },
+     "timing": {
+      "status": "buy",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": []
+   }
+  },
+  "watch": [
+   "2330"
+  ],
+  "rules": {
+   "signal": {
+    "enabled": false
+   }
+  },
+  "state": {
+   "date": "2026-10-11",
+   "base": {
+    "2330": {
+     "s": 65,
+     "r": 40,
+     "ok": true,
+     "ex": []
+    }
+   }
+  },
+  "today": "2026-10-12",
+  "keys": []
+ },
+ {
+  "name": "自訂門檻 5 分",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 30
+       }
+      }
+     },
+     "timing": {
+      "status": "buy",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": []
+   }
+  },
+  "watch": [
+   "2330"
+  ],
+  "rules": {
+   "signal": {
+    "enabled": false
+   },
+   "score": {
+    "enabled": true,
+    "params": {
+     "min": 5
+    }
+   }
+  },
+  "state": {
+   "date": "2026-10-11",
+   "base": {
+    "2330": {
+     "s": 65,
+     "r": 40,
+     "ok": true,
+     "ex": []
+    }
+   }
+  },
+  "today": "2026-10-12",
+  "keys": [
+   "score:2330:2026-10-12"
+  ]
+ },
+ {
+  "name": "除權息只提醒已確認且在天數內",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-12",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 5
+       }
+      }
+     },
+     "timing": {
+      "status": "none",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": [
+     {
+      "event_type": "dividend",
+      "status": "confirmed",
+      "stock_id": "2330",
+      "event_date": "2026-10-14",
+      "title": "除息（現金股利 5 元）"
+     },
+     {
+      "event_type": "dividend",
+      "status": "unverified",
+      "stock_id": "2330",
+      "event_date": "2026-10-13",
+      "title": "除息"
+     },
+     {
+      "event_type": "dividend",
+      "status": "confirmed",
+      "stock_id": "2330",
+      "event_date": "2026-10-30",
+      "title": "除息"
+     },
+     {
+      "event_type": "dividend",
+      "status": "confirmed",
+      "stock_id": "9999",
+      "event_date": "2026-10-13",
+      "title": "除息"
+     }
+    ]
+   }
+  },
+  "watch": [
+   "2330"
+  ],
+  "rules": {},
+  "state": null,
+  "today": "2026-10-12",
+  "keys": [
+   "exdiv:2330:2026-10-14"
+  ]
+ },
+ {
+  "name": "股價不是最新就不發技術訊號",
+  "snap": {
+   "data_dates": {
+    "prices": "2026-10-12"
+   },
+   "stocks": [
+    {
+     "stock_id": "2330",
+     "name": "股2330",
+     "date": "2026-10-08",
+     "base_ok": true,
+     "exclude_reasons": [],
+     "ai": {
+      "modes": {
+       "balanced": {
+        "score": 70,
+        "rank": 5
+       }
+      }
+     },
+     "timing": {
+      "status": "buy",
+      "triggers": [
+       "sig_breakout"
+      ]
+     }
+    }
+   ],
+   "triggers": {
+    "sig_breakout": "帶量突破"
+   },
+   "calendar": {
+    "events": []
+   }
+  },
+  "watch": [
+   "2330"
+  ],
+  "rules": {},
+  "state": null,
+  "today": "2026-10-12",
+  "keys": []
+ }
+]

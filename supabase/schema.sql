@@ -37,6 +37,8 @@ create table if not exists public.ai_usage (
   n       integer not null default 0,
   primary key (day, user_id)
 );
+-- 實際花費（美元）：AI 問答後端回答完後依 Token 用量回報，下面的上限會一起檢查。
+alter table public.ai_usage add column if not exists cost_usd numeric(10, 4) not null default 0;
 alter table public.ai_usage enable row level security;
 drop policy if exists "own usage: read" on public.ai_usage;
 create policy "own usage: read" on public.ai_usage for select to authenticated using ((select auth.uid()) = user_id);
@@ -53,21 +55,26 @@ declare
   uid uuid := auth.uid();
   today date := (now() at time zone 'Asia/Taipei')::date;
   per_user constant integer := 20;    -- 每位會員每天最多 20 題
-  per_site constant integer := 100;   -- 全站每天最多 100 題（約 5 美元）
+  per_site constant integer := 100;   -- 全站每天最多 100 題
+  usd_user constant numeric := 0.50;  -- 每位會員每天最多花 0.5 美元
+  usd_site constant numeric := 3.00;  -- 全站每天最多花 3 美元（另外請在 Anthropic Console 設定每月支出上限）
   mine integer;
   total integer;
+  cost_mine numeric;
+  cost_total numeric;
 begin
   if uid is null then
     return json_build_object('ok', false, 'reason', 'login');
   end if;
   perform pg_advisory_xact_lock(hashtext('ai_usage'));  -- 同時有很多人問時，計數不會算錯
-  select coalesce(sum(n), 0) into total from public.ai_usage where day = today;
-  select coalesce(n, 0) into mine from public.ai_usage where day = today and user_id = uid;
+  select coalesce(sum(n), 0), coalesce(sum(cost_usd), 0) into total, cost_total from public.ai_usage where day = today;
+  select coalesce(n, 0), coalesce(cost_usd, 0) into mine, cost_mine from public.ai_usage where day = today and user_id = uid;
   mine := coalesce(mine, 0);
-  if total >= per_site then
+  cost_mine := coalesce(cost_mine, 0);
+  if total >= per_site or cost_total >= usd_site then
     return json_build_object('ok', false, 'reason', 'site', 'used', mine, 'limit', per_user);
   end if;
-  if mine >= per_user then
+  if mine >= per_user or cost_mine >= usd_user then
     return json_build_object('ok', false, 'reason', 'user', 'used', mine, 'limit', per_user);
   end if;
   insert into public.ai_usage (day, user_id, n) values (today, uid, 1)
@@ -78,8 +85,31 @@ $$;
 revoke all on function public.use_ai_quota() from public, anon;
 grant execute on function public.use_ai_quota() to authenticated;
 
+-- AI 問答回答完後回報這一題的花費（依 Token 用量計算）。單次最多記 0.5 美元，負數當 0。
+create or replace function public.record_ai_cost(p_cost numeric)
+returns json
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  uid uuid := auth.uid();
+  today date := (now() at time zone 'Asia/Taipei')::date;
+  c numeric := least(greatest(coalesce(p_cost, 0), 0), 0.5);
+begin
+  if uid is null then
+    return json_build_object('ok', false, 'reason', 'login');
+  end if;
+  insert into public.ai_usage (day, user_id, n, cost_usd) values (today, uid, 0, c)
+    on conflict (day, user_id) do update set cost_usd = public.ai_usage.cost_usd + c;
+  return json_build_object('ok', true);
+end;
+$$;
+revoke all on function public.record_ai_cost(numeric) from public, anon;
+grant execute on function public.record_ai_cost(numeric) to authenticated;
+
 -- ===== 智慧警報（站內通知）=====
--- 規則、通知、比較基準都只存在自己的帳號，每個人只能讀寫自己的資料。網站不使用任何管理員金鑰。
+-- 規則、通知、比較基準都只屬於自己的帳號。網站只用公開金鑰；通知由後端排程產生（見下方權限）。
 -- 同一則通知有固定代號 event_key（規則:股票:資料日），unique (user_id, event_key) 保證不會重複通知。
 create table if not exists public.alert_rules (
   user_id    uuid not null references auth.users (id) on delete cascade,
@@ -128,16 +158,21 @@ begin
     execute format('revoke all on public.%I from anon', t);
   end loop;
 end $$;
-grant select, insert, update, delete on public.alert_rules, public.alert_processing_state to authenticated;
-grant select, insert, delete on public.user_notifications to authenticated;
-revoke update on public.user_notifications from authenticated;
-grant update (read_at) on public.user_notifications to authenticated;   -- 通知內容不能改，只能標為已讀
+-- 通知規則：會員自己設定。
+grant select, insert, update, delete on public.alert_rules to authenticated;
+-- 正式通知與處理進度：只由後端（GitHub Actions 的 app/alerts.py，使用 secret key）寫入。
+-- 會員只能讀自己的通知、標為已讀；不能自己新增、刪除通知，也不能改處理進度。
+revoke insert, update, delete on public.user_notifications from authenticated;
+grant select on public.user_notifications to authenticated;
+grant update (read_at) on public.user_notifications to authenticated;
+revoke insert, update, delete on public.alert_processing_state from authenticated;
+grant select on public.alert_processing_state to authenticated;
 
 -- 每人最多保留 500 則通知，超過就刪掉最舊的（避免免費資料庫被塞滿）
 create or replace function public.trim_notifications()
 returns trigger
 language plpgsql
-security invoker
+security definer
 set search_path = ''
 as $$
 begin
@@ -163,3 +198,24 @@ create policy "own plan: read" on public.user_plan for select to authenticated u
 grant select on public.user_plan to authenticated;
 revoke all on public.user_plan from anon;
 revoke insert, update, delete on public.user_plan from authenticated;
+
+-- ===== 刪除帳號（會員自己按「刪除帳號」時呼叫）=====
+-- 刪除登入帳號；觀察清單、通知、規則、用量紀錄都設定了 on delete cascade，會一起刪掉。無法復原。
+create or replace function public.delete_my_account()
+returns json
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  uid uuid := auth.uid();
+begin
+  if uid is null then
+    return json_build_object('ok', false, 'reason', 'login');
+  end if;
+  delete from auth.users where id = uid;
+  return json_build_object('ok', true);
+end;
+$$;
+revoke all on function public.delete_my_account() from public, anon;
+grant execute on function public.delete_my_account() to authenticated;
