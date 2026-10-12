@@ -1,4 +1,4 @@
-"""財報事件日曆（data/events/calendar.json）。
+"""財報與事件日曆（data/events/calendar.json）。
 
 事件分兩種，畫面上明確區分：
 - 已確認（confirmed）：官方已公告的日期。目前來源：證交所「除權除息預告表」TWT48U（上市）。

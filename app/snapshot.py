@@ -284,7 +284,7 @@ def build(demo: bool = False) -> dict:
     try:
         out["calendar"] = events.calendar(out, dbname)
     except Exception as e:  # 日曆失敗不影響其他功能
-        out["calendar"] = {"schema_version": 1, "events": [], "warnings": [f"事件日曆計算失敗：{e}"]}
+        out["calendar"] = {"schema_version": 1, "events": [], "warnings": [f"財報與事件日曆計算失敗：{e}"]}
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out

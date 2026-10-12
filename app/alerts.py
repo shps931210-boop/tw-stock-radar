@@ -1,6 +1,6 @@
 """會員通知後端（盤後更新的最後一步執行）。
 
-使用者沒打開網站，也會依觀察清單產生通知。只有這支程式能寫入 user_notifications 和 alert_processing_state；
+使用者沒打開網站，也會依自選股產生通知。只有這支程式能寫入 user_notifications 和 alert_processing_state；
 網站上的會員只能讀取自己的通知、標為已讀、修改自己的通知規則（supabase/schema.sql）。
 
 需要 GitHub Secret「SUPABASE_SECRET_KEY」（Supabase 的 secret key，sb_secret_ 開頭）。這把金鑰只在 Actions 的這一步使用，
@@ -49,7 +49,7 @@ def events(snap: dict, watch_ids: list[str], rules: dict, state: dict | None, to
         t = s.get("timing") or {}
         if on("signal") and t.get("status") == "buy" and s.get("date") == date_:
             out.append({"key": f"signal:{sid}:{date_}", "type": "signal", "stock_id": sid, "data_date": date_, "title": f"{nm(s)} 出現技術訊號",
-                        "body": "、".join((snap.get("triggers") or {}).get(k, k) for k in t.get("triggers") or []) + "。技術型態提醒，尚未經回測驗證。"})
+                        "body": "、".join((snap.get("triggers") or {}).get(k, k) for k in t.get("triggers") or []) + "。技術型態提醒，歷史回測並未證明能勝過大盤。"})
         p = (prev or {}).get(sid)
         if not p:
             continue

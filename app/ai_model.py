@@ -1,4 +1,4 @@
-"""AI 智慧選股模型：三種模式（穩健／均衡／積極）的多因子評分、硬性條件與自動解讀。
+"""AI 量化選股模型：三種模式（穩健／均衡／積極）的多因子評分、硬性條件與自動解讀。
 
 模型完全透明：
 - 硬性條件（hard）：不符合就不進排行榜。可以直接轉成自訂篩選器的條件。
@@ -14,7 +14,7 @@ from .strategies import C, check
 MODEL_VERSION = "v1.1"
 CHANGELOG = [
     {"version": "v1.1", "date": "2026-10-10", "note": "各因子設定必要欄位；過期財報、營收、本益比不計分；籌碼與股價同日對齊；"
-     "股價還原除權息；F-Score 九項齊全才給分；「今日買點」改為「今日技術訊號」。"},
+     "股價還原除權息；F-Score 九項齊全才給分；「今日買點」改為「技術訊號」。"},
     {"version": "v1.0", "date": "2026-10-08", "note": "第一版：五因子百分位加權、三種模式、技術訊號。"},
 ]
 
@@ -49,10 +49,10 @@ MODES = {
     },
 }
 LABEL = {"quality": "財務品質", "growth": "成長能力", "value": "估值", "momentum": "股價動能", "trend": "趨勢"}
-TAG = {"quality": "獲利能力穩定", "growth": "成長表現良好", "value": "估值相對合理", "momentum": "股價動能強勢", "trend": "趨勢向上"}
+TAG = {"quality": "獲利能力穩定", "growth": "成長表現良好", "value": "估值相對合理", "momentum": "股價動能居前", "trend": "趨勢向上"}
 PAIR = {frozenset(("quality", "growth")): "品質與成長兼具", frozenset(("quality", "value")): "優質且估值合理",
         frozenset(("growth", "momentum")): "成長與動能同步", frozenset(("growth", "value")): "成長股估值合理",
-        frozenset(("quality", "momentum")): "優質強勢股", frozenset(("momentum", "trend")): "價格趨勢強勁"}
+        frozenset(("quality", "momentum")): "品質與動能皆居前", frozenset(("momentum", "trend")): "動能與趨勢皆居前"}
 
 
 def _n(x, d=1):
@@ -154,7 +154,7 @@ def annotate(rows: list[dict]) -> None:
                 r["ai"]["modes"][mode] = {"score": score(r, mode), "rank": None}
 
 
-# ---------------- 今日技術訊號：體質 × 技術型態（尚未經回測驗證，不是買進建議） ----------------
+# ---------------- 技術訊號：體質 × 技術型態（有回測但未證明有效，不是買進建議） ----------------
 TRIGGERS = {
     "sig_ma_cross": "MA5 黃金交叉 MA20（3 日內）",
     "sig_kd_cross": "KD 低檔黃金交叉（K < 40）",
@@ -168,7 +168,7 @@ TIMING_RISKS = [("rsi", 80, "RSI 過熱（> 80）"), ("dist_ma20", 15, "距月�
 def buy_rule(cfg: dict) -> dict:
     return {"min_score": cfg.get("min_score", 55), "mode": cfg.get("mode", "balanced"),
             "desc": "體質條件：通過 AI 均衡型硬性條件且分數 ≥ {s}；技術條件：至少出現一個技術訊號；且沒有過熱風險。"
-                    "這套規則尚未經台股歷史回測驗證，沒有勝率與出場規則，只是技術型態提醒。".format(s=cfg.get("min_score", 55)),
+                    "這套規則已有台股歷史回測（見績效驗證），但結果並未證明能勝過大盤；沒有出場規則，只是技術型態提醒。".format(s=cfg.get("min_score", 55)),
             "backtested": False}
 
 
@@ -196,7 +196,7 @@ def summary(r: dict) -> str:
         return f"未通過基本門檻（{'、'.join(r['exclude_reasons'])}），不列入選股。"
     body = a["tag"] if a["tag"] not in ("資料不足", "各項表現普通") else "體質表現普通"
     if t.get("status") == "buy":
-        when = f"目前出現「{TRIGGERS[t['triggers'][0]]}」技術訊號（尚未經回測驗證）"
+        when = f"目前出現「{TRIGGERS[t['triggers'][0]]}」技術訊號（歷史回測並未證明能勝過大盤）"
     elif t.get("hot"):
         when = f"但{t['hot'][0]}，建議等待拉回"
     elif t.get("status") == "watch":

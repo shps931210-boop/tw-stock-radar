@@ -1,20 +1,20 @@
-"""每日 AI 選股紀錄、入選後股價追蹤、AI 選股成績單。
+"""每日 AI 量化選股紀錄、入選後股價追蹤、選股績效驗證。
 
 紀錄（history/picks/）
 - 日期.json：每個資料日第一次完整更新後的選股結果（首次發布版）。
 - 日期.v2.json、v3…：同一天稍後的更新讓名單改變時另存「補正版」（例如 21:00 補上法人資料後）。
-  所有檔案都不覆寫，GitHub Actions 會 commit 進 repository。成績單一律用首次發布版，避免事後挑選。
+  所有檔案都不覆寫，GitHub Actions 會 commit 進 repository。績效驗證一律用首次發布版，避免事後挑選。
 
-成績單的計算方式（固定規則，所有紀錄一致）
+績效驗證的計算方式（固定規則，所有紀錄一致）
 - 進場：選股日的「下一個交易日開盤價」（名單在收盤後才產生，當天收盤價買不到）。
 - 出場：選股日之後第 5、20、60 個交易日的收盤價（進場日算第 1 天，所以「5 天」= 進場日開盤到第 5 個交易日收盤）；
   還沒到期的期間不計入。回測（app/backtest.py）用同一個定義。
 - 扣交易成本 0.585%（手續費 0.1425% × 2 ＋ 證交稅 0.3%），用還原除權息股價。
 - 基準：元大台灣50（0050，還原除權息，含股利）在「同一段期間」的報酬：進場日開盤 → 出場日收盤，
   和個股完全相同。基準固定是 0050，不會換成別的指數：進場日或出場日缺 0050 價格時，該筆標示「無法比較」，
-  只列報酬、不算超額報酬，也不併入成績單的超額報酬平均（另外列出筆數）。基準不扣交易成本，對 AI 選股比較嚴格。
+  只列報酬、不算超額報酬，也不併入績效驗證的超額報酬平均（另外列出筆數）。基準不扣交易成本，對 AI 量化選股比較嚴格。
 - 正式樣本外：每筆紀錄都存模型設定指紋（model_hash＝模型程式＋選股設定的雜湊），而且名單要在進場日開盤（09:00）
-  之前就產生，才算進成績單；事後才產生的名單（例如補跑舊日期）另外標示「名單產生太晚」，不計入。
+  之前就產生，才算進績效驗證；事後才產生的名單（例如補跑舊日期）另外標示「名單產生太晚」，不計入。
 - 可交易性：進場日沒有成交（停牌、下市）、漲停鎖死（開高低同價且漲幅 ≥ 9.5%）、
   進場日成交金額太少的股票，實際上買不到，不計入，並分類列出檔數與比例。
 - 已買進但出場日沒有成交的股票仍然計入，用出場日以前最後一個成交價估算，避免只留下活著的股票；
@@ -70,12 +70,24 @@ def benchmark(con, first: str | None = None) -> tuple[pd.DataFrame, str]:
 
 
 def model_hash() -> str:
-    """模型設定指紋：AI 模型程式 + 選股相關設定。任何一個改變，指紋就會改變（12 碼）。"""
+    """模型設定指紋：AI 模型程式邏輯 + 選股相關設定（12 碼）。
+    只看程式結構：註解和文字說明（字串）改了不會改變指紋，避免修改用語就把績效紀錄切成兩段；計算邏輯、數字、設定改了才會變。"""
     from . import ai_model
     cfg = config.load()
     keys = {k: cfg.get(k) for k in ("composite_weights", "base_filter", "buy_point")}
-    src = Path(ai_model.__file__).read_bytes() + json.dumps(keys, sort_keys=True, ensure_ascii=False).encode()
+    src = _logic(Path(ai_model.__file__).read_text("utf-8")).encode() + json.dumps(keys, sort_keys=True, ensure_ascii=False).encode()
     return hashlib.sha256(src).hexdigest()[:12]
+
+
+def _logic(code: str) -> str:
+    """把程式裡的文字字串換成空字串後的語法樹（字典的鍵、比較用的代碼也是字串，所以保留短的英數字串）。"""
+    import ast
+    import re as _re
+    tree = ast.parse(code)
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Constant) and isinstance(n.value, str) and not _re.fullmatch(r"[A-Za-z0-9_.\-]{0,40}", n.value):
+            n.value = ""
+    return ast.dump(tree, include_attributes=False)
 
 
 def on_time(log: dict, entry: str | None) -> bool | None:
@@ -290,7 +302,7 @@ def attribution(per: dict, uni: dict, ind: dict) -> dict | None:
 
 
 def _card(rows: list[dict], names: list[str]) -> dict:
-    """成績單：所有已到期、正式樣本外的選股日，各期間的平均。
+    """績效驗證：所有已到期、正式樣本外的選股日，各期間的平均。
     只合併有 0050 基準、而且名單在進場日開盤前就產生的紀錄；缺 0050（無法比較）和名單產生太晚的筆數另外列出。"""
     card = {}
     for name in names:
