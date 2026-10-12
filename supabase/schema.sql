@@ -22,5 +22,6 @@ create policy "own row: insert" on public.user_state for insert to authenticated
 create policy "own row: update" on public.user_state for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "own row: delete" on public.user_state for delete to authenticated using ((select auth.uid()) = user_id);
 
+grant usage on schema public to authenticated;
 grant select, insert, update, delete on public.user_state to authenticated;
 revoke all on public.user_state from anon;
