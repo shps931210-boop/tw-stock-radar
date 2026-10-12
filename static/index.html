@@ -297,8 +297,12 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const store = { get(k, d) { try { const v = localStorage.getItem("yx_" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-                set(k, v) { try { localStorage.setItem("yx_" + k, JSON.stringify(v)); } catch (e) {} if (["watch", "strategies", "pref"].includes(k)) schedulePush(); } };  // 登入時同步到雲端（見「會員登入與雲端同步」）
+// 觀察清單、策略、偏好：未登入時存在 yx_ 底下；登入後每個帳號有自己的一份（yx_u_帳號_），不同帳號不會混在一起
+let UID = null;
+const SYNC_KEYS = ["watch", "strategies", "pref"];
+const lsKey = (k) => (UID && SYNC_KEYS.includes(k) ? `yx_u_${UID}_` : "yx_") + k;
+const store = { get(k, d) { try { const v = localStorage.getItem(lsKey(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem(lsKey(k), JSON.stringify(v)); } catch (e) {} if (UID && SYNC_KEYS.includes(k)) markDirty(); } };
 const FC = { quality: "#8b5a34", growth: "#c4524a", value: "#5f9a8c", momentum: "#d1a03a", trend: "#8f7aa8" };
 const FL = { quality: "財務品質", growth: "成長能力", value: "估值", momentum: "股價動能", trend: "趨勢" };
 
@@ -1135,40 +1139,76 @@ function pageMine() {
 
 // ---------- 會員登入與雲端同步（Supabase；網站沒有設定就不顯示，所有功能照常不用登入） ----------
 // 網站只放公開金鑰（publishable key）；資料表開了 Row Level Security，每個人只能讀寫自己的那一列（supabase/schema.sql）。
+// 同步規則：
+// - 每個帳號在這台裝置有自己的一份資料，登出就回到未登入的資料，不會把 A 帳號的清單帶進 B 帳號。
+// - 未登入時建立的資料，只有在你按「匯入」後才會加進帳號（匯入後未登入的那份會清空）。
+// - 雲端每次存檔版本號 +1；存檔時版本號對不上，代表另一台裝置剛改過，這台不覆寫，改載入雲端最新資料並提示。
 const SUPA = window.SUPA || null;
-const SYNC_KEYS = ["watch", "strategies", "pref"];
 const SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js";
-let sb = null, user = null, pushT = null, syncMsg = "", otpEmail = "";
-function schedulePush() { if (!sb || !user) return; clearTimeout(pushT); pushT = setTimeout(pushState, 1500); }
+let sb = null, user = null, pushT = null, syncMsg = "", otpEmail = "", pushing = null;
+const meta = (k, v) => { const key = `yx_u_${UID}__${k}`; try { if (v === undefined) return JSON.parse(localStorage.getItem(key) ?? "null"); localStorage.setItem(key, JSON.stringify(v)); } catch (e) { return null; } };
+const nowTxt = () => new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" });
+function toast(msg) {
+  let el = $("#toast");
+  if (!el) { el = document.createElement("div"); el.id = "toast"; el.setAttribute("role", "status");
+    el.style.cssText = "position:fixed;left:50%;bottom:20px;transform:translateX(-50%);max-width:min(92vw,520px);background:var(--ink);color:var(--panel);padding:10px 16px;border-radius:12px;font-size:14px;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.2)";
+    document.body.appendChild(el); }
+  el.textContent = msg; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(() => (el.hidden = true), 6000);
+}
+function markDirty() { if (!UID) return; meta("dirty", true); clearTimeout(pushT); pushT = setTimeout(() => pushState(), 1500); }
+const localState = () => Object.fromEntries(SYNC_KEYS.map((k) => [k, store.get(k, k === "strategies" ? [] : {})]));
+function applyRemote(row) {
+  SYNC_KEYS.forEach((k) => { try { localStorage.setItem(`yx_u_${UID}_${k}`, JSON.stringify(row[k] ?? (k === "strategies" ? [] : {}))); } catch (e) {} });
+  meta("ver", row.version); meta("dirty", false);
+}
+function refreshView() { renderWcnt(); if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash)) route(); }
 async function pushState() {
-  pushT = null;
-  if (!sb || !user) return;
-  const row = { user_id: user.id, updated_at: new Date().toISOString() };
-  SYNC_KEYS.forEach((k) => (row[k] = store.get(k, k === "strategies" ? [] : {})));
-  const { error } = await sb.from("user_state").upsert(row);
-  syncMsg = error ? `同步失敗：${error.message}` : `已同步 ${new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" })}`;
+  clearTimeout(pushT); pushT = null;
+  if (!sb || !user || pushing) return pushing;
+  pushing = (async () => {
+    const ver = meta("ver") || 0, body = { ...localState(), version: ver + 1, updated_at: new Date().toISOString() };
+    let res = ver
+      ? await sb.from("user_state").update(body).eq("user_id", user.id).eq("version", ver).select("version")
+      : await sb.from("user_state").insert({ user_id: user.id, ...body }).select("version");
+    if (res.error && res.error.code !== "23505") { syncMsg = `同步失敗：${res.error.message}（會再試）`; return; }
+    if (res.error || !res.data?.length) {  // 版本號對不上：另一台裝置剛改過
+      const { data } = await sb.from("user_state").select("watch,strategies,pref,version").eq("user_id", user.id).maybeSingle();
+      if (data) applyRemote(data);
+      syncMsg = `已載入雲端最新資料 ${nowTxt()}`;
+      toast("另一台裝置剛更新過資料，已改成雲端最新版本。你剛剛在這台的修改沒有存到，請再改一次。");
+      refreshView(); return;
+    }
+    meta("ver", res.data[0].version); meta("dirty", false);
+    syncMsg = `已同步 ${nowTxt()}`;
+  })();
+  try { await pushing; } finally { pushing = null; }
   if (location.hash === "#/account") pageAccount();
 }
-function writeLocal(k, v) { try { localStorage.setItem("yx_" + k, JSON.stringify(v)); } catch (e) {} }  // 不觸發上傳
 async function pullState() {
-  if (!sb || !user || pushT) return;
-  const { data, error } = await sb.from("user_state").select("watch,strategies,pref").eq("user_id", user.id).maybeSingle();
+  if (!sb || !user || pushT || pushing) return;
+  if (meta("dirty")) return pushState();  // 上次有改了還沒存到雲端：先存（版本對不上就不覆寫）
+  const { data, error } = await sb.from("user_state").select("watch,strategies,pref,version").eq("user_id", user.id).maybeSingle();
   if (error) { syncMsg = `讀取雲端資料失敗：${error.message}`; return; }
-  const first = store.get("synced_uid", null) !== user.id;  // 這台裝置第一次登入這個帳號：雲端和本機合併，什麼都不丟
-  if (data && !first) SYNC_KEYS.forEach((k) => data[k] != null && writeLocal(k, data[k]));
-  else if (data) {
-    const lw = store.get("watch", {}), ls = store.get("strategies", []), lp = store.get("pref", {});
-    writeLocal("watch", { ...lw, ...(data.watch || {}) });
-    const names = new Set((data.strategies || []).map((s) => s.name));
-    writeLocal("strategies", (data.strategies || []).concat(ls.filter((s) => !names.has(s.name))));
-    const rp = data.pref || {};
-    writeLocal("pref", Object.keys(rp).length ? { ...rp, hidden: { ...(lp.hidden || {}), ...(rp.hidden || {}) } } : lp);
-  }
-  writeLocal("synced_uid", user.id);
-  if (first || !data) await pushState();
-  else syncMsg = `已同步 ${new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" })}`;
-  renderWcnt();
-  if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash)) route();
+  if (data) { if (data.version !== meta("ver")) { applyRemote(data); refreshView(); } syncMsg = `已同步 ${nowTxt()}`; }
+  else { meta("ver", 0); await pushState(); }
+  offerImport();
+}
+function guestState() {
+  const g = (k, d) => { try { return JSON.parse(localStorage.getItem("yx_" + k) ?? "null") ?? d; } catch (e) { return d; } };
+  return { watch: g("watch", {}), strategies: g("strategies", []), pref: g("pref", {}) };
+}
+function offerImport() {
+  const g = guestState(), nw = Object.keys(g.watch).length, ns = g.strategies.length, nh = Object.keys(g.pref.hidden || {}).length;
+  if (!(nw || ns || nh) || meta("import_asked")) return;
+  meta("import_asked", true);
+  if (!confirm(`這台裝置有未登入時建立的資料：觀察清單 ${nw} 檔、策略 ${ns} 個、隱藏的股票 ${nh} 檔。\n要匯入 ${user.email || "這個帳號"} 嗎？\n\n按「確定」匯入（匯入後未登入的那份會清空）；按「取消」保留在未登入狀態使用。`)) return;
+  const L = localState();
+  store.set("watch", { ...g.watch, ...L.watch });
+  const names = new Set(L.strategies.map((s) => s.name));
+  store.set("strategies", L.strategies.concat(g.strategies.filter((s) => !names.has(s.name))));
+  store.set("pref", { ...g.pref, ...L.pref, hidden: { ...(g.pref.hidden || {}), ...(L.pref.hidden || {}) } });
+  SYNC_KEYS.forEach((k) => { try { localStorage.removeItem("yx_" + k); } catch (e) {} });
+  toast("已匯入，正在同步到雲端。"); refreshView();
 }
 function renderAcct() { const b = $("#acct"); b.hidden = false; b.textContent = user ? "✓ 已登入" : "登入"; }
 async function initAuth() {
@@ -1179,13 +1219,16 @@ async function initAuth() {
   } catch (e) { return; }
   $("#acct").onclick = () => (location.hash = "#/account");
   sb.auth.onAuthStateChange((ev, session) => {
-    const was = user?.id; user = session?.user || null; renderAcct();
-    if (user && user.id !== was) setTimeout(pullState, 0);  // 不在 callback 裡等待，避免卡住
-    if (!user && location.hash === "#/account") setTimeout(pageAccount, 0);
+    const was = user?.id; user = session?.user || null; UID = user?.id || null; renderAcct();
+    if (user?.id !== was) { syncMsg = ""; setTimeout(() => { refreshView(); if (user) pullState(); }, 0); }  // 不在 callback 裡等待，避免卡住
   });
   if (new URLSearchParams(location.search).has("code")) setTimeout(() => history.replaceState(null, "", location.pathname + location.hash), 2000);
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullState(); });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullState(); else if (pushT) pushState(); });
   renderAcct();
+}
+async function logout() {
+  if (pushT || pushing) await pushState();  // 還沒上傳的修改先存好再登出
+  await sb.auth.signOut();
 }
 function pageAccount() {
   if (!SUPA) { $("#app").innerHTML = '<section class="card"><div class="empty">網站還沒有開啟會員功能。所有功能都可以不登入使用，資料會存在這台裝置。</div></section>'; return; }
@@ -1193,10 +1236,10 @@ function pageAccount() {
   if (user) {
     $("#app").innerHTML = `<section><h1>我的帳號</h1></section><section class="card"><div class="card-h"><h2>${esc(user.email || "")}</h2><span class="muted small">${esc(syncMsg || "同步中…")}</span></div>
       <p style="margin:0">在其他手機、電腦用同一個 Email 登入，就會看到一樣的觀察清單和設定。</p>
-      <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="syncNow">立即同步</button><button class="btn ghost" id="logout">登出</button></div>${what}
-      <p class="faint small" style="margin:6px 0 0">登出後，這台裝置上的資料會留著；之後再登入會以雲端資料為準。</p></section>`;
-    $("#syncNow").onclick = async () => { await pushState(); };
-    $("#logout").onclick = async () => { await sb.auth.signOut(); writeLocal("synced_uid", null); syncMsg = ""; pageAccount(); };
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" id="syncNow">立即同步</button><button class="btn ghost" id="logout">登出</button></div>${what}
+      <p class="faint small" style="margin:6px 0 0">每個帳號的資料分開存放；登出後會回到未登入時的資料，不會把這個帳號的清單留給下一個人用。</p></section>`;
+    $("#syncNow").onclick = async () => { if (meta("dirty")) await pushState(); else await pullState(); pageAccount(); };
+    $("#logout").onclick = logout;
     return;
   }
   $("#app").innerHTML = `<section><h1>登入股栗子</h1><p class="lead">用 Email 登入，就能在不同裝置同步你的觀察清單和設定。不需要密碼。</p></section>
@@ -1318,14 +1361,14 @@ function qaAnswer(s, d, q) {
     `\n\n資料日：股價 ${s.date || "—"}・月營收 ${s.rev_ym || "—"}・財報 ${s.fin_period || "—"}。以上由規則根據網站資料自動整理，不是投資建議。`;
 }
 function chatCard(id) {
-  const ai = !!window.CHAT_URL;
+  const ai = !!window.CHAT_URL && !!user;  // 付費 AI 只開放給登入的會員（每人每天有上限）；沒登入用免費的規則問答
   const ex = ai ? ["這檔比較適合長期還是短期？", "最近財報和營收的重點是什麼？", "它最大的風險在哪裡？"] : QA_TOPICS.map((t) => t.label);
   return `<section class="card" id="chat"><div class="card-h"><h2>問問這檔股票</h2><span class="muted small">${ai ? "AI 根據網站資料回答" : "免費・根據網站資料自動回答"}</span></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap">${ex.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
     <div class="chat-log" id="chatLog"></div>
     <form class="chat-form" id="chatForm"><input type="text" id="chatIn" maxlength="500" placeholder="${ai ? "輸入你想問的，例如：毛利率為什麼下降？" : "例如：這檔適合存股嗎？"}" autocomplete="off"><button class="btn" id="chatBtn">送出</button></form>
-    <p class="faint small" style="margin:8px 0 0">${ai ? "AI 會讀這檔股票在網站上的最新資料再回答，可能出錯，也不是投資建議。每人每分鐘最多 5 個問題。"
-      : "這是免費的自動問答：依你問題裡的關鍵字（例如長期、財報、營收、風險、股利、法人），用固定規則整理網站上的資料回答，不是真人或 AI 聊天，也不是投資建議。"}</p></section>`;
+    <p class="faint small" style="margin:8px 0 0">${ai ? "AI 會讀這檔股票在網站上的最新資料再回答，可能出錯，也不是投資建議。每位會員每天最多 20 題。"
+      : "這是免費的自動問答：依你問題裡的關鍵字（例如長期、財報、營收、風險、股利、法人），用固定規則整理網站上的資料回答，不是真人或 AI 聊天，也不是投資建議。"}${window.CHAT_URL && !user ? ' <a href="#/account">登入</a>後可以改用 AI 回答。' : ""}</p></section>`;
 }
 function bindChat(id, s, d) {
   if (!$("#chatForm")) return;
@@ -1334,15 +1377,18 @@ function bindChat(id, s, d) {
   const ask = async (q) => {
     q = q.trim(); if (!q || $("#chatBtn").disabled) return;
     $("#chatIn").value = "";
-    if (!window.CHAT_URL) { hist.push({ role: "user", content: q }, { role: "assistant", content: qaAnswer(s, d, q) }); draw(); log.lastElementChild.scrollIntoView({ block: "nearest" }); return; }
+    if (!window.CHAT_URL || !user) { hist.push({ role: "user", content: q }, { role: "assistant", content: qaAnswer(s, d, q) }); draw(); log.lastElementChild.scrollIntoView({ block: "nearest" }); return; }
     hist.push({ role: "user", content: q }, { role: "assistant", content: "思考中…" }); draw();
     $("#chatBtn").disabled = true;
     const ans = hist[hist.length - 1], el = log.lastElementChild;
     try {
-      const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+      const { data: { session } } = await sb.auth.getSession();
+      const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}` },
         body: JSON.stringify({ stock_id: id, messages: hist.slice(0, -1) }) });
       if (!r.ok) { ans.content = (await r.json().catch(() => ({}))).error || "AI 暫時無法回答，請稍後再試。"; }
       else {
+        const used = r.headers.get("X-Quota-Used"), lim = r.headers.get("X-Quota-Limit");
+        if (used && $("#chat .card-h span")) $("#chat .card-h span").textContent = `AI 根據網站資料回答・今天已問 ${used}／${lim} 題`;
         const rd = r.body.getReader(), dec = new TextDecoder(); ans.content = "";
         for (;;) { const { done, value } = await rd.read(); if (done) break; ans.content += dec.decode(value, { stream: true }); el.textContent = ans.content; }
       }

@@ -1,12 +1,16 @@
 // 股栗子 AI 個股問答：網站送來「股票代號 + 對話」，這裡讀網站上這檔股票的公開資料，交給 Claude 回答，邊寫邊傳回去。
 // 金鑰只存在 Cloudflare（ANTHROPIC_API_KEY secret），網站和 GitHub 上都看不到。
+// 只回答登入的會員：每次都用會員的登入憑證向 Supabase 確認身分並扣一題額度（每人、全站每天都有上限，見 supabase/schema.sql）。
+// Origin 檢查和每分鐘次數限制只是額外的防護，不能當成身分驗證。
 import Anthropic from "@anthropic-ai/sdk";
+import { checkQuota } from "./auth.js";
 import { SYSTEM, buildContext, cleanMessages, validId } from "./prompt.js";
 
 const cors = (env) => ({
   "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN,
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Expose-Headers": "X-Quota-Used, X-Quota-Limit",
   "Vary": "Origin",
 });
 const fail = (env, status, msg) =>
@@ -36,6 +40,13 @@ export default {
       messages = cleanMessages(body.messages);
     } catch (e) {
       return fail(env, 400, e.message);
+    }
+
+    // 會員身分與每日額度（沒通過就不會呼叫付費 AI）
+    const quota = await checkQuota(env, req.headers.get("Authorization"));
+    if (!quota.ok) {
+      console.warn("quota denied", quota.status, quota.reason || "", ip);
+      return fail(env, quota.status, quota.error);
     }
 
     // 讀網站上這檔股票的最新公開資料（GitHub Pages，快取 10 分鐘）
@@ -80,6 +91,7 @@ export default {
         await w.close();
       }
     })());
-    return new Response(readable, { headers: { ...cors(env), "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" } });
+    return new Response(readable, { headers: { ...cors(env), "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store",
+      "X-Quota-Used": String(quota.used ?? ""), "X-Quota-Limit": String(quota.limit ?? "") } });
   },
 };

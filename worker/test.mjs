@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { checkQuota } from "./auth.js";
 import { MAX_CHARS, MAX_TURNS, buildContext, cleanMessages, validId } from "./prompt.js";
 
 test("只接受 4 位數股票代號", () => {
@@ -37,4 +38,21 @@ test("資料包只放最近的資料，數字四捨五入", () => {
   assert.equal(ctx["近 60 個交易日收盤價 [日期, 收盤, 成交金額百萬]"].length, 60);
   assert.equal(ctx["近 8 季財報（元）"].length, 8);
   assert.equal(ctx["個股性質卡"].horizon.label, "適合長期觀察");
+});
+
+test("AI 問答要登入、要通過每日額度，檢查失敗一律拒絕", async () => {
+  const env = { SUPABASE_URL: "https://x.supabase.co", SUPABASE_KEY: "sb_publishable_x" };
+  const res = (status, body) => async () => ({ status, ok: status < 300, json: async () => body });
+  let called = 0;
+  const spy = async (url, init) => { called++; assert.equal(init.headers.Authorization, "Bearer tok"); assert.ok(url.endsWith("/rpc/use_ai_quota")); return { status: 200, ok: true, json: async () => ({ ok: true, used: 3, limit: 20 }) }; };
+  assert.deepEqual(await checkQuota(env, "Bearer tok", spy), { ok: true, used: 3, limit: 20 });
+  assert.equal(called, 1);
+  assert.equal((await checkQuota(env, "", spy)).status, 401);            // 沒登入：不呼叫資料庫
+  assert.equal(called, 1);
+  assert.equal((await checkQuota({}, "Bearer tok", spy)).status, 503);   // 沒設定會員系統
+  assert.equal((await checkQuota(env, "Bearer bad", res(401, {}))).status, 401);
+  assert.equal((await checkQuota(env, "Bearer tok", res(200, { ok: false, reason: "user", limit: 20 }))).status, 429);
+  assert.equal((await checkQuota(env, "Bearer tok", res(200, { ok: false, reason: "site" }))).status, 429);
+  assert.equal((await checkQuota(env, "Bearer tok", res(500, {}))).status, 503);
+  assert.equal((await checkQuota(env, "Bearer tok", async () => { throw new Error("down"); })).status, 503);
 });

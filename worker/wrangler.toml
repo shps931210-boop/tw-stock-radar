@@ -10,7 +10,8 @@ SITE = "https://shps931210-boop.github.io/tw-stock-radar"
 ALLOWED_ORIGIN = "https://shps931210-boop.github.io"
 MODEL = "claude-opus-5-5"   # 想省錢可改成 claude-haiku-5-5（約便宜 40 倍，分析較簡單）
 
-# 每個 IP 每分鐘最多 5 個問題，避免被陌生人大量使用（總花費上限請在 Anthropic Console 設定）
+# 額外防護：每個 IP 每分鐘最多 5 個問題。真正的限制是會員登入＋每人／全站每日額度（supabase/schema.sql 的 use_ai_quota）。
+# SUPABASE_URL、SUPABASE_KEY 由部署流程從 GitHub repository variables 帶入。總花費上限也請在 Anthropic Console 設定。
 [[ratelimits]]
 name = "LIMITER"
 namespace_id = "1001"

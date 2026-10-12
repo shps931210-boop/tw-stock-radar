@@ -1,6 +1,7 @@
 # 部署「問 AI 這檔股票」的後端（Cloudflare Worker）。
 # 需要先在 Settings → Secrets and variables → Actions 新增三個 secret：
 #   ANTHROPIC_API_KEY（Anthropic Console 建立）、CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID（Cloudflare 建立）
+# 以及會員系統的 variables：SUPABASE_URL、SUPABASE_KEY（AI 問答只開放給登入會員，每人每天有上限）
 # 金鑰只會存到 Cloudflare，網站和 repository 裡都看不到。設定好後在 Actions 頁面按「Run workflow」。
 name: 部署 AI 問答
 
@@ -22,7 +23,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      HAS_SECRETS: ${{ secrets.ANTHROPIC_API_KEY != '' && secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+      HAS_SECRETS: ${{ secrets.ANTHROPIC_API_KEY != '' && secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' && vars.SUPABASE_URL != '' && vars.SUPABASE_KEY != '' }}
     defaults:
       run:
         working-directory: worker
@@ -38,7 +39,7 @@ jobs:
         run: npm test
       - name: 還沒設定金鑰就跳過
         if: env.HAS_SECRETS != 'true'
-        run: echo "::notice::還沒設定 ANTHROPIC_API_KEY、CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID，先不部署。"
+        run: echo "::notice::還沒設定 ANTHROPIC_API_KEY、CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID（secrets）或 SUPABASE_URL、SUPABASE_KEY（variables），先不部署。"
       - name: 部署到 Cloudflare
         id: deploy
         if: env.HAS_SECRETS == 'true'
@@ -46,8 +47,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
         run: |
-          npx wrangler deploy | tee deploy.log
+          npx wrangler deploy --var "SUPABASE_URL:$SUPABASE_URL" --var "SUPABASE_KEY:$SUPABASE_KEY" | tee deploy.log
           printf '%s' "$ANTHROPIC_API_KEY" | npx wrangler secret put ANTHROPIC_API_KEY
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy.log | head -1)
           if [ -z "$url" ]; then echo "::error::找不到 Worker 網址。請先到 Cloudflare 的 Workers & Pages 頁面開啟一次，建立 workers.dev 子網域。"; exit 1; fi
