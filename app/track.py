@@ -156,7 +156,10 @@ def _prices(ids: list[str], first: str, dbname: str):
         adj = adj.set_index("date")[["open", "high", "low", "close", "value"]].astype(float)
         adj["prev"] = adj["close"].shift(1)
         series[sid] = adj
-    return series, (idx.set_index("date")["close"] if len(idx) else pd.Series(dtype=float)), bench
+    idx = idx.set_index("date")["close"] if len(idx) else pd.Series(dtype=float)
+    # 交易日曆：加權指數偶爾漏存某一天，所以和 0050 的交易日合併，避免持有天數算錯
+    cal = sorted(set(idx.index) | {d for d in bench[0].index if d >= first})
+    return series, idx.reindex(cal), bench
 
 
 def untradable(s: pd.DataFrame, entry: str) -> str | None:
@@ -189,7 +192,7 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
     if kind == BENCH_ID and entry in bp.index and exit_ in bp.index:
         b, basis = float(bp.at[exit_, "close"] / bp.at[entry, "open"] - 1), BENCH_ID
     else:
-        b, basis = float(idx[exit_] / idx[day] - 1), "taiex_close"
+        b, basis = float(idx[exit_] / idx[day] - 1), "taiex_close"  # 指數漏存時是 NaN，不會被當成 0
     path_dates = dates[(dates >= entry) & (dates <= exit_)]
     rets, real, paths, per = [], [], [], {}
     skip = {k: 0 for k in SKIP_LABELS}

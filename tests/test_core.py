@@ -321,6 +321,18 @@ class Tracking(unittest.TestCase):
         finally:
             demo.build()
 
+    def test_missing_index_day_does_not_shift_holding_period(self):
+        from app import track
+        days = self._log(["2330"])
+        with db.connect("demo.db") as con:
+            con.execute("DELETE FROM index_prices WHERE date=?", (days[3],))  # 加權指數漏存一天
+            con.commit()
+            c5 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (days[5],)).fetchone()[0]
+            o = con.execute("SELECT open FROM prices WHERE stock_id='2330' AND date=?", (days[1],)).fetchone()[0]
+        c = track.performance("demo.db")["logs"][0]["fixed"]["balanced"][5]
+        self.assertEqual(c["exit"], days[5])
+        self.assertAlmostEqual(c["avg"], round((c5 / o - 1 - track.COST) * 100, 2), places=2)
+
     def test_scorecard_does_not_mix_benchmarks(self):
         from app import track
         mk = lambda basis, ex: {"basis": basis, "priced": 1, "n": 1, "avg": 1.0, "excess": ex, "win": 100.0, "mdd": -1.0, "missing": 0,
