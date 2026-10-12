@@ -33,6 +33,17 @@ def _probe(url: str, params: dict) -> dict:
     return out
 
 
+def _post(url: str, data: dict, as_json: bool = False) -> dict:
+    """POST 端點（公開資訊觀測站）。只記錄狀態、類型與開頭內容。"""
+    out = {"url": url, "params": data, "method": "POST"}
+    try:
+        r = requests.post(url, json=data, headers=HEADERS, timeout=30) if as_json else requests.post(url, data=data, headers=HEADERS, timeout=30)
+        out.update(status=r.status_code, type=r.headers.get("content-type", ""), head=r.text[:600])
+    except Exception as e:
+        out["error"] = f"{type(e).__name__}: {str(e)[:200]}"
+    return out
+
+
 def main():
     d = config.today() - timedelta(days=1)
     while d.weekday() >= 5:
@@ -47,6 +58,12 @@ def main():
         _probe(f"{TPEX}/www/zh-tw/bulletin/exDailyQ", {"startDate": "2026/07/01", "endDate": "2026/07/31", "response": "json"}),
         _probe(f"{TPEX}/web/stock/exright/dailyquo/exDailyQ_result.php", {"l": "zh-tw", "o": "json", "d": "115/07/01", "ed": "115/07/31"}),
         _probe("https://www.twse.com.tw/rwd/zh/exRight/TWT49U", {"startDate": "20260701", "endDate": "20260731", "response": "json"}),
+        # 事件日曆候選來源：上櫃除權除息預告、法說會（找到可用的才接進 app/events.py）
+        _probe(f"{TPEX}/web/stock/exright/preAnnounce/prepost_result.php", {"l": "zh-tw", "o": "json"}),
+        _probe(f"{TPEX}/www/zh-tw/bulletin/preAnnounce", {"response": "json"}),
+        _probe(f"{TPEX}/openapi/v1/tpex_exright_prepost", {}),
+        _post("https://mopsov.twse.com.tw/mops/web/ajax_t100sb02_1", {"encodeURIComponent": "1", "step": "1", "firstin": "1", "off": "1", "TYPEK": "sii", "year": str(d.year - 1911), "month": f"{d.month:02d}"}),
+        _post("https://mops.twse.com.tw/mops/api/t100sb02_1", {"marketKind": "sii", "year": str(d.year - 1911), "month": f"{d.month:02d}"}, as_json=True),
     ]
     for p in probes:  # OpenAPI 很大，只留摘要
         p["head"] = p.get("head", "")[:300]

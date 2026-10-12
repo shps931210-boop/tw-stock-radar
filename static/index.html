@@ -317,7 +317,8 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <details class="grp" data-g="data"><summary>數據與設定</summary><div class="menu">
         <a href="#/trust" data-r="trust">數據品質與來源<small>資料日期、來源狀態、模型驗證</small></a>
         <a href="#/catalog" data-r="catalog">指標資料庫<small>每個指標的公式、單位與限制</small></a>
-        <a href="#/account" data-r="account">帳號<small>登入、同步與刪除資料</small></a></div></details>
+        <a href="#/account" data-r="account">帳號<small>登入、同步與刪除資料</small></a>
+        <a href="#/privacy" data-r="privacy">隱私說明<small>存了哪些資料、保留多久、怎麼刪除</small></a></div></details>
     </nav>
     <button class="btn ghost sm" id="bell" onclick="location.hash='#/alerts'" aria-label="通知">通知<span class="cnt" id="ncnt" hidden>0</span></button>
     <button class="btn ghost sm" id="acct" hidden>登入</button>
@@ -326,7 +327,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
   <div class="fresh" id="fresh"></div>
 </header>
 <main id="app"><div class="empty">載入中…</div></main>
-<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。<br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有個股頁的「問 AI」使用大型語言模型。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤（見<a href="#/performance">績效驗證</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
+<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有個股頁的「問 AI」使用大型語言模型。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤（見<a href="#/performance">績效驗證</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
 <script>
 const STATIC = window.STATIC_DATA || null;
 const SITE = !!window.STATIC_SITE;  // build_site.py 產生的靜態網站：讀 data/*.json，沒有後端
@@ -1655,6 +1656,23 @@ async function logout() {
   if (pushT || pushing) await pushState();  // 還沒上傳的修改先存好再登出
   await sb.auth.signOut();
 }
+function pagePrivacy() {
+  $("#app").innerHTML = `<section><div class="eyebrow">隱私與資料管理</div><h1>隱私說明</h1>
+    <p class="lead">股栗子存了哪些資料、放在哪裡、保留多久、怎麼刪除。</p></section>
+    <section class="card"><h2 style="margin-top:0">不登入</h2><ul class="small" style="margin:0;padding-left:18px">
+      <li>自選股、策略、偏好、通知只存在你這台裝置的瀏覽器（localStorage），不會上傳。清除瀏覽資料就會刪除。</li>
+      <li>網站沒有廣告、沒有追蹤碼、不使用分析工具。</li></ul></section>
+    <section class="card"><h2 style="margin-top:0">登入後</h2><ul class="small" style="margin:0;padding-left:18px">
+      <li><b>存的資料</b>：Email、自選股、自訂策略、個人化選股偏好、通知規則、通知內容與已讀時間、AI 問答每日題數與花費。</li>
+      <li><b>存放位置</b>：Supabase（新加坡機房）。每個資料表都開了 Row Level Security，每個人只能讀到自己的資料；網站只用公開金鑰。</li>
+      <li><b>誰能寫入</b>：你的設定由你自己修改；正式通知與處理進度只由網站後端（每次盤後更新時執行）寫入。</li>
+      <li><b>保留期間</b>：直到你刪除帳號為止；通知每人最多保留 500 則，超過自動刪除最舊的。</li>
+      <li><b>刪除</b>：到 <a href="#/account">帳號</a> 頁按「永久刪除我的帳號」，帳號和上面所有雲端資料會立刻一起刪除，無法復原。</li></ul></section>
+    <section class="card"><h2 style="margin-top:0">AI 問答</h2><ul class="small" style="margin:0;padding-left:18px">
+      <li>啟用後，你輸入的問題和這檔股票的公開資料會送到 Anthropic 的 Claude 產生回答；不會送出你的 Email、自選股或其他個人資料。</li>
+      <li>對話內容不存在股栗子的資料庫，只記錄每日題數與花費，用來控制額度。</li></ul>
+      <p class="faint small" style="margin:8px 0 0">本網站是研究工具，提供資料整理與規則式評分，不是投資建議，也不提供個別買賣推薦。</p></section>`;
+}
 function pageAccount() {
   if (!SUPA) { $("#app").innerHTML = '<section class="card"><div class="empty">網站還沒有開啟會員功能。所有功能都可以不登入使用，資料會存在這台裝置。</div></section>'; return; }
   const what = `<p class="faint small" style="margin:10px 0 0">會同步：自選股、自訂多因子篩選策略、個人化選股偏好（含隱藏的股票）。只存你的 Email 和這些設定，每個人只能讀到自己的資料。不登入也能使用所有功能。</p>`;
@@ -1968,7 +1986,7 @@ function route() {
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
   $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = false; });
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, alerts: pageAlerts, me: pageMe, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
