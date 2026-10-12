@@ -23,7 +23,7 @@ import pandas as pd
 
 from . import db, indicators, metrics, track
 
-METHOD = 4  # 計算方式改了就加一，讓快取失效
+METHOD = 5  # 計算方式改了就加一，讓快取失效
 COST = 0.001425 * 2 + 0.003
 HORIZONS = (5, 20)
 MIN_VALUE = 1e7
@@ -60,6 +60,8 @@ def run(dbname: str = "stocks.db") -> dict:
         bench, kind = track.benchmark(con)
     if not len(px) or len(idx) < 80:
         return {"ready": False, "reason": "歷史股價或加權指數不足 80 個交易日"}
+    if kind != track.BENCH_ID:  # 基準固定是 0050，不改用別的指數
+        return {"ready": False, "reason": "資料庫沒有 0050 價格，無法和基準比較"}
     idx_s = idx.set_index("date")["close"]
     bull = (idx_s > idx_s.rolling(120).mean()).astype(float).where(idx_s.rolling(120).count() >= 120)  # 1 多頭、0 空頭、NaN 未知
     release = min(c["date"] for c in CHANGELOG)
@@ -87,19 +89,13 @@ def run(dbname: str = "stocks.db") -> dict:
         thin = np.zeros(n, bool)
         lim[:-1] = (o[1:] >= c[:-1] * (1 + track.LIMIT_UP)) & (hi[1:] == lo[1:]) & (hi[1:] == o[1:])
         thin[:-1] = val[1:] < track.THIN_VALUE
-        if kind == track.BENCH_ID:  # 基準：0050 同一天開盤 → 同一天收盤
-            b = bench.reindex(p["date"])
-            bo, bc = b["open"].to_numpy(float), b["close"].to_numpy(float)
-        else:
-            ix = idx_s.reindex(p["date"]).to_numpy(float)
+        b = bench.reindex(p["date"])  # 基準：0050 同一天開盤 → 同一天收盤；缺價格的那幾天不計入
+        bo, bc = b["open"].to_numpy(float), b["close"].to_numpy(float)
         for h in HORIZONS:
             fwd = np.full(n, np.nan)   # t 日訊號 → t+1 開盤買、t+h 收盤賣
             fwd[:n - h] = c[h:] / o[1:n - h + 1] - 1 - COST
             ifwd = np.full(n, np.nan)
-            if kind == track.BENCH_ID:
-                ifwd[:n - h] = bc[h:] / bo[1:n - h + 1] - 1
-            else:
-                ifwd[:n - h] = ix[h:] / ix[:n - h] - 1
+            ifwd[:n - h] = bc[h:] / bo[1:n - h + 1] - 1
             ok = liquid & ~np.isnan(fwd) & ~np.isnan(ifwd)
             ok[:60] = False
             buy = ok & ~lim & ~thin

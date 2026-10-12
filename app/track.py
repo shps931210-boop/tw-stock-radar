@@ -11,8 +11,10 @@
   還沒到期的期間不計入。回測（app/backtest.py）用同一個定義。
 - 扣交易成本 0.585%（手續費 0.1425% × 2 ＋ 證交稅 0.3%），用還原除權息股價。
 - 基準：元大台灣50（0050，還原除權息，含股利）在「同一段期間」的報酬：進場日開盤 → 出場日收盤，
-  和個股完全相同。資料庫沒有 0050 時才退回加權指數（選股日收盤 → 出場日收盤），並標示出來。
-  基準不扣交易成本，對 AI 選股比較嚴格。每一筆都記錄實際用的基準；成績單只合併同一種基準，不混算。
+  和個股完全相同。基準固定是 0050，不會換成別的指數：進場日或出場日缺 0050 價格時，該筆標示「無法比較」，
+  只列報酬、不算超額報酬，也不併入成績單的超額報酬平均（另外列出筆數）。基準不扣交易成本，對 AI 選股比較嚴格。
+- 正式樣本外：每筆紀錄都存模型設定指紋（model_hash＝模型程式＋選股設定的雜湊），而且名單要在進場日開盤（09:00）
+  之前就產生，才算進成績單；事後才產生的名單（例如補跑舊日期）另外標示「名單產生太晚」，不計入。
 - 可交易性：進場日沒有成交（停牌、下市）、漲停鎖死（開高低同價且漲幅 ≥ 9.5%）、
   進場日成交金額太少的股票，實際上買不到，不計入，並分類列出檔數與比例。
 - 已買進但出場日沒有成交的股票仍然計入，用出場日以前最後一個成交價估算，避免只留下活著的股票；
@@ -24,11 +26,14 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 
 import numpy as np
 import pandas as pd
+
+from pathlib import Path
 
 from . import config, db, metrics
 
@@ -43,6 +48,8 @@ THIN_VALUE = 3e6       # 進場日成交金額低於 300 萬元，視為買不�
 SLIPS = (0.002, 0.005)
 SKIP_LABELS = {"not_traded": "進場日沒有成交（停牌、下市）", "limit_up": "漲停鎖死買不到", "thin": "成交量太少",
                "no_price": "沒有有效價格（資料異常）"}
+NO_BENCH = "unavailable"   # 缺 0050 價格：無法比較
+OPEN_AT = "09:00:00"      # 名單要在進場日開盤前產生才算數
 STALE_LABELS = {"resumed": "出場日停牌、之後已恢復交易", "no_later": "出場日後都沒有成交（停牌中或下市）"}
 
 
@@ -57,6 +64,23 @@ def benchmark(con, first: str | None = None) -> tuple[pd.DataFrame, str]:
         b["open"] = b["open"].where(b["open"] > 0, b["close"])
         return b, BENCH_ID
     return pd.DataFrame(columns=["open", "close"], dtype=float), "taiex"
+
+
+def model_hash() -> str:
+    """模型設定指紋：AI 模型程式 + 選股相關設定。任何一個改變，指紋就會改變（12 碼）。"""
+    from . import ai_model
+    cfg = config.load()
+    keys = {k: cfg.get(k) for k in ("composite_weights", "base_filter", "buy_point")}
+    src = Path(ai_model.__file__).read_bytes() + json.dumps(keys, sort_keys=True, ensure_ascii=False).encode()
+    return hashlib.sha256(src).hexdigest()[:12]
+
+
+def on_time(log: dict, entry: str | None) -> bool | None:
+    """名單是否在進場日開盤前就產生（才可能真的照著買）。沒有產生時間的舊紀錄回傳 None。"""
+    g = log.get("generated_at")
+    if not g or not entry:
+        return None
+    return g[:19] < f"{entry}T{OPEN_AT}"
 
 
 def _snapshot_picks(snap: dict) -> tuple[dict, list]:
@@ -86,7 +110,7 @@ def record(snap: dict) -> str | None:
     from .ai_model import MODEL_VERSION
     picks, sigs = _snapshot_picks(snap)
     universe = sorted(s["stock_id"] for s in snap["stocks"] if s.get("is_common") and s["ai"]["modes"]["balanced"]["rank"])
-    out = {"date": day, "model_version": MODEL_VERSION, "generated_at": snap.get("generated_at"),
+    out = {"date": day, "model_version": MODEL_VERSION, "model_hash": model_hash(), "generated_at": snap.get("generated_at"),
            "data_dates": snap.get("data_dates"), "taiex": (snap.get("market") or {}).get("taiex"),
            "universe": snap.get("universe"), "picks": picks, "signals": sigs, "universe_ids": universe}
     old = _versions(day)
@@ -124,7 +148,7 @@ def diff_reasons(last: dict, new: dict) -> list[str]:
         out.append("排名或分數")
     if a["factors"] != b["factors"]:
         out.append("因子分數")
-    if last.get("model_version") != new.get("model_version"):
+    if last.get("model_version") != new.get("model_version") or last.get("model_hash", new.get("model_hash")) != new.get("model_hash"):
         out.append("模型版本")
     if (last.get("data_dates") or {}) != (new.get("data_dates") or {}):
         out.append("資料日期")
@@ -189,10 +213,11 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
     if exit_ < entry or day not in idx.index:
         return None
     bp, kind = bench
+    b, basis = None, NO_BENCH  # 基準固定是 0050；缺價格就標示無法比較，不換別的指數
     if kind == BENCH_ID and entry in bp.index and exit_ in bp.index:
-        b, basis = float(bp.at[exit_, "close"] / bp.at[entry, "open"] - 1), BENCH_ID
-    else:
-        b, basis = float(idx[exit_] / idx[day] - 1), "taiex_close"  # 指數漏存時是 NaN，不會被當成 0
+        o, c = bp.at[entry, "open"], bp.at[exit_, "close"]
+        if pd.notna(o) and o > 0 and pd.notna(c) and c > 0:
+            b, basis = float(c / o - 1), BENCH_ID
     path_dates = dates[(dates >= entry) & (dates <= exit_)]
     rets, real, paths, per = [], [], [], {}
     skip = {k: 0 for k in SKIP_LABELS}
@@ -227,23 +252,32 @@ def _cohort(group: list[dict], day: str, series: dict, idx: pd.Series, bench, h:
     nav = pd.concat(paths, axis=1).mean(axis=1)
     mdd = float((nav / nav.cummax() - 1).min()) if len(nav) else 0.0
     r = np.array(rets)
-    return {**base, "priced": len(r), "entry": entry, "held": len(path_dates),
-            "avg": _p(r.mean()), "median": _p(np.median(r)), "bench": _p(b), "excess": _p(r.mean() - b),
-            "win": _p((r > 0).mean()), "beat": _p((r > b).mean()), "mdd": _p(mdd),
-            "est_pct": _p(1 - len(real) / len(r)),
-            "real_excess": _p(np.mean(real) - b) if real else None, "real_n": len(real),
+    out = {**base, "priced": len(r), "entry": entry, "held": len(path_dates),
+           "avg": _p(r.mean()), "median": _p(np.median(r)), "win": _p((r > 0).mean()), "mdd": _p(mdd),
+           "est_pct": _p(1 - len(real) / len(r)), "real_avg": _p(np.mean(real)) if real else None, "real_n": len(real),
+           "bench": None, "excess": None, "beat": None, "real_excess": None, "slip": None}
+    if b is None:
+        return out
+    return {**out, "bench": _p(b), "excess": _p(r.mean() - b), "beat": _p((r > b).mean()),
+            "real_excess": _p(np.mean(real) - b) if real else None,
             "slip": {f"{x * 100:g}": {"excess": _p(r.mean() - x - b), "beat": _p((r - x > b).mean())} for x in SLIPS}}
 
 
-def _card(rows: list[dict], names: list[str], basis: str) -> dict:
-    """成績單：所有已到期的選股日，各期間的平均。只合併基準是 basis 的紀錄，其他基準的次數另外列出。"""
+def _card(rows: list[dict], names: list[str]) -> dict:
+    """成績單：所有已到期、正式樣本外的選股日，各期間的平均。
+    只合併有 0050 基準、而且名單在進場日開盤前就產生的紀錄；缺 0050（無法比較）和名單產生太晚的筆數另外列出。"""
     card = {}
     for name in names:
         card[name] = {}
         for h in HORIZONS:
             done = [(r, r["fixed"][name][h]) for r in rows if (r["fixed"].get(name) or {}).get(h) and r["fixed"][name][h].get("priced")]
-            cs = [(r, x) for r, x in done if x["basis"] == basis]
+            late = [(r, x) for r, x in done if r.get("on_time") is False]
+            timely = [(r, x) for r, x in done if r.get("on_time") is not False]
+            cs = [(r, x) for r, x in timely if x["basis"] == BENCH_ID]
+            no_bench = len(timely) - len(cs)
             if not cs:
+                if done:
+                    card[name][h] = {"cohorts": 0, "no_bench": no_bench, "late": len(late)}
                 continue
             c = [x for _, x in cs]
             m = lambda k: float(np.mean([x[k] for x in c]))
@@ -263,7 +297,9 @@ def _card(rows: list[dict], names: list[str], basis: str) -> dict:
                              "stale": {k: sum(x["stale"].get(k, 0) for x in c) for k in STALE_LABELS},
                              "est_pct": _p(sum(x["stale_exit"] for x in c) / priced) if priced else None,
                              "real_excess": round(float(np.mean(real)), 2) if real else None,
-                             "other_basis": len(done) - len(cs)}
+                             "real_avg": round(float(np.mean([x["real_avg"] for x in c if x.get("real_avg") is not None])), 2)
+                             if any(x.get("real_avg") is not None for x in c) else None,
+                             "no_bench": no_bench, "late": len(late)}
     return card
 
 
@@ -283,18 +319,22 @@ def performance(dbname: str = "stocks.db") -> dict:
     rows = []
     for L in logs:
         d = L["date"]
-        row = {"date": d, "model_version": L.get("model_version"), "track": {}, "fixed": {}}
+        nxt = idx.index[idx.index > d]
+        row = {"date": d, "model_version": L.get("model_version"), "model_hash": L.get("model_hash"),
+               "generated_at": L.get("generated_at"), "on_time": on_time(L, nxt[0] if len(nxt) else None),
+               "track": {}, "fixed": {}}
         for name, g in groups(L):
             row["track"][name] = _cohort(g, d, series, idx, bench, None, obs) if obs else None
             row["fixed"][name] = {h: _cohort(g, d, series, idx, bench, h, obs) for h in HORIZONS}
         rows.append(row)
     names = list(dict.fromkeys(k for L in logs for k, _ in groups(L)))
-    basis = bench[1] if bench[1] == BENCH_ID else "taiex_close"
     by_model = {}
     for mv in dict.fromkeys(r["model_version"] or "v1.0" for r in rows):
         sub = [r for r in rows if (r["model_version"] or "v1.0") == mv]
-        by_model[mv] = {"days": len(sub), "first": sub[0]["date"], "last": sub[-1]["date"], "scorecard": _card(sub, names, basis)}
-    industry = _by_industry(logs, rows, basis)
+        hashes = list(dict.fromkeys(r["model_hash"] for r in sub if r["model_hash"]))
+        by_model[mv] = {"days": len(sub), "first": sub[0]["date"], "last": sub[-1]["date"], "hashes": hashes,
+                        "hash_changed": len(hashes) > 1, "scorecard": _card(sub, names)}
+    industry = _by_industry(logs, rows)
     for r in rows:  # 個股明細只用來算產業，不放進網站資料
         for c in [r["track"].get(k) for k in r["track"]] + [x for g in r["fixed"].values() for x in g.values()]:
             if c:
@@ -304,21 +344,23 @@ def performance(dbname: str = "stocks.db") -> dict:
     bp = bench[0]
     gaps = [d for d in span if d not in bp.index or not (bp.at[d, "open"] > 0 and bp.at[d, "close"] > 0)] if bench[1] == BENCH_ID else list(span)
     return {"days": len(logs), "first": logs[0]["date"], "observed": obs, "horizons": list(HORIZONS),
-            "cost_pct": round(COST * 100, 3), "bench": bench[1], "basis": basis,
+            "cost_pct": round(COST * 100, 3), "bench": BENCH_ID, "bench_ok": bench[1] == BENCH_ID, "basis": BENCH_ID,
+            "model_hash": model_hash(), "open_at": OPEN_AT[:5],
+            "late_days": [r["date"] for r in rows if r["on_time"] is False],
             "bench_coverage": {"days": len(span), "missing": len(gaps), "missing_dates": gaps[:10]},
             "slips": [f"{x * 100:g}" for x in SLIPS], "skip_labels": SKIP_LABELS, "stale_labels": STALE_LABELS,
-            "thin_value": THIN_VALUE, "logs": rows[::-1], "scorecard": _card(rows, names, basis), "by_model": by_model,
+            "thin_value": THIN_VALUE, "logs": rows[::-1], "scorecard": _card(rows, names), "by_model": by_model,
             "by_industry": industry}
 
 
-def _by_industry(logs: list[dict], rows: list[dict], basis: str) -> dict:
+def _by_industry(logs: list[dict], rows: list[dict]) -> dict:
     """AI 均衡型入選股票依產業分組：每一檔、每一次入選的超額報酬平均（最短的已到期期間，和最長的已到期期間）。"""
     out = {}
     for h in HORIZONS:
         acc = {}
         for L, r in zip(logs, rows):
             c = (r["fixed"].get("balanced") or {}).get(h)
-            if not c or not c.get("priced") or c["basis"] != basis:
+            if not c or not c.get("priced") or c["basis"] != BENCH_ID or r.get("on_time") is False:
                 continue
             ind = {p["stock_id"]: p.get("industry") for p in L["picks"].get("balanced", [])}
             for sid, ret in c["_per"].items():

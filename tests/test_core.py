@@ -7,6 +7,7 @@ from __future__ import annotations
 import sqlite3
 import unittest
 from datetime import date
+from pathlib import Path
 from types import SimpleNamespace
 
 import pandas as pd
@@ -140,6 +141,7 @@ class OpenApiSync(unittest.TestCase):
     def setUp(self):
         self.con = sqlite3.connect(":memory:")
         self.con.executescript(db.SCHEMA)
+        self.addCleanup(self.con.close)
 
     def _seed(self, day, n, mkt="twse"):
         for i in range(n):
@@ -333,14 +335,39 @@ class Tracking(unittest.TestCase):
         self.assertEqual(c["exit"], days[5])
         self.assertAlmostEqual(c["avg"], round((c5 / o - 1 - track.COST) * 100, 2), places=2)
 
-    def test_scorecard_does_not_mix_benchmarks(self):
+    def test_scorecard_only_counts_0050_and_on_time_lists(self):
         from app import track
         mk = lambda basis, ex: {"basis": basis, "priced": 1, "n": 1, "avg": 1.0, "excess": ex, "win": 100.0, "mdd": -1.0, "missing": 0,
-                                "skip": {}, "stale": {}, "stale_exit": 0, "real_excess": ex, "slip": {"0.2": {"excess": ex - 0.2}}}
-        rows = [{"fixed": {"balanced": {5: mk("0050", 1.0), 20: None, 60: None}}},
-                {"fixed": {"balanced": {5: mk("taiex_close", 9.0), 20: None, 60: None}}}]
-        c = track._card(rows, ["balanced"], "0050")["balanced"][5]
-        self.assertEqual((c["cohorts"], c["excess"], c["other_basis"]), (1, 1.0, 1))
+                                "skip": {}, "stale": {}, "stale_exit": 0, "real_excess": ex, "real_avg": 1.0,
+                                "slip": {"0.2": {"excess": ex - 0.2}} if ex is not None else None}
+        rows = [{"on_time": True, "fixed": {"balanced": {5: mk("0050", 1.0), 20: None, 60: None}}},
+                {"on_time": True, "fixed": {"balanced": {5: mk("unavailable", None), 20: None, 60: None}}},
+                {"on_time": False, "fixed": {"balanced": {5: mk("0050", 9.0), 20: None, 60: None}}}]
+        c = track._card(rows, ["balanced"])["balanced"][5]
+        self.assertEqual((c["cohorts"], c["excess"], c["no_bench"], c["late"]), (1, 1.0, 1, 1))
+
+    def test_missing_0050_is_not_compared_with_other_index(self):
+        from app import track
+        days = self._log(["2330"])
+        with db.connect("demo.db") as con:
+            con.execute("DELETE FROM prices WHERE stock_id='0050' AND date=?", (days[5],))
+            con.commit()
+        try:
+            c = track.performance("demo.db")["logs"][0]["fixed"]["balanced"][5]
+            self.assertEqual(c["basis"], "unavailable")
+            self.assertIsNone(c["bench"])
+            self.assertIsNone(c["excess"])
+            self.assertIsNotNone(c["avg"])
+        finally:
+            from app.sources import demo
+            demo.build()
+
+    def test_on_time_requires_list_before_entry_open(self):
+        from app import track
+        self.assertTrue(track.on_time({"generated_at": "2026-10-10T22:21:22"}, "2026-10-12"))
+        self.assertFalse(track.on_time({"generated_at": "2026-10-12T09:30:00"}, "2026-10-12"))
+        self.assertIsNone(track.on_time({}, "2026-10-12"))
+        self.assertEqual(len(track.model_hash()), 12)
 
     def test_correction_reasons_include_scores_and_data_dates(self):
         from app import track
@@ -352,9 +379,9 @@ class Tracking(unittest.TestCase):
         import json
         p = track.record(bump)
         self.assertTrue(p.endswith(".v2.json"))
-        self.assertEqual(json.loads(open(p, encoding="utf-8").read())["reasons"], ["排名或分數"])
+        self.assertEqual(json.loads(Path(p).read_text("utf-8"))["reasons"], ["排名或分數"])
         p = track.record({**bump, "data_dates": {**bump["data_dates"], "institutional": "2099-01-01"}})
-        self.assertEqual(json.loads(open(p, encoding="utf-8").read())["reasons"], ["資料日期"])
+        self.assertEqual(json.loads(Path(p).read_text("utf-8"))["reasons"], ["資料日期"])
         self.assertIsNone(track.record({**bump, "data_dates": {**bump["data_dates"], "institutional": "2099-01-01"}}))
 
     def test_changes_against_previous_day(self):
