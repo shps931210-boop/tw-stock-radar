@@ -91,6 +91,7 @@ h3 { font-size: 14px; margin: 0; }
 .pill { display: inline-flex; align-items: center; gap: 4px; padding: 1px 9px; border-radius: 999px; background: var(--chip); font-size: 12px; white-space: nowrap; }
 .pill.acc { background: var(--accent-soft); color: var(--accent); }
 .pill.warn { background: var(--warn-bg); color: var(--warn); }
+.pill.est { background: transparent; border: 1px dashed var(--muted); color: var(--muted); }
 .pill.good { background: var(--up-bg); color: var(--up); font-weight: 500; }
 .pill.bad { background: var(--down-bg); color: var(--down); }
 .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 16px; }
@@ -285,6 +286,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <a href="#/screener" data-r="screener">條件選股</a>
       <a href="#/watch" data-r="watch">觀察清單<span class="cnt" id="wcnt">0</span></a>
       <a href="#/sectors" data-r="sectors">產業</a>
+      <a href="#/calendar" data-r="calendar">事件日曆</a>
       <a href="#/performance" data-r="performance">成績單</a>
       <a href="#/trust" data-r="trust">可信度</a>
     </nav>
@@ -1240,6 +1242,64 @@ function sectDetail(x, S) {
         <td class="r num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</td><td class="r num ${signCls(s.ret_5d)}">${pctTxt(s.ret_5d)}</td><td class="r num ${signCls(s.ret_20d)}">${pctTxt(s.ret_20d)}</td><td class="r">${scoreBar(s.ai?.modes?.balanced?.score)}</td></tr>`).join("")}</tbody></table></div>` : '<p class="muted">沒有成分股資料。</p>'}`;
 }
 
+// ---------- 財報事件日曆（已確認的官方公告 vs. 法定期限推估，畫面上分開標示；全部用台灣時間） ----------
+const EV_TYPE = { all: "全部", dividend: "除權息", revenue: "月營收", financials: "財報" };
+const EV_ST = { confirmed: ["已確認", "acc"], completed: ["已完成", ""], estimated: ["法定期限（推估）", "est"], unverified: ["未再確認", "warn"], postponed: ["延期", "warn"], cancelled: ["取消", "bad"] };
+const twToday = () => new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Taipei" });
+const WD = "日一二三四五六";
+const wdTxt = (d) => "週" + WD[new Date(Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10))).getUTCDay()];
+function pageCalendar() {
+  const C = SNAP.calendar || { events: [] };
+  const today = twToday();
+  const o = { view: "list", type: "all", scope: "all", past: false, month: today.slice(0, 7), ...store.get("cal", {}) };
+  const save = () => { store.set("cal", o); pageCalendar(); };
+  const w = watch();
+  let ev = (C.events || []).filter((e) => (o.type === "all" || e.event_type === o.type) && (o.scope === "all" || !e.stock_id || w[e.stock_id]));
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${n}</button>`).join("")}</div>`;
+  const badge = (e) => { const [t, c] = EV_ST[e.status] || [e.status, ""]; return `<span class="pill ${c}">${esc(t)}</span>`; };
+  const who = (e) => e.stock_id ? `<a href="#/stock/${esc(e.stock_id)}">${esc(e.stock_id)} ${esc(e.name || "")}</a>${w[e.stock_id] ? ' <span class="pill acc">觀察中</span>' : ""}` : '<span class="muted">所有上市櫃公司</span>';
+  const item = (e) => `<div class="evt" style="padding:8px 0;border-top:1px solid var(--line)"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${badge(e)}<b>${who(e)}</b></div>
+    <div>${esc(e.title)}</div>
+    <div class="faint small">${e.basis ? esc(e.basis) + "・" : ""}來源：${e.source_url ? `<a href="${esc(e.source_url)}" target="_blank" rel="noopener">${esc(e.source_name)}</a>` : esc(e.source_name || "—")}${e.last_verified_at ? `・最後核對 ${esc(e.last_verified_at.slice(0, 16).replace("T", " "))}` : ""}${e.progress ? `・${esc(e.progress.note)}` : ""}</div></div>`;
+  let body;
+  if (o.view === "list") {
+    const list = ev.filter((e) => o.past || e.event_date >= today);
+    const days = [...new Set(list.map((e) => e.event_date))].sort();
+    body = days.length ? days.map((d) => `<div style="margin-bottom:10px"><h3 style="margin:8px 0 2px">${esc(d)}（${wdTxt(d)}）${d === today ? ' <span class="pill acc">今天</span>' : ""}</h3>${list.filter((e) => e.event_date === d).map(item).join("")}</div>`).join("")
+      : `<div class="empty">${o.scope === "watch" ? "觀察清單裡的股票近期沒有事件。" : "近期沒有事件。"}</div>`;
+  } else {
+    const [y, m] = o.month.split("-").map(Number);
+    const first = new Date(Date.UTC(y, m - 1, 1)), n = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const cells = Array(first.getUTCDay()).fill(null).concat([...Array(n)].map((_, i) => `${o.month}-${String(i + 1).padStart(2, "0")}`));
+    body = `<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><button class="btn ghost sm" id="cm-prev">‹ 上個月</button><b>${y} 年 ${m} 月</b><button class="btn ghost sm" id="cm-next">下個月 ›</button></div>
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">${[...WD].map((x) => `<div class="small muted" style="text-align:center">${x}</div>`).join("")}
+      ${cells.map((d) => { if (!d) return "<div></div>"; const es = ev.filter((e) => e.event_date === d);
+        return `<button class="calday" data-d="${d}" style="min-height:58px;text-align:left;border:1px solid var(--line);border-radius:8px;padding:4px;background:${d === today ? "var(--accent-soft)" : es.length ? "var(--panel)" : "transparent"};cursor:${es.length ? "pointer" : "default"};font:inherit;color:inherit">
+          <div class="small ${d === today ? "" : "muted"}">${+d.slice(8)}</div>${es.length ? `<div class="small" style="font-weight:500">${es.length} 件</div><div class="faint" style="font-size:11px;line-height:1.3">${esc([...new Set(es.map((e) => EV_TYPE[e.event_type] || e.event_type))].join("、"))}</div>` : ""}</button>`; }).join("")}</div>
+      <div id="cmday" style="margin-top:12px">${o.day && o.day.startsWith(o.month) ? `<h3 style="margin:0 0 4px">${esc(o.day)}（${wdTxt(o.day)}）</h3>${ev.filter((e) => e.event_date === o.day).map(item).join("") || '<p class="muted">這天沒有事件。</p>'}` : '<p class="muted small">點有事件的日期看詳細內容。</p>'}</div>`;
+  }
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">台灣時間・最後核對 ${esc((C.last_verified_at || "—").slice(0, 16).replace("T", " "))}</div><h1>事件日曆</h1>
+      <p class="lead">除權息、月營收、財報什麼時候公布。<b>已確認</b>是官方公告的日期；<b>法定期限（推估）</b>是依法規算出的最晚公布日，公司可能提早公布，不是公司公告的日期。</p></section>
+    <section class="card"><div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      ${seg("cv", { list: "清單", month: "月曆" }, o.view)}${seg("ct", EV_TYPE, o.type)}${seg("cs", { all: "全部股票", watch: "只看觀察清單" }, o.scope)}
+      ${o.view === "list" ? seg("cp", { 0: "今天以後", 1: "含過去 30 天" }, o.past ? "1" : "0") : ""}</div>
+      ${body}</section>
+    <section class="card"><h2 style="margin-top:0">狀態說明</h2><ul class="small" style="margin:0;padding-left:18px">
+      <li><span class="pill acc">已確認</span> 證交所除權除息預告表上有的日期（目前只有上市公司）。</li>
+      <li><span class="pill">已完成</span> 日期已經過了。</li>
+      <li><span class="pill est">法定期限（推估）</span> 依規定最晚要公布的日期：月營收每月 10 日前；財報 Q1 5/15、Q2 8/14、Q3 11/14、年報 3/31（一般產業，遇假日可能順延）。</li>
+      <li><span class="pill warn">未再確認</span> 之前預告過，但最新的預告表裡沒有了，可能延期或取消，請到公開資訊觀測站確認。</li>
+      <li>除權息日前一天買進才參加配息；現金股利金額以公司最後公告為準。這是資訊整理，不是投資建議。</li></ul>
+      ${(C.warnings || []).length ? `<p class="small" style="color:var(--warn);margin:8px 0 0">${esc(C.warnings.join("；"))}</p>` : ""}
+      <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/events/calendar.json">events/calendar.json</a>（網站版才有）</p></section>`;
+  const bindSeg = (id, key, f = (v) => v) => { const el = $("#" + id); if (el) el.onclick = (e) => { const b = e.target.closest("button"); if (b) { o[key] = f(b.dataset.k); save(); } }; };
+  bindSeg("cv", "view"); bindSeg("ct", "type"); bindSeg("cs", "scope"); bindSeg("cp", "past", (v) => v === "1");
+  const mvBtn = (id, k) => { const el = $("#" + id); if (el) el.onclick = () => { const [y, m] = o.month.split("-").map(Number); o.month = new Date(Date.UTC(y, m - 1 + k, 1)).toISOString().slice(0, 7); save(); }; };
+  mvBtn("cm-prev", -1); mvBtn("cm-next", 1);
+  $$(".calday").forEach((b) => (b.onclick = () => { o.day = b.dataset.d; store.set("cal", o); pageCalendar(); }));
+}
+
 // ---------- 會員登入與雲端同步（Supabase；網站沒有設定就不顯示，所有功能照常不用登入） ----------
 // 網站只放公開金鑰（publishable key）；資料表開了 Row Level Security，每個人只能讀寫自己的那一列（supabase/schema.sql）。
 // 同步規則：
@@ -1638,7 +1698,7 @@ function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === (p === "stock" ? "__" : p === "s" ? "radar" : p || "")));
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });

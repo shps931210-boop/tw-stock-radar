@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS fetch_log (source TEXT, key TEXT, fetched_at TEXT, ok
 CREATE TABLE IF NOT EXISTS exrights (stock_id TEXT, date TEXT, prev_close REAL, ref_price REAL,
   PRIMARY KEY (stock_id, date));
 CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT);
+CREATE TABLE IF NOT EXISTS events (event_id TEXT PRIMARY KEY, stock_id TEXT, event_type TEXT, title TEXT, event_date TEXT,
+  status TEXT, source_name TEXT, source_url TEXT, detail TEXT, first_seen TEXT, last_verified_at TEXT, updated_at TEXT);
 """
 
 

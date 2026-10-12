@@ -76,6 +76,7 @@ def public_data(snap: dict) -> dict:
                                      "coverage": {"days": tr.get("days"), "first": tr.get("first"), "observed": tr.get("observed"), "late_days": tr.get("late_days")},
                                      "horizons": tr.get("horizons"), "model_hash": tr.get("model_hash"),
                                      "scorecard": tr.get("scorecard"), "by_model": tr.get("by_model"), "by_industry": tr.get("by_industry")},
+        "events/calendar.json": snap.get("calendar") or {**head, "events": [], "warnings": ["沒有事件資料"]},
         "performance/cohorts.json": {**head, "source": "history/picks", "definitions": defs, "warnings": warn, "cohorts": tr.get("logs", [])},
     }
 

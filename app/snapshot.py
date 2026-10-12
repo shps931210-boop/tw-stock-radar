@@ -9,7 +9,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from . import ai_model, backtest, config, db, metrics, sectors, track
+from . import ai_model, backtest, config, db, events, metrics, sectors, track
 from .catalog import C as CATALOG
 from .strategies import STRATEGIES, passes
 
@@ -281,6 +281,10 @@ def build(demo: bool = False) -> dict:
         out["sectors"] = sectors.build(out, dbname)
     except Exception as e:  # 產業熱力圖失敗不影響選股結果
         out["sectors"] = {"schema_version": 1, "industries": [], "warnings": [f"產業熱力圖計算失敗：{e}"]}
+    try:
+        out["calendar"] = events.calendar(out, dbname)
+    except Exception as e:  # 日曆失敗不影響其他功能
+        out["calendar"] = {"schema_version": 1, "events": [], "warnings": [f"事件日曆計算失敗：{e}"]}
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out

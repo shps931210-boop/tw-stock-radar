@@ -14,7 +14,7 @@ from datetime import date, datetime, timedelta
 
 import requests
 
-from . import config, db
+from . import config, db, events
 from .sources import http
 from .sources.finmind import FinMindError, FinMindSource
 from .sources.tpex import TpexSource
@@ -331,7 +331,7 @@ def run(daily: bool = True, fundamentals: bool = True, progress=None) -> list[st
     if daily:
         stages.append(("最新收盤價", lambda: _latest_only(cfg, errors)))
         stages.append(("回補歷史股價與籌碼", lambda: (update_daily(cfg, progress, errors), update_exrights(cfg, errors),
-                                                          update_revenue_bulk(cfg, errors))))
+                                                          update_revenue_bulk(cfg, errors), events.update(cfg, errors))))
     if fundamentals:
         stages.append(("財報與營收", lambda: update_fundamentals(cfg, progress, errors)))
     for i, (name, fn) in enumerate(stages, 1):
