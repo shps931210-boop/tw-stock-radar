@@ -282,6 +282,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <a href="#/watch" data-r="watch">觀察清單<span class="cnt" id="wcnt">0</span></a>
       <a href="#/trust" data-r="trust">可信度</a>
     </nav>
+    <button class="btn ghost sm" id="acct" hidden>登入</button>
     <div class="search"><input id="q" type="search" list="stockList" placeholder="搜尋代號或名稱，如 2330" autocomplete="off" aria-label="搜尋股票"><datalist id="stockList"></datalist></div>
   </div>
   <div class="fresh" id="fresh"></div>
@@ -297,7 +298,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const store = { get(k, d) { try { const v = localStorage.getItem("yx_" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
-                set(k, v) { try { localStorage.setItem("yx_" + k, JSON.stringify(v)); } catch (e) {} } };
+                set(k, v) { try { localStorage.setItem("yx_" + k, JSON.stringify(v)); } catch (e) {} if (["watch", "strategies", "pref"].includes(k)) schedulePush(); } };  // 登入時同步到雲端（見「會員登入與雲端同步」）
 const FC = { quality: "#8b5a34", growth: "#c4524a", value: "#5f9a8c", momentum: "#d1a03a", trend: "#8f7aa8" };
 const FL = { quality: "財務品質", growth: "成長能力", value: "估值", momentum: "股價動能", trend: "趨勢" };
 
@@ -1132,6 +1133,96 @@ function pageMine() {
   bindRows($("#app"), [], () => {});
 }
 
+// ---------- 會員登入與雲端同步（Supabase；網站沒有設定就不顯示，所有功能照常不用登入） ----------
+// 網站只放公開金鑰（publishable key）；資料表開了 Row Level Security，每個人只能讀寫自己的那一列（supabase/schema.sql）。
+const SUPA = window.SUPA || null;
+const SYNC_KEYS = ["watch", "strategies", "pref"];
+const SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js";
+let sb = null, user = null, pushT = null, syncMsg = "", otpEmail = "";
+function schedulePush() { if (!sb || !user) return; clearTimeout(pushT); pushT = setTimeout(pushState, 1500); }
+async function pushState() {
+  pushT = null;
+  if (!sb || !user) return;
+  const row = { user_id: user.id, updated_at: new Date().toISOString() };
+  SYNC_KEYS.forEach((k) => (row[k] = store.get(k, k === "strategies" ? [] : {})));
+  const { error } = await sb.from("user_state").upsert(row);
+  syncMsg = error ? `同步失敗：${error.message}` : `已同步 ${new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" })}`;
+  if (location.hash === "#/account") pageAccount();
+}
+function writeLocal(k, v) { try { localStorage.setItem("yx_" + k, JSON.stringify(v)); } catch (e) {} }  // 不觸發上傳
+async function pullState() {
+  if (!sb || !user || pushT) return;
+  const { data, error } = await sb.from("user_state").select("watch,strategies,pref").eq("user_id", user.id).maybeSingle();
+  if (error) { syncMsg = `讀取雲端資料失敗：${error.message}`; return; }
+  const first = store.get("synced_uid", null) !== user.id;  // 這台裝置第一次登入這個帳號：雲端和本機合併，什麼都不丟
+  if (data && !first) SYNC_KEYS.forEach((k) => data[k] != null && writeLocal(k, data[k]));
+  else if (data) {
+    const lw = store.get("watch", {}), ls = store.get("strategies", []), lp = store.get("pref", {});
+    writeLocal("watch", { ...lw, ...(data.watch || {}) });
+    const names = new Set((data.strategies || []).map((s) => s.name));
+    writeLocal("strategies", (data.strategies || []).concat(ls.filter((s) => !names.has(s.name))));
+    const rp = data.pref || {};
+    writeLocal("pref", Object.keys(rp).length ? { ...rp, hidden: { ...(lp.hidden || {}), ...(rp.hidden || {}) } } : lp);
+  }
+  writeLocal("synced_uid", user.id);
+  if (first || !data) await pushState();
+  else syncMsg = `已同步 ${new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" })}`;
+  renderWcnt();
+  if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash)) route();
+}
+function renderAcct() { const b = $("#acct"); b.hidden = false; b.textContent = user ? "✓ 已登入" : "登入"; }
+async function initAuth() {
+  if (!SUPA) return;
+  try {
+    await new Promise((ok, no) => { const s = document.createElement("script"); s.src = SB_JS; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+    sb = window.supabase.createClient(SUPA.url, SUPA.key, { auth: { flowType: "pkce", detectSessionInUrl: true, persistSession: true } });
+  } catch (e) { return; }
+  $("#acct").onclick = () => (location.hash = "#/account");
+  sb.auth.onAuthStateChange((ev, session) => {
+    const was = user?.id; user = session?.user || null; renderAcct();
+    if (user && user.id !== was) setTimeout(pullState, 0);  // 不在 callback 裡等待，避免卡住
+    if (!user && location.hash === "#/account") setTimeout(pageAccount, 0);
+  });
+  if (new URLSearchParams(location.search).has("code")) setTimeout(() => history.replaceState(null, "", location.pathname + location.hash), 2000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullState(); });
+  renderAcct();
+}
+function pageAccount() {
+  if (!SUPA) { $("#app").innerHTML = '<section class="card"><div class="empty">網站還沒有開啟會員功能。所有功能都可以不登入使用，資料會存在這台裝置。</div></section>'; return; }
+  const what = `<p class="faint small" style="margin:10px 0 0">會同步：觀察清單、自訂條件選股策略、我的 AI 排行偏好（含隱藏的股票）。只存你的 Email 和這些設定，每個人只能讀到自己的資料。不登入也能使用所有功能。</p>`;
+  if (user) {
+    $("#app").innerHTML = `<section><h1>我的帳號</h1></section><section class="card"><div class="card-h"><h2>${esc(user.email || "")}</h2><span class="muted small">${esc(syncMsg || "同步中…")}</span></div>
+      <p style="margin:0">在其他手機、電腦用同一個 Email 登入，就會看到一樣的觀察清單和設定。</p>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="btn" id="syncNow">立即同步</button><button class="btn ghost" id="logout">登出</button></div>${what}
+      <p class="faint small" style="margin:6px 0 0">登出後，這台裝置上的資料會留著；之後再登入會以雲端資料為準。</p></section>`;
+    $("#syncNow").onclick = async () => { await pushState(); };
+    $("#logout").onclick = async () => { await sb.auth.signOut(); writeLocal("synced_uid", null); syncMsg = ""; pageAccount(); };
+    return;
+  }
+  $("#app").innerHTML = `<section><h1>登入股栗子</h1><p class="lead">用 Email 登入，就能在不同裝置同步你的觀察清單和設定。不需要密碼。</p></section>
+    <section class="card"><label class="small muted" for="em">Email</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><input id="em" type="email" autocomplete="email" value="${esc(otpEmail)}" placeholder="you@example.com" style="flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font:inherit">
+      <button class="btn" id="send">寄登入信</button></div>
+      <div id="otp" ${otpEmail ? "" : "hidden"} style="margin-top:14px"><p style="margin:0 0 6px">登入信已寄到 <b>${esc(otpEmail)}</b>。請在<b>這個瀏覽器</b>打開信裡的登入連結；如果信裡有 6 位數驗證碼，也可以輸入在這裡：</p>
+        <div style="display:flex;gap:8px"><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="驗證碼" style="width:140px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font:inherit">
+        <button class="btn ghost" id="verify">確認</button></div></div>
+      <p class="small" id="amsg" style="margin:10px 0 0"></p>${what}</section>`;
+  const msg = (s, bad) => { $("#amsg").innerHTML = `<span class="${bad ? "down" : ""}">${esc(s)}</span>`; };
+  $("#send").onclick = async () => {
+    const em = $("#em").value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(em)) return msg("Email 格式不對", true);
+    $("#send").disabled = true;
+    const { error } = await sb.auth.signInWithOtp({ email: em, options: { emailRedirectTo: location.origin + location.pathname } });
+    $("#send").disabled = false;
+    if (error) return msg(/rate|limit/i.test(error.message) ? "寄信太頻繁，請過幾分鐘再試" : `寄信失敗：${error.message}`, true);
+    otpEmail = em; pageAccount();
+  };
+  if ($("#verify")) $("#verify").onclick = async () => {
+    const { error } = await sb.auth.verifyOtp({ email: otpEmail, token: $("#code").value.trim(), type: "email" });
+    if (error) msg("驗證碼不對或已過期，請重新寄一次", true);
+  };
+}
+
 // ---------- 指標資料庫 ----------
 function pageCatalog() {
   const cats = [...new Set(SNAP.catalog.map((c) => c.category))];
@@ -1398,13 +1489,14 @@ function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === (p === "stock" ? "__" : p === "s" ? "radar" : p || "")));
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
 $("#q").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const q = e.target.value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => s.name.includes(q)); if (hit) { location.hash = `#/stock/${hit.stock_id}`; e.target.value = ""; } });
 window.addEventListener("hashchange", route);
 loadSnap().then((ok) => ok && route());
+initAuth();
 </script>
 </body>
 </html>

@@ -5,7 +5,9 @@
 
 沒有成功取得真實行情時，只輸出失敗原因（site/data/status.json），不會用示範資料頂替。
 """
+import base64
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -39,6 +41,27 @@ def quality(snap: dict) -> dict:
     }
 
 
+def supabase_config() -> dict | None:
+    """會員登入設定（GitHub repository variables：SUPABASE_URL、SUPABASE_KEY）。只接受公開金鑰；放錯成私密金鑰就不啟用。"""
+    url, key = os.environ.get("SUPABASE_URL", "").strip(), os.environ.get("SUPABASE_KEY", "").strip()
+    if not url or not key:
+        return None
+    if not url.startswith("https://"):
+        print("SUPABASE_URL 要是 https:// 開頭，先不啟用會員功能")
+        return None
+    secret = key.startswith("sb_secret_")
+    if key.count(".") == 2:  # 舊版 JWT 金鑰：看 role 是不是 service_role
+        try:
+            part = key.split(".")[1]
+            secret = json.loads(base64.urlsafe_b64decode(part + "=" * (-len(part) % 4))).get("role") == "service_role"
+        except ValueError:
+            return None
+    if secret:
+        print("⚠️ SUPABASE_KEY 是私密金鑰，不能放在網站上。請改成 publishable key，並到 Supabase 重新產生私密金鑰。會員功能先不啟用。")
+        return None
+    return {"url": url.rstrip("/"), "key": key}
+
+
 root = Path(__file__).parent
 out = root / "site"
 shutil.rmtree(out, ignore_errors=True)
@@ -46,7 +69,7 @@ shutil.rmtree(out, ignore_errors=True)
 
 html = (root / "static" / "index.html").read_text("utf-8")
 chat = json.loads((root / "chat.json").read_text("utf-8")).get("url") if (root / "chat.json").exists() else None  # AI 問答網址（部署 AI 問答時寫入）
-html = html.replace("<script>\nconst STATIC", f"<script>window.STATIC_SITE = true; window.CHAT_URL = {json.dumps(chat)};</script>\n<script>\nconst STATIC", 1)
+html = html.replace("<script>\nconst STATIC", f"<script>window.STATIC_SITE = true; window.CHAT_URL = {json.dumps(chat)}; window.SUPA = {json.dumps(supabase_config())};</script>\n<script>\nconst STATIC", 1)
 (out / "index.html").write_text(html, "utf-8")
 
 errors, last = [], None

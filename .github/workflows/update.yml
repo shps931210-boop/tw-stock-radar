@@ -23,6 +23,8 @@ concurrency:
 
 env:
   TZ: Asia/Taipei
+  SUPABASE_URL: ${{ vars.SUPABASE_URL }}   # 會員登入（公開值，放在 repository variables）
+  SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
 
 jobs:
   update:
