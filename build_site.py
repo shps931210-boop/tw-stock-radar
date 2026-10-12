@@ -118,6 +118,12 @@ if snap_path.exists():
     for path, data in public_data(snap).items():  # 給其他程式讀的公開資料（不含任何會員資料）
         (out / "data" / path).parent.mkdir(parents=True, exist_ok=True)
         (out / "data" / path).write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    try:  # 對帳報告：用獨立寫法從原始成交價重算績效與產業數字，逐筆比對
+        from app import audit
+        (out / "data" / "audit").mkdir(parents=True, exist_ok=True)
+        (out / "data" / "audit" / "latest.json").write_text(json.dumps(audit.build(snap), ensure_ascii=False, separators=(",", ":")), "utf-8")
+    except Exception as e:
+        print("對帳報告失敗：", e)
     print(f"已產生 site/（{len(ids)} 檔個股資料）")
 else:
     print("沒有真實資料快照，site/ 只會顯示資料取得失敗")

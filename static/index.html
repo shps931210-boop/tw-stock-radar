@@ -757,7 +757,24 @@ function pagePerformance() {
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
 }
 
+// 對帳報告：網站另外用一套獨立寫法，從資料庫的原始成交價重算績效和產業數字，逐筆比對（app/audit.py）
+async function loadAudit() {
+  const el = $("#auditCard"); if (!el) return;
+  const A = SITE ? await fetch("data/audit/latest.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
+  if (!A) { el.innerHTML = '<h2 style="margin-top:0">獨立對帳</h2><p class="muted small" style="margin:0">對帳報告只在正式網站產生（每次盤後更新時重算）。</p>'; return; }
+  const P = A.summary.performance, S = A.summary.sectors, ok = (b) => b ? '<span class="pill acc">一致</span>' : '<span class="pill bad">有差異</span>';
+  el.innerHTML = `<div class="card-h"><h2>獨立對帳</h2><span class="muted small">資料日 ${esc(A.data_as_of || "—")}・容許誤差 ${A.tolerance_pct_point} 個百分點</span></div>
+    <p class="small" style="margin:0 0 8px">另外用一套獨立寫法，直接從資料庫的<b>原始成交價、除權息參考價、法人買賣超</b>重算，和網站公布的數字逐筆比對。</p>
+    <div class="tbl"><table><thead><tr><th>項目</th><th>結果</th><th class="r">比對筆數</th><th class="r">不一致</th></tr></thead><tbody>
+      <tr><td>績效驗證：每檔股票的事後報酬（AI 均衡型名單）</td><td>${P ? ok(A.summary.performance_ok) : "—"}</td><td class="r num">${P ? `${P.checked}（${P.cohorts} 組）` : "—"}</td><td class="r num">${P ? P.mismatched : "—"}</td></tr>
+      <tr><td>績效驗證：0050 基準報酬</td><td>${(A.performance?.bench || []).length ? ok(A.performance.bench.every((b) => b.ok || b.system == null)) : "—"}</td><td class="r num">${(A.performance?.bench || []).length}</td><td class="r num">${(A.performance?.bench || []).filter((b) => !b.ok && b.system != null).length}</td></tr>
+      <tr><td>產業分析：個股 1 天漲跌、產業等權報酬、法人估算金額</td><td>${S ? ok(A.summary.sectors_ok) : "—"}</td><td class="r num">${S ? `${S.stocks_checked} 檔／${S.industries_checked} 產業／${S.flows_checked} 抽查` : "—"}</td><td class="r num">${S ? S.mismatched : "—"}</td></tr></tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">${S ? `另有 ${S.stale_members} 檔普通股最新資料日沒有收盤價（停牌或缺價），依規則不計入產業報酬。` : ""}樣本還少時，對帳只能證明「計算和原始資料一致」，不能證明選股有效。
+      完整逐筆證據：<a href="data/audit/latest.json">audit/latest.json</a></p>
+    ${(A.warnings || []).length ? `<p class="small" style="color:var(--warn);margin:6px 0 0">${esc(A.warnings.join("；"))}</p>` : ""}`;
+}
 function pageTrust() {
+  setTimeout(loadAudit, 0);
   const d = SNAP.data_dates, q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h])), fr = SNAP.freshness_rule || {};
   const base = SNAP.stocks.filter((s) => s.base_ok), comp = base.filter((s) => s.complete).length;
   const miss = {}; base.forEach((s) => (s.missing_factors || []).forEach((f) => (miss[f] = (miss[f] || 0) + 1)));
@@ -766,6 +783,7 @@ function pageTrust() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">資料、模型、績效都攤開來看</div><h1>數據品質與來源</h1>
       <p class="lead">每個資料來源的最新資料日、更新時間與狀態，目前使用的模型版本，以及模型的驗證結果。「資料日」是行情所屬的交易日；「發布時間」是網站完成計算的時間。</p></section>
+    <section class="card" id="auditCard"><h2 style="margin-top:0">獨立對帳</h2><p class="muted small" style="margin:0">讀取對帳報告中…</p></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>資料狀態</h2>${SNAP.rankings_blocked ? '<span class="pill bad">暫停排名</span>' : '<span class="pill acc">正常</span>'}</div>
         <div class="kpis"><div class="kpi"><span>上市股價</span><b>${q.twse_quotes?.last_ok || d.prices || "—"}</b></div><div class="kpi"><span>上櫃股價</span><b>${q.tpex_quotes?.last_ok || "—"}</b></div>
