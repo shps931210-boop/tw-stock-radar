@@ -51,7 +51,7 @@ def _title(x: dict) -> str:
     elif x.get("cash_note"):
         parts.append(x["cash_note"])
     if x.get("stock_rate"):
-        parts.append(f"無償配股率 {x['stock_rate']:g}")
+        parts.append(f"無償配股率 {round(x['stock_rate'], 6):g}")
     return f"{kind}" + (f"（{'、'.join(parts)}）" if parts else "")
 
 
