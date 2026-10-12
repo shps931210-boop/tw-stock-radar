@@ -290,6 +290,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <a href="#/performance" data-r="performance">成績單</a>
       <a href="#/trust" data-r="trust">可信度</a>
     </nav>
+    <button class="btn ghost sm" id="bell" onclick="location.hash='#/alerts'" aria-label="通知">通知<span class="cnt" id="ncnt" hidden>0</span></button>
     <button class="btn ghost sm" id="acct" hidden>登入</button>
     <div class="search"><input id="q" type="search" list="stockList" placeholder="搜尋代號或名稱，如 2330" autocomplete="off" aria-label="搜尋股票"><datalist id="stockList"></datalist></div>
   </div>
@@ -308,7 +309,8 @@ const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v
 // 觀察清單、策略、偏好：未登入時存在 yx_ 底下；登入後每個帳號有自己的一份（yx_u_帳號_），不同帳號不會混在一起
 let UID = null;
 const SYNC_KEYS = ["watch", "strategies", "pref"];
-const lsKey = (k) => (UID && SYNC_KEYS.includes(k) ? `yx_u_${UID}_` : "yx_") + k;
+const ACCT_KEYS = ["alert_rules", "notif", "alert_state"];  // 智慧警報：每個帳號分開存，雲端另外放在 alert_* 資料表
+const lsKey = (k) => (UID && (SYNC_KEYS.includes(k) || ACCT_KEYS.includes(k)) ? `yx_u_${UID}_` : "yx_") + k;
 const store = { get(k, d) { try { const v = localStorage.getItem(lsKey(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(lsKey(k), JSON.stringify(v)); } catch (e) {} if (UID && SYNC_KEYS.includes(k)) markDirty(); } };
 const FC = { quality: "#8b5a34", growth: "#c4524a", value: "#5f9a8c", momentum: "#d1a03a", trend: "#8f7aa8" };
@@ -1300,6 +1302,122 @@ function pageCalendar() {
   $$(".calday").forEach((b) => (b.onclick = () => { o.day = b.dataset.d; store.set("cal", o); pageCalendar(); }));
 }
 
+// ---------- 智慧警報（站內通知） ----------
+// 每次打開網站、有新的盤後資料時，依「觀察清單」和你開啟的規則產生通知。不寄 Email、不推播。
+// 去重：每則通知有固定的代號（規則:股票:資料日），同一件事不會通知兩次；登入時雲端資料表也有唯一限制。
+// 方案：目前全部免費（free）。PLAN_LIMITS 先預留，之後如果有付費方案再調整，現在不收費。
+const PLAN_LIMITS = { free: { keep: 200, rules: ["signal", "top", "score", "risk", "exdiv"] } };
+const ALERT_TYPES = {
+  signal: { name: "出現技術訊號", desc: "觀察清單的股票今天出現「今日技術訊號」" },
+  top: { name: "進入 AI 前 20 名", desc: "觀察清單的股票進入 AI 均衡型前 20 名" },
+  score: { name: "分數大幅變動", desc: "AI 均衡型分數和上一次更新相比，變動達到門檻", param: { key: "min", label: "變動幾分以上", def: 10, min: 3, max: 50 } },
+  risk: { name: "新的風險提醒", desc: "不再通過基本門檻，或出現新的排除原因" },
+  exdiv: { name: "除權息快到了", desc: "已確認的除權息日，前幾天提醒", param: { key: "days", label: "前幾天提醒", def: 3, min: 1, max: 14 } },
+};
+// 純函式：不讀寫任何儲存，方便測試（tests/test_alerts.py 用 Node 執行這一段）
+// <alert-core>
+function alertDefaults() { return Object.fromEntries(Object.entries(ALERT_TYPES).map(([k, t]) => [k, { enabled: true, params: t.param ? { [t.param.key]: t.param.def } : {} }])); }
+function alertEvents(snap, watchIds, rules, state, today) {
+  const date = snap.data_dates?.prices, by = Object.fromEntries(snap.stocks.map((s) => [s.stock_id, s]));
+  const on = (k) => rules[k]?.enabled !== false, prm = (k) => ({ ...alertDefaults()[k].params, ...(rules[k]?.params || {}) });
+  const out = [], base = {}, prev = state && state.date && state.date < date ? state.base || {} : null;
+  const nm = (s) => `${s.stock_id} ${s.name}`;
+  for (const id of watchIds) {
+    const s = by[id]; if (!s || !date) continue;
+    const m = s.ai?.modes?.balanced || {}, ex = s.exclude_reasons || [];
+    base[id] = { s: m.score ?? null, r: m.rank ?? null, ok: !!s.base_ok, ex };
+    if (state?.date === date) base[id] = state.base?.[id] || base[id];  // 同一個資料日：沿用原本的比較基準
+    if (on("signal") && s.timing?.status === "buy" && s.date === date)
+      out.push({ key: `signal:${id}:${date}`, type: "signal", stock_id: id, data_date: date, title: `${nm(s)} 出現技術訊號`,
+        body: (s.timing.triggers || []).map((k) => snap.triggers?.[k] || k).join("、") + "。技術型態提醒，尚未經回測驗證。" });
+    const p = prev?.[id]; if (!p) continue;  // 第一次看到這檔：只記錄，不通知
+    if (on("top") && m.rank != null && m.rank <= 20 && (p.r == null || p.r > 20))
+      out.push({ key: `top:${id}:${date}`, type: "top", stock_id: id, data_date: date, title: `${nm(s)} 進入 AI 均衡型前 20 名`, body: `第 ${m.rank} 名（上次${p.r == null ? "沒有排名" : `第 ${p.r} 名`}）。` });
+    if (on("score") && m.score != null && p.s != null && Math.abs(m.score - p.s) >= prm("score").min)
+      out.push({ key: `score:${id}:${date}`, type: "score", stock_id: id, data_date: date, title: `${nm(s)} AI 分數${m.score > p.s ? "上升" : "下降"} ${Math.abs(m.score - p.s).toFixed(1)} 分`,
+        body: `${p.s.toFixed(1)} → ${m.score.toFixed(1)}（全市場百分位，不是上漲機率）。` });
+    const added = ex.filter((x) => !(p.ex || []).includes(x));
+    if (on("risk") && ((p.ok && !s.base_ok) || added.length))
+      out.push({ key: `risk:${id}:${date}`, type: "risk", stock_id: id, data_date: date, title: `${nm(s)} ${p.ok && !s.base_ok ? "不再通過基本門檻" : "出現新的排除原因"}`, body: (added.length ? added : ex).join("、") || "請到個股頁查看。" });
+  }
+  if (on("exdiv")) {
+    const days = prm("exdiv").days, lim = new Date(Date.parse(today + "T00:00:00Z") + days * 864e5).toISOString().slice(0, 10);
+    for (const e of snap.calendar?.events || [])
+      if (e.event_type === "dividend" && e.status === "confirmed" && watchIds.includes(e.stock_id) && e.event_date >= today && e.event_date <= lim)
+        out.push({ key: `exdiv:${e.stock_id}:${e.event_date}`, type: "exdiv", stock_id: e.stock_id, data_date: date, title: `${e.stock_id} ${e.name || by[e.stock_id]?.name || ""} ${e.event_date} ${e.title.split("（")[0]}`,
+          body: `${e.title}。前一個交易日收盤前買進才參加；金額以公司公告為準。` });
+  }
+  return { notes: out, state: { date, base } };
+}
+// </alert-core>
+let alertBusy = null, alertAgain = false;
+const alertRules = () => ({ ...alertDefaults(), ...store.get("alert_rules", {}) });
+function renderNcnt() { const n = store.get("notif", []).filter((x) => !x.read_at).length, el = $("#ncnt"); if (el) { el.hidden = !n; el.textContent = n > 99 ? "99+" : n; } }
+async function runAlerts() {
+  if (!SNAP) return;
+  if (alertBusy) { alertAgain = true; return alertBusy; }  // 正在跑（例如剛登入）：跑完再用新帳號跑一次
+  const uid = UID;
+  alertBusy = (async () => {
+    let rules = alertRules(), state = store.get("alert_state", null);
+    if (sb && user) {  // 登入：規則和比較基準以雲端為準，多台裝置不會重複通知
+      const [r, st] = await Promise.all([sb.from("alert_rules").select("rule_type,enabled,params"), sb.from("alert_processing_state").select("data_date,baseline").maybeSingle()]);
+      if (!r.error && r.data?.length) { rules = { ...alertDefaults(), ...Object.fromEntries(r.data.map((x) => [x.rule_type, { enabled: x.enabled, params: x.params || {} }])) }; store.set("alert_rules", rules); }
+      if (!st.error && st.data) state = { date: st.data.data_date, base: st.data.baseline || {} };
+    }
+    if (UID !== uid) return;  // 中途切換帳號：不要把這一份寫到另一個帳號
+    const { notes, state: next } = alertEvents(SNAP, Object.keys(watch()), rules, state, twToday());
+    const local = store.get("notif", []), have = new Set(local.map((x) => x.key));
+    const fresh = notes.filter((x) => !have.has(x.key)).map((x) => ({ ...x, created_at: new Date().toISOString(), read_at: null }));
+    if (sb && user) {
+      if (notes.length) await sb.from("user_notifications").upsert(notes.map((x) => ({ user_id: user.id, event_key: x.key, rule_type: x.type, stock_id: x.stock_id, title: x.title.slice(0, 200), body: (x.body || "").slice(0, 1000), data_date: x.data_date })), { onConflict: "user_id,event_key", ignoreDuplicates: true });
+      if (next.date) await sb.from("alert_processing_state").upsert({ user_id: user.id, data_date: next.date, baseline: next.base, updated_at: new Date().toISOString() });
+      const { data, error } = await sb.from("user_notifications").select("id,event_key,rule_type,stock_id,title,body,data_date,created_at,read_at").order("created_at", { ascending: false }).limit(PLAN_LIMITS.free.keep);
+      if (!error) store.set("notif", data.map((x) => ({ id: x.id, key: x.event_key, type: x.rule_type, stock_id: x.stock_id, title: x.title, body: x.body, data_date: x.data_date, created_at: x.created_at, read_at: x.read_at })));
+      else store.set("notif", fresh.concat(local).slice(0, PLAN_LIMITS.free.keep));
+    } else store.set("notif", fresh.concat(local).slice(0, PLAN_LIMITS.free.keep));
+    if (next.date) store.set("alert_state", next);
+    renderNcnt();
+    if (fresh.length && location.hash !== "#/alerts") toast(`有 ${fresh.length} 則新通知，點上方「通知」查看。`);
+    if (location.hash === "#/alerts") pageAlerts();
+  })();
+  try { await alertBusy; } catch (e) { console.warn("警報產生失敗", e); } finally { alertBusy = null; }
+  if (alertAgain) { alertAgain = false; return runAlerts(); }
+}
+async function markRead(keys) {
+  const now = new Date().toISOString(), set = new Set(keys);
+  store.set("notif", store.get("notif", []).map((x) => (set.has(x.key) && !x.read_at ? { ...x, read_at: now } : x)));
+  renderNcnt();
+  if (sb && user && keys.length) await sb.from("user_notifications").update({ read_at: now }).in("event_key", keys).is("read_at", null);
+}
+async function saveRule(k, patch) {
+  const rules = alertRules(); rules[k] = { ...rules[k], ...patch, params: { ...rules[k].params, ...(patch.params || {}) } };
+  store.set("alert_rules", rules);
+  if (sb && user) { const { error } = await sb.from("alert_rules").upsert({ user_id: user.id, rule_type: k, enabled: rules[k].enabled, params: rules[k].params, updated_at: new Date().toISOString() }, { onConflict: "user_id,rule_type" }); if (error) toast(`規則沒有存到雲端：${error.message}`); }
+}
+function pageAlerts() {
+  const list = store.get("notif", []), rules = alertRules(), nw = Object.keys(watch()).length, unread = list.filter((x) => !x.read_at);
+  const when = (x) => x.created_at ? new Date(x.created_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "";
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">${user ? "已登入・通知會在你的每台裝置同步" : "未登入・通知只存在這台裝置"}</div><h1>通知</h1>
+      <p class="lead">依你的<a href="#/watch">觀察清單</a>（${nw} 檔）自動提醒。每次盤後資料更新後，打開網站就會檢查一次；同一件事只通知一次。</p></section>
+    <section class="card"><div class="card-h"><h2>最新通知</h2>${unread.length ? `<button class="btn ghost sm" id="readAll">全部標為已讀（${unread.length}）</button>` : ""}</div>
+      ${!nw ? '<div class="empty">觀察清單是空的。先在股票旁邊按 ☆ 加入觀察清單，之後就會收到通知。</div>'
+        : list.length ? list.map((x) => `<a class="nt" href="#/stock/${esc(x.stock_id)}" data-key="${esc(x.key)}" style="display:block;padding:10px 0;border-top:1px solid var(--line);color:inherit;text-decoration:none">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${x.read_at ? "" : '<span class="pill acc">新</span>'}<span class="pill">${esc(ALERT_TYPES[x.type]?.name || x.type)}</span><b style="${x.read_at ? "font-weight:400" : ""}">${esc(x.title)}</b></div>
+          <div class="small muted">${esc(x.body || "")}</div><div class="faint small">資料日 ${esc(x.data_date || "—")}・${esc(when(x))}</div></a>`).join("")
+        : '<div class="empty">目前沒有通知。第一次使用會先記錄觀察清單股票現在的狀態，下一次盤後更新有變化才會通知。</div>'}</section>
+    <section class="card"><h2 style="margin-top:0">通知規則</h2>
+      ${Object.entries(ALERT_TYPES).map(([k, t]) => `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line)">
+        <input type="checkbox" id="ar_${k}" data-rule="${k}" ${rules[k].enabled ? "checked" : ""} style="margin-top:4px">
+        <label for="ar_${k}" style="flex:1"><b>${esc(t.name)}</b><br><span class="small muted">${esc(t.desc)}</span></label>
+        ${t.param ? `<label class="small muted" style="white-space:nowrap">${esc(t.param.label)} <input type="number" data-param="${k}" min="${t.param.min}" max="${t.param.max}" value="${rules[k].params[t.param.key] ?? t.param.def}" style="width:56px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit"></label>` : ""}</div>`).join("")}
+      <p class="faint small" style="margin:8px 0 0">${user ? "規則存在你的帳號。" : '規則存在這台裝置；<a href="#/account">登入</a>後可以在不同裝置同步。'}只在網站裡提醒，不寄信、不推播。通知是資料變化的提醒，不是投資建議。</p></section>`;
+  if ($("#readAll")) $("#readAll").onclick = async () => { await markRead(unread.map((x) => x.key)); pageAlerts(); };
+  $$(".nt").forEach((a) => (a.onclick = () => markRead([a.dataset.key])));
+  $$("[data-rule]").forEach((c) => (c.onchange = () => saveRule(c.dataset.rule, { enabled: c.checked })));
+  $$("[data-param]").forEach((i) => (i.onchange = () => { const t = ALERT_TYPES[i.dataset.param].param, v = Math.min(t.max, Math.max(t.min, Number(i.value) || t.def)); i.value = v; saveRule(i.dataset.param, { params: { [t.key]: v } }); }));
+}
+
 // ---------- 會員登入與雲端同步（Supabase；網站沒有設定就不顯示，所有功能照常不用登入） ----------
 // 網站只放公開金鑰（publishable key）；資料表開了 Row Level Security，每個人只能讀寫自己的那一列（supabase/schema.sql）。
 // 同步規則：
@@ -1324,7 +1442,7 @@ function applyRemote(row) {
   SYNC_KEYS.forEach((k) => { try { localStorage.setItem(`yx_u_${UID}_${k}`, JSON.stringify(row[k] ?? (k === "strategies" ? [] : {}))); } catch (e) {} });
   meta("ver", row.version); meta("dirty", false);
 }
-function refreshView() { renderWcnt(); if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash)) route(); }
+function refreshView() { renderWcnt(); renderNcnt(); if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash)) route(); }
 async function pushState() {
   clearTimeout(pushT); pushT = null;
   if (!sb || !user || pushing) return pushing;
@@ -1383,7 +1501,7 @@ async function initAuth() {
   $("#acct").onclick = () => (location.hash = "#/account");
   sb.auth.onAuthStateChange((ev, session) => {
     const was = user?.id; user = session?.user || null; UID = user?.id || null; renderAcct();
-    if (user?.id !== was) { syncMsg = ""; setTimeout(() => { refreshView(); if (user) pullState(); }, 0); }  // 不在 callback 裡等待，避免卡住
+    if (user?.id !== was) { syncMsg = ""; setTimeout(async () => { refreshView(); if (user) await pullState(); runAlerts(); }, 0); }  // 不在 callback 裡等待，避免卡住
   });
   if (new URLSearchParams(location.search).has("code")) setTimeout(() => history.replaceState(null, "", location.pathname + location.hash), 2000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullState(); else if (pushT) pushState(); });
@@ -1698,13 +1816,13 @@ function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === (p === "stock" ? "__" : p === "s" ? "radar" : p || "")));
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, alerts: pageAlerts, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
 $("#q").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const q = e.target.value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => s.name.includes(q)); if (hit) { location.hash = `#/stock/${hit.stock_id}`; e.target.value = ""; } });
 window.addEventListener("hashchange", route);
-loadSnap().then((ok) => ok && route());
+loadSnap().then((ok) => { if (ok) { route(); runAlerts(); } });
 initAuth();
 </script>
 </body>

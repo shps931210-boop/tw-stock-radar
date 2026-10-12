@@ -77,3 +77,89 @@ end;
 $$;
 revoke all on function public.use_ai_quota() from public, anon;
 grant execute on function public.use_ai_quota() to authenticated;
+
+-- ===== 智慧警報（站內通知）=====
+-- 規則、通知、比較基準都只存在自己的帳號，每個人只能讀寫自己的資料。網站不使用任何管理員金鑰。
+-- 同一則通知有固定代號 event_key（規則:股票:資料日），unique (user_id, event_key) 保證不會重複通知。
+create table if not exists public.alert_rules (
+  user_id    uuid not null references auth.users (id) on delete cascade,
+  rule_type  text not null check (rule_type in ('signal', 'top', 'score', 'risk', 'exdiv')),
+  enabled    boolean not null default true,
+  params     jsonb not null default '{}'::jsonb check (pg_column_size(params) < 2000),
+  updated_at timestamptz not null default now(),
+  primary key (user_id, rule_type)
+);
+create table if not exists public.user_notifications (
+  id         bigint generated always as identity primary key,
+  user_id    uuid not null references auth.users (id) on delete cascade,
+  event_key  text not null check (char_length(event_key) <= 120),
+  rule_type  text not null check (char_length(rule_type) <= 20),
+  stock_id   text check (char_length(stock_id) <= 10),
+  title      text not null check (char_length(title) <= 200),
+  body       text check (char_length(body) <= 1000),
+  data_date  date,
+  created_at timestamptz not null default now(),
+  read_at    timestamptz,
+  unique (user_id, event_key)
+);
+create index if not exists user_notifications_recent on public.user_notifications (user_id, created_at desc);
+create table if not exists public.alert_processing_state (
+  user_id    uuid primary key references auth.users (id) on delete cascade,
+  data_date  date,                                   -- 上次比較用的資料日
+  baseline   jsonb not null default '{}'::jsonb check (pg_column_size(baseline) < 200000),  -- 觀察清單股票上次的分數、名次、門檻
+  updated_at timestamptz not null default now()
+);
+
+alter table public.alert_rules enable row level security;
+alter table public.user_notifications enable row level security;
+alter table public.alert_processing_state enable row level security;
+do $$
+declare t text;
+begin
+  foreach t in array array['alert_rules', 'user_notifications', 'alert_processing_state'] loop
+    execute format('drop policy if exists "own rows: read" on public.%I', t);
+    execute format('drop policy if exists "own rows: insert" on public.%I', t);
+    execute format('drop policy if exists "own rows: update" on public.%I', t);
+    execute format('drop policy if exists "own rows: delete" on public.%I', t);
+    execute format('create policy "own rows: read" on public.%I for select to authenticated using ((select auth.uid()) = user_id)', t);
+    execute format('create policy "own rows: insert" on public.%I for insert to authenticated with check ((select auth.uid()) = user_id)', t);
+    execute format('create policy "own rows: update" on public.%I for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)', t);
+    execute format('create policy "own rows: delete" on public.%I for delete to authenticated using ((select auth.uid()) = user_id)', t);
+    execute format('revoke all on public.%I from anon', t);
+  end loop;
+end $$;
+grant select, insert, update, delete on public.alert_rules, public.alert_processing_state to authenticated;
+grant select, insert, delete on public.user_notifications to authenticated;
+revoke update on public.user_notifications from authenticated;
+grant update (read_at) on public.user_notifications to authenticated;   -- 通知內容不能改，只能標為已讀
+
+-- 每人最多保留 500 則通知，超過就刪掉最舊的（避免免費資料庫被塞滿）
+create or replace function public.trim_notifications()
+returns trigger
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+begin
+  delete from public.user_notifications
+   where user_id = new.user_id
+     and id in (select id from public.user_notifications where user_id = new.user_id order by created_at desc offset 500);
+  return null;
+end;
+$$;
+drop trigger if exists trim_notifications on public.user_notifications;
+create trigger trim_notifications after insert on public.user_notifications for each row execute function public.trim_notifications();
+
+-- ===== 方案（先預留，不收費）=====
+-- 目前每個人都是 free。只能讀自己的方案，網站不能自己改成 pro。
+create table if not exists public.user_plan (
+  user_id    uuid primary key references auth.users (id) on delete cascade,
+  plan       text not null default 'free' check (plan in ('free', 'pro')),
+  updated_at timestamptz not null default now()
+);
+alter table public.user_plan enable row level security;
+drop policy if exists "own plan: read" on public.user_plan;
+create policy "own plan: read" on public.user_plan for select to authenticated using ((select auth.uid()) = user_id);
+grant select on public.user_plan to authenticated;
+revoke all on public.user_plan from anon;
+revoke insert, update, delete on public.user_plan from authenticated;
