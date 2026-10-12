@@ -6,7 +6,7 @@ from app.server import stock_detail
 
 root = Path(__file__).parent
 snap = json.loads((root / "data" / "snapshot_demo.json").read_text("utf-8"))
-details = {s["stock_id"]: stock_detail(s["stock_id"], "demo.db") for s in snap["stocks"]}
+details = {s["stock_id"]: stock_detail(s["stock_id"], "demo.db", s) for s in snap["stocks"]}
 data = json.dumps({"snapshot": snap, "details": details}, ensure_ascii=False, separators=(",", ":"))
 html = (root / "static" / "index.html").read_text("utf-8")
 html = html.replace("<script>\nconst STATIC", f"<script>window.STATIC_DATA = {data};</script>\n<script>\nconst STATIC", 1)

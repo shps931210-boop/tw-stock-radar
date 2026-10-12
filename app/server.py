@@ -14,7 +14,7 @@ from datetime import datetime
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 
-from . import config, db, update
+from . import config, db, profile, update
 
 app = FastAPI(title="股栗子")
 STATIC = config.ROOT / "static"
@@ -65,7 +65,8 @@ def _rows(con, sql, params):
     return db.read(con, sql, params).to_dict("records")
 
 
-def stock_detail(sid: str, dbname: str) -> dict:
+def stock_detail(sid: str, dbname: str, row: dict | None = None) -> dict:
+    """個股明細。給了快照裡這檔股票的資料（row）時，加上個股性質卡（app/profile.py）。"""
     with db.connect(dbname) as con:
         px = _rows(con, "SELECT date,open,high,low,close,volume,value FROM prices WHERE stock_id=? ORDER BY date DESC LIMIT 520", (sid,))
         if not px:
@@ -81,15 +82,18 @@ def stock_detail(sid: str, dbname: str) -> dict:
             "dividends": _rows(con, "SELECT year, cash, stock FROM dividends WHERE stock_id=? ORDER BY year", (sid,)),
             "news": _rows(con, "SELECT date, title, source, link FROM news WHERE stock_id=? ORDER BY date DESC LIMIT 15", (sid,)),
         }
+    if row and row.get("is_common"):
+        out["profile"] = profile.build(row)
     return json.loads(json.dumps(out, default=str).replace("NaN", "null"))
 
 
 @app.get("/api/stock/{sid}")
 def stock(sid: str, demo: bool = False):
-    _, is_demo = _snapshot_path(demo)
+    p, is_demo = _snapshot_path(demo)
     if not is_demo:
         update.fetch_news(sid)
-    return JSONResponse(stock_detail(sid, "demo.db" if is_demo else "stocks.db"))
+    row = next((s for s in json.loads(p.read_text("utf-8"))["stocks"] if s["stock_id"] == sid), None) if p.exists() else None
+    return JSONResponse(stock_detail(sid, "demo.db" if is_demo else "stocks.db", row))
 
 
 @app.get("/api/status")

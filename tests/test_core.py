@@ -369,6 +369,35 @@ class Tracking(unittest.TestCase):
         self.assertIn("9999", [x["stock_id"] for x in c["dropped"]])
 
 
+class Profile(unittest.TestCase):
+    def test_profile_rules(self):
+        from app import profile
+        base = {"is_common": True, "complete": True, "eps_ttm": 5, "score_quality": 80, "score_growth": 40, "score_value": 30,
+                "score_momentum": 20, "score_trend": 40, "roe": 20, "roe_years_15": 4, "industry": "半導體業", "debt_ratio": 30, "ocf_to_ni": 1.2}
+        p = profile.build(base)
+        self.assertEqual([x["label"] for x in p["styles"]], ["長期體質型"])
+        self.assertEqual(p["horizon"]["label"], "適合長期觀察")
+        lv = {x["topic"]: x["level"] for x in p["finance"]}
+        self.assertEqual((lv["獲利能力"], lv["財務結構"], lv["現金流"], lv["股利"]), ("good", "good", "good", "na"))
+        loss = profile.build({**base, "eps_ttm": -1})
+        self.assertIn("虧損中", [x["label"] for x in loss["styles"]])
+        self.assertEqual(loss["horizon"]["label"], "只適合短線、風險高")
+        self.assertEqual(profile.build({**base, "complete": False})["horizon"]["label"], "資料不足")
+        cyc = profile.build({**base, "industry": "航運業"})
+        self.assertIn("景氣循環型", [x["label"] for x in cyc["styles"]])
+        self.assertIn("景氣反轉", cyc["horizon"]["why"])
+        fin = profile.build({**base, "is_financial": True, "debt_ratio": 90})
+        self.assertEqual({x["topic"]: x["level"] for x in fin["finance"]}["財務結構"], "na")  # 金融業負債比高是正常的
+
+    def test_stock_detail_includes_profile(self):
+        from app.server import stock_detail
+        from app.sources import demo
+        demo.build()
+        row = next(s for s in snapshot.build(demo=True)["stocks"] if s["stock_id"] == "2330")
+        self.assertIn("horizon", stock_detail("2330", "demo.db", row)["profile"])
+        self.assertNotIn("profile", stock_detail("2330", "demo.db"))
+
+
 class Backtest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):  # 不依賴其他測試先建好示範資料庫

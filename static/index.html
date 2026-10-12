@@ -1052,6 +1052,17 @@ const NEG = ["衰退", "年減", "下滑", "下修", "調降", "利空", "砍單
 const tone = (t) => { const p = POS.filter((w) => t.includes(w)).length, n = NEG.filter((w) => t.includes(w)).length; return p > n ? 1 : n > p ? -1 : 0; };
 function maSeries(px, n) { const out = []; let sum = 0; for (let i = 0; i < px.length; i++) { sum += px[i].close; if (i >= n) sum -= px[i - n].close; if (i >= n - 1) out.push({ time: px[i].date, value: sum / n }); } return out; }
 
+function profileCard(p) {
+  if (!p) return "";
+  const dot = { good: "ok", mid: "", weak: "down", na: "faint" }, word = { good: "佳", mid: "普通", weak: "弱", na: "—" };
+  return `<section class="card"><div class="card-h"><h2>這檔股票是什麼性質？</h2><span class="pill acc">${esc(p.horizon.label)}</span></div>
+    <p style="margin:0 0 10px">${esc(p.horizon.why)}</p>
+    <div class="two" style="gap:16px">
+      <div><h3 style="margin:0 0 6px">股票類型</h3>${p.styles.length ? p.styles.map((x) => `<div style="margin:0 0 10px"><span class="pill">${esc(x.label)}</span><div class="small" style="margin-top:4px">${esc(x.why)}</div></div>`).join("") : '<p class="muted small">沒有特別明顯的類型，各項表現接近市場平均。</p>'}</div>
+      <div><h3 style="margin:0 0 6px">財報重點</h3>${p.finance.map((x) => `<div style="margin:0 0 10px"><b class="${dot[x.level]}">${esc(x.topic)}・${word[x.level]}</b><div class="small" style="margin-top:2px">${esc(x.text)}</div></div>`).join("")}</div>
+    </div>
+    <p class="faint small" style="margin:10px 0 0">由固定規則根據最新財報、月營收、股價自動產生，每一句都附上依據的數字；不是預測，也不是買賣建議。分數是全市場百分位（50 = 中位數）。</p></section>`;
+}
 async function pageStock(id) {
   const s = BYID[id];
   if (!s) { $("#app").innerHTML = `<div class="card empty">找不到 ${esc(id)}</div>`; return; }
@@ -1073,6 +1084,7 @@ async function pageStock(id) {
       ${s.industry_rank ? `<span>產業內 <b class="num">${s.industry_rank} / ${s.industry_n}</b>（${esc(s.industry)}）</span>` : ""}</div>
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
     <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
+    ${profileCard(d.profile)}
     <section class="card"><div class="card-h"><h2>AI 分數怎麼來的</h2><div class="seg" id="bdSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="bd"></div></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>六面向評分</h2><span class="muted small">虛線 = 全市場中位數 50</span></div>
