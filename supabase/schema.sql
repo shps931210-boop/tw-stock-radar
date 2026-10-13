@@ -167,6 +167,12 @@ grant select on public.user_notifications to authenticated;
 grant update (read_at) on public.user_notifications to authenticated;
 revoke insert, update, delete on public.alert_processing_state from authenticated;
 grant select on public.alert_processing_state to authenticated;
+-- 後端（secret key = service_role）需要明確的權限；新的 Supabase 專案不會自動給。
+grant usage on schema public to service_role;
+grant select on public.user_state to service_role;
+grant select on public.alert_rules to service_role;
+grant select, insert, update on public.user_notifications to service_role;
+grant select, insert, update on public.alert_processing_state to service_role;
 
 -- 每人最多保留 500 則通知，超過就刪掉最舊的（避免免費資料庫被塞滿）
 create or replace function public.trim_notifications()

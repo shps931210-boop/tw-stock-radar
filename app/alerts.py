@@ -79,6 +79,28 @@ def events(snap: dict, watch_ids: list[str], rules: dict, state: dict | None, to
     return out, {"date": date_, "base": base}
 
 
+def _check(r) -> None:
+    """失敗時把 Supabase 回的錯誤原因（例如 permission denied）一起記下來，方便判斷是金鑰還是權限的問題。"""
+    if getattr(r, "status_code", 200) >= 400:
+        try:
+            body = r.json()
+            why = " ".join(str(body.get(k) or "") for k in ("code", "message", "hint")).strip()
+        except Exception:
+            why = (r.text or "")[:120]
+        raise requests.HTTPError(f"{r.status_code} {why}".strip(), response=r)
+
+
+def key_kind(key: str) -> str:
+    """只回報金鑰種類，不回報內容。"""
+    if key.startswith("sb_secret_"):
+        return "secret"
+    if key.startswith("sb_publishable_"):
+        return "publishable（貼錯了，要用 sb_secret_ 開頭的那一把）"
+    if key.startswith("eyJ"):
+        return "舊版 JWT"
+    return "無法辨識"
+
+
 class Supa:
     """用 secret key 呼叫 Supabase REST（只在 Actions 裡用）。"""
 
@@ -93,7 +115,7 @@ class Supa:
         out, step = [], 1000
         while True:
             r = self.s.get(self.url + table, params={"select": select, "order": "user_id", "limit": step, "offset": len(out)}, timeout=30)
-            r.raise_for_status()
+            _check(r)
             rows = r.json()
             out += rows
             if len(rows) < step:
@@ -105,7 +127,7 @@ class Supa:
         pref = "resolution=merge-duplicates" if merge else "resolution=ignore-duplicates"
         r = self.s.post(self.url + table, params={"on_conflict": on_conflict}, data=json.dumps(rows, ensure_ascii=False).encode(),
                         headers={"Prefer": f"{pref},return=minimal"}, timeout=60)
-        r.raise_for_status()
+        _check(r)
 
 
 def run(snap: dict, supa: Supa, today: str | None = None) -> dict:
@@ -145,7 +167,7 @@ def main(argv: list[str]) -> int:
             res = {"enabled": True, **run(snap, Supa(url, key))}
         except Exception as e:  # 失敗只記錄，不影響網站發布；不寫出金鑰或會員資料
             res = {"ok": False, "enabled": True, "ran_at": config.now().isoformat(timespec="seconds") + "+08:00",
-                   "reason": f"{type(e).__name__}: {str(e)[:200]}".replace(key, "***")}
+                   "key_kind": key_kind(key), "reason": f"{type(e).__name__}: {str(e)[:200]}".replace(key, "***")}
     out.write_text(json.dumps(res, ensure_ascii=False), "utf-8")
     print("會員通知：", json.dumps(res, ensure_ascii=False))
     return 0
