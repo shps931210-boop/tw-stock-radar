@@ -160,7 +160,9 @@ def main(argv: list[str]) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     url, key = os.environ.get("SUPABASE_URL", ""), os.environ.get("SUPABASE_SECRET_KEY", "")
     if not url or not key:
-        res = {"ok": False, "enabled": False, "reason": "還沒有設定 SUPABASE_SECRET_KEY，通知只在瀏覽器裡產生"}
+        miss = [n for n, v in (("SUPABASE_URL（repository variable）", url), ("SUPABASE_SECRET_KEY（repository secret）", key)) if not v]
+        res = {"ok": False, "enabled": False, "ran_at": config.now().isoformat(timespec="seconds") + "+08:00",
+               "missing": miss, "reason": f"這次執行讀不到 {'、'.join(miss)}，通知只在瀏覽器裡產生"}
     else:
         try:
             snap = json.loads((config.DATA_DIR / "snapshot.json").read_text("utf-8"))
