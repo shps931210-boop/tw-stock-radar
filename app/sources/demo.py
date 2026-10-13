@@ -147,7 +147,16 @@ def build(path_name: str = "demo.db", days: int = 520) -> str:
                 pool = NEWS[s]
                 news.append({"stock_id": sid, "date": (config.today() - timedelta(days=int(r.integers(0, 14)))).isoformat(),
                              "title": pool[int(r.integers(len(pool)))].format(n=name), "source": "示範新聞", "link": ""})
-            db.upsert(con, "news", news)
+            from .. import news as newsmod  # 新聞中心用的表（示範資料，標示「示範」）
+            con.executescript(newsmod.SCHEMA)
+            items = [{"id": newsmod._id("news", sid, n["title"]), "kind": "news", "stock_id": sid, "date": n["date"], "time": "09:30", "title": n["title"],
+                      "summary": "", "source": "示範新聞", "link": None, "rule": None, "fetched_at": n["date"]} for n in news]
+            if r.random() < 0.3:
+                items.append({"id": newsmod._id("ann", sid), "kind": "announcement", "stock_id": sid, "date": config.today().isoformat(), "time": "17:30",
+                              "title": f"{name} 公告董事會決議發放現金股利（示範）", "summary": "示範公告內容", "source": "示範公告", "link": None,
+                              "rule": "第14款", "fetched_at": config.today().isoformat()})
+            db.upsert(con, "news_items", items)
+        db.log_fetch(con, "news_center", config.today().isoformat())
         db.upsert(con, "disposition", [{"stock_id": "3293", "period": "示範用", "reason": "示範：處置股票", "updated": ""}])
         from datetime import datetime
         now = config.now().isoformat(timespec="seconds")

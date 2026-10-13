@@ -309,19 +309,6 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
             db.set_meta(con, f"updated_{k}", now)
 
 
-def fetch_news(sid: str, cfg: dict | None = None) -> None:
-    cfg = cfg or config.load()
-    with db.connect() as con:
-        t = db.fetched_at(con, "fm_news", sid)
-        if t and config.now() - t < timedelta(hours=3):
-            return
-        try:
-            db.upsert(con, "news", FinMindSource(cfg.get("finmind_token", "")).news(sid))
-            db.log_fetch(con, "fm_news", sid)
-        except Exception:
-            db.log_fetch(con, "fm_news", sid, ok=False)
-
-
 def run(daily: bool = True, fundamentals: bool = True, progress=None) -> list[str]:
     """分三階段，每階段結束都重算快照，讓網站盡早顯示真實資料：
     ① 最新一個交易日收盤價（OpenAPI，幾秒鐘）→ ② 回補歷史股價與籌碼 → ③ 月營收、財報、股利。"""

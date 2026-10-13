@@ -14,7 +14,7 @@ from datetime import datetime
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
 
-from . import config, db, profile, update
+from . import news, config, db, profile, update
 
 app = FastAPI(title="股栗子")
 STATIC = config.ROOT / "static"
@@ -80,8 +80,8 @@ def stock_detail(sid: str, dbname: str, row: dict | None = None) -> dict:
             "margin": _rows(con, "SELECT date, margin_bal, short_bal FROM margin WHERE stock_id=? ORDER BY date DESC LIMIT 60", (sid,))[::-1],
             "valuation": _rows(con, "SELECT date, per, pbr, dy FROM valuation WHERE stock_id=? ORDER BY date DESC LIMIT 260", (sid,))[::-1],
             "dividends": _rows(con, "SELECT year, cash, stock FROM dividends WHERE stock_id=? ORDER BY year", (sid,)),
-            "news": _rows(con, "SELECT date, title, source, link FROM news WHERE stock_id=? ORDER BY date DESC LIMIT 15", (sid,)),
         }
+        out["news"] = news.for_stock(con, sid, 20)  # 公告＋新聞（app/news.py）
     if row and row.get("is_common"):
         out["profile"] = profile.build(row)
         out["row"] = {k: v for k, v in row.items() if k not in ("spark", "strategies")}  # AI 問答用的指標摘要
@@ -92,9 +92,16 @@ def stock_detail(sid: str, dbname: str, row: dict | None = None) -> dict:
 def stock(sid: str, demo: bool = False):
     p, is_demo = _snapshot_path(demo)
     if not is_demo:
-        update.fetch_news(sid)
+        news.fetch_stock(sid)
     row = next((s for s in json.loads(p.read_text("utf-8"))["stocks"] if s["stock_id"] == sid), None) if p.exists() else None
     return JSONResponse(stock_detail(sid, "demo.db" if is_demo else "stocks.db", row))
+
+
+@app.get("/api/news")
+def news_center(demo: bool = False):
+    p, is_demo = _snapshot_path(demo)
+    snap = json.loads(p.read_text("utf-8")) if p.exists() else {"stocks": []}
+    return JSONResponse(news.latest(snap, "demo.db" if is_demo else "stocks.db"))
 
 
 @app.get("/api/status")

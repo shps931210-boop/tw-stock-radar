@@ -145,7 +145,3 @@ class FinMindSource:
             a["stock"] += float(r.get("StockEarningsDistribution") or 0) + float(r.get("StockStatutorySurplus") or 0)
         return list(agg.values())
 
-    def news(self, sid: str, days: int = 14) -> list[dict]:
-        rows = self._get("TaiwanStockNews", sid, self._since(days), config.today().isoformat())
-        return [{"stock_id": sid, "date": str(r.get("date", ""))[:10], "title": (r.get("title") or "").strip(),
-                 "source": r.get("source", ""), "link": r.get("link", "")} for r in rows if r.get("title")]

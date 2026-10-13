@@ -302,18 +302,19 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <a href="#/" data-r="">首頁</a>
       <a href="#/me" data-r="me">投資儀表板</a>
       <details class="grp" data-g="research"><summary>選股研究</summary><div class="menu">
-        <a href="#/ai" data-r="ai">AI 量化選股<small>多因子規則評分與排名</small></a>
-        <a href="#/radar" data-r="radar">策略選股<small>12 種經典策略的選股結果</small></a>
-        <a href="#/screener" data-r="screener">多因子篩選器<small>自訂條件組合篩選</small></a></div></details>
+        <a href="#/ai" data-r="ai">AI 量化選股<small>根據固定量化模型，查看全市場股票評分與排名</small></a>
+        <a href="#/radar" data-r="radar">策略選股<small>使用預設投資策略，尋找符合條件的股票</small></a>
+        <a href="#/screener" data-r="screener">多因子篩選器<small>自行設定財務、估值、技術與籌碼條件</small></a></div></details>
       <details class="grp" data-g="market"><summary>市場分析</summary><div class="menu">
-        <a href="#/buy" data-r="buy">技術訊號<small>依最新資料日觸發的技術型態</small></a>
+        <a href="#/buy" data-r="buy">技術訊號<small>查看符合指定技術條件的股票及觸發日期</small></a>
+        <a href="#/news" data-r="news">市場新聞中心<small>公司公告與新聞，附來源與相關股票</small></a>
         <a href="#/sectors" data-r="sectors">產業分析<small>產業報酬、成交與法人熱力圖</small></a>
         <a href="#/calendar" data-r="calendar">財報與事件日曆<small>除權息、營收與財報公布期限</small></a></div></details>
       <details class="grp" data-g="mine"><summary>我的研究</summary><div class="menu">
         <a href="#/watch" data-r="watch">自選股<span class="cnt" id="wcnt">0</span><small>追蹤加入後的價格與評分</small></a>
-        <a href="#/mine" data-r="mine">個人化選股<small>依你的期間、風格、風險排序</small></a>
+        <a href="#/mine" data-r="mine">個人化選股<small>根據研究偏好重新排序，不改變客觀模型分數</small></a>
         <a href="#/alerts" data-r="alerts">通知<small>自選股的訊號、評分與事件提醒</small></a></div></details>
-      <a href="#/performance" data-r="performance">績效驗證</a>
+      <a href="#/performance" data-r="performance" title="查看歷史選股表現，與大盤及產業基準比較">績效驗證</a>
       <details class="grp" data-g="data"><summary>數據與設定</summary><div class="menu">
         <a href="#/trust" data-r="trust">數據品質與來源<small>資料日期、來源狀態、模型驗證</small></a>
         <a href="#/catalog" data-r="catalog">指標資料庫<small>每個指標的公式、單位與限制</small></a>
@@ -1392,6 +1393,76 @@ function pageCalendar() {
   $$(".calday").forEach((b) => (b.onclick = () => { o.day = b.dataset.d; store.set("cal", o); pageCalendar(); }));
 }
 
+// ---------- 市場新聞中心 ----------
+// 資料：data/news/latest.json（每日更新時抓公開資訊觀測站重大訊息與 FinMind 新聞標題）。只放標題、摘要與原文連結，內容版權屬原媒體。
+let NEWS = null;
+async function loadNews() {
+  if (NEWS) return NEWS;
+  if (STATIC) return (NEWS = STATIC.news || null);
+  const r = await fetch(SITE ? "data/news/latest.json" : "/api/news" + (DEMO ? "?demo=1" : "")).catch(() => null);
+  return (NEWS = r && r.ok ? await r.json() : null);
+}
+const TONE = { positive: ["偏多", "good"], negative: ["偏空", "bad"], unclear: ["無法判定", ""] };
+const tmTxt = (t) => t && /^\d{6}$/.test(t) ? `${t.slice(0, 2)}:${t.slice(2, 4)}` : t ? esc(t.slice(0, 5)) : "";
+// 一則公告或新聞；opts.stock=false 時不重複顯示股票（個股頁用）
+function newsItem(n, opts = {}) {
+  const [tt, tc] = TONE[n.tone] || [];
+  const kind = n.kind === "announcement" ? '<span class="pill acc">公司公告</span>' : '<span class="pill">新聞</span>';
+  const who = opts.stock !== false && n.stock_id ? `<a href="#/stock/${esc(n.stock_id)}"><b>${esc(n.stock_id)} ${esc(n.name || "")}</b></a>${n.industry ? ` <span class="faint small">${esc(n.industry)}</span>` : ""}` : "";
+  const c = opts.stock !== false ? n.ctx : null;
+  const ctx = c ? `<span class="small muted">收盤 <span class="num">${fmtNum(c.close)}</span> <span class="num ${signCls(c.chg_pct)}">${pctTxt(c.chg_pct)}</span>${c.score != null ? `・AI 量化評分 <span class="num">${Math.round(c.score)}</span>（第 ${c.rank} 名）` : ""}${c.price_date ? `・${esc(c.price_date)}` : ""}</span>` : "";
+  const title = n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : esc(n.title);
+  return `<div class="nitem" style="padding:8px 0;border-top:1px solid var(--line)">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${kind}${tt ? `<span class="pill ${tc}" title="只用標題關鍵字判讀，不是 AI 情緒分析">${tt}</span>` : ""}<span class="num faint small">${esc(n.date)} ${tmTxt(n.time)}</span>${who}</div>
+    <div style="margin:2px 0">${title}</div>
+    ${n.summary ? `<details class="small"><summary class="muted">公告說明</summary><div style="white-space:pre-wrap">${esc(n.summary)}</div></details>` : ""}
+    <div class="faint small">來源：${esc(n.source || "—")}${n.rule ? `・${esc(n.rule)}` : ""}${ctx ? "　" : ""}${ctx}</div></div>`;
+}
+async function pageNews() {
+  $("#app").innerHTML = '<section class="card"><p class="muted">載入新聞與公告…</p></section>';
+  const N = await loadNews();
+  if (location.hash.replace(/^#\/?/, "").split("/")[0] !== "news") return;
+  const o = { tab: "all", ind: "", q: "", n: 120, ...store.get("news", {}) };
+  const save = () => { store.set("news", { tab: o.tab, ind: o.ind, q: o.q }); pageNews(); };
+  if (!N) {
+    $("#app").innerHTML = `<section><h1>市場新聞中心</h1></section><section class="card"><p>還沒有新聞資料。每日更新會在收盤後抓取公司公告與新聞；第一次成功抓取後，這裡就會出現內容。</p></section>`;
+    return;
+  }
+  const w = watch();
+  const all = N.items || [];
+  const inds = [...new Set(all.map((x) => x.industry).filter(Boolean))].sort();
+  const TABS = { all: "全部", watch: "自選股", announcement: "公司公告", news: "新聞", macro: "總經" };
+  let list = all.filter((x) => o.tab === "all" || (o.tab === "watch" ? w[x.stock_id] : x.kind === o.tab));
+  if (o.ind) list = list.filter((x) => x.industry === o.ind);
+  if (o.q) { const q = o.q.trim(); list = list.filter((x) => x.title.includes(q) || (x.stock_id || "").startsWith(q) || (x.name || "").includes(q)); }
+  const days = [...new Set(list.slice(0, o.n).map((x) => x.date))];
+  const st = N.status || {}, ann = st.announcements || {}, nw = st.news || {};
+  const body = o.tab === "macro" ? '<div class="empty">總經新聞還沒有接上可靠的免費資料來源，所以這一頁先不顯示任何內容。</div>'
+    : days.length ? days.map((d) => `<div style="margin-bottom:10px"><h3 style="margin:8px 0 2px">${esc(d)}（${wdTxt(d)}）</h3>${list.slice(0, o.n).filter((x) => x.date === d).map((x) => newsItem(x)).join("")}</div>`).join("")
+      + (list.length > o.n ? `<button class="btn ghost" id="nmore">再顯示 ${Math.min(120, list.length - o.n)} 則（共 ${list.length} 則）</button>` : "")
+    : `<div class="empty">${o.tab === "watch" ? "自選股最近 " + N.coverage.days + " 天沒有公告或新聞。" : "沒有符合的公告或新聞。"}</div>`;
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">台灣時間・最後抓取 ${esc((N.last_fetched_at || "—").slice(0, 16).replace("T", " "))}・最近 ${N.coverage.days} 天</div><h1>市場新聞中心</h1>
+      <p class="lead">上市櫃公司重大訊息與個股新聞，每則都附來源、時間和原文連結，並列出相關股票目前的收盤價與 AI 量化評分，方便對照。</p></section>
+    ${(N.warnings || []).length ? `<section class="card" style="border-color:var(--warn)"><p class="small" style="color:var(--warn);margin:0">${esc(N.warnings.join("；"))}</p></section>` : ""}
+    <section class="card"><div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+      <div class="seg" id="ntab">${Object.entries(TABS).map(([k, t]) => `<button data-k="${k}" class="${k === o.tab ? "on" : ""}">${t}</button>`).join("")}</div>
+      <select id="nind" aria-label="產業"><option value="">全部產業</option>${inds.map((x) => `<option${x === o.ind ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+      <input id="nq" type="search" placeholder="關鍵字、代號或名稱" value="${esc(o.q)}" style="max-width:200px" aria-label="搜尋新聞">
+      <span class="muted small">${list.length} 則</span></div>
+      ${body}</section>
+    <section class="card"><h2 style="margin-top:0">怎麼看這一頁</h2><ul class="small" style="margin:0;padding-left:18px">
+      <li><span class="pill acc">公司公告</span> 公開資訊觀測站的重大訊息（上市${ann.twse != null ? ` ${ann.twse} 則` : "：未取得"}；上櫃${ann.tpex != null ? ` ${ann.tpex} 則` : "：未取得"}），是公司自己發布的正式資訊。</li>
+      <li><span class="pill">新聞</span> 來自 FinMind 整理的台股相關新聞，只顯示標題與連結，內容與版權屬原媒體，請點連結看原文。${nw.mode === "stocks" ? `這次只抓了 ${nw.stocks} 檔重點股票。` : ""}</li>
+      <li><span class="pill good">偏多</span> <span class="pill bad">偏空</span> <span class="pill">無法判定</span> ${esc(N.tone_note || "")}</li>
+      <li>新聞與公告不代表股價會怎麼走，這是資訊整理，不是投資建議。</li></ul>
+      <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/news/latest.json">news/latest.json</a>（網站版才有）</p></section>`;
+  const tab = $("#ntab"); tab.onclick = (e) => { const b = e.target.closest("button"); if (b) { o.tab = b.dataset.k; o.n = 120; save(); } };
+  $("#nind").onchange = (e) => { o.ind = e.target.value; save(); };
+  $("#nq").onchange = (e) => { o.q = e.target.value; store.set("news", { tab: o.tab, ind: o.ind, q: o.q }); pageNews(); };
+  if ($("#nmore")) $("#nmore").onclick = () => { store.set("news", { tab: o.tab, ind: o.ind, q: o.q, n: o.n + 120 }); pageNews(); };
+}
+
 // ---------- 智慧警報（站內通知） ----------
 // 每次打開網站、有新的盤後資料時，依「自選股」和你開啟的規則產生通知。不寄 Email、不推播。
 // 去重：每則通知有固定的代號（規則:股票:資料日），同一件事不會通知兩次；登入時雲端資料表也有唯一限制。
@@ -1733,9 +1804,6 @@ function pageCatalog() {
 }
 
 // ---------- 個股頁 ----------
-const POS = ["創新高", "新高", "成長", "年增", "大單", "接單", "調升", "調高", "上修", "利多", "看旺", "擴產", "優於預期", "轉盈", "加碼", "受惠", "突破", "目標價"];
-const NEG = ["衰退", "年減", "下滑", "下修", "調降", "利空", "砍單", "虧損", "轉虧", "疲軟", "減產", "低於預期", "庫存調整", "違約", "訴訟", "裁罰", "處分", "停工", "轉讓持股", "下調"];
-const tone = (t) => { const p = POS.filter((w) => t.includes(w)).length, n = NEG.filter((w) => t.includes(w)).length; return p > n ? 1 : n > p ? -1 : 0; };
 function maSeries(px, n) { const out = []; let sum = 0; for (let i = 0; i < px.length; i++) { sum += px[i].close; if (i >= n) sum -= px[i - n].close; if (i >= n - 1) out.push({ time: px[i].date, value: sum / n }); } return out; }
 
 // ---------- 個股問答 ----------
@@ -1921,8 +1989,9 @@ async function pageStock(id) {
       <div class="card"><div class="card-h"><h2>策略範本檢查</h2><span class="muted small">符合 ${s.strategies.length} / ${SNAP.strategies.length}</span></div>
         ${SNAP.strategies.map((st) => { const ok = s.strategies.includes(st.id); return `<details class="strat"${ok ? " open" : ""}><summary>${ok ? '<span class="pill good">符合</span>' : '<span class="pill">未符合</span>'} ${esc(st.name)}</summary>
           ${st.conditions.map((c) => `<div class="ck">${mark(check(c, s))}<span>${esc(c.label)}</span><span class="num muted">${CAT[c.m] ? fmt(c.m, s[c.m]) : ""}</span></div>`).join("")}</details>`; }).join("")}</div>
-      <div class="card"><div class="card-h"><h2>近期新聞</h2><span class="muted small">標題關鍵字判讀，僅供參考</span></div>
-        <ul class="news">${(d.news || []).map((n) => { const t = tone(n.title); return `<li><span class="num faint">${esc(n.date)}</span><span>${t ? `<span class="pill ${t > 0 ? "good" : "bad"}">${t > 0 ? "偏多" : "偏空"}</span> ` : ""}${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : esc(n.title)} <span class="faint">${esc(n.source || "")}</span></span></li>`; }).join("") || '<li class="muted">沒有近期新聞</li>'}</ul></div></section>`;
+      <div class="card"><div class="card-h"><h2>公告與新聞</h2><span class="muted small">偏多／偏空只看標題關鍵字，不是 AI 判斷</span></div>
+        ${(d.news || []).map((n) => newsItem(n, { stock: false })).join("") || '<p class="muted">最近 90 天沒有抓到這檔股票的公告或新聞。</p>'}
+        <p class="faint small" style="margin:8px 0 0"><a href="#/news">到市場新聞中心看全部</a></p></div></section>`;
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
   const drawBd = (md) => { $("#bd").innerHTML = breakdown(s, md); };
@@ -1986,7 +2055,7 @@ function route() {
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
   $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = false; });
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, news: pageNews, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
