@@ -9,7 +9,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from . import ai_model, backtest, config, db, events, metrics, sectors, track
+from . import ai_model, backtest, config, db, events, market_board, metrics, sectors, track
 from .catalog import C as CATALOG
 from .strategies import STRATEGIES, passes
 
@@ -281,6 +281,10 @@ def build(demo: bool = False) -> dict:
         out["sectors"] = sectors.build(out, dbname)
     except Exception as e:  # 產業熱力圖失敗不影響選股結果
         out["sectors"] = {"schema_version": 1, "industries": [], "warnings": [f"產業熱力圖計算失敗：{e}"]}
+    try:
+        out["market_board"] = market_board.build(out, dbname)
+    except Exception as e:  # 市場看板失敗不影響選股結果
+        out["market_board"] = {"schema_version": 1, "markets": {}, "warnings": [f"市場統計計算失敗：{e}"]}
     try:
         out["calendar"] = events.calendar(out, dbname)
     except Exception as e:  # 日曆失敗不影響其他功能

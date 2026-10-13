@@ -21,6 +21,15 @@ def _r(v):
     return round(v, 2) if isinstance(v, float) else v
 
 
+def _board(b):
+    if not b or not b.get("markets"):
+        return None
+    slim = lambda xs: [{k: x.get(k) for k in ("stock_id", "name", "market", "industry", "chg_pct", "value")} for x in xs]
+    return {"date": b.get("date"), "prev_date": b.get("prev_date"), "markets": b["markets"], "method": b.get("method"),
+            "limit_up": slim(b.get("limit_up") or []), "limit_down": slim(b.get("limit_down") or []),
+            "touched_up": b.get("touched_up"), "touched_down": b.get("touched_down"), "warnings": b.get("warnings")}
+
+
 def build(snap: dict) -> dict:
     rows = [s for s in snap.get("stocks", []) if s.get("is_common")]
     cols: dict[str, list] = {k: [] for k in FIELDS + EXTRA}
@@ -41,6 +50,8 @@ def build(snap: dict) -> dict:
         "model": (snap.get("model") or {}).get("version"), "source": snap.get("source"),
         "note": "AI 量化評分是固定規則計算的全市場百分位（0～100，50 是中位數），score/rank 是均衡型；不是上漲機率。",
         "market": snap.get("market"), "breadth": snap.get("breadth"),
+        # 市場看板的家數與漲跌停名單（名單只留代號、名稱、漲跌幅，控制大小）
+        "market_board": _board(snap.get("market_board")),
         "industries": [{k: _r(v) for k, v in x.items()} for x in snap.get("industries", [])],
         "changes": {"since": ch.get("since"), "new": [{"stock_id": x["stock_id"], "rank": x.get("rank")} for x in ch.get("new", [])],
                     "dropped": [{"stock_id": x["stock_id"], "why": x.get("why")} for x in ch.get("dropped", [])],

@@ -178,3 +178,18 @@ test("大盤歸因：家數分上市上櫃、權值股貢獻點數、國際市�
   assert.equal(r.前一晚國際市場.指數[0].漲跌幅百分比, -2.67);
   assert.ok(r.資料缺口.some((x) => x.includes("查不到不代表沒有事件")));
 });
+
+test("大盤歸因：有市場看板時用實際漲跌停價判定的家數與名單", async () => {
+  const { makeRunner } = await import("./tools.js");
+  const mk = (up, down, lu, ld) => ({ up, down, flat: 0, limit_up: lu, limit_down: ld, value: 1e11 });
+  const u = { fields: ["stock_id"], cols: { stock_id: [] }, data_dates: { prices: "2026-10-13" }, market: {}, industries: [],
+    market_board: { date: "2026-10-13", method: "依實際漲停價。", markets: { twse: mk(500, 400, 3, 1), tpex: mk(300, 500, 2, 4), all: mk(800, 900, 5, 5) },
+      limit_up: [{ stock_id: "2603", name: "長榮", industry: "航運業", chg_pct: 9.89 }], limit_down: [], touched_up: 2, touched_down: 0 } };
+  const run = makeRunner(async (p) => { if (p === "ai/universe.json") return u; if (p === "news/latest.json") return { items: [] }; throw new Error(p); });
+  const { result: r } = await run("market_attribution", {});
+  assert.equal(r.漲跌家數_上市普通股.漲停家數, 3);
+  assert.equal(r.漲跌家數_上櫃普通股.跌停家數, 4);
+  assert.equal(r.漲跌家數_上櫃普通股.接近跌停家數_跌幅9點5以上, undefined);
+  assert.match(r.漲停股_依成交金額前15[0], /2603 長榮/);
+  assert.match(r.家數說明, /依實際漲停價/);
+});

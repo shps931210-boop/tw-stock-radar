@@ -173,8 +173,12 @@ export function makeRunner(load) {
       const rows = t.ids.map((id, i) => ({ id, i, name: col("name")[i], ind: col("industry")[i], mkt: col("market")[i], chg: col("chg_pct")[i], cap: col("market_cap")[i], date: col("date")[i] }))
         .filter((r) => r.date === day && r.chg != null);
       // 上市、上櫃分開算家數；「接近漲停／跌停」用漲跌幅 ≥ 9.5% 估算（台股漲跌幅上限 10%），不是交易所公布的漲停家數
-      const br = (xs) => ({ 上漲家數: xs.filter((r) => r.chg > 0).length, 下跌家數: xs.filter((r) => r.chg < 0).length, 平盤家數: xs.filter((r) => r.chg === 0).length,
-        接近漲停家數_漲幅9點5以上: xs.filter((r) => r.chg >= 9.5).length, 接近跌停家數_跌幅9點5以上: xs.filter((r) => r.chg <= -9.5).length });
+      // 有市場看板（依實際漲停價判定）就用它；舊資料才退回用漲跌幅 ≥ 9.5% 估算
+      const MB = u.market_board?.markets?.all ? u.market_board : null;
+      const br = (xs, m) => MB ? { 上漲家數: MB.markets[m].up, 下跌家數: MB.markets[m].down, 平盤家數: MB.markets[m].flat, 漲停家數: MB.markets[m].limit_up, 跌停家數: MB.markets[m].limit_down, 成交金額: MB.markets[m].value }
+        : { 上漲家數: xs.filter((r) => r.chg > 0).length, 下跌家數: xs.filter((r) => r.chg < 0).length, 平盤家數: xs.filter((r) => r.chg === 0).length,
+        接近漲停家數_漲幅9點5以上: xs.filter((r) => r.chg >= 9.5).length, 接近跌停家數_跌幅9點5以上: xs.filter((r) => r.chg <= -9.5).length };
+      const lim = (xs) => xs.slice(0, 15).map((x) => `${x.stock_id} ${x.name}（${x.industry || "未分類"}，${x.chg_pct > 0 ? "+" : ""}${x.chg_pct}%）`);
       // 權值股貢獻（估算）：前一日市值權重 × 當日漲跌幅 × 前一日加權指數。只算有市值資料的上市普通股
       const tw = rows.filter((r) => r.mkt === "twse" && r.cap > 0).map((r) => ({ ...r, prevCap: r.cap / (1 + r.chg / 100) }));
       const tot = tw.reduce((a, r) => a + r.prevCap, 0);
@@ -201,9 +205,11 @@ export function makeRunner(load) {
         result: {
           資料日期: day,
           加權指數: { 收盤: ix, 漲跌幅百分比: r2(ixChg), 漲跌點數: prevIx ? r2(ix - prevIx) : null, 前一日收盤_推算: prevIx ? r2(prevIx) : null },
-          漲跌家數_上市普通股: br(rows.filter((r) => r.mkt === "twse")),
-          漲跌家數_上櫃普通股: br(rows.filter((r) => r.mkt === "tpex")),
-          家數說明: "上漲／下跌家數是收盤價比前一日高或低的股票數，不是漲停／跌停家數。漲停跌停只用漲跌幅 ≥ 9.5% 估算。只算普通股，不含 ETF、權證。",
+          漲跌家數_上市普通股: br(rows.filter((r) => r.mkt === "twse"), "twse"),
+          漲跌家數_上櫃普通股: br(rows.filter((r) => r.mkt === "tpex"), "tpex"),
+          家數說明: MB ? `上漲／下跌家數是收盤價比前一日高或低的股票數，不是漲停／跌停家數。${MB.method}只算普通股，不含 ETF、權證。`
+            : "上漲／下跌家數是收盤價比前一日高或低的股票數，不是漲停／跌停家數。漲停跌停只用漲跌幅 ≥ 9.5% 估算。只算普通股，不含 ETF、權證。",
+          ...(MB ? { 漲停股_依成交金額前15: lim(MB.limit_up), 跌停股_依成交金額前15: lim(MB.limit_down), 盤中觸及漲停後打開檔數: MB.touched_up, 盤中觸及跌停後打開檔數: MB.touched_down } : {}),
           權值股貢獻: contrib.length ? {
             方法: "估算：前一日市值權重 × 當日漲跌幅 × 前一日加權指數。只算網站有市值資料的上市普通股，與證交所正式計算可能有差異。",
             估算合計點數: r2(est), 實際漲跌點數: prevIx ? r2(ix - prevIx) : null, 涵蓋上市普通股檔數: contrib.length,
