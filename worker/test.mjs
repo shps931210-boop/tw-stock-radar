@@ -126,3 +126,34 @@ test("大盤、產業、新聞、個股、錯誤處理", async () => {
   assert.ok((await run("performance_summary", {})).error.includes("讀取失敗"));
   assert.ok((await run("no_such_tool", {})).error);
 });
+
+test("免費模型：兩種回應格式都能解析，去掉思考內容", async () => {
+  const { parseReply } = await import("./freeai.js");
+  const a = parseReply({ choices: [{ message: { content: "<think>想一下</think>答案", tool_calls: [{ id: "1", function: { name: "find_stocks", arguments: "{\"query\":\"台積電\"}" } }] } }] });
+  assert.equal(a.text, "答案");
+  assert.deepEqual(a.calls, [{ name: "find_stocks", args: { query: "台積電" } }]);
+  const b = parseReply({ response: "好", tool_calls: [{ name: "market_overview", arguments: {} }] });
+  assert.equal(b.text, "好");
+  assert.equal(b.calls[0].name, "market_overview");
+  assert.equal(parseReply({ choices: [{ message: { content: "x", tool_calls: [{ function: { name: "f", arguments: "{壞" } }] } }] }).calls[0].args, null);
+});
+
+test("免費模型：查資料後回答，附來源與免責聲明", async () => {
+  const { runFreeAgent } = await import("./freeai.js");
+  const universe = { fields: ["stock_id", "name", "industry", "market"], cols: { stock_id: ["2330"], name: ["台積電"], industry: ["半導體業"], market: ["上市"] }, data_dates: {}, model: "m" };
+  const calls = [];
+  const ai = { run: async (model, input) => {
+    calls.push(input);
+    if (calls.length === 1) return { choices: [{ message: { content: "", tool_calls: [{ function: { name: "find_stocks", arguments: "{\"query\":\"台積電\"}" } }] } }] };
+    return { choices: [{ message: { content: "台積電代號是 2330。" } }] };
+  } };
+  const got = { text: "", status: [], sources: [] };
+  await runFreeAgent({ ai, env: {}, messages: [{ role: "user", content: "台積電代號？" }], load: async () => universe,
+    send: async (t, v) => { if (t === "text") got.text += v; else if (t === "status") got.status.push(v); else if (t === "sources") got.sources = v; } });
+  assert.equal(calls.length, 2);
+  assert.match(calls[1].messages.at(-1).content, /2330/);
+  assert.match(got.text, /2330/);
+  assert.match(got.text, /不是投資建議/);
+  assert.equal(got.status.length, 1);
+  assert.equal(got.sources[0].path, "data/ai/universe.json");
+});

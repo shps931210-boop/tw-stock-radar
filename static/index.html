@@ -107,12 +107,27 @@ nav .menu a:hover { background: var(--bg); }
 #navtog { display: none; }
 @media (max-width: 760px) {
   #navtog { display: inline-flex; margin-left: auto; }
-}
-@media (max-width: 420px) { .brand small { display: none; }
   nav { display: none; width: 100%; flex-direction: column; gap: 2px; }
   nav.open { display: flex; }
   nav .menu { position: static; box-shadow: none; border: 0; padding: 0 0 4px 12px; min-width: 0; }
   nav summary { border-radius: 8px; }
+}
+@media (max-width: 420px) { .brand small { display: none; } }
+/* 桌面版：固定左側導覽（寬螢幕） */
+@media (min-width: 1100px) {
+  :root { --side: 228px; }
+  .top-in { max-width: none; }
+  .fresh { max-width: none; padding-left: calc(var(--side) + 16px); }
+  body > main, body > footer { max-width: calc(1280px + var(--side)); padding-left: calc(var(--side) + 20px); }
+  nav#nav { position: fixed; left: 0; top: var(--toph, 96px); bottom: 0; width: var(--side); z-index: 15; flex-direction: column; flex-wrap: nowrap; gap: 1px;
+    overflow-y: auto; padding: 12px 10px 28px; background: var(--panel); border-right: 1px solid var(--line); }
+  nav#nav > a, nav .menu a { border-radius: 8px; padding: 7px 12px; color: var(--ink); font-weight: 500; }
+  nav#nav > a.on, nav .menu a.on { background: var(--accent-soft); color: var(--accent); }
+  nav#nav > a:hover, nav .menu a:hover { background: var(--bg); color: var(--ink); }
+  nav .grp summary { pointer-events: none; padding: 14px 12px 4px; font-size: 12px; letter-spacing: .06em; color: var(--faint); background: none !important; border-radius: 0; }
+  nav .grp summary::after { content: none; }
+  nav .menu { position: static; box-shadow: none; border: 0; padding: 0; min-width: 0; background: none; }
+  nav .menu a small { display: none; }
 }
 nav .cnt { font-size: 11px; background: var(--chip); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
 .search { margin-left: auto; } .search input { width: 180px; background: var(--bg); }
@@ -238,6 +253,21 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .tile { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; text-align: left; color: var(--ink); font: inherit; min-height: 74px; }
 .tile b { display: block; font-size: 14px; } .tile .v { font-size: 20px; font-weight: 600; } .tile small { color: var(--muted); font-size: 12px; }
 .tile.sel { outline: 2px solid var(--accent); outline-offset: 1px; } .tile.thin { opacity: .55; }
+/* 產業熱力圖（Treemap）：面積＝規模，顏色＝強弱 */
+.tmap { position: relative; width: 100%; height: clamp(380px, 52vw, 580px); border-radius: 12px; overflow: hidden; background: var(--line); }
+.tmap.small { height: clamp(260px, 34vw, 380px); }
+.tm { position: absolute; box-sizing: border-box; border: 1px solid var(--bg); padding: 6px 8px; overflow: hidden; cursor: pointer; font: inherit; text-align: left; display: flex; flex-direction: column; gap: 2px; line-height: 1.25; }
+.tm > * { flex: none; }
+.tm b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tm .v { font: 600 15px var(--f-num); } .tm small { font-size: 11px; opacity: .85; }
+.tm.big b { font-size: 16px; } .tm.big .v { font-size: 22px; }
+.tm.sm small { display: none; } .tm.xs { padding: 2px 4px; } .tm.xs .v, .tm.xs small { display: none; } .tm.xs b { font-size: 11px; }
+.tm.xxs > * { display: none; }
+.tm.sel { outline: 3px solid var(--brand); outline-offset: -3px; z-index: 1; }
+.tm.thin { background-image: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--panel) 45%, transparent) 7px 10px); }
+.tm:hover, .tm:focus-visible { filter: brightness(1.08); z-index: 2; }
+.tm-legend { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+.tm-legend i { display: inline-block; width: 120px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--down), var(--panel), var(--up)); }
 .pref h3 { margin: 14px 0 2px; font-size: 15px; }
 .seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -366,7 +396,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
   <div class="fresh" id="fresh"></div>
 </header>
 <main id="app"><div class="empty">載入中…</div></main>
-<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型（Claude）。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤（見<a href="#/performance">績效驗證</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
+<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤（見<a href="#/performance">績效驗證</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
 <script>
 const STATIC = window.STATIC_DATA || null;
 const SITE = !!window.STATIC_SITE;  // build_site.py 產生的靜態網站：讀 data/*.json，沒有後端
@@ -640,6 +670,9 @@ function pageHome() {
         <div><h3 style="margin-bottom:6px">產業強弱（近一個月報酬）</h3>
           <div class="scan">${inds.slice(0, 4).map(indRow).join("")}${inds.length > 8 ? '<span class="faint small">⋯</span>' + inds.slice(-3).map(indRow).join("") : ""}</div>
           <p class="small" style="margin:6px 0 0"><a href="#/sectors">看全部產業、資金與法人 →</a></p></div></div></section>
+    ${(SNAP.sectors?.industries || []).length ? `<section class="card"><div class="card-h"><h2>產業熱力圖</h2><a href="#/sectors">完整產業分析 →</a></div>
+      <p class="small muted" style="margin:0 0 10px">面積＝${esc(SNAP.sectors.data_as_of || "")} 成交金額（只代表規模，不是資金流入）；顏色＝近 5 個交易日產業等權報酬，<span class="up">紅</span>漲<span class="down">綠</span>跌。點色塊看產業詳細資料。</p>
+      <div class="tmap small" id="hmap" role="group" aria-label="產業熱力圖"></div></section>` : ""}
     ${changesCard()}
     <section class="two">
       <div class="card"><div class="card-h"><h2>AI 量化評分前 5 名</h2><a href="#/ai">完整排名 →</a></div>
@@ -653,6 +686,11 @@ function pageHome() {
     <section><h2 style="margin-bottom:8px">研究工具</h2><div class="tiles sm" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))">
       ${FEATURES.map(([h, n, q]) => `<a class="tile" href="${h}"><b>${n}</b><span class="q">${q}</span></a>`).join("")}</div></section>`;
   $$(".scan").forEach((el) => el.onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
+  drawTreemap($("#hmap"), (SNAP.sectors?.industries || []).map((x) => {
+    const v = x.ret?.["5d"]?.eq ?? null;
+    return { key: x.industry, size: x.value?.today || 0, v, label: x.industry, vtxt: pctTxt(v), sub: `成交 ${money(x.value?.today)}`,
+      tip: `${x.industry}：近 5 日 ${pctTxt(v)}・成交金額 ${money(x.value?.today)}`, cls: x.n < 3 ? "thin" : "" };
+  }), (ind) => { store.set("sect", { ...store.get("sect", {}), sel: ind, view: "price", per: "5d", lay: "map" }); location.hash = "#/sectors"; });
   $("#hs").onsubmit = (e) => { e.preventDefault(); const q = $("#hq").value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => q && s.name.includes(q)); if (hit) location.hash = `#/stock/${hit.stock_id}`; else ($("#hq").value = "", $("#hq").placeholder = `找不到「${q}」，請換個代號或名稱`); };
   if (hasLWC() && SNAP.index_series?.length) {
     const c = mkChart($("#ix"));
@@ -1321,15 +1359,75 @@ function sectTxt(v, o) {
   if (o.view === "flow" && o.flow !== "value") return `${v > 0 ? "+" : ""}${money(v)}`;
   return pctTxt(v);
 }
+// ---- Treemap（squarified）：items = [{key, size, ...}]，回傳每塊的 {x, y, w, h}（0～W、0～H） ----
+function squarify(items, W, H) {
+  const tot = items.reduce((a, b) => a + b.size, 0);
+  if (!tot || W <= 0 || H <= 0) return [];
+  const scale = (W * H) / tot, out = [];
+  let rest = items.filter((it) => it.size > 0).sort((a, b) => b.size - a.size).map((it) => ({ it, a: it.size * scale }));
+  let x = 0, y = 0, w = W, h = H;
+  const worst = (row, side) => { const s = row.reduce((a, b) => a + b.a, 0), mx = Math.max(...row.map((r) => r.a)), mn = Math.min(...row.map((r) => r.a)); return Math.max(side * side * mx / (s * s), (s * s) / (side * side * mn)); };
+  while (rest.length) {
+    const side = Math.min(w, h);
+    let row = [rest[0]], i = 1;
+    while (i < rest.length && worst([...row, rest[i]], side) <= worst(row, side)) row.push(rest[i++]);
+    rest = rest.slice(i);
+    const s = row.reduce((a, b) => a + b.a, 0);
+    if (w >= h) { const cw = s / h; let cy = y; row.forEach((r) => { const ch = r.a / cw; out.push({ ...r.it, x, y: cy, w: cw, h: ch }); cy += ch; }); x += cw; w -= cw; }
+    else { const rh = s / w; let cx = x; row.forEach((r) => { const cw = r.a / rh; out.push({ ...r.it, x: cx, y, w: cw, h: rh }); cx += cw; }); y += rh; h -= rh; }
+  }
+  return out;
+}
+// 顏色：紅漲綠跌，越深差距越大；max 是全部格子裡最大的絕對值
+function heatColor(v, max) {
+  if (v == null) return { bg: "var(--chip)", fg: "var(--muted)" };
+  const k = Math.min(1, Math.abs(v) / (max || 1));
+  return { bg: `color-mix(in srgb, var(${v >= 0 ? "--up" : "--down"}) ${Math.round(12 + 58 * k)}%, var(--panel))`, fg: "var(--ink)" };
+}
+// 顏色的滿格值：用絕對值的第 90 百分位，避免單一極端值讓其他格子都變得很淡
+function heatMax(vals) {
+  const a = vals.filter((v) => v != null).map(Math.abs).sort((x, y) => x - y);
+  return a.length ? Math.max(1e-9, a[Math.min(a.length - 1, Math.floor(a.length * 0.9))]) : 1;
+}
+// 把格子畫進 el（依容器實際大小排版，視窗大小改變時重排）
+function drawTreemap(el, items, onPick) {
+  if (!el) return;
+  const paint = () => {
+    const W = el.clientWidth, H = el.clientHeight;
+    if (!W || !H) return;
+    const max = heatMax(items.map((it) => it.v));
+    el.innerHTML = squarify(items, W, H).map((r) => {
+      const c = heatColor(r.v, max), area = r.w * r.h;
+      const cls = area > 36000 && r.w > 150 ? "big" : r.w < 34 || r.h < 22 ? "xxs" : r.w < 70 || r.h < 44 ? "xs" : r.h < 64 ? "sm" : "";
+      return `<button class="tm ${cls} ${r.cls || ""}" data-k="${esc(r.key)}" title="${esc(r.tip)}" aria-label="${esc(r.tip)}"
+        style="left:${(r.x / W * 100).toFixed(3)}%;top:${(r.y / H * 100).toFixed(3)}%;width:${(r.w / W * 100).toFixed(3)}%;height:${(r.h / H * 100).toFixed(3)}%;background:${c.bg};color:${c.fg}">
+        <b>${esc(r.label)}</b><span class="v">${esc(r.vtxt)}</span><small>${esc(r.sub || "")}</small></button>`;
+    }).join("");
+    el.onclick = (e) => { const b = e.target.closest(".tm"); if (b) onPick(b.dataset.k); };
+  };
+  paint();
+  let t; const ro = new ResizeObserver(() => { clearTimeout(t); t = setTimeout(() => { if (el.isConnected) paint(); else ro.disconnect(); }, 120); });
+  ro.observe(el);
+}
+const SECT_SIZE = { value: "成交金額", cap: "市值", n: "股票數" };
+// 產業的大小：今天成交金額、最新市值合計、或檔數
+function sectSize(x, o, day) {
+  if (o.size === "n") return x.n_total;
+  if (o.size === "cap") return x.members.reduce((a, id) => { const s = BYID[id]; return a + (s && s.date === day && s.market_cap > 0 ? s.market_cap : 0); }, 0);
+  return x.value?.today || 0;
+}
+
 function pageSectors() {
   const S = SNAP.sectors || { industries: [] };
-  const o = { view: "price", per: "5d", w: "eq", flow: "value", sort: "val", ...store.get("sect", {}) };
+  const o = { view: "price", per: "5d", w: "eq", flow: "value", sort: "val", lay: "map", size: "value", ...store.get("sect", {}) };
   const save = () => { store.set("sect", o); pageSectors(); };
   const rows = S.industries.map((x) => ({ x, v: sectVal(x, o) }));
   rows.sort((a, b) => o.sort === "n" ? b.x.n_total - a.x.n_total : (b.v ?? -1e18) - (a.v ?? -1e18));
   const max = Math.max(1e-9, ...rows.map((r) => Math.abs(r.v ?? 0)));
   const bg = (v) => v == null ? "var(--chip)" : `color-mix(in srgb, var(${v >= 0 ? "--up" : "--down"}) ${Math.round(8 + 50 * Math.min(1, Math.abs(v) / max))}%, var(--panel))`;
   const sel = S.industries.find((x) => x.industry === o.sel) || null;
+  const sizeWhat = o.size === "value" ? `${S.data_as_of || "最新資料日"}的產業成交金額合計` : o.size === "cap" ? "產業內有最新價格股票的市值合計" : "產業的股票檔數";
+  const legendMax = heatMax(rows.map((r) => r.v));
   const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${n}</button>`).join("")}</div>`;
   const what = o.view === "price" ? `${PER_TXT[o.per]}產業${o.w === "cap" ? "市值加權" : "等權"}報酬`
     : o.view === "rel" ? `${PER_TXT[o.per]}產業等權報酬 − 加權指數報酬（${pctTxt(S.market?.taiex?.[o.per])}）`
@@ -1341,12 +1439,15 @@ function pageSectors() {
       ${seg("sv", SECT_VIEW, o.view)}
       ${o.view === "flow" ? seg("sf", SECT_FLOW, o.flow) : seg("sp", { "1d": "1 天", "5d": "5 天", "20d": "20 天" }, o.per)}
       ${o.view === "price" ? seg("sw", { eq: "等權", cap: "市值加權" }, o.w) : ""}
-      ${seg("ss", { val: "依強弱", n: "依股票數" }, o.sort)}</div>
-      <p class="small muted" style="margin:0 0 10px">顏色和數字：${esc(what)}。<span class="up">紅</span>色是正、<span class="down">綠</span>色是負，顏色越深差距越大。</p>
-      ${rows.length ? `<div class="heat">${rows.map(({ x, v }) => `<button class="tile ${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}" data-ind="${esc(x.industry)}" style="background:${bg(v)}" aria-label="${esc(x.industry)} ${esc(sectTxt(v, o))}">
+      ${seg("sl", { map: "熱力圖", grid: "格子" }, o.lay)}
+      ${o.lay === "map" ? seg("sz", SECT_SIZE, o.size) : seg("ss", { val: "依強弱", n: "依股票數" }, o.sort)}</div>
+      <p class="small muted" style="margin:0 0 10px">${o.lay === "map" ? `面積：${esc(sizeWhat)}，只代表規模大小，不代表資金流入或推薦程度。` : ""}顏色和數字：${esc(what)}。<span class="up">紅</span>色是正、<span class="down">綠</span>色是負，顏色越深差距越大。</p>
+      ${rows.length && o.lay === "map" ? `<div class="tmap" id="tmap" role="group" aria-label="產業熱力圖"></div>
+        <div class="tm-legend"><span class="down">${esc(sectTxt(-legendMax, o))}</span><i></i><span class="up">${esc(sectTxt(legendMax, o))}</span><span>・點色塊看產業詳細資料；小格子可以把滑鼠移上去看名稱</span></div>`
+      : rows.length ? `<div class="heat">${rows.map(({ x, v }) => `<button class="tile ${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}" data-ind="${esc(x.industry)}" style="background:${bg(v)}" aria-label="${esc(x.industry)} ${esc(sectTxt(v, o))}">
         <b>${esc(x.industry)}</b><span class="v num">${esc(sectTxt(v, o))}</span><br><small>${x.n}／${x.n_total} 檔${o.view === "flow" && o.flow !== "value" ? `・覆蓋 ${fmtNum(x.flows.coverage, 0)}%` : ""}</small></button>`).join("")}</div>`
         : '<div class="empty">還沒有產業資料，下一次盤後更新後會出現。</div>'}
-      <p class="faint small" style="margin:10px 0 0">淡色的格子是有效股票不到 3 檔的產業，結果容易被單一股票左右。</p></section>
+      <p class="faint small" style="margin:10px 0 0">${o.lay === "map" ? "有斜線" : "淡色"}的格子是有效股票不到 3 檔的產業，結果容易被單一股票左右。</p></section>
     <section class="card" id="sdet">${sel ? sectDetail(sel, S) : '<p class="muted" style="margin:0">點上面任何一個產業，這裡會顯示詳細數字和成分股。</p>'}</section>
     <section class="card"><h2 style="margin-top:0">怎麼算的</h2><ul class="small" style="margin:0;padding-left:18px">
       <li>只用最新資料日（${esc(S.data_as_of || "—")}）有收盤價的普通股，股價已還原除權息。停牌、缺價的股票不算報酬，但列在「有效／全部」檔數裡。</li>
@@ -1357,8 +1458,20 @@ function pageSectors() {
       ${(S.warnings || []).length ? `<p class="small down" style="margin:8px 0 0">${esc(S.warnings.join("；"))}</p>` : ""}
       <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/industry/latest.json">industry/latest.json</a>（網站版才有）</p></section>`;
   const bindSeg = (id, key) => { const el = $("#" + id); if (el) el.onclick = (e) => { const b = e.target.closest("button"); if (b) { o[key] = b.dataset.k; save(); } }; };
-  bindSeg("sv", "view"); bindSeg("sf", "flow"); bindSeg("sp", "per"); bindSeg("sw", "w"); bindSeg("ss", "sort");
-  $$(".tile").forEach((b) => (b.onclick = () => { o.sel = o.sel === b.dataset.ind ? null : b.dataset.ind; store.set("sect", o); pageSectors(); if (o.sel) $("#sdet").scrollIntoView({ block: "nearest" }); }));
+  bindSeg("sv", "view"); bindSeg("sf", "flow"); bindSeg("sp", "per"); bindSeg("sw", "w"); bindSeg("ss", "sort"); bindSeg("sl", "lay"); bindSeg("sz", "size");
+  const pick = (ind) => { o.sel = o.sel === ind ? null : ind; store.set("sect", o); pageSectors(); if (o.sel) $("#sdet").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
+  drawTreemap($("#tmap"), rows.map(({ x, v }) => {
+    const sz = sectSize(x, o, S.data_as_of);
+    return { key: x.industry, size: sz, v, label: x.industry, vtxt: sectTxt(v, o), sub: `${SECT_SIZE[o.size]} ${o.size === "n" ? sz + " 檔" : money(sz)}`,
+      tip: `${x.industry}：${sectTxt(v, o)}・${SECT_SIZE[o.size]} ${o.size === "n" ? sz + " 檔" : money(sz)}・${x.n}／${x.n_total} 檔有最新價格`,
+      cls: `${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}` };
+  }), pick);
+  if (sel) drawTreemap($("#smap"), sel.members.map((id) => BYID[id]).filter((s) => s && s.date === S.data_as_of).map((s) => {
+    const v = { "1d": s.chg_pct, "5d": s.ret_5d, "20d": s.ret_20d }[o.per === "1d" || o.per === "20d" ? o.per : "5d"];
+    return { key: s.stock_id, size: s.market_cap > 0 ? s.market_cap : (s.value_1d || 0), v, label: `${s.name}`, vtxt: pctTxt(v), sub: s.stock_id,
+      tip: `${s.stock_id} ${s.name}：${pctTxt(v)}・市值 ${s.market_cap > 0 ? money(s.market_cap) : "—"}` };
+  }), (id) => { location.hash = `#/stock/${id}`; });
+  $$(".heat .tile").forEach((b) => (b.onclick = () => pick(b.dataset.ind)));
   bindRows($("#sdet"), [], () => {});
 }
 function sectDetail(x, S) {
@@ -1372,6 +1485,9 @@ function sectDetail(x, S) {
       <div class="kpi"><span>外資 5 日（估算）</span><b class="${signCls(x.flows.foreign_5d)}">${x.flows.foreign_5d == null ? "—" : money(x.flows.foreign_5d)}</b></div><div class="kpi"><span>投信 5 日（估算）</span><b class="${signCls(x.flows.trust_5d)}">${x.flows.trust_5d == null ? "—" : money(x.flows.trust_5d)}</b></div></div>
     <p class="faint small" style="margin:6px 0 0">法人資料覆蓋 ${x.flows.n}／${x.n} 檔（${fmtNum(x.flows.coverage, 0)}%）。</p>
     ${x.top.length ? `<h3 style="margin:14px 0 6px">產業內 AI 均衡型排名最高</h3><div style="display:flex;gap:8px;flex-wrap:wrap">${x.top.map((s) => `<a class="pill acc" href="#/stock/${s.stock_id}">${s.stock_id} ${esc(s.name)}・第 ${s.rank} 名</a>`).join("")}</div>` : ""}
+    <h3 style="margin:14px 0 6px">成分股熱力圖</h3>
+    <p class="small muted" style="margin:0 0 8px">面積＝市值（沒有市值時用成交金額），顏色＝個股${esc(PER_TXT[["1d", "20d"].includes((store.get("sect", {}).per)) ? store.get("sect", {}).per : "5d"])}報酬。點色塊打開個股研究。</p>
+    <div class="tmap small" id="smap" role="group" aria-label="${esc(x.industry)} 成分股熱力圖"></div>
     <h3 style="margin:14px 0 6px">成分股（依近 5 日報酬排序）</h3>
     ${st.length ? `<div class="tbl"><table><thead><tr><th>股票</th><th class="r">收盤</th><th class="r">1 天</th><th class="r">5 天</th><th class="r">20 天</th><th class="r">AI 均衡分數</th></tr></thead><tbody>
       ${st.map((s) => `<tr class="link" data-id="${s.stock_id}"><td>${stockCell(s)}${s.date !== S.data_as_of ? ' <span class="pill warn">無最新價</span>' : ""}</td><td class="r num">${fmtNum(s.close)}</td>
@@ -1856,7 +1972,7 @@ function pagePrivacy() {
       <li><b>保留期間</b>：直到你刪除帳號為止；通知每人最多保留 500 則，超過自動刪除最舊的。</li>
       <li><b>刪除</b>：到 <a href="#/account">帳號</a> 頁按「永久刪除我的帳號」，帳號和上面所有雲端資料會立刻一起刪除，無法復原。</li></ul></section>
     <section class="card"><h2 style="margin-top:0">AI 研究助理</h2><ul class="small" style="margin:0;padding-left:18px">
-      <li>啟用後，你輸入的問題、同一段對話的前幾輪，以及 AI 查到的網站公開資料（股價、財報、新聞等）會送到 Anthropic 的 Claude 產生回答；不會送出你的 Email、自選股或其他個人資料。</li>
+      <li>啟用後，你輸入的問題、同一段對話的前幾輪，以及 AI 查到的網站公開資料（股價、財報、新聞等）會送到 ${AI_WHO()} 產生回答；不會送出你的 Email、自選股或其他個人資料。</li>
       <li>對話紀錄只存在你這台裝置的瀏覽器（依帳號分開，最多 30 段），可以在 AI 研究助理頁單筆或全部刪除；不存在股栗子的資料庫。</li>
       <li>股栗子的資料庫只記錄每日題數與花費，用來控制額度。</li></ul>
       <p class="faint small" style="margin:8px 0 0">本網站是研究工具，提供資料整理與規則式評分，不是投資建議，也不提供個別買賣推薦。</p></section>`;
@@ -1997,6 +2113,9 @@ function qaAnswer(s, d, q) {
 // 呼叫 worker/（Claude + 資料工具）。回傳一行一個 JSON：status 查資料進度、text 回答、sources 用到的資料、error。
 // 對話存在這台裝置（依帳號分開），可以單筆或全部刪除；不會上傳到股栗子的資料庫。
 const AI_ON = () => !!window.CHAT_URL && !!user;
+// AI 用哪個模型：claude（Anthropic 付費 API）或 free（Cloudflare Workers AI 免費模型，見 worker/freeai.js）
+const AI_FREE = () => window.CHAT_PROVIDER === "free";
+const AI_WHO = () => AI_FREE() ? "Cloudflare Workers AI 的開源模型（Qwen）" : "Anthropic 的 Claude";
 async function streamAI(messages, stockId, on) {
   const { data: { session } } = await sb.auth.getSession();
   const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}` },
@@ -2058,21 +2177,21 @@ function pageAsk() {
   let conv = all.find((c) => c.id === cur);
   const pre = sessionStorage.getItem("askq"); sessionStorage.removeItem("askq");
   const saveAll = () => { if (conv && conv.msgs.length) { conv.updated = new Date().toISOString(); const rest = all.filter((c) => c.id !== conv.id); store.set("aichat", [conv, ...rest].slice(0, 30)); store.set("aichatCur", conv.id); } };
-  const status = !window.CHAT_URL ? "AI 研究助理還沒啟用（需要設定 Anthropic 金鑰並部署 AI 後端）。目前可以用個股頁的免費自動問答。"
+  const status = !window.CHAT_URL ? "AI 研究助理還沒啟用（需要設定 Cloudflare 金鑰並部署 AI 後端）。目前可以用個股頁的免費自動問答。"
     : !user ? `AI 研究助理只開放給登入的會員（每人每天有題數與費用上限）。<a href="#/account">登入</a>後就能使用。` : "";
   $("#app").innerHTML = `
-    <section><div class="eyebrow">Claude・依問題查詢股栗子的資料</div><h1>AI 研究助理</h1>
+    <section><div class="eyebrow">${AI_FREE() ? "免費 AI 模型" : "Claude"}・依問題查詢股栗子的資料</div><h1>AI 研究助理</h1>
       <p class="lead">直接問股票、產業、新聞或選股方法。AI 會先查股栗子的個股、產業、公告新聞與績效資料，再整理回答，並分開標示查到的事實、推論和資料不足的地方。</p></section>
     ${status ? `<div class="banner warn">${status}</div>` : ""}
     <div class="askgrid"><div class="card" id="askbox">
       <div class="chat-log" id="askLog"></div>
       <div id="askEx" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
       <form class="chat-form" id="askForm"><input type="text" id="askIn" maxlength="500" placeholder="例如：比較台積電和聯發科的毛利率" autocomplete="off"${status ? " disabled" : ""}><button class="btn" id="askBtn"${status ? " disabled" : ""}>送出</button></form>
-      <p class="faint small" style="margin:8px 0 0" id="askQuota">每位會員每天最多 20 題（或約 0.5 美元用量）。AI 可能出錯，重要數字請點資料來源核對；這不是投資建議。</p></div>
+      <p class="faint small" style="margin:8px 0 0" id="askQuota">${AI_FREE() ? "目前使用免費的開源模型（Qwen），分析能力比付費模型簡單，全站每天有免費額度上限。每位會員每天最多 20 題。" : "每位會員每天最多 20 題（或約 0.5 美元用量）。"}AI 可能出錯，重要數字請點資料來源核對；這不是投資建議。</p></div>
       <aside class="card"><div class="card-h"><h2>對話紀錄</h2><button class="btn ghost sm" id="askNew">新對話</button></div>
         <div class="scan" id="askList">${all.map((c) => `<div class="li${conv && c.id === conv.id ? " on" : ""}" data-c="${esc(c.id)}"><span class="small">${esc(c.title)}<br><span class="faint">${esc((c.updated || "").slice(0, 10))}</span></span><span style="flex:none"><button class="xdel" data-ren="${esc(c.id)}" aria-label="重新命名" title="重新命名">✎</button><button class="xdel" data-del="${esc(c.id)}" aria-label="刪除這段對話" title="刪除">✕</button></span></div>`).join("") || '<p class="muted small">還沒有對話。</p>'}</div>
         ${all.length ? '<button class="btn ghost sm" id="askClr" style="margin-top:8px">全部刪除</button>' : ""}
-        <p class="faint small" style="margin:10px 0 0">對話和研究工作區只存在這台裝置的瀏覽器（依帳號分開，對話最多 30 段、工作區最多 50 則），隨時可以刪除，不會存進股栗子的資料庫。提問時，你的問題、前幾輪對話和查到的網站公開資料會送到 Anthropic 的 Claude 產生回答。</p></aside></div>
+        <p class="faint small" style="margin:10px 0 0">對話和研究工作區只存在這台裝置的瀏覽器（依帳號分開，對話最多 30 段、工作區最多 50 則），隨時可以刪除，不會存進股栗子的資料庫。提問時，你的問題、前幾輪對話和查到的網站公開資料會送到 ${AI_WHO()} 產生回答。</p></aside></div>
     <section class="card" id="work" style="margin-top:16px"><div class="card-h"><h2>研究工作區</h2><span class="muted small">存下來的 AI 回答、相關股票與資料來源</span></div>
       ${work.length ? work.map((x) => `<details class="witem"><summary><b>${esc(x.q)}</b> <span class="faint small">${esc(x.saved.slice(0, 10))}</span>
           ${x.stocks.map((id) => `<a class="nco small" href="#/stock/${id}">${id} ${esc(BYID[id]?.name || "")}</a>`).join("")}</summary>
@@ -2359,7 +2478,7 @@ function route() {
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   const cur = p === "stock" ? "__" : p === "s" ? "radar" : p || "";
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
-  $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = false; });
+  $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = SIDE(); });
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
   ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, news: pageNews, ask: pageAsk, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
@@ -2378,10 +2497,15 @@ $("#q").addEventListener("keydown", (e) => {
   e.target.value = "";
 });
 window.addEventListener("hashchange", route);
+// 寬螢幕：導覽固定在左側，分組全部展開；側邊欄從頁首下緣開始
+function SIDE() { return matchMedia("(min-width: 1100px)").matches; }
+matchMedia("(min-width: 1100px)").addEventListener("change", () => $$("#nav .grp").forEach((g) => (g.open = SIDE())));
+new ResizeObserver(() => document.documentElement.style.setProperty("--toph", $(".top").offsetHeight + "px")).observe($(".top"));
+$$("#nav a").forEach((a) => { const d = a.querySelector("small"); if (d) a.title = d.textContent; });
 $("#navtog").onclick = () => { const o = $("#nav").classList.toggle("open"); $("#navtog").setAttribute("aria-expanded", String(o)); };
-document.addEventListener("click", (e) => { if (window.innerWidth > 760) $$("#nav .grp[open]").forEach((g) => { if (!g.contains(e.target)) g.open = false; }); });
-$$("#nav .grp").forEach((g) => g.addEventListener("toggle", () => { if (g.open && window.innerWidth > 760) $$("#nav .grp[open]").forEach((x) => { if (x !== g) x.open = false; }); }));
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") $$("#nav .grp[open]").forEach((g) => (g.open = false)); });
+document.addEventListener("click", (e) => { if (window.innerWidth > 760 && !SIDE()) $$("#nav .grp[open]").forEach((g) => { if (!g.contains(e.target)) g.open = false; }); });
+$$("#nav .grp").forEach((g) => g.addEventListener("toggle", () => { if (g.open && window.innerWidth > 760 && !SIDE()) $$("#nav .grp[open]").forEach((x) => { if (x !== g) x.open = false; }); }));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !SIDE()) $$("#nav .grp[open]").forEach((g) => (g.open = false)); });
 loadSnap().then((ok) => { if (ok) { route(); runAlerts(); } });
 initAuth();
 </script>

@@ -7,7 +7,7 @@
 > 2. **回測結果**：目前沒有任何規則被證明能勝過大盤；門檻與權重是事先設定的，沒有用回測結果調整。
 > 3. **樣本外績效**：只計算開盤前就公開存檔的名單，紀錄天數還少，不足以下結論。
 >
-> 「AI 量化評分」是固定規則的多因子計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型（Claude），它會用資料工具查網站的個股、產業、新聞與績效資料再回答。分數是全市場相對排名，不是上漲機率，也不構成投資建議。
+> 「AI 量化評分」是固定規則的多因子計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型（Claude，或沒有 Claude 金鑰時用 Cloudflare Workers AI 的免費開源模型），它會用資料工具查網站的個股、產業、新聞與績效資料再回答。分數是全市場相對排名，不是上漲機率，也不構成投資建議。
 
 ## 術語表（網站一律用這些名稱）
 
@@ -173,9 +173,9 @@ AI 模型定義在 `app/ai_model.py`：每個模式有「硬性條件」（不�
 
 預設是免費版：股票頁的「問問這檔股票」在瀏覽器裡依問題關鍵字（長期短期、財報、營收、風險、估值、股利、法人、技術面、AI 分數），用固定規則整理網站資料回答（`static/index.html` 的 `qaAnswer`），不花錢、不需要帳號。
 
-### 選用：AI 研究助理（需要付費金鑰）
+### 選用：AI 研究助理（可以免費）
 
-設定後，獨立的「AI 研究助理」頁（`#/ask`）和個股頁的問答改由 `worker/`（Cloudflare Worker）回答。Claude 依問題呼叫資料工具（`worker/tools.js`），只讀網站的公開 JSON，不把整份資料送給模型：
+設定後，獨立的「AI 研究助理」頁（`#/ask`）和個股頁的問答改由 `worker/`（Cloudflare Worker）回答。AI 依問題呼叫資料工具（`worker/tools.js`），只讀網站的公開 JSON，不把整份資料送給模型：
 
 | 工具 | 讀的資料 | 用途 |
 |---|---|---|
@@ -193,7 +193,9 @@ AI 模型定義在 `app/ai_model.py`：每個模式有「硬性條件」（不�
 - 一題最多查 6 輪資料；回傳一行一個 JSON（查資料進度、回答文字、用到的資料來源）。回答要分開「資料顯示／可能的解讀／資料不足」，並註明資料日期。
 - 對話紀錄只存在使用者的瀏覽器（依帳號分開，最多 30 段，可刪除）。
 
-- 金鑰 `ANTHROPIC_API_KEY` 只存在 Cloudflare 的 secret，網站與 repository 都看不到；只接受股栗子網站來的請求，每個 IP 每分鐘最多 5 題。總花費上限請在 Anthropic Console 設定。
-- 模型在 `worker/wrangler.toml` 的 `MODEL`（預設 `claude-opus-5-5`；改 `claude-haiku-5-5` 約便宜 40 倍）。
-- 部署：在 GitHub Secrets 加 `ANTHROPIC_API_KEY`、`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`，到 Actions 執行「部署 AI 研究助理」。部署後網址寫進 `chat.json`，網站重建後聊天框才會出現；沒設定時網站不顯示聊天框。
-- 測試：`cd worker && npm ci && npm test`。部署後工作流程會再用 `worker/smoke.mjs` 真的呼叫 Claude 問三題（自由提問、追問、新聞），檢查有查資料、有來源、追問記得前文，結果寫在該次執行的摘要；失敗時網站不會換成新的 AI 網址。
+- 兩種模型，部署時自動選：
+  - **免費**：只設定 `CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。使用 Cloudflare Workers AI（`worker/freeai.js`，模型在 `wrangler.toml` 的 `FREE_MODEL`，預設 Qwen3 30B），每天 10,000 Neurons 免費額度，用完當天停用。分析能力比 Claude 簡單。
+  - **Claude（付費）**：再加上 `ANTHROPIC_API_KEY`（Anthropic Console 建立並儲值）。模型在 `MODEL`（預設 `claude-opus-5-5`；改 `claude-haiku-5-5` 約便宜 40 倍）。總花費上限請在 Anthropic Console 設定。
+- 金鑰只存在 Cloudflare 的 secret，網站與 repository 都看不到；只接受股栗子網站來的請求，每個 IP 每分鐘最多 5 題，並且只開放登入會員（每人、全站每天有題數上限）。
+- 部署：在 GitHub Secrets 加好金鑰，到 Actions 執行「部署 AI 研究助理」。部署後網址與模型種類寫進 `chat.json`，網站重建後聊天框才會出現；沒設定時網站不顯示聊天框。
+- 測試：`cd worker && npm ci && npm test`。部署後工作流程會再用 `worker/smoke.mjs` 對剛部署好的 Worker 真的問三題（自由提問、追問、新聞），檢查有查資料、有來源、追問記得前文，結果寫在該次執行的摘要；失敗時網站不會換成新的 AI 網址。
