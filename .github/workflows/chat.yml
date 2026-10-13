@@ -66,7 +66,7 @@ jobs:
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy.log | head -1)
           if [ -z "$url" ]; then echo "::error::找不到 Worker 網址。請先到 Cloudflare 的 Workers & Pages 頁面開啟一次，建立 workers.dev 子網域。"; exit 1; fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
-      - name: 實際問答測試（問剛部署好的 AI 三題，結果在這次執行的摘要）
+      - name: 實際問答測試（問剛部署好的 AI 四題，結果在這次執行的摘要）
         if: steps.deploy.outputs.url
         env:
           WORKER_URL: ${{ steps.deploy.outputs.url }}

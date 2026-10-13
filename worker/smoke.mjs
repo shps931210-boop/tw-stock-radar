@@ -1,4 +1,4 @@
-// 部署後的實際測試：直接問「剛部署好的 Worker」三題（有 Claude 金鑰就是 Claude，沒有就是免費模型），檢查：
+// 部署後的實際測試：直接問「剛部署好的 Worker」四題（有 Claude 金鑰就是 Claude，沒有就是免費模型），檢查：
 // 有查資料、有回答、有資料來源、追問時記得前面比較的兩家公司。結果寫成 Markdown（GitHub Actions 的執行摘要）。
 // 用法：WORKER_URL=https://... SMOKE_TOKEN=... node smoke.mjs（SMOKE_TOKEN 每次部署由流程隨機產生）
 const URL_ = process.env.WORKER_URL, TOKEN = process.env.SMOKE_TOKEN;
