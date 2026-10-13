@@ -7,7 +7,7 @@
 > 2. **回測結果**：目前沒有任何規則被證明能勝過大盤；門檻與權重是事先設定的，沒有用回測結果調整。
 > 3. **樣本外績效**：只計算開盤前就公開存檔的名單，紀錄天數還少，不足以下結論。
 >
-> 「AI 量化評分」是固定規則的多因子計算，不是大型語言模型預測；只有個股頁的「問 AI」使用大型語言模型。分數是全市場相對排名，不是上漲機率，也不構成投資建議。
+> 「AI 量化評分」是固定規則的多因子計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型（Claude），它會用資料工具查網站的個股、產業、新聞與績效資料再回答。分數是全市場相對排名，不是上漲機率，也不構成投資建議。
 
 ## 術語表（網站一律用這些名稱）
 
@@ -173,9 +173,25 @@ AI 模型定義在 `app/ai_model.py`：每個模式有「硬性條件」（不�
 
 預設是免費版：股票頁的「問問這檔股票」在瀏覽器裡依問題關鍵字（長期短期、財報、營收、風險、估值、股利、法人、技術面、AI 分數），用固定規則整理網站資料回答（`static/index.html` 的 `qaAnswer`），不花錢、不需要帳號。
 
-### 選用：改由 AI 回答（需要付費金鑰）
+### 選用：AI 研究助理（需要付費金鑰）
 
-設定後改由 `worker/`（Cloudflare Worker）回答：讀網站上這檔股票的公開資料（`data/stock/代號.json`，含個股性質卡），交給 Claude 回答並即時傳回。
+設定後，獨立的「AI 研究助理」頁（`#/ask`）和個股頁的問答改由 `worker/`（Cloudflare Worker）回答。Claude 依問題呼叫資料工具（`worker/tools.js`），只讀網站的公開 JSON，不把整份資料送給模型：
+
+| 工具 | 讀的資料 | 用途 |
+|---|---|---|
+| find_stocks | `data/ai/universe.json` | 名稱 → 代號 |
+| get_stock_detail | `data/stock/代號.json` | 單一公司：指標、營收、財報、股利、法人、公告新聞 |
+| compare_stocks | `data/ai/universe.json` | 2～6 檔並列比較 |
+| screen_stocks | `data/ai/universe.json` | 依條件篩選全市場（最多 8 個條件、回傳 20 檔） |
+| market_overview | `data/ai/universe.json`、`data/events/calendar.json` | 大盤、漲跌家數、產業報酬、前 20 名變化、未來兩週事件 |
+| industry_report | `data/ai/universe.json`、`data/news/latest.json` | 產業概況、主要公司、最近公告與新聞 |
+| search_news | `data/news/latest.json` | 公告與新聞（相似報導只留一篇） |
+| performance_summary | `data/performance/summary.json` | 網站選股的事後績效 |
+| explain_metric | `data/ai/universe.json` | 指標定義與限制 |
+
+- `data/ai/universe.json` 由 `app/ai_data.py` 產生：全市場普通股的精簡指標，用「欄位 → 一整列」格式，Worker 解析快、CPU 時間短。
+- 一題最多查 6 輪資料；回傳一行一個 JSON（查資料進度、回答文字、用到的資料來源）。回答要分開「資料顯示／可能的解讀／資料不足」，並註明資料日期。
+- 對話紀錄只存在使用者的瀏覽器（依帳號分開，最多 30 段，可刪除）。
 
 - 金鑰 `ANTHROPIC_API_KEY` 只存在 Cloudflare 的 secret，網站與 repository 都看不到；只接受股栗子網站來的請求，每個 IP 每分鐘最多 5 題。總花費上限請在 Anthropic Console 設定。
 - 模型在 `worker/wrangler.toml` 的 `MODEL`（預設 `claude-opus-5-5`；改 `claude-haiku-5-5` 約便宜 40 倍）。

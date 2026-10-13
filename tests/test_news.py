@@ -74,3 +74,17 @@ class Copy(unittest.TestCase):
         for t in ["根據固定量化模型，查看全市場股票評分與排名", "使用預設投資策略，尋找符合條件的股票", "自行設定財務、估值、技術與籌碼條件",
                   "查看符合指定技術條件的股票及觸發日期", "根據研究偏好重新排序，不改變客觀模型分數", "查看歷史選股表現，與大盤及產業基準比較", "無法判定"]:
             self.assertIn(t, html)
+
+
+class Group(unittest.TestCase):
+    def test_clean_title(self):
+        self.assertEqual(news.clean_title("緯創砸逾70億元擴產 - CMoney投資網誌", "CMoney投資網誌"), "緯創砸逾70億元擴產")
+        self.assertEqual(news.clean_title("A - B"), "A - B")  # 太短，不確定是不是來源
+
+    def test_similar_reports_grouped(self):
+        it = [{"id": "a", "kind": "news", "stock_id": "2330", "date": "2026-10-13", "title": "台積電9月營收創同期新高 年增三成"},
+              {"id": "b", "kind": "news", "stock_id": "2330", "date": "2026-10-12", "title": "台積電9月營收創同期新高，年增三成"},
+              {"id": "c", "kind": "news", "stock_id": "2330", "date": "2026-10-13", "title": "台積電董事會通過資本預算"},
+              {"id": "d", "kind": "news", "stock_id": "2317", "date": "2026-10-13", "title": "台積電9月營收創同期新高 年增三成"}]
+        news.group_similar(it)
+        self.assertEqual([x["group"] for x in it], ["a", "a", "c", "d"])

@@ -8,40 +8,77 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <style>
-/* 股栗子：奶油底、栗子棕主色、柔和紅綠（台股慣例紅漲綠跌），圓角、低對比裝飾，不走科技風 */
+/* 股栗子 V13 設計系統：冷灰白底、白色卡片、深藍黑文字。
+   栗棕只當品牌色（標誌、選單目前位置、主要按鈕）；資訊藍負責連結與「公司公告」；紅漲綠跌（台股慣例）另外加 ▲▼，不只靠顏色辨識。 */
 :root {
-  --bg: #f8f3ec; --panel: #fffdf9; --line: #eadfd0; --ink: #3d2b1f; --muted: #7d6a5a; --faint: #a99787;
-  --accent: #8b5a34; --accent-2: #a46a3d; --accent-soft: #f4e7d7; --hero: #7a4e2e; --hero-ink: #fff8ef; --hero-muted: #ecd6bd;
-  --up: #c4524a; --down: #4f8c5f; --warn: #b07b2c; --chip: #f2e9dd;
-  --up-bg: #f9e7e3; --down-bg: #e5f1e6; --warn-bg: #f8eedb;
-  --gold: #d1a03a; --silver: #a59c94; --bronze: #b5774a;
-  --ma5: #d6a23c; --ma20: #6f8fb3; --ma60: #a4789f; --ma120: #6aa598; --ma240: #b08a6b;
+  --bg: #f5f7fa; --panel: #ffffff; --line: #e3e8ef; --ink: #17212f; --muted: #5b6676; --faint: #8a94a3;
+  --accent: #84552f; --accent-2: #285ea8; --accent-soft: #f3ebe3; --hero: #84552f; --hero-ink: #ffffff; --hero-muted: #f0dfcd;
+  --info: #285ea8; --info-bg: #e8f0fb; --brand: #84552f; --alert-bg: #b3261e;
+  --up: #c8372d; --down: #127a52; --warn: #a86400; --chip: #eef1f5;
+  --up-bg: #fdecea; --down-bg: #e3f3eb; --warn-bg: #fff3dc;
+  --gold: #c99a2e; --silver: #9aa3ad; --bronze: #b5774a;
+  --ma5: #d69a1f; --ma20: #285ea8; --ma60: #8e5ba8; --ma120: #1f8a7a; --ma240: #84552f;
   --f-display: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
   --f-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
   --f-num: "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
-  --r: 14px;
+  --r: 12px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #1f1915; --panel: #29211b; --line: #3d3229; --ink: #f2e8dc; --muted: #c0ad99; --faint: #8f7e6e;
-  --accent: #dcae80; --accent-2: #e6bd93; --accent-soft: #3a2d22; --hero: #4a3424; --hero-ink: #fbf2e6; --hero-muted: #dcc4a8;
-  --up: #e8857b; --down: #7dbb8c; --warn: #e0b060; --chip: #342a22;
-  --up-bg: #43271f; --down-bg: #233628; --warn-bg: #3c2f1b;
-  --gold: #e6bb5c; --silver: #bdb3a9; --bronze: #d29a6c;
-  --ma5: #e6bd60; --ma20: #93b1d3; --ma60: #c79ac1; --ma120: #8cc5b7; --ma240: #cfab8b; color-scheme: dark; } }
+  --bg: #0f141b; --panel: #18202a; --line: #2a3441; --ink: #e8edf3; --muted: #a3aebd; --faint: #75808f;
+  --accent: #d4a276; --accent-2: #7fb0f0; --accent-soft: #2e2620; --hero: #5a3a20; --hero-ink: #fbf2e6; --hero-muted: #e3c9ad;
+  --info: #7fb0f0; --info-bg: #1b2a40; --brand: #d4a276; --alert-bg: #8c1d18;
+  --up: #ff6b5e; --down: #3fbf8a; --warn: #f0b44c; --chip: #222b36;
+  --up-bg: #3a1e1b; --down-bg: #15302a; --warn-bg: #3a2d14;
+  --gold: #e6bb5c; --silver: #b5bdc7; --bronze: #d29a6c;
+  --ma5: #e6bd60; --ma20: #7fb0f0; --ma60: #c79ae0; --ma120: #5fd0bd; --ma240: #d4a276; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #1f1915; --panel: #29211b; --line: #3d3229; --ink: #f2e8dc; --muted: #c0ad99; --faint: #8f7e6e;
-  --accent: #dcae80; --accent-2: #e6bd93; --accent-soft: #3a2d22; --hero: #4a3424; --hero-ink: #fbf2e6; --hero-muted: #dcc4a8;
-  --up: #e8857b; --down: #7dbb8c; --warn: #e0b060; --chip: #342a22;
-  --up-bg: #43271f; --down-bg: #233628; --warn-bg: #3c2f1b;
-  --gold: #e6bb5c; --silver: #bdb3a9; --bronze: #d29a6c;
-  --ma5: #e6bd60; --ma20: #93b1d3; --ma60: #c79ac1; --ma120: #8cc5b7; --ma240: #cfab8b; color-scheme: dark; }
+  --bg: #0f141b; --panel: #18202a; --line: #2a3441; --ink: #e8edf3; --muted: #a3aebd; --faint: #75808f;
+  --accent: #d4a276; --accent-2: #7fb0f0; --accent-soft: #2e2620; --hero: #5a3a20; --hero-ink: #fbf2e6; --hero-muted: #e3c9ad;
+  --info: #7fb0f0; --info-bg: #1b2a40; --brand: #d4a276; --alert-bg: #8c1d18;
+  --up: #ff6b5e; --down: #3fbf8a; --warn: #f0b44c; --chip: #222b36;
+  --up-bg: #3a1e1b; --down-bg: #15302a; --warn-bg: #3a2d14;
+  --gold: #e6bb5c; --silver: #b5bdc7; --bronze: #d29a6c;
+  --ma5: #e6bd60; --ma20: #7fb0f0; --ma60: #c79ae0; --ma120: #5fd0bd; --ma240: #d4a276; color-scheme: dark; }
 * { box-sizing: border-box; }
+.chat-log .a.md { white-space: normal; } .md p { margin: 0 0 8px; } .md ul, .md ol { margin: 0 0 8px; padding-left: 20px; } .md h4 { margin: 10px 0 4px; font-size: 14px; }
+.md .tbl { margin: 6px 0 10px; } .md table { font-size: 13px; }
+.steps-ai { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.srcs { font-size: 12px; color: var(--muted); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.askgrid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; align-items: start; }
+@media (max-width: 960px) { .askgrid { grid-template-columns: minmax(0, 1fr); } }
+#askList .li { gap: 6px; } .xdel { border: 0; background: none; color: var(--faint); cursor: pointer; padding: 2px 6px; flex: none; } .xdel:hover { color: var(--up); } #askList .li.on { background: var(--info-bg); }
+nav a.navai { color: var(--info); } nav a.navai.on { background: var(--info-bg); color: var(--info); }
+/* 新聞卡片：標題是主角；公司公告用資訊藍標示，財經新聞用中性灰 */
+.ntabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 4px 0 14px; overflow-x: auto; }
+.ntabs button { border: 0; background: none; padding: 10px 14px; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
+.ntabs button.on { color: var(--ink); border-bottom-color: var(--brand); }
+.ngrid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+.nside { display: grid; gap: 16px; position: sticky; top: 76px; }
+@media (max-width: 960px) { .ngrid { grid-template-columns: minmax(0, 1fr); } .nside { position: static; } }
+.nday { font-size: 13px; color: var(--muted); font-weight: 500; margin: 14px 0 6px; }
+.ncard { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--faint); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+.ncard.ann { border-left-color: var(--info); }
+.nmeta { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--muted); align-items: center; }
+.nkind { font-weight: 700; color: var(--muted); }
+.ncard.ann .nkind { color: var(--info); }
+.ntitle { font: 600 16px/1.5 var(--f-display); margin: 4px 0 2px; }
+.ntitle a { color: var(--ink); } .ntitle a:hover { color: var(--info); }
+.nsum { font-size: 13px; color: var(--muted); margin: 4px 0 0; } details.nsum > div { white-space: pre-wrap; margin-top: 4px; }
+details.nsum summary { cursor: pointer; color: var(--info); }
+.nrel { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 13px; }
+.nco { color: var(--ink); background: var(--chip); padding: 2px 10px; border-radius: 999px; }
+.nco:hover { text-decoration: none; background: var(--info-bg); }
+.nq { color: var(--muted); } .nq .sep { color: var(--faint); margin: 0 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; } .chip { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.chip:hover { border-color: var(--info); }
+
 body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 var(--f-body); }
 a { color: var(--accent-2); text-decoration: none; } a:hover { text-decoration: underline; }
 .num { font-family: var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
 .muted { color: var(--muted); } .faint { color: var(--faint); } .small { font-size: 12px; }
 .up { color: var(--up); } .down { color: var(--down); }
+.num.up::before { content: "▲"; font-size: .72em; margin-right: 2px; vertical-align: .08em; } .num.down::before { content: "▼"; font-size: .72em; margin-right: 2px; vertical-align: .08em; }
 button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
 input[type=text], input[type=number], input[type=search], select { padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
@@ -52,10 +89,10 @@ input[type=text], input[type=number], input[type=search], select { padding: 5px 
 .brand { color: var(--ink); display: flex; align-items: center; gap: 10px; }
 .brand:hover { text-decoration: none; }
 .brand svg { flex: none; }
-.brand b { display: block; font: 700 20px/1.1 var(--f-display); letter-spacing: .08em; color: var(--accent); }
+.brand b { display: block; font: 700 20px/1.1 var(--f-display); letter-spacing: .08em; color: var(--brand); }
 .brand small { display: block; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
 nav { display: flex; gap: 2px; flex-wrap: wrap; }
-nav a { padding: 6px 14px; border-radius: 999px; color: var(--muted); font-weight: 500; }
+nav a { padding: 6px 11px; border-radius: 999px; color: var(--muted); font-weight: 500; }
 nav a.on { background: var(--accent-soft); color: var(--accent); }
 nav a:hover { text-decoration: none; color: var(--ink); }
 nav .grp { position: relative; }
@@ -139,9 +176,9 @@ h3 { font-size: 14px; margin: 0; }
 .kpi span { display: block; font-size: 12px; color: var(--muted); }
 .kpi b { font: 500 20px var(--f-num); white-space: nowrap; }
 .kpi b span { display: inline; }
-.fresh.demo { background: var(--up); color: #fff; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding-block: 10px; }
+.fresh.demo { background: var(--alert-bg); color: #fff; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding-block: 10px; }
 .fresh.demo span { color: #fff; opacity: .92; }
-.fresh.bad { background: var(--up); color: #fff; padding-block: 10px; }
+.fresh.bad { background: var(--alert-bg); color: #fff; padding-block: 10px; }
 .fresh.bad b, .fresh.bad span { color: #fff; }
 .fresh.warn { background: var(--warn-bg); }
 .fresh.warn > b { color: var(--warn); }
@@ -301,6 +338,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
     <nav id="nav" aria-label="主要功能">
       <a href="#/" data-r="">首頁</a>
       <a href="#/me" data-r="me">投資儀表板</a>
+      <a href="#/ask" data-r="ask" class="navai" title="直接提問，AI 會查股票、產業、新聞與績效資料">AI 研究助理</a>
       <details class="grp" data-g="research"><summary>選股研究</summary><div class="menu">
         <a href="#/ai" data-r="ai">AI 量化選股<small>根據固定量化模型，查看全市場股票評分與排名</small></a>
         <a href="#/radar" data-r="radar">策略選股<small>使用預設投資策略，尋找符合條件的股票</small></a>
@@ -323,12 +361,12 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
     </nav>
     <button class="btn ghost sm" id="bell" onclick="location.hash='#/alerts'" aria-label="通知">通知<span class="cnt" id="ncnt" hidden>0</span></button>
     <button class="btn ghost sm" id="acct" hidden>登入</button>
-    <div class="search"><input id="q" type="search" list="stockList" placeholder="股票、功能或新聞關鍵字" autocomplete="off" aria-label="搜尋股票、功能或新聞"><datalist id="stockList"></datalist></div>
+    <div class="search"><input id="q" type="search" list="stockList" placeholder="股票、新聞，或直接問 AI" autocomplete="off" aria-label="搜尋股票、功能或新聞"><datalist id="stockList"></datalist></div>
   </div>
   <div class="fresh" id="fresh"></div>
 </header>
 <main id="app"><div class="empty">載入中…</div></main>
-<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有個股頁的「問 AI」使用大型語言模型。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤（見<a href="#/performance">績效驗證</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
+<footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型（Claude）。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤（見<a href="#/performance">績效驗證</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
 <script>
 const STATIC = window.STATIC_DATA || null;
 const SITE = !!window.STATIC_SITE;  // build_site.py 產生的靜態網站：讀 data/*.json，沒有後端
@@ -1449,65 +1487,88 @@ async function loadNews() {
   const r = await fetch(SITE ? "data/news/latest.json" : "/api/news" + (DEMO ? "?demo=1" : "")).catch(() => null);
   return (NEWS = r && r.ok ? await r.json() : null);
 }
-const TONE = { positive: ["偏多", "good"], negative: ["偏空", "bad"], unclear: ["無法判定", ""] };
+const TONE = { positive: ["正面用詞", "good"], negative: ["負面用詞", "bad"], unclear: ["無法判定", ""] };
 const tmTxt = (t) => t && /^\d{6}$/.test(t) ? `${t.slice(0, 2)}:${t.slice(2, 4)}` : t ? esc(t.slice(0, 5)) : "";
-// 一則公告或新聞；opts.stock=false 時不重複顯示股票（個股頁用）
+// 一則公告或新聞（卡片）：上方「類型・來源・時間」，中間標題是重點，下方是相關公司與量化資訊。
+// opts.stock=false：個股頁用，不重複列股票；opts.dups：同一事件的其他報導
 function newsItem(n, opts = {}) {
-  const [tt, tc] = TONE[n.tone] || [];
-  const kind = n.kind === "announcement" ? '<span class="pill acc">公司公告</span>' : '<span class="pill">新聞</span>';
-  const who = opts.stock !== false && n.stock_id ? `<a href="#/stock/${esc(n.stock_id)}"><b>${esc(n.stock_id)} ${esc(n.name || "")}</b></a>${n.industry ? ` <span class="faint small">${esc(n.industry)}</span>` : ""}` : "";
-  const c = opts.stock !== false ? n.ctx : null;
-  const ctx = c ? `<span class="small muted">收盤 <span class="num">${fmtNum(c.close)}</span> <span class="num ${signCls(c.chg_pct)}">${pctTxt(c.chg_pct)}</span>${c.score != null ? `・AI 量化評分 <span class="num">${Math.round(c.score)}</span>（第 ${c.rank} 名）` : ""}${c.price_date ? `・${esc(c.price_date)}` : ""}</span>` : "";
+  const ann = n.kind === "announcement", [tt, tc] = TONE[n.tone] || [];
   const title = n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.title)}</a>` : esc(n.title);
-  return `<div class="nitem" style="padding:8px 0;border-top:1px solid var(--line)">
-    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${kind}${tt ? `<span class="pill ${tc}" title="只用標題關鍵字判讀，不是 AI 情緒分析">${tt}</span>` : ""}<span class="num faint small">${esc(n.date)} ${tmTxt(n.time)}</span>${who}</div>
-    <div style="margin:2px 0">${title}</div>
-    ${n.summary ? `<details class="small"><summary class="muted">公告說明</summary><div style="white-space:pre-wrap">${esc(n.summary)}</div></details>` : ""}
-    <div class="faint small">來源：${esc(n.source || "—")}${n.rule ? `・${esc(n.rule)}` : ""}${ctx ? "　" : ""}${ctx}</div></div>`;
+  const c = opts.stock !== false ? n.ctx : null;
+  const rel = opts.stock !== false && n.stock_id ? `<a class="nco" href="#/stock/${esc(n.stock_id)}"><b class="num">${esc(n.stock_id)}</b> ${esc(n.name || "")}${n.industry ? `<span class="faint">・${esc(n.industry)}</span>` : ""}</a>` : "";
+  const q = c ? `<span class="nq">收盤 <span class="num">${fmtNum(c.close)}</span> <span class="num ${signCls(c.chg_pct)}">${pctTxt(c.chg_pct)}</span>${c.score != null ? `<span class="sep">｜</span>AI 量化評分 <span class="num">${Math.round(c.score)}</span>・第 ${c.rank} 名` : ""}<span class="faint">（${esc(c.price_date || "")}）</span></span>` : "";
+  const dups = opts.dups || [];
+  return `<article class="ncard ${ann ? "ann" : "nws"}">
+    <div class="nmeta"><span class="nkind">${ann ? "公司公告" : "財經新聞"}</span><span>${esc(n.source || "來源不明")}</span><span class="num">${esc(n.date)} ${tmTxt(n.time)}</span>${n.rule ? `<span>${esc(n.rule)}</span>` : ""}</div>
+    <h3 class="ntitle">${title}</h3>
+    ${n.summary ? (ann ? `<details class="nsum"><summary>公告內容</summary><div>${esc(n.summary)}</div></details>` : `<p class="nsum">${esc(n.summary.slice(0, 140))}${n.summary.length > 140 ? "…" : ""}</p>`) : ""}
+    ${rel || q || tt ? `<div class="nrel">${rel}${q}${tt ? `<span class="pill ${tc}" title="只看標題用詞，不是 AI 判斷，也不代表股價方向">標題用詞：${tt}</span>` : ""}</div>` : ""}
+    ${dups.length ? `<details class="nsum"><summary>另有 ${dups.length} 篇相似報導</summary>${dups.map((x) => `<div class="small">${esc(x.source || "")}・${esc(x.date)} ${x.link ? `<a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a>` : esc(x.title)}</div>`).join("")}</details>` : ""}
+  </article>`;
+}
+// 同一事件的多篇報導只顯示第一篇，其他收在「相似報導」
+function groupNews(list) {
+  const by = {}, out = [];
+  list.forEach((x) => { const g = x.group || x.id || Math.random(); if (by[g]) by[g].dups.push(x); else { by[g] = { x, dups: [] }; out.push(by[g]); } });
+  return out;
 }
 async function pageNews() {
   $("#app").innerHTML = '<section class="card"><p class="muted">載入新聞與公告…</p></section>';
   const N = await loadNews();
   if (location.hash.replace(/^#\/?/, "").split("/")[0] !== "news") return;
-  const o = { tab: "all", ind: "", q: "", n: 120, ...store.get("news", {}) };
-  const save = () => { store.set("news", { tab: o.tab, ind: o.ind, q: o.q }); pageNews(); };
+  const o = { tab: "all", ind: "", q: "", n: 60, ...store.get("news", {}) };
+  if (!["all", "announcement", "news", "watch", "industry"].includes(o.tab)) o.tab = "all";
+  const keep = (x = {}) => store.set("news", { tab: o.tab, ind: o.ind, q: o.q, ...x });
+  const save = () => { keep(); pageNews(); };
   if (!N) {
     $("#app").innerHTML = `<section><h1>市場新聞中心</h1></section><section class="card"><p>還沒有新聞資料。每日更新會在收盤後抓取公司公告與新聞；第一次成功抓取後，這裡就會出現內容。</p></section>`;
     return;
   }
-  const w = watch();
-  const all = N.items || [];
-  const inds = [...new Set(all.map((x) => x.industry).filter(Boolean))].sort();
-  const TABS = { all: "全部", watch: "自選股", announcement: "公司公告", news: "新聞", macro: "總經" };
-  let list = all.filter((x) => o.tab === "all" || (o.tab === "watch" ? w[x.stock_id] : x.kind === o.tab));
+  const w = watch(), all = N.items || [];
+  const TABS = { all: "全部", announcement: "公司公告", news: "市場新聞", watch: "自選股", industry: "產業動態" };
+  let list = all.filter((x) => o.tab === "all" || o.tab === "industry" || (o.tab === "watch" ? w[x.stock_id] : x.kind === o.tab));
   if (o.ind) list = list.filter((x) => x.industry === o.ind);
-  if (o.q) { const q = o.q.trim(); list = list.filter((x) => x.title.includes(q) || (x.stock_id || "").startsWith(q) || (x.name || "").includes(q)); }
-  const days = [...new Set(list.slice(0, o.n).map((x) => x.date))];
+  if (o.q) { const q = o.q.trim(); list = list.filter((x) => x.title.includes(q) || (x.stock_id || "").startsWith(q) || (x.name || "").includes(q) || (x.industry || "").includes(q)); }
+  const cnt = (xs, f) => Object.entries(xs.reduce((m, x) => { const k = f(x); if (k) m[k] = (m[k] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
+  const indCnt = cnt(all, (x) => x.industry), stkCnt = cnt(all.filter((x) => x.stock_id), (x) => x.stock_id).slice(0, 8);
+  const groups = groupNews(list), shown = groups.slice(0, o.n);
+  const days = [...new Set(shown.map((g) => g.x.date))];
   const st = N.status || {}, ann = st.announcements || {}, nw = st.news || {};
-  const body = o.tab === "macro" ? '<div class="empty">總經新聞還沒有接上可靠的免費資料來源，所以這一頁先不顯示任何內容。</div>'
-    : days.length ? days.map((d) => `<div style="margin-bottom:10px"><h3 style="margin:8px 0 2px">${esc(d)}（${wdTxt(d)}）</h3>${list.slice(0, o.n).filter((x) => x.date === d).map((x) => newsItem(x)).join("")}</div>`).join("")
-      + (list.length > o.n ? `<button class="btn ghost" id="nmore">再顯示 ${Math.min(120, list.length - o.n)} 則（共 ${list.length} 則）</button>` : "")
-    : `<div class="empty">${o.tab === "watch" ? "自選股最近 " + N.coverage.days + " 天沒有公告或新聞。" : "沒有符合的公告或新聞。"}</div>`;
+  const indPick = o.tab === "industry" && !o.ind
+    ? `<div class="chips">${indCnt.map(([k, n]) => `<button class="chip" data-ind="${esc(k)}">${esc(k)} <span class="num faint">${n}</span></button>`).join("") || '<span class="muted">沒有產業資料</span>'}</div><p class="muted small">選一個產業，看這個產業最近的公告與新聞。</p>`
+    : "";
+  const body = indPick || (days.length ? days.map((d) => `<h3 class="nday">${esc(d)}（${wdTxt(d)}）</h3>${shown.filter((g) => g.x.date === d).map((g) => newsItem(g.x, { dups: g.dups })).join("")}`).join("")
+      + (groups.length > o.n ? `<button class="btn ghost" id="nmore" style="margin-top:10px">再顯示 ${Math.min(60, groups.length - o.n)} 則（共 ${groups.length} 則）</button>` : "")
+    : `<div class="empty">${o.tab === "watch" ? (Object.keys(w).length ? `自選股最近 ${N.coverage.days} 天沒有公告或新聞。` : "還沒有自選股。在任何股票旁按 ☆ 加入。") : "沒有符合的公告或新聞。"}</div>`);
   $("#app").innerHTML = `
     <section><div class="eyebrow">台灣時間・最後抓取 ${esc((N.last_fetched_at || "—").slice(0, 16).replace("T", " "))}・最近 ${N.coverage.days} 天</div><h1>市場新聞中心</h1>
-      <p class="lead">上市櫃公司重大訊息與個股新聞，每則都附來源、時間和原文連結，並列出相關股票目前的收盤價與 AI 量化評分，方便對照。</p></section>
-    ${(N.warnings || []).length ? `<section class="card" style="border-color:var(--warn)"><p class="small" style="color:var(--warn);margin:0">${esc(N.warnings.join("；"))}</p></section>` : ""}
-    <section class="card"><div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
-      <div class="seg" id="ntab">${Object.entries(TABS).map(([k, t]) => `<button data-k="${k}" class="${k === o.tab ? "on" : ""}">${t}</button>`).join("")}</div>
-      <select id="nind" aria-label="產業"><option value="">全部產業</option>${inds.map((x) => `<option${x === o.ind ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
-      <input id="nq" type="search" placeholder="關鍵字、代號或名稱" value="${esc(o.q)}" style="max-width:200px" aria-label="搜尋新聞">
-      <span class="muted small">${list.length} 則</span></div>
-      ${body}</section>
-    <section class="card"><h2 style="margin-top:0">怎麼看這一頁</h2><ul class="small" style="margin:0;padding-left:18px">
-      <li><span class="pill acc">公司公告</span> 公開資訊觀測站的重大訊息（上市${ann.twse != null ? ` ${ann.twse} 則` : "：未取得"}；上櫃${ann.tpex != null ? ` ${ann.tpex} 則` : "：未取得"}），是公司自己發布的正式資訊。</li>
-      <li><span class="pill">新聞</span> 來自 FinMind 整理的台股相關新聞，只顯示標題與連結，內容與版權屬原媒體，請點連結看原文。${nw.mode === "stocks" ? `這次只抓了 ${nw.stocks} 檔重點股票。` : ""}</li>
-      <li><span class="pill good">偏多</span> <span class="pill bad">偏空</span> <span class="pill">無法判定</span> ${esc(N.tone_note || "")}</li>
-      <li>新聞與公告不代表股價會怎麼走，這是資訊整理，不是投資建議。</li></ul>
-      <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/news/latest.json">news/latest.json</a>（網站版才有）</p></section>`;
-  const tab = $("#ntab"); tab.onclick = (e) => { const b = e.target.closest("button"); if (b) { o.tab = b.dataset.k; o.n = 120; save(); } };
+      <p class="lead">公司公告和媒體新聞分開標示，每則都有來源、時間和原文連結；相關公司的收盤價與量化評分列在下方，點公司名稱就能看個股研究。</p></section>
+    ${(N.warnings || []).length ? `<div class="banner warn">${esc(N.warnings.join("；"))}</div>` : ""}
+    <div class="ntabs" id="ntab" role="tablist">${Object.entries(TABS).map(([k, t]) => `<button role="tab" aria-selected="${k === o.tab}" data-k="${k}" class="${k === o.tab ? "on" : ""}">${t}</button>`).join("")}</div>
+    <div class="ngrid"><div>
+      <div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+        <select id="nind" aria-label="產業"><option value="">全部產業</option>${indCnt.map(([x]) => `<option${x === o.ind ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+        <input id="nq" type="search" placeholder="關鍵字、代號、名稱或產業" value="${esc(o.q)}" style="max-width:220px" aria-label="搜尋新聞">
+        <span class="muted small">${indPick ? "" : `${groups.length} 則${groups.length !== list.length ? `（另有 ${list.length - groups.length} 篇相似報導已合併）` : ""}`}</span>
+        ${o.ind || o.q ? '<button class="btn ghost sm" id="nclr">清除篩選</button>' : ""}</div>
+      ${body}</div>
+      <aside class="nside">
+        <section class="card"><h2>最常被提到的公司</h2><div class="scan">${stkCnt.map(([id, n]) => { const s = BYID[id]; return `<div class="li" data-id="${esc(id)}"><span><b class="num">${esc(id)}</b> ${esc(s?.name || "")}</span><span class="small muted">${n} 則</span></div>`; }).join("") || '<span class="muted small">沒有</span>'}</div></section>
+        <section class="card"><h2>怎麼看這一頁</h2><ul class="small" style="margin:6px 0 0;padding-left:18px;display:grid;gap:4px">
+          <li><b style="color:var(--info)">公司公告</b>：公開資訊觀測站的重大訊息（上市${ann.twse != null ? ` ${ann.twse} 則` : "未取得"}、上櫃${ann.tpex != null ? ` ${ann.tpex} 則` : "未取得"}），是公司自己發布的正式資訊，證據力最高。</li>
+          <li><b>財經新聞</b>：FinMind 整理的媒體報導，只顯示標題、摘要與連結，內容版權屬原媒體。媒體評論不等於公司公告。${nw.mode === "stocks" ? `目前只涵蓋 ${nw.stocks} 檔重點股票。` : ""}</li>
+          <li><b>相似報導</b>：同一檔股票、前後一天、標題用字大多相同的報導合併成一則。</li>
+          <li><b>標題用詞</b>：${esc(N.tone_note || "")}</li>
+          <li>總經新聞還沒有可靠的免費資料來源，所以沒有放。新聞不代表股價方向，這是資訊整理，不是投資建議。</li></ul>
+          <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/news/latest.json">news/latest.json</a></p></section>
+      </aside></div>`;
+  $("#ntab").onclick = (e) => { const b = e.target.closest("button"); if (b) { o.tab = b.dataset.k; if (o.tab === "industry") o.ind = ""; save(); } };
   $("#nind").onchange = (e) => { o.ind = e.target.value; save(); };
-  $("#nq").onchange = (e) => { o.q = e.target.value; store.set("news", { tab: o.tab, ind: o.ind, q: o.q }); pageNews(); };
-  if ($("#nmore")) $("#nmore").onclick = () => { store.set("news", { tab: o.tab, ind: o.ind, q: o.q, n: o.n + 120 }); pageNews(); };
+  $("#nq").onchange = (e) => { o.q = e.target.value; save(); };
+  if ($("#nclr")) $("#nclr").onclick = () => { o.ind = ""; o.q = ""; save(); };
+  $$(".chip[data-ind]").forEach((b) => (b.onclick = () => { o.ind = b.dataset.ind; save(); }));
+  if ($("#nmore")) $("#nmore").onclick = () => { keep({ n: o.n + 60 }); pageNews(); };
+  $$(".nside .scan").forEach((el) => (el.onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; }));
 }
 
 // ---------- 智慧警報（站內通知） ----------
@@ -1786,9 +1847,10 @@ function pagePrivacy() {
       <li><b>誰能寫入</b>：你的設定由你自己修改；正式通知與處理進度只由網站後端（每次盤後更新時執行）寫入。</li>
       <li><b>保留期間</b>：直到你刪除帳號為止；通知每人最多保留 500 則，超過自動刪除最舊的。</li>
       <li><b>刪除</b>：到 <a href="#/account">帳號</a> 頁按「永久刪除我的帳號」，帳號和上面所有雲端資料會立刻一起刪除，無法復原。</li></ul></section>
-    <section class="card"><h2 style="margin-top:0">AI 問答</h2><ul class="small" style="margin:0;padding-left:18px">
-      <li>啟用後，你輸入的問題和這檔股票的公開資料會送到 Anthropic 的 Claude 產生回答；不會送出你的 Email、自選股或其他個人資料。</li>
-      <li>對話內容不存在股栗子的資料庫，只記錄每日題數與花費，用來控制額度。</li></ul>
+    <section class="card"><h2 style="margin-top:0">AI 研究助理</h2><ul class="small" style="margin:0;padding-left:18px">
+      <li>啟用後，你輸入的問題、同一段對話的前幾輪，以及 AI 查到的網站公開資料（股價、財報、新聞等）會送到 Anthropic 的 Claude 產生回答；不會送出你的 Email、自選股或其他個人資料。</li>
+      <li>對話紀錄只存在你這台裝置的瀏覽器（依帳號分開，最多 30 段），可以在 AI 研究助理頁單筆或全部刪除；不存在股栗子的資料庫。</li>
+      <li>股栗子的資料庫只記錄每日題數與花費，用來控制額度。</li></ul>
       <p class="faint small" style="margin:8px 0 0">本網站是研究工具，提供資料整理與規則式評分，不是投資建議，也不提供個別買賣推薦。</p></section>`;
 }
 function pageAccount() {
@@ -1923,41 +1985,131 @@ function qaAnswer(s, d, q) {
   return hits.map((t) => (hits.length > 1 ? `【${t.label}】\n` : "") + A[t.key]()).join("\n\n") +
     `\n\n資料日：股價 ${s.date || "—"}・月營收 ${s.rev_ym || "—"}・財報 ${s.fin_period || "—"}。以上由規則根據網站資料自動整理，不是投資建議。`;
 }
+// ---------- AI 研究助理（全站） ----------
+// 呼叫 worker/（Claude + 資料工具）。回傳一行一個 JSON：status 查資料進度、text 回答、sources 用到的資料、error。
+// 對話存在這台裝置（依帳號分開），可以單筆或全部刪除；不會上傳到股栗子的資料庫。
+const AI_ON = () => !!window.CHAT_URL && !!user;
+async function streamAI(messages, stockId, on) {
+  const { data: { session } } = await sb.auth.getSession();
+  const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}` },
+    body: JSON.stringify({ messages, ...(stockId ? { stock_id: stockId } : {}) }) });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || "AI 暫時無法回答，請稍後再試。");
+  on({ t: "quota", v: [r.headers.get("X-Quota-Used"), r.headers.get("X-Quota-Limit")] });
+  const rd = r.body.getReader(), dec = new TextDecoder(); let buf = "";
+  for (;;) {
+    const { done, value } = await rd.read(); if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i; while ((i = buf.indexOf("\n")) >= 0) { const line = buf.slice(0, i); buf = buf.slice(i + 1); if (line.trim()) { try { on(JSON.parse(line)); } catch {} } }
+  }
+}
+// 簡單、安全的 Markdown：先跳脫，再處理標題、粗體、清單、表格、連結（只允許 https 與站內 #/）
+function md(src) {
+  const inl = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\[([^\]]+)\]\(((?:https:\/\/|#\/)[^)\s]+)\)/g, (m, a, h) => `<a href="${h}"${h.startsWith("#") ? "" : ' target="_blank" rel="noopener"'}>${a}</a>`);
+  const out = [], lines = String(src || "").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (/^\s*\|.*\|\s*$/.test(l)) {
+      const rows = []; while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) rows.push(lines[i++]); i--;
+      const cells = (r) => r.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+      const body = rows.filter((r) => !/^\s*\|[\s:|-]+\|\s*$/.test(r));
+      out.push(`<div class="tbl"><table><thead><tr>${cells(body[0]).map((c) => `<th>${inl(c)}</th>`).join("")}</tr></thead><tbody>${body.slice(1).map((r) => `<tr>${cells(r).map((c) => `<td>${inl(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`);
+    } else if (/^#{1,4}\s/.test(l)) out.push(`<h4>${inl(l.replace(/^#+\s*/, ""))}</h4>`);
+    else if (/^\s*[-*・]\s+/.test(l)) { const it = []; while (i < lines.length && /^\s*[-*・]\s+/.test(lines[i])) it.push(lines[i++].replace(/^\s*[-*・]\s+/, "")); i--; out.push(`<ul>${it.map((x) => `<li>${inl(x)}</li>`).join("")}</ul>`); }
+    else if (/^\s*\d+[.、]\s+/.test(l)) { const it = []; while (i < lines.length && /^\s*\d+[.、]\s+/.test(lines[i])) it.push(lines[i++].replace(/^\s*\d+[.、]\s+/, "")); i--; out.push(`<ol>${it.map((x) => `<li>${inl(x)}</li>`).join("")}</ol>`); }
+    else if (l.trim()) out.push(`<p>${inl(l)}</p>`);
+  }
+  return out.join("");
+}
+const aiMsgHtml = (m) => m.role === "user" ? `<div class="q">${esc(m.content)}</div>`
+  : `<div class="a md">${(m.steps || []).length ? `<div class="steps-ai">${m.steps.map((x) => `<span>✓ ${esc(x)}</span>`).join("")}</div>` : ""}${md(m.content) || '<span class="muted">思考中…</span>'}
+    ${(m.sources || []).length ? `<div class="srcs">資料來源：${m.sources.map((x) => x.page ? `<a href="${esc(x.page)}">${esc(x.name)}</a>` : esc(x.name)).join("、")}</div>` : ""}</div>`;
+// 一題：把使用者問題加進對話、串流回答，回答過程每次更新都呼叫 draw()
+async function askAI(hist, q, stockId, draw, setQuota) {
+  hist.push({ role: "user", content: q }, { role: "assistant", content: "", steps: [] });
+  const ans = hist[hist.length - 1]; draw();
+  try {
+    await streamAI(hist.slice(0, -1).map((m) => ({ role: m.role, content: m.content })), stockId, (ev) => {
+      if (ev.t === "text") ans.content += ev.v;
+      else if (ev.t === "status") ans.steps.push(ev.v);
+      else if (ev.t === "sources") ans.sources = ev.v;
+      else if (ev.t === "error") ans.content += `\n（${ev.v}）`;
+      else if (ev.t === "quota" && setQuota) setQuota(ev.v);
+      draw();
+    });
+  } catch (e) { ans.content = e.message || "連不上 AI 服務，請檢查網路後再試。"; }
+  if (!ans.content.trim()) ans.content = "AI 沒有回答，請再試一次。";
+  draw();
+}
+const ASK_EX = ["分析台積電最新財報，營收成長主要來自哪裡？", "比較台積電和聯發科的估值與獲利能力", "最近航運類股表現如何？有哪些相關新聞？",
+  "找近三個月營收成長、ROE 較高的股票", "股栗子最近的選股表現有沒有贏過大盤？", "什麼是本益比？什麼情況會失真？"];
+function pageAsk() {
+  const all = store.get("aichat", []), cur = store.get("aichatCur", null);
+  let conv = all.find((c) => c.id === cur);
+  const pre = sessionStorage.getItem("askq"); sessionStorage.removeItem("askq");
+  const saveAll = () => { if (conv && conv.msgs.length) { conv.updated = new Date().toISOString(); const rest = all.filter((c) => c.id !== conv.id); store.set("aichat", [conv, ...rest].slice(0, 30)); store.set("aichatCur", conv.id); } };
+  const status = !window.CHAT_URL ? "AI 研究助理還沒啟用（需要設定 Anthropic 金鑰並部署 AI 後端）。目前可以用個股頁的免費自動問答。"
+    : !user ? `AI 研究助理只開放給登入的會員（每人每天有題數與費用上限）。<a href="#/account">登入</a>後就能使用。` : "";
+  $("#app").innerHTML = `
+    <section><div class="eyebrow">Claude・依問題查詢股栗子的資料</div><h1>AI 研究助理</h1>
+      <p class="lead">直接問股票、產業、新聞或選股方法。AI 會先查股栗子的個股、產業、公告新聞與績效資料，再整理回答，並分開標示查到的事實、推論和資料不足的地方。</p></section>
+    ${status ? `<div class="banner warn">${status}</div>` : ""}
+    <div class="askgrid"><div class="card" id="askbox">
+      <div class="chat-log" id="askLog"></div>
+      <div id="askEx" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+      <form class="chat-form" id="askForm"><input type="text" id="askIn" maxlength="500" placeholder="例如：比較台積電和聯發科的毛利率" autocomplete="off"${status ? " disabled" : ""}><button class="btn" id="askBtn"${status ? " disabled" : ""}>送出</button></form>
+      <p class="faint small" style="margin:8px 0 0" id="askQuota">每位會員每天最多 20 題（或約 0.5 美元用量）。AI 可能出錯，重要數字請點資料來源核對；這不是投資建議。</p></div>
+      <aside class="card"><div class="card-h"><h2>對話紀錄</h2><button class="btn ghost sm" id="askNew">新對話</button></div>
+        <div class="scan" id="askList">${all.map((c) => `<div class="li${conv && c.id === conv.id ? " on" : ""}" data-c="${esc(c.id)}"><span class="small">${esc(c.title)}</span><button class="xdel" data-del="${esc(c.id)}" aria-label="刪除這段對話" title="刪除">✕</button></div>`).join("") || '<p class="muted small">還沒有對話。</p>'}</div>
+        ${all.length ? '<button class="btn ghost sm" id="askClr" style="margin-top:8px">全部刪除</button>' : ""}
+        <p class="faint small" style="margin:10px 0 0">對話只存在這台裝置的瀏覽器（依帳號分開），最多保留 30 段，隨時可以刪除，不會存進股栗子的資料庫。提問時，你的問題、前幾輪對話和查到的網站公開資料會送到 Anthropic 的 Claude 產生回答。</p></aside></div>`;
+  const log = $("#askLog");
+  const draw = () => {
+    log.innerHTML = conv ? conv.msgs.map(aiMsgHtml).join("") : "";
+    $("#askEx").innerHTML = conv?.msgs.length ? "" : ASK_EX.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("");
+    $$("#askEx [data-q]").forEach((b) => (b.onclick = () => go(b.dataset.q)));
+    log.lastElementChild?.scrollIntoView({ block: "nearest" });
+  };
+  const go = async (q) => {
+    q = (q || "").trim(); if (!q || status || $("#askBtn").disabled) return;
+    if (!conv) { conv = { id: Date.now().toString(36), title: q.slice(0, 30), msgs: [] }; }
+    $("#askIn").value = ""; $("#askBtn").disabled = true;
+    await askAI(conv.msgs, q, null, draw, ([u, l]) => { if (u) $("#askQuota").textContent = `今天已問 ${u}／${l} 題。AI 可能出錯，重要數字請點資料來源核對；這不是投資建議。`; });
+    conv.msgs = conv.msgs.slice(-24); saveAll(); $("#askBtn").disabled = false;
+    if (!$(`#askList [data-c="${conv.id}"]`)) pageAsk();
+  };
+  draw();
+  $("#askForm").onsubmit = (e) => { e.preventDefault(); go($("#askIn").value); };
+  $("#askNew").onclick = () => { store.set("aichatCur", null); pageAsk(); };
+  $("#askList").onclick = (e) => {
+    const d = e.target.closest("[data-del]");
+    if (d) { store.set("aichat", all.filter((c) => c.id !== d.dataset.del)); if (conv?.id === d.dataset.del) store.set("aichatCur", null); pageAsk(); return; }
+    const c = e.target.closest("[data-c]"); if (c) { store.set("aichatCur", c.dataset.c); pageAsk(); }
+  };
+  if ($("#askClr")) $("#askClr").onclick = () => { if (confirm("刪除這台裝置上全部的 AI 對話紀錄？")) { store.set("aichat", []); store.set("aichatCur", null); pageAsk(); } };
+  if (pre && !status) go(pre); else if (pre) $("#askIn").value = pre;
+}
+
 function chatCard(id) {
   const ai = !!window.CHAT_URL && !!user;  // 付費 AI 只開放給登入的會員（每人每天有上限）；沒登入用免費的規則問答
-  const ex = ai ? ["這檔比較適合長期還是短期？", "最近財報和營收的重點是什麼？", "它最大的風險在哪裡？"] : QA_TOPICS.map((t) => t.label);
-  return `<section class="card" id="chat"><div class="card-h"><h2>問問這檔股票</h2><span class="muted small">${ai ? "AI 根據網站資料回答" : "免費・根據網站資料自動回答"}</span></div>
+  const ex = ai ? ["這檔比較適合長期還是短期？", "最近財報和營收的重點是什麼？", "和同業比，估值高還是低？", "最近有哪些公告或新聞？"] : QA_TOPICS.map((t) => t.label);
+  return `<section class="card" id="chat"><div class="card-h"><h2>問問這檔股票</h2><span class="muted small">${ai ? "AI 研究助理・可以接著問同業或新聞" : "免費・根據網站資料自動回答"}</span></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap">${ex.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
     <div class="chat-log" id="chatLog"></div>
     <form class="chat-form" id="chatForm"><input type="text" id="chatIn" maxlength="500" placeholder="${ai ? "輸入你想問的，例如：毛利率為什麼下降？" : "例如：這檔適合存股嗎？"}" autocomplete="off"><button class="btn" id="chatBtn">送出</button></form>
-    <p class="faint small" style="margin:8px 0 0">${ai ? "AI 會讀這檔股票在網站上的最新資料再回答，可能出錯，也不是投資建議。每位會員每天最多 20 題。"
+    <p class="faint small" style="margin:8px 0 0">${ai ? `AI 會查這檔股票、同業與新聞的最新資料再回答，可能出錯，也不是投資建議。每位會員每天最多 20 題。想問整個市場或多檔比較，到 <a href="#/ask">AI 研究助理</a>。`
       : "這是免費的自動問答：依你問題裡的關鍵字（例如長期、財報、營收、風險、股利、法人），用固定規則整理網站上的資料回答，不是真人或 AI 聊天，也不是投資建議。"}${window.CHAT_URL && !user ? ' <a href="#/account">登入</a>後可以改用 AI 回答。' : ""}</p></section>`;
 }
 function bindChat(id, s, d) {
   if (!$("#chatForm")) return;
   const hist = (CHATS[id] = CHATS[id] || []), log = $("#chatLog");
-  const draw = () => { log.innerHTML = hist.map((m) => `<div class="${m.role === "user" ? "q" : "a"}">${esc(m.content)}</div>`).join(""); };
+  const draw = () => { log.innerHTML = hist.map((m) => m.role === "assistant" && m.rule ? `<div class="a">${esc(m.content)}</div>` : aiMsgHtml(m)).join(""); log.lastElementChild?.scrollIntoView({ block: "nearest" }); };
   const ask = async (q) => {
     q = q.trim(); if (!q || $("#chatBtn").disabled) return;
     $("#chatIn").value = "";
-    if (!window.CHAT_URL || !user) { hist.push({ role: "user", content: q }, { role: "assistant", content: qaAnswer(s, d, q) }); draw(); log.lastElementChild.scrollIntoView({ block: "nearest" }); return; }
-    hist.push({ role: "user", content: q }, { role: "assistant", content: "思考中…" }); draw();
+    if (!AI_ON()) { hist.push({ role: "user", content: q }, { role: "assistant", content: qaAnswer(s, d, q), rule: true }); draw(); return; }
     $("#chatBtn").disabled = true;
-    const ans = hist[hist.length - 1], el = log.lastElementChild;
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      const r = await fetch(window.CHAT_URL, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}` },
-        body: JSON.stringify({ stock_id: id, messages: hist.slice(0, -1) }) });
-      if (!r.ok) { ans.content = (await r.json().catch(() => ({}))).error || "AI 暫時無法回答，請稍後再試。"; }
-      else {
-        const used = r.headers.get("X-Quota-Used"), lim = r.headers.get("X-Quota-Limit");
-        if (used && $("#chat .card-h span")) $("#chat .card-h span").textContent = `AI 根據網站資料回答・今天已問 ${used}／${lim} 題`;
-        const rd = r.body.getReader(), dec = new TextDecoder(); ans.content = "";
-        for (;;) { const { done, value } = await rd.read(); if (done) break; ans.content += dec.decode(value, { stream: true }); el.textContent = ans.content; }
-      }
-    } catch { ans.content = "連不上 AI 服務，請檢查網路後再試。"; }
-    if (!ans.content.trim()) ans.content = "AI 沒有回答，請再試一次。";
-    draw(); $("#chatBtn").disabled = false;
+    await askAI(hist, q, id, draw, ([u, l]) => { if (u && $("#chat .card-h span")) $("#chat .card-h span").textContent = `AI 研究助理・今天已問 ${u}／${l} 題`; });
+    $("#chatBtn").disabled = false;
   };
   draw();
   $("#chatForm").onsubmit = (e) => { e.preventDefault(); ask($("#chatIn").value); };
@@ -2114,8 +2266,8 @@ async function pageStock(id) {
       <div class="card"><div class="card-h"><h2>策略範本檢查</h2><span class="muted small">符合 ${s.strategies.length} / ${SNAP.strategies.length}</span></div>
         ${SNAP.strategies.map((st) => { const ok = s.strategies.includes(st.id); return `<details class="strat"${ok ? " open" : ""}><summary>${ok ? '<span class="pill good">符合</span>' : '<span class="pill">未符合</span>'} ${esc(st.name)}</summary>
           ${st.conditions.map((c) => `<div class="ck">${mark(check(c, s))}<span>${esc(c.label)}</span><span class="num muted">${CAT[c.m] ? fmt(c.m, s[c.m]) : ""}</span></div>`).join("")}</details>`; }).join("")}</div>
-      <div class="card"><div class="card-h"><h2>公告與新聞</h2><span class="muted small">偏多／偏空只看標題關鍵字，不是 AI 判斷</span></div>
-        ${(d.news || []).map((n) => newsItem(n, { stock: false })).join("") || '<p class="muted">最近 90 天沒有抓到這檔股票的公告或新聞。</p>'}
+      <div class="card"><div class="card-h"><h2>公告與新聞</h2><span class="muted small">「標題用詞」只看字詞，不是 AI 判斷</span></div>
+        ${groupNews(d.news || []).map((g) => newsItem(g.x, { stock: false, dups: g.dups })).join("") || '<p class="muted">最近 90 天沒有抓到這檔股票的公告或新聞。</p>'}
         <p class="faint small" style="margin:8px 0 0"><a href="#/news">到市場新聞中心看全部</a></p></div></section>`;
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
@@ -2181,11 +2333,11 @@ function route() {
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
   $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = false; });
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, news: pageNews, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, news: pageNews, ask: pageAsk, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });
-// 統一搜尋：先找股票（代號、名稱），再找功能名稱，都沒有就到新聞中心搜關鍵字
+// 統一搜尋：先找股票（代號、名稱），再找功能名稱；像問題的句子交給 AI 研究助理，其他到新聞中心搜關鍵字
 $("#q").addEventListener("keydown", (e) => {
   if (e.key !== "Enter") return;
   const q = e.target.value.trim(); if (!q) return;
@@ -2193,7 +2345,8 @@ $("#q").addEventListener("keydown", (e) => {
   const page = !hit && $$("#nav a[href^='#/']").find((a) => a.firstChild?.textContent?.trim().includes(q) || a.querySelector("small")?.textContent.includes(q));
   if (hit) location.hash = `#/stock/${hit.stock_id}`;
   else if (page) location.hash = page.getAttribute("href");
-  else { store.set("news", { ...store.get("news", {}), tab: "all", q, n: 120 }); if (location.hash === "#/news") pageNews(); else location.hash = "#/news"; }
+  else if (/[?？]|嗎|為什麼|為何|如何|怎麼|比較|哪些|哪一|是否|分析|解釋|什麼/.test(q) || q.length > 14) { sessionStorage.setItem("askq", q); store.set("aichatCur", null); if (location.hash === "#/ask") pageAsk(); else location.hash = "#/ask"; }
+  else { store.set("news", { ...store.get("news", {}), tab: "all", q, n: 60 }); if (location.hash === "#/news") pageNews(); else location.hash = "#/news"; }
   e.target.value = "";
 });
 window.addEventListener("hashchange", route);

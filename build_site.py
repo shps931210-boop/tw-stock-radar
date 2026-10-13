@@ -118,6 +118,12 @@ if snap_path.exists():
     for path, data in public_data(snap).items():  # 給其他程式讀的公開資料（不含任何會員資料）
         (out / "data" / path).parent.mkdir(parents=True, exist_ok=True)
         (out / "data" / path).write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    try:  # AI 研究助理用的精簡全市場資料（worker/ 讀這份，不讀整份 snapshot）
+        from app import ai_data
+        (out / "data" / "ai").mkdir(parents=True, exist_ok=True)
+        (out / "data" / "ai" / "universe.json").write_text(json.dumps(ai_data.build(snap), ensure_ascii=False, separators=(",", ":")), "utf-8")
+    except Exception as e:
+        print("AI 資料失敗：", e)
     try:  # 市場新聞中心：公告與新聞，附來源與連結
         from app import news
         (out / "data" / "news").mkdir(parents=True, exist_ok=True)

@@ -69,3 +69,60 @@ test("依 Token 用量計算花費並回報；不認得的模型用較貴的價�
   assert.equal(await recordCost(env, "", 0.01, async () => ({ ok: true })), false);
   assert.equal(await recordCost(env, "Bearer tok", 0.01, async () => { throw new Error("down"); }), false);
 });
+
+// ---- 研究助理的資料工具 ----
+import { TOOLS, makeRunner, toolLabel } from "./tools.js";
+
+const UNI = {
+  data_dates: { prices: "2026-10-13" }, model: "v1.1", note: "n", market: { taiex: 1 }, breadth: { up: 2, down: 1, flat: 0 },
+  industries: [{ industry: "半導體業", n: 2, chg: 1, ret_1m: 5 }, { industry: "航運業", n: 1, chg: -1, ret_1m: 9 }],
+  changes: { since: "2026-10-12", new: [{ stock_id: "2454", rank: 3 }], dropped: [], moved: [] },
+  catalog: [{ key: "per", name: "本益比", unit: "倍", formula: "股價 ÷ EPS", limits: "虧損時不適用" }],
+  fields: ["stock_id", "name", "industry", "market", "close", "per", "roe", "rev_yoy", "market_cap", "score", "rank", "signal"],
+  cols: { stock_id: ["2330", "2454", "2603"], name: ["台積電", "聯發科", "長榮"], industry: ["半導體業", "半導體業", "航運業"], market: ["twse", "twse", "twse"],
+    close: [1000, 1200.456, 200], per: [20, 18, null], roe: [25, 20, 30], rev_yoy: [30, 10, -5], market_cap: [3e13, 2e12, 5e11], score: [80, 70, 60], rank: [1, 3, 5], signal: [0, 1, 0] },
+};
+const NEWS = { coverage: { days: 7 }, last_fetched_at: "x", warnings: [], items: [
+  { id: "a", group: "a", kind: "news", stock_id: "2330", name: "台積電", industry: "半導體業", date: "2026-10-13", title: "台積電營收創新高", source: "某報", link: "https://x" },
+  { id: "b", group: "a", kind: "news", stock_id: "2330", name: "台積電", industry: "半導體業", date: "2026-10-13", title: "台積電營收創新高！", source: "另一報", link: "https://y" },
+  { id: "c", group: "c", kind: "announcement", stock_id: "2603", name: "長榮", industry: "航運業", date: "2026-10-12", title: "公告董事會決議", source: "公開資訊觀測站" }] };
+const fakeLoad = (files) => async (p) => { if (!(p in files)) throw new Error("404"); return structuredClone(files[p]); };
+const run = makeRunner(fakeLoad({ "ai/universe.json": UNI, "news/latest.json": NEWS, "events/calendar.json": { events: [{ event_date: "2026-10-15", stock_id: "2330", title: "除息", status: "confirmed" }] },
+  "stock/2330.json": { row: { stock_id: "2330", name: "台積電" }, news: [{ kind: "news", date: "2026-10-13", title: "t" }] } }));
+
+test("工具定義：名稱唯一、都有 schema 與說明", () => {
+  const names = TOOLS.map((t) => t.name);
+  assert.equal(new Set(names).size, names.length);
+  for (const t of TOOLS) { assert.equal(t.input_schema.type, "object"); assert.ok(t.description.length > 10); assert.ok(toolLabel(t.name, {})); }
+});
+
+test("找股票、比較、篩選", async () => {
+  assert.equal((await run("find_stocks", { query: "聯發" })).result.符合[0].stock_id, "2454");
+  const c = (await run("compare_stocks", { stock_ids: ["2330", "2454", "../x"] })).result;
+  assert.equal(c.股票.length, 2);
+  assert.equal(c.股票[1].close, 1200.46);
+  assert.ok((await run("compare_stocks", { stock_ids: ["2330"] })).error);
+  const s = (await run("screen_stocks", { filters: [{ metric: "roe", op: ">=", value: 20 }, { metric: "bogus", op: ">", value: 1 }], sort_by: "rev_yoy" })).result;
+  assert.equal(s.符合檔數, 3);
+  assert.deepEqual(s.前幾名.map((x) => x.stock_id), ["2330", "2454", "2603"]);
+  assert.deepEqual(s.無法使用的條件, ["bogus"]);
+  assert.equal((await run("screen_stocks", { industry: "航運" })).result.符合檔數, 1);
+});
+
+test("大盤、產業、新聞、個股、錯誤處理", async () => {
+  const m = (await run("market_overview", {})).result;
+  assert.equal(m.產業近一個月報酬_由高到低[0].產業, "航運業");
+  assert.equal(m.未來兩週事件[0].股票, "2330 台積電");
+  const ind = (await run("industry_report", { industry: "半導體" })).result;
+  assert.equal(ind.成分股數, 2);
+  assert.equal(ind.最近公告與新聞.length, 1);  // 相似報導合併
+  assert.ok((await run("industry_report", { industry: "太空業" })).error.includes("可用的產業"));
+  const n = (await run("search_news", { kind: "announcement" })).result;
+  assert.equal(n.items[0].類型, "公司公告（官方）");
+  const d = await run("get_stock_detail", { stock_id: "2330" });
+  assert.equal(d.result["最近公告與新聞"].length, 1);
+  assert.ok(d.sources[0].page.includes("2330"));
+  assert.ok((await run("get_stock_detail", { stock_id: "9999" })).error.includes("沒有"));
+  assert.ok((await run("performance_summary", {})).error.includes("讀取失敗"));
+  assert.ok((await run("no_such_tool", {})).error);
+});

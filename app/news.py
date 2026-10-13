@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import timedelta
+from datetime import date, timedelta
 
 from . import config, db
 from .sources.twse import HEADERS, OPENAPI, roc_date
@@ -189,9 +189,49 @@ def fetch_stock(sid: str, cfg: dict | None = None) -> None:
 
 def for_stock(con, sid: str, limit: int = 20) -> list[dict]:
     con.executescript(SCHEMA)
-    cur = con.execute("SELECT kind, date, time, title, summary, source, link, rule FROM news_items WHERE stock_id=? ORDER BY date DESC, time DESC LIMIT ?", (sid, limit))
+    cur = con.execute("SELECT id, kind, stock_id, date, time, title, summary, source, link, rule FROM news_items WHERE stock_id=? ORDER BY date DESC, time DESC LIMIT ?", (sid, limit))
     cols = [c[0] for c in cur.description]
-    return [{**dict(zip(cols, r)), "tone": tone(r[3]) if r[0] == "news" else None} for r in cur.fetchall()]
+    out = []
+    for r in cur.fetchall():
+        x = dict(zip(cols, r))
+        if x["kind"] == "news":
+            x["title"] = clean_title(x["title"], x["source"])
+        x["tone"] = tone(x["title"]) if x["kind"] == "news" else None
+        out.append(x)
+    group_similar(out)
+    return out
+
+
+def clean_title(title: str, source: str | None = None) -> str:
+    """去掉新聞標題結尾的「 - 媒體名稱」（FinMind 的標題常帶著來源）。"""
+    t = (title or "").strip()
+    if " - " in t:
+        head, tail = t.rsplit(" - ", 1)
+        if len(tail) <= 30 and ((source and tail.strip() == source.strip()) or len(head) >= 8):
+            t = head.strip()
+    return t
+
+
+def _bigrams(t: str) -> set[str]:
+    t = "".join(ch for ch in t if ch.isalnum())
+    return {t[i:i + 2] for i in range(len(t) - 1)}
+
+
+def group_similar(items: list[dict], threshold: float = 0.5) -> None:
+    """同一檔股票、前後一天內、標題字詞重疊多的新聞歸成同一組（group = 第一篇的 id）。公告不分組。"""
+    seen: list[tuple[dict, set[str]]] = []
+    for it in items:
+        it["group"] = it["id"] if "id" in it else None
+        if it["kind"] != "news":
+            continue
+        bg = _bigrams(it["title"])
+        for first, fb in seen:
+            if first["stock_id"] == it["stock_id"] and abs(date.fromisoformat(first["date"]).toordinal() - date.fromisoformat(it["date"]).toordinal()) <= 1 \
+                    and bg and fb and len(bg & fb) / len(bg | fb) >= threshold:
+                it["group"] = first["group"]
+                break
+        else:
+            seen.append((it, bg))
 
 
 def latest(snap: dict, dbname: str = "stocks.db", days: int = 7, cap: int = 1500) -> dict:
@@ -200,7 +240,7 @@ def latest(snap: dict, dbname: str = "stocks.db", days: int = 7, cap: int = 1500
     today = config.today()
     with db.connect(dbname) as con:
         con.executescript(SCHEMA)
-        cur = con.execute("SELECT kind, stock_id, date, time, title, summary, source, link, rule FROM news_items WHERE date >= ? ORDER BY date DESC, time DESC LIMIT ?",
+        cur = con.execute("SELECT id, kind, stock_id, date, time, title, summary, source, link, rule FROM news_items WHERE date >= ? ORDER BY date DESC, time DESC LIMIT ?",
                           ((today - timedelta(days=days)).isoformat(), cap))
         cols = [c[0] for c in cur.description]
         rows = [dict(zip(cols, r)) for r in cur.fetchall()]
@@ -208,10 +248,13 @@ def latest(snap: dict, dbname: str = "stocks.db", days: int = 7, cap: int = 1500
         last = con.execute("SELECT fetched_at FROM fetch_log WHERE source='news_center' AND ok=1 ORDER BY fetched_at DESC LIMIT 1").fetchone()
     items = []
     for r in rows:
+        if r["kind"] == "news":
+            r["title"] = clean_title(r["title"], r["source"])
         s = by.get(r["stock_id"]) or {}
         m = ((s.get("ai") or {}).get("modes") or {}).get("balanced") or {}
         items.append({**r, "name": s.get("name"), "industry": s.get("industry") or None, "tone": tone(r["title"]) if r["kind"] == "news" else None,
                       "ctx": {"close": s.get("close"), "chg_pct": s.get("chg_pct"), "price_date": s.get("date"), "score": m.get("score"), "rank": m.get("rank")} if s else None})
+    group_similar(items)
     status = json.loads(st) if st else None
     warn = []
     if not last:
@@ -225,7 +268,7 @@ def latest(snap: dict, dbname: str = "stocks.db", days: int = 7, cap: int = 1500
             "last_fetched_at": last[0] if last else None, "status": status, "warnings": warn,
             "coverage": {"days": days, "items": len(items), "announcements": sum(1 for x in items if x["kind"] == "announcement"),
                          "news": sum(1 for x in items if x["kind"] == "news")},
-            "tone_note": "偏多／偏空只用標題關鍵字判讀，大多數標題是「無法判定」；這不是 AI 情緒分析，也不代表股價方向。",
+            "tone_note": "「標題用詞」只看標題裡有沒有正面或負面字詞，大多數標題是「無法判定」；這不是 AI 情緒分析，不能用來判斷股價方向。",
             "items": items}
 
 
