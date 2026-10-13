@@ -141,35 +141,26 @@ def update(cfg: dict, errors: list, snap: dict | None = None, extra_ids: list[st
                     stat["announcements"].setdefault("tpex_errors", []).append(f"{u.rsplit('/', 1)[-1]}: {http.describe(e)}")
             if "tpex" not in stat["announcements"]:
                 errors.append("上櫃重大訊息: 找不到可用的端點（見 news/latest.json 的 status）")
-        # 新聞：今天和昨天（每次請求一天）
+        # 新聞：FinMind 每次請求只給一天，抓今天
         fm = FinMindSource(cfg.get("finmind_token", ""), cfg.get("finmind_interval_sec", 0.7))
         today = config.today()
-        days = [(today - timedelta(days=i)).isoformat() for i in (0, 1)]
-        try:
-            got = []
-            for d in days:
-                got += fm._get("TaiwanStockNews", None, d)
+        days = [(today - timedelta(days=i)).isoformat() for i in (0,)]
+        # FinMind 的 TaiwanStockNews 一定要指定股票（不給代號會回 400，2026-10-13 實測），所以逐檔抓重點股票
+        got, ids = [], list(dict.fromkeys(_priority(con, snap) + (extra_ids or [])))[: cfg.get("news_max_stocks", 150)]
+        stat["news"]["mode"] = "stocks"
+        stat["news"]["stocks"] = len(ids)
+        for sid in ids:
+            t = db.fetched_at(con, "fm_news", sid)  # 同一檔 6 小時內抓過就跳過，省 FinMind 額度（股價更新也要用）
+            if t and config.now() - t < timedelta(hours=6):
+                continue
+            try:
+                got += fm._get("TaiwanStockNews", sid, days[0])
                 stat["news"]["requests"] += 1
-            if not got:
-                raise ValueError("全市場查詢沒有資料")
-            stat["news"]["mode"] = "market"
-        except Exception as e:
-            stat["news"]["market_error"] = str(e)[:200]
-            got, ids = [], list(dict.fromkeys(_priority(con, snap) + (extra_ids or [])))[: cfg.get("news_max_stocks", 150)]
-            stat["news"]["mode"] = "stocks"
-            stat["news"]["stocks"] = len(ids)
-            for sid in ids:
-                t = db.fetched_at(con, "fm_news", sid)  # 同一檔 6 小時內抓過就跳過，省 FinMind 額度（股價更新也要用）
-                if t and config.now() - t < timedelta(hours=6):
-                    continue
-                try:
-                    got += fm._get("TaiwanStockNews", sid, days[0])
-                    stat["news"]["requests"] += 1
-                    db.log_fetch(con, "fm_news", sid)
-                except Exception as e2:
-                    stat["news"]["error"] = str(e2)[:200]
-                    if "請求次數" in stat["news"]["error"]:
-                        break
+                db.log_fetch(con, "fm_news", sid)
+            except Exception as e2:
+                stat["news"]["error"] = str(e2)[:200]
+                if "請求次數" in stat["news"]["error"]:
+                    break
         rows = parse_finmind(got)
         db.upsert(con, "news_items", rows)
         stat["news"]["rows"] = len(rows)
