@@ -66,3 +66,11 @@ class Latest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Copy(unittest.TestCase):
+    def test_feature_descriptions(self):
+        html = (Path(__file__).parent.parent / "static" / "index.html").read_text("utf-8")
+        for t in ["根據固定量化模型，查看全市場股票評分與排名", "使用預設投資策略，尋找符合條件的股票", "自行設定財務、估值、技術與籌碼條件",
+                  "查看符合指定技術條件的股票及觸發日期", "根據研究偏好重新排序，不改變客觀模型分數", "查看歷史選股表現，與大盤及產業基準比較", "無法判定"]:
+            self.assertIn(t, html)
