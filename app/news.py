@@ -197,9 +197,41 @@ def for_stock(con, sid: str, limit: int = 20) -> list[dict]:
         if x["kind"] == "news":
             x["title"] = clean_title(x["title"], x["source"])
         x["tone"] = tone(x["title"]) if x["kind"] == "news" else None
+        if x["kind"] == "announcement":
+            x["importance"], x["category"] = classify(x["title"])
         out.append(x)
     group_similar(out)
     return out
+
+
+# 公告重要性：依主旨關鍵字分類（規則判斷，不是 AI）。3 = 重大、2 = 值得注意、1 = 一般。
+# 順序有意義：先比對到的類別優先。第四欄（選填）是「還要包含其中一個字」，例如「董事長」要配上「異動、辭、退休」才算經營層異動。
+ANN_RULES = [
+    (3, "交易限制", ["變更交易方法", "停止買賣", "全額交割", "處置", "下市", "暫停交易", "終止上市", "終止上櫃"]),
+    (3, "財務危機", ["跳票", "退票", "重整", "破產", "違約", "重大損失", "停工", "火災", "災害", "裁罰", "罰鍰", "淨值為負"]),
+    (3, "合併收購", ["合併", "收購", "公開收購", "分割", "股份轉換"]),
+    (3, "減資／私募", ["減資", "私募"]),
+    (3, "經營層異動", ["董事長", "總經理", "執行長"], ["異動", "辭", "退休", "解任", "新任", "變更", "代理"]),
+    (2, "籌資", ["現金增資", "可轉換公司債", "轉換公司債", "公司債", "發行新股"]),
+    (2, "營運數字", ["財務報告", "財報", "自結損益", "自結營收", "營運成績", "營運績效", "營收", "每股淨值", "損益"]),
+    (2, "股利", ["股利", "配息", "除權", "除息", "股息"]),
+    (2, "庫藏股", ["庫藏股"]),
+    (2, "訴訟與調查", ["訴訟", "調查", "起訴", "仲裁", "判決", "337"]),
+    (2, "法說會", ["法人說明會", "法說會", "說明會", "電話會議"]),
+    (2, "新藥與合約", ["新藥", "適應症", "許可證", "合約", "訂單", "得標"]),
+    (2, "主管與董事異動", ["財務主管", "會計主管", "研發主管", "稽核主管", "發言人", "獨立董事", "董事", "策略長", "委員"], ["異動", "辭", "退休", "解任", "新任", "變更", "代理"]),
+    (1, "資產交易", ["取得", "處分", "購置", "使用權資產"]),
+    (1, "背書保證與資金貸與", ["背書保證", "資金貸與"]),
+]
+
+
+def classify(title: str) -> tuple[int, str]:
+    """公告主旨 → (重要性, 類別)。更正、補充公告維持原類別。"""
+    t = title or ""
+    for lv, cat, words, *need in ANN_RULES:
+        if any(w in t for w in words) and (not need or any(n in t for n in need[0])):
+            return lv, cat
+    return 1, "其他"
 
 
 def clean_title(title: str, source: str | None = None) -> str:
@@ -252,6 +284,8 @@ def latest(snap: dict, dbname: str = "stocks.db", days: int = 7, cap: int = 1500
             r["title"] = clean_title(r["title"], r["source"])
         s = by.get(r["stock_id"]) or {}
         m = ((s.get("ai") or {}).get("modes") or {}).get("balanced") or {}
+        if r["kind"] == "announcement":
+            r["importance"], r["category"] = classify(r["title"])
         items.append({**r, "name": s.get("name"), "industry": s.get("industry") or None, "tone": tone(r["title"]) if r["kind"] == "news" else None,
                       "ctx": {"close": s.get("close"), "chg_pct": s.get("chg_pct"), "price_date": s.get("date"), "score": m.get("score"), "rank": m.get("rank")} if s else None})
     group_similar(items)
@@ -266,7 +300,8 @@ def latest(snap: dict, dbname: str = "stocks.db", days: int = 7, cap: int = 1500
     return {"schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds"), "data_as_of": today.isoformat(), "timezone": "Asia/Taipei",
             "source": "公開資訊觀測站重大訊息（證交所／櫃買中心 OpenAPI）；新聞標題與連結來自 FinMind 台股相關新聞，內容版權屬原媒體",
             "last_fetched_at": last[0] if last else None, "status": status, "warnings": warn,
-            "coverage": {"days": days, "items": len(items), "announcements": sum(1 for x in items if x["kind"] == "announcement"),
+            "importance_note": "公告重要性是依主旨關鍵字的規則分類（重大：交易限制、財務危機、合併收購、減資私募、董事長或總經理異動；值得注意：營運數字、股利、籌資、訴訟、法說會等），不是 AI 判斷，請以公告全文為準。",
+            "coverage": {"days": days, "from": min((x["date"] for x in items), default=None), "to": max((x["date"] for x in items), default=None), "items": len(items), "announcements": sum(1 for x in items if x["kind"] == "announcement"),
                          "news": sum(1 for x in items if x["kind"] == "news")},
             "tone_note": "「標題用詞」只看標題裡有沒有正面或負面字詞，大多數標題是「無法判定」；這不是 AI 情緒分析，不能用來判斷股價方向。",
             "items": items}

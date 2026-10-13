@@ -206,7 +206,7 @@ export function makeRunner(load) {
       const g = x.group || x.id;
       if (g && seen.has(g)) continue;
       seen.add(g);
-      out.push({ 類型: x.kind === "announcement" ? "公司公告（官方）" : "財經新聞（媒體）", 日期: x.date, 時間: x.time, 股票: x.stock_id ? `${x.stock_id} ${x.name || ""}` : null,
+      out.push({ 類型: x.kind === "announcement" ? "公司公告（官方）" : "財經新聞（媒體）", ...(x.kind === "announcement" ? { 重要性: ["", "一般", "值得注意", "重大"][x.importance || 1], 類別: x.category } : {}), 日期: x.date, 時間: x.time, 股票: x.stock_id ? `${x.stock_id} ${x.name || ""}` : null,
         產業: x.industry, 標題: x.title, 摘要: (x.summary || "").slice(0, 200) || undefined, 來源: x.source, 連結: x.link });
       if (out.length >= lim) break;
     }

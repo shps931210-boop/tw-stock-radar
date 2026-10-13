@@ -47,7 +47,7 @@
 .srcs { font-size: 12px; color: var(--muted); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--line); }
 .askgrid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 16px; align-items: start; }
 @media (max-width: 960px) { .askgrid { grid-template-columns: minmax(0, 1fr); } }
-#askList .li { gap: 6px; } .xdel { border: 0; background: none; color: var(--faint); cursor: pointer; padding: 2px 6px; flex: none; } .xdel:hover { color: var(--up); } #askList .li.on { background: var(--info-bg); }
+#askList .li { gap: 6px; } .aiact { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; } .witem { border-top: 1px solid var(--line); padding: 8px 0; } .witem summary { cursor: pointer; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; } .xdel { border: 0; background: none; color: var(--faint); cursor: pointer; padding: 2px 6px; flex: none; } .xdel:hover { color: var(--up); } #askList .li.on { background: var(--info-bg); }
 nav a.navai { color: var(--info); } nav a.navai.on { background: var(--info-bg); color: var(--info); }
 /* 新聞卡片：標題是主角；公司公告用資訊藍標示，財經新聞用中性灰 */
 .ntabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 4px 0 14px; overflow-x: auto; }
@@ -60,7 +60,7 @@ nav a.navai { color: var(--info); } nav a.navai.on { background: var(--info-bg);
 .ncard { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--faint); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
 .ncard.ann { border-left-color: var(--info); }
 .nmeta { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--muted); align-items: center; }
-.nkind { font-weight: 700; color: var(--muted); }
+.nkind { font-weight: 700; color: var(--muted); } .ncat { background: var(--chip); border-radius: 4px; padding: 0 6px; } .pill.imp3 { background: var(--alert-bg); color: #fff; font-weight: 700; }
 .ncard.ann .nkind { color: var(--info); }
 .ntitle { font: 600 16px/1.5 var(--f-display); margin: 4px 0 2px; }
 .ntitle a { color: var(--ink); } .ntitle a:hover { color: var(--info); }
@@ -1499,7 +1499,7 @@ function newsItem(n, opts = {}) {
   const q = c ? `<span class="nq">收盤 <span class="num">${fmtNum(c.close)}</span> <span class="num ${signCls(c.chg_pct)}">${pctTxt(c.chg_pct)}</span>${c.score != null ? `<span class="sep">｜</span>AI 量化評分 <span class="num">${Math.round(c.score)}</span>・第 ${c.rank} 名` : ""}<span class="faint">（${esc(c.price_date || "")}）</span></span>` : "";
   const dups = opts.dups || [];
   return `<article class="ncard ${ann ? "ann" : "nws"}">
-    <div class="nmeta"><span class="nkind">${ann ? "公司公告" : "財經新聞"}</span><span>${esc(n.source || "來源不明")}</span><span class="num">${esc(n.date)} ${tmTxt(n.time)}</span>${n.rule ? `<span>${esc(n.rule)}</span>` : ""}</div>
+    <div class="nmeta"><span class="nkind">${ann ? "公司公告" : "財經新聞"}</span>${ann && n.importance === 3 ? '<span class="pill imp3" title="依公告主旨規則判斷，不是 AI">重大</span>' : ""}${ann && n.category ? `<span class="ncat">${esc(n.category)}</span>` : ""}<span>${esc(n.source || "來源不明")}</span><span class="num">${esc(n.date)} ${tmTxt(n.time)}</span>${n.rule ? `<span>${esc(n.rule)}</span>` : ""}</div>
     <h3 class="ntitle">${title}</h3>
     ${n.summary ? (ann ? `<details class="nsum"><summary>公告內容</summary><div>${esc(n.summary)}</div></details>` : `<p class="nsum">${esc(n.summary.slice(0, 140))}${n.summary.length > 140 ? "…" : ""}</p>`) : ""}
     ${rel || q || tt ? `<div class="nrel">${rel}${q}${tt ? `<span class="pill ${tc}" title="只看標題用詞，不是 AI 判斷，也不代表股價方向">標題用詞：${tt}</span>` : ""}</div>` : ""}
@@ -1516,9 +1516,9 @@ async function pageNews() {
   $("#app").innerHTML = '<section class="card"><p class="muted">載入新聞與公告…</p></section>';
   const N = await loadNews();
   if (location.hash.replace(/^#\/?/, "").split("/")[0] !== "news") return;
-  const o = { tab: "all", ind: "", q: "", n: 60, ...store.get("news", {}) };
+  const o = { tab: "all", ind: "", q: "", n: 60, sort: "time", imp: false, ...store.get("news", {}) };
   if (!["all", "announcement", "news", "watch", "industry"].includes(o.tab)) o.tab = "all";
-  const keep = (x = {}) => store.set("news", { tab: o.tab, ind: o.ind, q: o.q, ...x });
+  const keep = (x = {}) => store.set("news", { tab: o.tab, ind: o.ind, q: o.q, sort: o.sort, imp: o.imp, ...x });
   const save = () => { keep(); pageNews(); };
   if (!N) {
     $("#app").innerHTML = `<section><h1>市場新聞中心</h1></section><section class="card"><p>還沒有新聞資料。每日更新會在收盤後抓取公司公告與新聞；第一次成功抓取後，這裡就會出現內容。</p></section>`;
@@ -1531,17 +1531,20 @@ async function pageNews() {
   if (o.q) { const q = o.q.trim(); list = list.filter((x) => x.title.includes(q) || (x.stock_id || "").startsWith(q) || (x.name || "").includes(q) || (x.industry || "").includes(q)); }
   const cnt = (xs, f) => Object.entries(xs.reduce((m, x) => { const k = f(x); if (k) m[k] = (m[k] || 0) + 1; return m; }, {})).sort((a, b) => b[1] - a[1]);
   const indCnt = cnt(all, (x) => x.industry), stkCnt = cnt(all.filter((x) => x.stock_id), (x) => x.stock_id).slice(0, 8);
+  if (o.imp) list = list.filter((x) => x.kind === "announcement" && x.importance >= 2);
+  if (o.sort === "imp") list = [...list].sort((a, b) => (b.importance || 0) - (a.importance || 0) || b.date.localeCompare(a.date) || (b.time || "").localeCompare(a.time || ""));
   const groups = groupNews(list), shown = groups.slice(0, o.n);
   const days = [...new Set(shown.map((g) => g.x.date))];
   const st = N.status || {}, ann = st.announcements || {}, nw = st.news || {};
   const indPick = o.tab === "industry" && !o.ind
     ? `<div class="chips">${indCnt.map(([k, n]) => `<button class="chip" data-ind="${esc(k)}">${esc(k)} <span class="num faint">${n}</span></button>`).join("") || '<span class="muted">沒有產業資料</span>'}</div><p class="muted small">選一個產業，看這個產業最近的公告與新聞。</p>`
     : "";
-  const body = indPick || (days.length ? days.map((d) => `<h3 class="nday">${esc(d)}（${wdTxt(d)}）</h3>${shown.filter((g) => g.x.date === d).map((g) => newsItem(g.x, { dups: g.dups })).join("")}`).join("")
+  const body = indPick || (o.sort === "imp" && shown.length ? shown.map((g) => newsItem(g.x, { dups: g.dups })).join("") + (groups.length > o.n ? `<button class="btn ghost" id="nmore" style="margin-top:10px">再顯示 ${Math.min(60, groups.length - o.n)} 則（共 ${groups.length} 則）</button>` : "")
+    : days.length ? days.map((d) => `<h3 class="nday">${esc(d)}（${wdTxt(d)}）</h3>${shown.filter((g) => g.x.date === d).map((g) => newsItem(g.x, { dups: g.dups })).join("")}`).join("")
       + (groups.length > o.n ? `<button class="btn ghost" id="nmore" style="margin-top:10px">再顯示 ${Math.min(60, groups.length - o.n)} 則（共 ${groups.length} 則）</button>` : "")
     : `<div class="empty">${o.tab === "watch" ? (Object.keys(w).length ? `自選股最近 ${N.coverage.days} 天沒有公告或新聞。` : "還沒有自選股。在任何股票旁按 ☆ 加入。") : "沒有符合的公告或新聞。"}</div>`);
   $("#app").innerHTML = `
-    <section><div class="eyebrow">台灣時間・最後抓取 ${esc((N.last_fetched_at || "—").slice(0, 16).replace("T", " "))}・最近 ${N.coverage.days} 天</div><h1>市場新聞中心</h1>
+    <section><div class="eyebrow">台灣時間・最後更新 ${esc((N.last_fetched_at || "—").slice(0, 16).replace("T", " "))}・涵蓋 ${esc(N.coverage.from || "—")} ～ ${esc(N.coverage.to || "—")}（最近 ${N.coverage.days} 天）・公告 ${N.coverage.announcements} 則、新聞 ${N.coverage.news} 則</div><h1>市場新聞中心</h1>
       <p class="lead">公司公告和媒體新聞分開標示，每則都有來源、時間和原文連結；相關公司的收盤價與量化評分列在下方，點公司名稱就能看個股研究。</p></section>
     ${(N.warnings || []).length ? `<div class="banner warn">${esc(N.warnings.join("；"))}</div>` : ""}
     <div class="ntabs" id="ntab" role="tablist">${Object.entries(TABS).map(([k, t]) => `<button role="tab" aria-selected="${k === o.tab}" data-k="${k}" class="${k === o.tab ? "on" : ""}">${t}</button>`).join("")}</div>
@@ -1550,13 +1553,16 @@ async function pageNews() {
         <select id="nind" aria-label="產業"><option value="">全部產業</option>${indCnt.map(([x]) => `<option${x === o.ind ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
         <input id="nq" type="search" placeholder="關鍵字、代號、名稱或產業" value="${esc(o.q)}" style="max-width:220px" aria-label="搜尋新聞">
         <span class="muted small">${indPick ? "" : `${groups.length} 則${groups.length !== list.length ? `（另有 ${list.length - groups.length} 篇相似報導已合併）` : ""}`}</span>
-        ${o.ind || o.q ? '<button class="btn ghost sm" id="nclr">清除篩選</button>' : ""}</div>
+        <div class="seg" id="nsort"><button data-k="time" class="${o.sort !== "imp" ? "on" : ""}">依時間</button><button data-k="imp" class="${o.sort === "imp" ? "on" : ""}" title="公告依重要性（規則判斷）排在前面">依重要性</button></div>
+        <label class="chk small"><input type="checkbox" id="nimp"${o.imp ? " checked" : ""}>只看重大與值得注意的公告</label>
+        ${o.ind || o.q || o.imp ? '<button class="btn ghost sm" id="nclr">清除篩選</button>' : ""}</div>
       ${body}</div>
       <aside class="nside">
         <section class="card"><h2>最常被提到的公司</h2><div class="scan">${stkCnt.map(([id, n]) => { const s = BYID[id]; return `<div class="li" data-id="${esc(id)}"><span><b class="num">${esc(id)}</b> ${esc(s?.name || "")}</span><span class="small muted">${n} 則</span></div>`; }).join("") || '<span class="muted small">沒有</span>'}</div></section>
         <section class="card"><h2>怎麼看這一頁</h2><ul class="small" style="margin:6px 0 0;padding-left:18px;display:grid;gap:4px">
           <li><b style="color:var(--info)">公司公告</b>：公開資訊觀測站的重大訊息（上市${ann.twse != null ? ` ${ann.twse} 則` : "未取得"}、上櫃${ann.tpex != null ? ` ${ann.tpex} 則` : "未取得"}），是公司自己發布的正式資訊，證據力最高。</li>
           <li><b>財經新聞</b>：FinMind 整理的媒體報導，只顯示標題、摘要與連結，內容版權屬原媒體。媒體評論不等於公司公告。${nw.mode === "stocks" ? `目前只涵蓋 ${nw.stocks} 檔重點股票。` : ""}</li>
+          <li><b>重要性</b>：${esc(N.importance_note || "公告依主旨關鍵字分類，不是 AI 判斷。")}</li>
           <li><b>相似報導</b>：同一檔股票、前後一天、標題用字大多相同的報導合併成一則。</li>
           <li><b>標題用詞</b>：${esc(N.tone_note || "")}</li>
           <li>總經新聞還沒有可靠的免費資料來源，所以沒有放。新聞不代表股價方向，這是資訊整理，不是投資建議。</li></ul>
@@ -1565,7 +1571,9 @@ async function pageNews() {
   $("#ntab").onclick = (e) => { const b = e.target.closest("button"); if (b) { o.tab = b.dataset.k; if (o.tab === "industry") o.ind = ""; save(); } };
   $("#nind").onchange = (e) => { o.ind = e.target.value; save(); };
   $("#nq").onchange = (e) => { o.q = e.target.value; save(); };
-  if ($("#nclr")) $("#nclr").onclick = () => { o.ind = ""; o.q = ""; save(); };
+  if ($("#nclr")) $("#nclr").onclick = () => { o.ind = ""; o.q = ""; o.imp = false; save(); };
+  $("#nsort").onclick = (e) => { const b = e.target.closest("button"); if (b) { o.sort = b.dataset.k; save(); } };
+  $("#nimp").onchange = (e) => { o.imp = e.target.checked; save(); };
   $$(".chip[data-ind]").forEach((b) => (b.onclick = () => { o.ind = b.dataset.ind; save(); }));
   if ($("#nmore")) $("#nmore").onclick = () => { keep({ n: o.n + 60 }); pageNews(); };
   $$(".nside .scan").forEach((el) => (el.onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; }));
@@ -2020,12 +2028,14 @@ function md(src) {
   }
   return out.join("");
 }
-const aiMsgHtml = (m) => m.role === "user" ? `<div class="q">${esc(m.content)}</div>`
+const aiStocks = (t) => [...new Set((String(t).match(/(?<![0-9])[0-9]{4}(?![0-9])/g) || []).filter((x) => BYID[x]))].slice(0, 8);
+const aiMsgHtml = (m, i) => m.role === "user" ? `<div class="q">${esc(m.content)}</div>`
   : `<div class="a md">${(m.steps || []).length ? `<div class="steps-ai">${m.steps.map((x) => `<span>✓ ${esc(x)}</span>`).join("")}</div>` : ""}${md(m.content) || '<span class="muted">思考中…</span>'}
-    ${(m.sources || []).length ? `<div class="srcs">資料來源：${m.sources.map((x) => x.page ? `<a href="${esc(x.page)}">${esc(x.name)}</a>` : esc(x.name)).join("、")}</div>` : ""}</div>`;
+    ${(m.sources || []).length ? `<div class="srcs">資料來源：${m.sources.map((x) => x.page ? `<a href="${esc(x.page)}">${esc(x.name)}</a>` : esc(x.name)).join("、")}</div>` : ""}
+    ${i != null && m.content && !m.pending ? `<div class="aiact">${aiStocks(m.content).map((id) => `<a class="nco" href="#/stock/${id}">${id} ${esc(BYID[id].name)}</a>`).join("")}<button class="btn ghost sm" data-save="${i}">${m.saved ? "已存到工作區" : "存到研究工作區"}</button></div>` : ""}</div>`;
 // 一題：把使用者問題加進對話、串流回答，回答過程每次更新都呼叫 draw()
 async function askAI(hist, q, stockId, draw, setQuota) {
-  hist.push({ role: "user", content: q }, { role: "assistant", content: "", steps: [] });
+  hist.push({ role: "user", content: q }, { role: "assistant", content: "", steps: [], pending: true });
   const ans = hist[hist.length - 1]; draw();
   try {
     await streamAI(hist.slice(0, -1).map((m) => ({ role: m.role, content: m.content })), stockId, (ev) => {
@@ -2038,12 +2048,13 @@ async function askAI(hist, q, stockId, draw, setQuota) {
     });
   } catch (e) { ans.content = e.message || "連不上 AI 服務，請檢查網路後再試。"; }
   if (!ans.content.trim()) ans.content = "AI 沒有回答，請再試一次。";
+  delete ans.pending;
   draw();
 }
 const ASK_EX = ["分析台積電最新財報，營收成長主要來自哪裡？", "比較台積電和聯發科的估值與獲利能力", "最近航運類股表現如何？有哪些相關新聞？",
   "找近三個月營收成長、ROE 較高的股票", "股栗子最近的選股表現有沒有贏過大盤？", "什麼是本益比？什麼情況會失真？"];
 function pageAsk() {
-  const all = store.get("aichat", []), cur = store.get("aichatCur", null);
+  const all = store.get("aichat", []), cur = store.get("aichatCur", null), work = store.get("aiwork", []);
   let conv = all.find((c) => c.id === cur);
   const pre = sessionStorage.getItem("askq"); sessionStorage.removeItem("askq");
   const saveAll = () => { if (conv && conv.msgs.length) { conv.updated = new Date().toISOString(); const rest = all.filter((c) => c.id !== conv.id); store.set("aichat", [conv, ...rest].slice(0, 30)); store.set("aichatCur", conv.id); } };
@@ -2059,12 +2070,19 @@ function pageAsk() {
       <form class="chat-form" id="askForm"><input type="text" id="askIn" maxlength="500" placeholder="例如：比較台積電和聯發科的毛利率" autocomplete="off"${status ? " disabled" : ""}><button class="btn" id="askBtn"${status ? " disabled" : ""}>送出</button></form>
       <p class="faint small" style="margin:8px 0 0" id="askQuota">每位會員每天最多 20 題（或約 0.5 美元用量）。AI 可能出錯，重要數字請點資料來源核對；這不是投資建議。</p></div>
       <aside class="card"><div class="card-h"><h2>對話紀錄</h2><button class="btn ghost sm" id="askNew">新對話</button></div>
-        <div class="scan" id="askList">${all.map((c) => `<div class="li${conv && c.id === conv.id ? " on" : ""}" data-c="${esc(c.id)}"><span class="small">${esc(c.title)}</span><button class="xdel" data-del="${esc(c.id)}" aria-label="刪除這段對話" title="刪除">✕</button></div>`).join("") || '<p class="muted small">還沒有對話。</p>'}</div>
+        <div class="scan" id="askList">${all.map((c) => `<div class="li${conv && c.id === conv.id ? " on" : ""}" data-c="${esc(c.id)}"><span class="small">${esc(c.title)}<br><span class="faint">${esc((c.updated || "").slice(0, 10))}</span></span><span style="flex:none"><button class="xdel" data-ren="${esc(c.id)}" aria-label="重新命名" title="重新命名">✎</button><button class="xdel" data-del="${esc(c.id)}" aria-label="刪除這段對話" title="刪除">✕</button></span></div>`).join("") || '<p class="muted small">還沒有對話。</p>'}</div>
         ${all.length ? '<button class="btn ghost sm" id="askClr" style="margin-top:8px">全部刪除</button>' : ""}
-        <p class="faint small" style="margin:10px 0 0">對話只存在這台裝置的瀏覽器（依帳號分開），最多保留 30 段，隨時可以刪除，不會存進股栗子的資料庫。提問時，你的問題、前幾輪對話和查到的網站公開資料會送到 Anthropic 的 Claude 產生回答。</p></aside></div>`;
+        <p class="faint small" style="margin:10px 0 0">對話和研究工作區只存在這台裝置的瀏覽器（依帳號分開，對話最多 30 段、工作區最多 50 則），隨時可以刪除，不會存進股栗子的資料庫。提問時，你的問題、前幾輪對話和查到的網站公開資料會送到 Anthropic 的 Claude 產生回答。</p></aside></div>
+    <section class="card" id="work" style="margin-top:16px"><div class="card-h"><h2>研究工作區</h2><span class="muted small">存下來的 AI 回答、相關股票與資料來源</span></div>
+      ${work.length ? work.map((x) => `<details class="witem"><summary><b>${esc(x.q)}</b> <span class="faint small">${esc(x.saved.slice(0, 10))}</span>
+          ${x.stocks.map((id) => `<a class="nco small" href="#/stock/${id}">${id} ${esc(BYID[id]?.name || "")}</a>`).join("")}</summary>
+          <div class="md" style="margin-top:8px">${md(x.a)}</div>
+          ${(x.sources || []).length ? `<div class="srcs">資料來源：${x.sources.map((y) => y.page ? `<a href="${esc(y.page)}">${esc(y.name)}</a>` : esc(y.name)).join("、")}</div>` : ""}
+          <p class="small faint" style="margin:6px 0 0">回答時間 ${esc(x.saved.slice(0, 16).replace("T", " "))}，之後資料可能已更新，需要時請重新提問。 <button class="btn ghost sm" data-wdel="${esc(x.id)}">從工作區移除</button></p></details>`).join("")
+        : '<p class="muted small" style="margin:0">在 AI 的回答下按「存到研究工作區」，就會保存在這裡，方便之後對照。工作區也只存在這台裝置。</p>'}</section>`;
   const log = $("#askLog");
   const draw = () => {
-    log.innerHTML = conv ? conv.msgs.map(aiMsgHtml).join("") : "";
+    log.innerHTML = conv ? conv.msgs.map((m, i) => aiMsgHtml(m, i)).join("") : "";
     $("#askEx").innerHTML = conv?.msgs.length ? "" : ASK_EX.map((q) => `<button class="btn ghost sm" data-q="${esc(q)}">${esc(q)}</button>`).join("");
     $$("#askEx [data-q]").forEach((b) => (b.onclick = () => go(b.dataset.q)));
     log.lastElementChild?.scrollIntoView({ block: "nearest" });
@@ -2080,7 +2098,17 @@ function pageAsk() {
   draw();
   $("#askForm").onsubmit = (e) => { e.preventDefault(); go($("#askIn").value); };
   $("#askNew").onclick = () => { store.set("aichatCur", null); pageAsk(); };
+  log.onclick = (e) => {
+    const b = e.target.closest("[data-save]"); if (!b || !conv) return;
+    const i = +b.dataset.save, m = conv.msgs[i]; if (!m || m.saved) return;
+    const q = conv.msgs[i - 1]?.content || conv.title;
+    store.set("aiwork", [{ id: Date.now().toString(36), q, a: m.content, sources: m.sources || [], stocks: aiStocks(m.content), saved: new Date().toISOString() }, ...work].slice(0, 50));
+    m.saved = true; saveAll(); pageAsk();
+  };
+  $("#work").onclick = (e) => { const b = e.target.closest("[data-wdel]"); if (b) { store.set("aiwork", work.filter((x) => x.id !== b.dataset.wdel)); pageAsk(); } };
   $("#askList").onclick = (e) => {
+    const rn = e.target.closest("[data-ren]");
+    if (rn) { const c = all.find((x) => x.id === rn.dataset.ren), t = c && prompt("對話名稱", c.title); if (t && t.trim()) { c.title = t.trim().slice(0, 40); store.set("aichat", all); pageAsk(); } return; }
     const d = e.target.closest("[data-del]");
     if (d) { store.set("aichat", all.filter((c) => c.id !== d.dataset.del)); if (conv?.id === d.dataset.del) store.set("aichatCur", null); pageAsk(); return; }
     const c = e.target.closest("[data-c]"); if (c) { store.set("aichatCur", c.dataset.c); pageAsk(); }

@@ -195,5 +195,5 @@ AI 模型定義在 `app/ai_model.py`：每個模式有「硬性條件」（不�
 
 - 金鑰 `ANTHROPIC_API_KEY` 只存在 Cloudflare 的 secret，網站與 repository 都看不到；只接受股栗子網站來的請求，每個 IP 每分鐘最多 5 題。總花費上限請在 Anthropic Console 設定。
 - 模型在 `worker/wrangler.toml` 的 `MODEL`（預設 `claude-opus-5-5`；改 `claude-haiku-5-5` 約便宜 40 倍）。
-- 部署：在 GitHub Secrets 加 `ANTHROPIC_API_KEY`、`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`，到 Actions 執行「部署 AI 問答」。部署後網址寫進 `chat.json`，網站重建後聊天框才會出現；沒設定時網站不顯示聊天框。
-- 測試：`cd worker && npm ci && npm test`。
+- 部署：在 GitHub Secrets 加 `ANTHROPIC_API_KEY`、`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`，到 Actions 執行「部署 AI 研究助理」。部署後網址寫進 `chat.json`，網站重建後聊天框才會出現；沒設定時網站不顯示聊天框。
+- 測試：`cd worker && npm ci && npm test`。部署後工作流程會再用 `worker/smoke.mjs` 真的呼叫 Claude 問三題（自由提問、追問、新聞），檢查有查資料、有來源、追問記得前文，結果寫在該次執行的摘要；失敗時網站不會換成新的 AI 網址。

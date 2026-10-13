@@ -1,9 +1,9 @@
-# 部署「問 AI 這檔股票」的後端（Cloudflare Worker）。
+# 部署「AI 研究助理」的後端（Cloudflare Worker）：全站 AI 研究助理與個股頁的問答都用它。部署後會真的問 Claude 三題做實際測試（約幾美分到十幾美分）。
 # 需要先在 Settings → Secrets and variables → Actions 新增三個 secret：
 #   ANTHROPIC_API_KEY（Anthropic Console 建立）、CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID（Cloudflare 建立）
 # 以及會員系統的 variables：SUPABASE_URL、SUPABASE_KEY（AI 問答只開放給登入會員，每人每天有上限）
 # 金鑰只會存到 Cloudflare，網站和 repository 裡都看不到。設定好後在 Actions 頁面按「Run workflow」。
-name: 部署 AI 問答
+name: 部署 AI 研究助理
 
 on:
   workflow_dispatch:
@@ -55,6 +55,11 @@ jobs:
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.workers\.dev' deploy.log | head -1)
           if [ -z "$url" ]; then echo "::error::找不到 Worker 網址。請先到 Cloudflare 的 Workers & Pages 頁面開啟一次，建立 workers.dev 子網域。"; exit 1; fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
+      - name: 實際問答測試（真的呼叫 Claude，結果在這次執行的摘要）
+        if: steps.deploy.outputs.url
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node smoke.mjs | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 把網址寫進網站設定並重建網站
         if: steps.deploy.outputs.url
         env:
@@ -66,7 +71,7 @@ jobs:
           if [ -n "$(git status --porcelain chat.json)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add chat.json && git commit -q -m "AI 問答網址"
+            git add chat.json && git commit -q -m "AI 研究助理網址"
             for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
           fi
           gh workflow run update.yml --ref main
