@@ -134,6 +134,10 @@ nav .cnt { font-size: 11px; background: var(--chip); border-radius: 999px; paddi
 .top-in { gap: 8px 14px; }
 .fresh { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 6px; display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); }
 .fresh b { color: var(--ink); font-weight: 500; }
+.rf { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-left: auto; }
+.rf .pill { font-size: 11px; } .rf .pill.s-ok { background: var(--info-bg); color: var(--info); } .rf .pill.s-bad { background: var(--alert-bg); color: #fff; } .rf .btn { padding: 2px 10px; }
+#rfMsg { color: var(--ink); } #rfMsg.new { color: var(--info); font-weight: 500; } #rfMsg.err { color: var(--warn); }
+@media (max-width: 760px) { .rf { margin-left: 0; width: 100%; } }
 
 .btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); border-radius: 999px; padding: 7px 18px; font-weight: 500; cursor: pointer; }
 .btn:hover { text-decoration: none; filter: brightness(1.08); }
@@ -462,16 +466,20 @@ const resTxt = (x) => x === true ? '<span class="ok">符合</span>' : x === "na"
 async function loadSnap() {
   if (STATIC) SNAP = STATIC.snapshot;
   else {
-    const r = await fetch(SITE ? "data/snapshot.json" : "/api/snapshot" + (DEMO ? "?demo=1" : ""));
+    if (SITE && !VER) VER = await fetchVersion();
+    const r = await fetch(SITE ? "data/snapshot.json" + verQ("snapshot.json") : "/api/snapshot" + (DEMO ? "?demo=1" : ""));
     if (!r.ok && SITE) { renderNoData(await fetch("data/status.json").then((x) => x.json()).catch(() => ({ detail: "還沒有成功取得真實行情。" }))); return false; }
     if (!r.ok) { renderNoData(await r.json().catch(() => ({ detail: "無法連到網站後端" }))); return false; }
     SNAP = await r.json();
   }
+  indexSnap();
+  renderFresh(); renderWcnt();
+  return true;
+}
+function indexSnap() {
   BYID = Object.fromEntries(SNAP.stocks.map((s) => [s.stock_id, s]));
   CAT = Object.fromEntries(SNAP.catalog.map((c) => [c.key, c]));
   $("#stockList").innerHTML = SNAP.stocks.filter((s) => s.is_common).map((s) => `<option value="${s.stock_id} ${esc(s.name)}">`).join("");
-  renderFresh(); renderWcnt();
-  return true;
 }
 const DEMO = new URLSearchParams(location.search).get("demo") === "1";
 // 沒有真實資料時：只顯示失敗原因，不顯示任何股價或選股結果
@@ -488,7 +496,7 @@ function renderNoData(e) {
 }
 async function loadStock(id) {
   if (STATIC) return STATIC.details[id];
-  const r = await fetch(SITE ? `data/stock/${id}.json` : `/api/stock/${id}` + (DEMO ? "?demo=1" : ""));
+  const r = await fetch(SITE ? `data/stock/${id}.json` + verQ(`stock/${id}.json`) : `/api/stock/${id}` + (DEMO ? "?demo=1" : ""));
   return r.ok ? r.json() : null;
 }
 function renderFresh(job) {
@@ -516,9 +524,75 @@ function renderFresh(job) {
     <span>分析於 <span class="num">${(SNAP.generated_at || "").replace("T", " ")}</span></span>
     ${bad.length ? `<span title="${esc(bad.map((h) => h.label + "：最後成功 " + (h.last_ok || "從未")).join("\n"))}">未更新：${bad.map((h) => esc(h.label)).join("、")}</span>` : ""}
     ${errs.length ? `<details class="errbox"><summary>上次更新有 ${errs.length} 個警告</summary><ul class="errs">${errs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
-    ${STATIC || SITE ? "" : `<span id="job">${job || ""}</span><button class="btn sm ghost" id="upd">立即更新資料</button>`}`;
+    ${STATIC || SITE ? "" : `<span id="job">${job || ""}</span><button class="btn sm ghost" id="upd">立即更新資料</button>`}
+    ${SITE ? refreshBar() : ""}`;
   const b = $("#upd"); if (b) b.onclick = startUpdate;
+  if ($("#rfBtn")) $("#rfBtn").onclick = () => refreshData();
 }
+// ---------- 重新整理目前頁面（只載入「已發布」的新版資料，不會觸發全市場重算） ----------
+// data/version.json（app/version.py）記錄每份資料的內容指紋；指紋沒變就不重新下載。
+let VER = null, RF = { busy: false, msg: "", cls: "", checked: 0 };
+const verQ = (path) => (VER?.datasets?.[path] ? `?v=${VER.datasets[path]}` : "");
+const twTime = (t) => (t ? t.slice(5, 16).replace("T", " ") : "—");
+async function fetchVersion() {
+  try {
+    const r = await fetch(`data/version.json?t=${Date.now()}`, { cache: "no-store" });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+function refreshBar() {
+  const st = VER ? { postclose_final: "s-ok", postclose_partial: "warn", stale: "s-bad", unavailable: "s-bad" }[VER.data_state] || "" : "";
+  return `<span class="rf">${VER ? `<span class="pill ${st}" title="${esc((VER.warnings || []).join("\n") || "主要資料都已更新")}">${esc(VER.data_state_label)}</span>
+    <span>網站發布 <span class="num">${twTime(VER.published_at)}</span></span>` : ""}
+    <button class="btn sm ghost" id="rfBtn"${RF.busy ? " disabled" : ""} title="檢查網站有沒有發布更新的資料；有才載入，不會重新整理整個網頁">${RF.busy ? "檢查中…" : "重新整理"}</button>
+    <span id="rfMsg" class="${RF.cls}" role="status" aria-live="polite">${esc(RF.msg)}</span></span>`;
+}
+function rfSay(msg, cls = "") { RF.msg = msg; RF.cls = cls; const el = $("#rfMsg"); if (el) { el.textContent = msg; el.className = cls; } }
+// 不重新整理整頁：保留捲動位置與還沒送出的輸入
+function rerender() {
+  const keep = $$("#app input[id], #app textarea[id], #app select[id]").filter((e) => e.type !== "checkbox" && e.value).map((e) => [e.id, e.value]);
+  const y = window.scrollY;
+  route();
+  keep.forEach(([id, v]) => { const e = document.getElementById(id); if (e && !e.value) e.value = v; });
+  window.scrollTo(0, y);
+}
+async function refreshData({ quiet = false } = {}) {
+  if (!SITE || RF.busy) return;
+  RF.busy = true; RF.checked = Date.now();
+  if (!quiet) { rfSay(""); const b = $("#rfBtn"); if (b) { b.disabled = true; b.textContent = "檢查中…"; } }
+  try {
+    const v = await fetchVersion();
+    if (!v) { if (!quiet) rfSay(`無法檢查更新，繼續顯示目前資料（交易日 ${SNAP.data_dates.prices}）`, "err"); return; }
+    if (VER && v.data_version === VER.data_version) {
+      VER = v;
+      if (!quiet) rfSay(`已是最新可取得的資料（交易日 ${v.trading_date}）。下次排程更新：${twTime(v.next_scheduled)} 後`);
+      return;
+    }
+    if (quiet) { rfSay(`有新版資料（交易日 ${v.trading_date}），按「重新整理」載入`, "new"); return; }
+    const old = VER, r = await fetch("data/snapshot.json" + (v.datasets?.["snapshot.json"] ? `?v=${v.datasets["snapshot.json"]}` : `?t=${Date.now()}`)).catch(() => null);
+    const snap = r && r.ok ? await r.json().catch(() => null) : null;
+    if (!snap || !Array.isArray(snap.stocks) || !snap.stocks.length || !snap.data_dates?.prices) {
+      rfSay(`新版資料下載失敗，繼續顯示上一份資料（交易日 ${SNAP.data_dates.prices}）`, "err"); return;
+    }
+    const prevDate = SNAP.data_dates.prices;
+    SNAP = snap; VER = v; NEWS = null; indexSnap();
+    const page = location.hash.replace(/^#\/?/, "").split("/")[0];
+    RF.busy = false;
+    renderFresh();
+    if (!["ask", "account", "privacy"].includes(page)) rerender();  // AI 對話、帳號頁不受行情資料影響，不重畫
+    rfSay(snap.data_dates.prices !== prevDate ? `已更新到 ${snap.data_dates.prices} 的資料` : `已載入新版（同一交易日 ${prevDate}，資料有補充或修正）`);
+    if (!old) rfSay("已載入最新發布的資料");
+  } finally {
+    RF.busy = false;
+    const b = $("#rfBtn"); if (b) { b.disabled = false; b.textContent = "重新整理"; }
+  }
+}
+// 每 5 分鐘（頁面在前景時）自動檢查一次；有新版只提示，不自動換掉正在看的資料
+if (SITE) {
+  setInterval(() => { if (document.visibilityState === "visible" && SNAP) refreshData({ quiet: true }); }, 5 * 60e3);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && SNAP && Date.now() - RF.checked > 5 * 60e3) refreshData({ quiet: true }); });
+}
+
 async function startUpdate() {
   const tok = store.get("admin_token", "");
   let r = await fetch("/api/update", { method: "POST", headers: tok ? { "X-Admin-Token": tok } : {} });
@@ -1600,7 +1674,7 @@ let NEWS = null;
 async function loadNews() {
   if (NEWS) return NEWS;
   if (STATIC) return (NEWS = STATIC.news || null);
-  const r = await fetch(SITE ? "data/news/latest.json" : "/api/news" + (DEMO ? "?demo=1" : "")).catch(() => null);
+  const r = await fetch(SITE ? "data/news/latest.json" + verQ("news/latest.json") : "/api/news" + (DEMO ? "?demo=1" : "")).catch(() => null);
   return (NEWS = r && r.ok ? await r.json() : null);
 }
 const TONE = { positive: ["正面用詞", "good"], negative: ["負面用詞", "bad"], unclear: ["無法判定", ""] };
@@ -2480,6 +2554,8 @@ function route() {
   $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
   $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = SIDE(); });
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
+  if (RF.cls !== "new") rfSay("");  // 上一頁的「已是最新」等訊息不帶到下一頁；「有新版」的提示保留
+  if (SITE && SNAP && Date.now() - RF.checked > 5 * 60e3) refreshData({ quiet: true });
   ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, calendar: pageCalendar, news: pageNews, ask: pageAsk, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }

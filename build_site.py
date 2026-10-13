@@ -143,3 +143,10 @@ else:
     print("沒有真實資料快照，site/ 只會顯示資料取得失敗")
     if "--strict" in sys.argv:
         sys.exit(1)  # GitHub Actions：不發布，網站維持上一次成功的版本
+
+# 資料版本：每個頁面的「重新整理」先讀這份，比對 data_version，有新版才重新下載資料
+from app import version  # noqa: E402
+files = {str(f.relative_to(out / "data")): f.read_bytes() for f in sorted((out / "data").rglob("*.json")) if f.name not in ("status.json", "version.json")}
+ver = version.build(json.loads(snap_path.read_text("utf-8")) if snap_path.exists() else None, files)
+(out / "data" / "version.json").write_text(json.dumps(ver, ensure_ascii=False, indent=1), "utf-8")
+print(f"資料版本 {ver['data_version']}：{ver['data_state_label']}・交易日 {ver['trading_date']}")
