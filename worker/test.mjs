@@ -157,3 +157,24 @@ test("免費模型：查資料後回答，附來源與免責聲明", async () =>
   assert.equal(got.status.length, 1);
   assert.equal(got.sources[0].path, "data/ai/universe.json");
 });
+
+test("大盤歸因：家數分上市上櫃、權值股貢獻點數、國際市場與資料缺口", async () => {
+  const { makeRunner } = await import("./tools.js");
+  const fields = ["stock_id", "name", "industry", "market", "date", "chg_pct", "market_cap"];
+  const rows = [["2330", "台積電", "半導體業", "twse", "2026-10-13", -1.97, 2490 * 25.9e9], ["2317", "鴻海", "其他電子業", "twse", "2026-10-13", 1, 2e12],
+    ["2881", "富邦金", "金融保險業", "twse", "2026-10-13", 2, 1e12], ["6488", "環球晶", "半導體業", "tpex", "2026-10-13", -10, 2e11], ["1101", "台泥", "水泥工業", "twse", "2026-10-12", 0, 3e11]];
+  const cols = Object.fromEntries(fields.map((f, k) => [f, rows.map((r) => r[k])]));
+  const u = { fields, cols, data_dates: { prices: "2026-10-13" }, market: { taiex: 48341.31, taiex_chg: -1.948 }, industries: [] };
+  const glob = { note: "n", source: "FinMind", markets: [{ name: "費城半導體指數", date: "2026-10-12", close: 12236.79, chg_pct: -2.67, streak: -4, ret_5d: -7.1 }], warnings: [] };
+  const run = makeRunner(async (p) => { if (p === "ai/universe.json") return u; if (p === "global/markets.json") return glob; if (p === "news/latest.json") return { items: [] }; throw new Error(p); });
+  const { result: r } = await run("market_attribution", {});
+  assert.equal(r.漲跌家數_上市普通股.上漲家數, 2);
+  assert.equal(r.漲跌家數_上市普通股.下跌家數, 1);
+  assert.equal(r.漲跌家數_上櫃普通股.接近跌停家數_跌幅9點5以上, 1);
+  assert.match(r.家數說明, /不是漲停／跌停家數/);
+  assert.equal(r.權值股貢獻.拖累最多[0].股票, "2330 台積電");
+  assert.ok(r.權值股貢獻.拖累最多[0].貢獻點數_估算 < 0);
+  assert.ok(Math.abs(r.加權指數.漲跌點數 - -960) < 5);
+  assert.equal(r.前一晚國際市場.指數[0].漲跌幅百分比, -2.67);
+  assert.ok(r.資料缺口.some((x) => x.includes("查不到不代表沒有事件")));
+});

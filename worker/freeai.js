@@ -8,7 +8,7 @@ import { TOOLS, makeRunner, toolLabel } from "./tools.js";
 export const FREE_MODEL = "@cf/qwen/qwen3-30b-a3b-fp8";  // 繁體中文較好、支援工具呼叫、很便宜（免費額度用得久）
 export const MAX_STEPS = 5;
 const DISCLAIMER = "以上根據股栗子網站的公開資料整理，不是投資建議。";
-const MAX_RESULT = 6000;  // 每次工具結果最多給模型幾個字（免費模型的上下文較小）
+const MAX_RESULT = 9000;  // 每次工具結果最多給模型幾個字（免費模型的上下文較小）
 
 export const FREE_TOOLS = TOOLS.map((t) => ({ name: t.name, description: t.description, parameters: t.input_schema }));
 
@@ -17,7 +17,8 @@ const EXTRA = `
 補充規則（免費模型版）：
 - 你可以呼叫工具查資料。每次最多呼叫 2 個工具，查到足夠的資料就直接回答，不要重複查同樣的東西。
 - 只能用工具查到的數字，不能自己編數字。工具沒有回傳的資料，就說網站目前查不到。
-- 一律使用繁體中文（台灣用語），不要用簡體字。`;
+- 一律使用繁體中文（台灣用語），不要用簡體字。
+- 問大盤為什麼漲跌：先呼叫 market_attribution。回答依序寫：指數漲跌點數 → 拖累／撐盤最多的權值股與產業（附點數）→ 前一晚美股與費城半導體（附日期）→ 相關新聞（附來源）→ 資料不足的地方。家數只是市場廣度，不是原因。`;
 
 /** 把模型回應整理成 { text, calls:[{name, args}] } */
 export function parseReply(res) {

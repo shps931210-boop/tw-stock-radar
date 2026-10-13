@@ -76,6 +76,12 @@ jobs:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python -m app.news
 
+      - name: 國際市場（美股、費城半導體、匯率）
+        continue-on-error: true
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python -m app.global_mkt
+
       - name: 備份資料庫到 GitHub Release
         id: backup
         continue-on-error: true      # 備份失敗不影響網站更新，但會記錄下來，最後一步讓這次執行標成失敗並寄信

@@ -20,6 +20,7 @@ const CASES = [
   { q: "台積電和聯發科的毛利率哪一家比較高？", need: ["台積電", "聯發科"], tool: true },
   { q: "那哪一家估值比較高？", need: ["台積電", "聯發科"], tool: true, followUp: true },
   { q: "最近有哪些重大的公司公告？", need: [], tool: true },
+  { q: "今天台股為什麼漲跌？", need: ["點"], tool: true, market: true },
 ];
 
 let fail = 0, hist = [], provider = "?";
@@ -37,6 +38,8 @@ for (const c of CASES) {
   if (c.tool && !sources.length) problems.push("沒有資料來源");
   for (const w of c.need) if (!text.includes(w)) problems.push(`回答沒有提到「${w}」`);
   if (!text.includes("不是投資建議")) problems.push("少了免責聲明");
+  if (c.market && !steps.some((x) => x.includes("大盤漲跌來源"))) problems.push("沒有查權值股與產業貢獻");
+  if (c.market && /(漲停|跌停)[^，。\n]{0,8}\d{3,}\s*家|\d{3,}\s*家(漲停|跌停)/.test(text)) problems.push("把上漲／下跌家數講成漲停／跌停家數");
   fail += problems.length ? 1 : 0;
   out.push(`### ${problems.length ? "❌" : "✅"} ${c.q}`, "", `查資料：${steps.join("、") || "無"}`, "", `來源：${sources.map((s) => s.name).join("、") || "無"}`, "",
     ...(problems.length ? [`**問題**：${problems.join("；")}`, ""] : []), "<details><summary>回答</summary>", "", text || "（空白）", "", "</details>", "");

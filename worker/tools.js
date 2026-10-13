@@ -42,6 +42,11 @@ export const TOOLS = [
     input_schema: { type: "object", properties: {} },
   },
   {
+    name: "market_attribution",
+    description: "分析「大盤今天為什麼漲／跌」時第一個要查的工具：加權指數漲跌點數、權值股對指數的貢獻點數（估算）、各產業對指數的貢獻、上市與上櫃分開的漲跌家數與接近漲跌停家數、前一晚美股與費城半導體、匯率，以及權值股的公告新聞。每個欄位都有中文名稱與定義。",
+    input_schema: { type: "object", properties: {} },
+  },
+  {
     name: "industry_report",
     description: "一個產業的概況：產業報酬、成分股數、依量化評分排序的主要公司、最近的公告與新聞。",
     input_schema: { type: "object", properties: { industry: { type: "string", description: "產業名稱，例如「航運業」「半導體業」" } }, required: ["industry"] },
@@ -75,7 +80,7 @@ export const TOOLS = [
 const TOOL_LABEL = {
   find_stocks: (i) => `尋找股票「${i.query}」`, get_stock_detail: (i) => `讀取 ${i.stock_id} 的研究資料`,
   compare_stocks: (i) => `比較 ${(i.stock_ids || []).join("、")}`, screen_stocks: () => "依條件篩選股票",
-  market_overview: () => "讀取大盤與產業概況", industry_report: (i) => `讀取「${i.industry}」產業資料`,
+  market_overview: () => "讀取大盤與產業概況", market_attribution: () => "分析大盤漲跌來源（權值股、產業、美股）", industry_report: (i) => `讀取「${i.industry}」產業資料`,
   search_news: (i) => `搜尋公告與新聞${i.keyword ? `「${i.keyword}」` : ""}`, performance_summary: () => "讀取選股績效紀錄",
   explain_metric: (i) => `查指標說明「${i.query}」`,
 };
@@ -91,6 +96,8 @@ const BRIEF = ["stock_id", "name", "industry", "close", "chg_pct", "ret_20d", "p
 const COMPARE = ["stock_id", "name", "industry", "date", "close", "chg_pct", "ret_20d", "ret_3m", "ret_12m", "market_cap", "per", "pbr", "dy", "per_pctile_1y",
   "eps_ttm", "eps_ttm_yoy", "roe", "gross_margin", "op_margin", "debt_ratio", "fscore", "rev_ym", "rev_yoy", "rev_yoy_3m", "fin_period", "vol_1y", "mdd_1y",
   "foreign_5d", "trust_5d", "score", "rank", "score_quality", "score_growth", "score_value", "score_momentum", "score_trend", "industry_rank", "industry_n", "tag", "signal"];
+
+const breadthTxt = (b) => (b ? { 上漲家數: b.up, 下跌家數: b.down, 平盤家數: b.flat, 說明: "上市＋上櫃普通股，收盤價和前一日比較；不是漲停／跌停家數" } : null);
 
 function cleanIds(xs, max) {
   return [...new Set((Array.isArray(xs) ? xs : []).map((x) => String(x).trim().toUpperCase()).filter((x) => ID.test(x)))].slice(0, max);
@@ -153,10 +160,66 @@ export function makeRunner(load) {
           .map((e) => ({ 日期: e.event_date, 股票: e.stock_id ? `${e.stock_id} ${e.name || nm(e.stock_id)}` : "所有公司", 事件: e.title, 狀態: e.status }));
       } catch { events = "事件資料暫時讀不到"; }
       const ch = u.changes;
-      return { result: { ...dates(u), 大盤: u.market, 漲跌家數: u.breadth, 產業近一個月報酬_由高到低: inds.map((x) => ({ 產業: x.industry, 檔數: x.n, 當日: x.chg, 近一個月: x.ret_1m })),
+      return { result: { ...dates(u), 大盤: { 加權指數收盤: u.market?.taiex, 加權指數漲跌幅百分比: r2(u.market?.taiex_chg) }, 漲跌家數: breadthTxt(u.breadth), 產業近一個月報酬_由高到低: inds.map((x) => ({ 產業: x.industry, 檔數: x.n, 當日: x.chg, 近一個月: x.ret_1m })),
         前20名變化: ch ? { 比較基準日: ch.since, 新進: ch.new.map((x) => `${x.stock_id} ${nm(x.stock_id)}（第 ${x.rank} 名）`), 掉出: ch.dropped.map((x) => `${x.stock_id} ${nm(x.stock_id)}（${x.why || ""}）`) } : null,
         未來兩週事件: events, 技術訊號檔數: t.col("signal").filter(Boolean).length },
       sources: [SRC_U, { name: "財報與事件日曆", path: "data/events/calendar.json", page: "#/calendar" }] };
+    },
+    async market_attribution() {
+      const { u, t } = await uni(), day = u.data_dates?.prices;
+      const ix = u.market?.taiex, ixChg = u.market?.taiex_chg;
+      const prevIx = ix != null && ixChg != null ? ix / (1 + ixChg / 100) : null;
+      const col = (k) => t.col(k);
+      const rows = t.ids.map((id, i) => ({ id, i, name: col("name")[i], ind: col("industry")[i], mkt: col("market")[i], chg: col("chg_pct")[i], cap: col("market_cap")[i], date: col("date")[i] }))
+        .filter((r) => r.date === day && r.chg != null);
+      // 上市、上櫃分開算家數；「接近漲停／跌停」用漲跌幅 ≥ 9.5% 估算（台股漲跌幅上限 10%），不是交易所公布的漲停家數
+      const br = (xs) => ({ 上漲家數: xs.filter((r) => r.chg > 0).length, 下跌家數: xs.filter((r) => r.chg < 0).length, 平盤家數: xs.filter((r) => r.chg === 0).length,
+        接近漲停家數_漲幅9點5以上: xs.filter((r) => r.chg >= 9.5).length, 接近跌停家數_跌幅9點5以上: xs.filter((r) => r.chg <= -9.5).length });
+      // 權值股貢獻（估算）：前一日市值權重 × 當日漲跌幅 × 前一日加權指數。只算有市值資料的上市普通股
+      const tw = rows.filter((r) => r.mkt === "twse" && r.cap > 0).map((r) => ({ ...r, prevCap: r.cap / (1 + r.chg / 100) }));
+      const tot = tw.reduce((a, r) => a + r.prevCap, 0);
+      let contrib = [], byInd = [], est = null;
+      if (tot > 0 && prevIx) {
+        contrib = tw.map((r) => ({ ...r, w: r.prevCap / tot, pts: (r.prevCap / tot) * (r.chg / 100) * prevIx }));
+        est = contrib.reduce((a, r) => a + r.pts, 0);
+        const g = new Map();
+        contrib.forEach((r) => { const x = g.get(r.ind || "未分類") || { 產業: r.ind || "未分類", 貢獻點數: 0, 權重百分比: 0, 檔數: 0 }; x.貢獻點數 += r.pts; x.權重百分比 += r.w * 100; x.檔數++; g.set(x.產業, x); });
+        byInd = [...g.values()].map((x) => ({ ...x, 貢獻點數: r2(x.貢獻點數), 權重百分比: r2(x.權重百分比) })).sort((a, b) => a.貢獻點數 - b.貢獻點數);
+      }
+      const fmtC = (r) => ({ 股票: `${r.id} ${r.name}`, 產業: r.ind, 漲跌幅百分比: r2(r.chg), 指數權重百分比: r2(r.w * 100), 貢獻點數_估算: r2(r.pts) });
+      const sorted = [...contrib].sort((a, b) => a.pts - b.pts);
+      let glob = null;
+      try { glob = await load("global/markets.json"); } catch { glob = null; }
+      const heavy = [...contrib].sort((a, b) => b.w - a.w).slice(0, 8).map((r) => r.id);
+      const news = await newsFor({ stock_ids: heavy, limit: 12 });
+      const gaps = [];
+      if (!contrib.length) gaps.push("缺少市值資料，無法估算權值股貢獻");
+      if (!glob) gaps.push("網站目前沒有國際市場資料");
+      if (!news.items.length) gaps.push("權值股最近沒有收錄到新聞或公告；新聞只涵蓋部分股票，查不到不代表沒有事件");
+      gaps.push("網站沒有期貨、選擇權、外資期貨未平倉與盤中走勢資料");
+      return {
+        result: {
+          資料日期: day,
+          加權指數: { 收盤: ix, 漲跌幅百分比: r2(ixChg), 漲跌點數: prevIx ? r2(ix - prevIx) : null, 前一日收盤_推算: prevIx ? r2(prevIx) : null },
+          漲跌家數_上市普通股: br(rows.filter((r) => r.mkt === "twse")),
+          漲跌家數_上櫃普通股: br(rows.filter((r) => r.mkt === "tpex")),
+          家數說明: "上漲／下跌家數是收盤價比前一日高或低的股票數，不是漲停／跌停家數。漲停跌停只用漲跌幅 ≥ 9.5% 估算。只算普通股，不含 ETF、權證。",
+          權值股貢獻: contrib.length ? {
+            方法: "估算：前一日市值權重 × 當日漲跌幅 × 前一日加權指數。只算網站有市值資料的上市普通股，與證交所正式計算可能有差異。",
+            估算合計點數: r2(est), 實際漲跌點數: prevIx ? r2(ix - prevIx) : null, 涵蓋上市普通股檔數: contrib.length,
+            拖累最多: sorted.slice(0, 8).filter((r) => r.pts < 0).map(fmtC),
+            撐盤最多: sorted.slice(-8).reverse().filter((r) => r.pts > 0).map(fmtC),
+            前五大權值股: [...contrib].sort((a, b) => b.w - a.w).slice(0, 5).map(fmtC),
+          } : null,
+          前一晚國際市場: glob ? { 說明: glob.note, 來源: glob.source, 指數: (glob.markets || []).map((m) => ({ 名稱: m.name, 美國交易日: m.date, 收盤: m.close, 漲跌幅百分比: m.chg_pct, 連續漲跌天數_負數為連跌: m.streak, 近5日漲跌幅百分比: m.ret_5d })),
+            美元兌新台幣: glob.fx_usd, 限制: glob.warnings } : null,
+          產業對指數貢獻: byInd.length ? { 拖累最多: byInd.slice(0, 6), 撐盤最多: byInd.slice(-6).reverse().filter((x) => x.貢獻點數 > 0) } : null,
+          權值股公告與新聞: news.items.map(({ 摘要, ...x }) => x), 新聞涵蓋說明: news.限制,
+          資料缺口: gaps,
+          分析提醒: "指數下跌的直接原因要先看權值股與產業貢獻；國際市場與新聞是可能的背景，要有資料或報導支持才能寫成原因，而且只能說「可能」。技術訊號、名單變化、除權息不是大盤漲跌的原因。",
+        },
+        sources: [SRC_U, ...(glob ? [{ name: "國際市場（FinMind）", path: "data/global/markets.json" }] : []), news.source],
+      };
     },
     async industry_report({ industry }) {
       const { u, t } = await uni(), q = String(industry || "").trim();
