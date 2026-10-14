@@ -39,13 +39,15 @@ class Version(unittest.TestCase):
 
     def test_next_scheduled_skips_weekend(self):
         self.assertEqual(version.next_run(datetime(2026, 10, 13, 15, 0, tzinfo=version.TW)), "2026-10-13T16:30+08:00")
-        self.assertEqual(version.next_run(datetime(2026, 10, 16, 21, 30, tzinfo=version.TW)), "2026-10-19T14:40+08:00")
+        self.assertEqual(version.next_run(datetime(2026, 10, 16, 21, 30, tzinfo=version.TW)), "2026-10-19T14:10+08:00")
 
     def test_schedule_matches_workflow(self):
         wf = open(".github/workflows/update.yml", encoding="utf-8").read()
         for h, m in version.SCHEDULE:
             utc = (h - 8) % 24
             self.assertIn(f'cron: "{m} {utc} * * 1-5"', wf)
+        html = open("static/index.html", encoding="utf-8").read()
+        self.assertIn("const SCHED = [" + ", ".join(f"[{h}, {m}]" for h, m in version.SCHEDULE) + "];", html)
 
 
 if __name__ == "__main__":

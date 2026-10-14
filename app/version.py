@@ -19,7 +19,7 @@ from datetime import datetime, timedelta, timezone
 
 
 TW = timezone(timedelta(hours=8))
-SCHEDULE = [(14, 40), (16, 30), (21, 0)]  # 與 .github/workflows/update.yml 的排程一致（台灣時間、週一到週五）
+SCHEDULE = [(14, 10), (14, 40), (16, 30), (21, 0)]  # 與 .github/workflows/update.yml 的排程一致（台灣時間、週一到週五）
 STATE_TXT = {"postclose_final": "正式盤後", "postclose_partial": "盤後（部分資料未齊）", "stale": "資料落後", "unavailable": "沒有資料"}
 
 
@@ -100,6 +100,10 @@ def build(snap: dict | None, files: dict[str, bytes], now: datetime | None = Non
         "data_dates": (snap or {}).get("data_dates"),
         "fetched_at": _iso(meta.get("last_update")),
         "calculated_at": _iso((snap or {}).get("generated_at")),
+        # fast＝盤後快速更新（只有最近幾天的行情與籌碼）；full＝完整更新（含歷史回補、財報、股利）
+        "update_mode": meta.get("update_mode") or "full",
+        "model": {"version": ((snap or {}).get("model") or {}).get("version"), "hash": ((snap or {}).get("track") or {}).get("model_hash"),
+                  "calculated_at": _iso((snap or {}).get("generated_at")), "prices_date": (snap or {}).get("data_dates", {}).get("prices")},
         "published_at": now.isoformat(timespec="seconds"),
         "next_scheduled": next_run(now),
         "coverage": {"stocks": len((snap or {}).get("stocks") or [])},

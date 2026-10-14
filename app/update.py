@@ -309,13 +309,23 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
             db.set_meta(con, f"updated_{k}", now)
 
 
-def run(daily: bool = True, fundamentals: bool = True, progress=None) -> list[str]:
+# 快速收盤更新只看最近幾天：今天的行情不必等三年前的歷史資料回補完
+FAST_DAYS = 10
+
+
+def run(daily: bool = True, fundamentals: bool = True, progress=None, fast: bool = False) -> list[str]:
     """分三階段，每階段結束都重算快照，讓網站盡早顯示真實資料：
-    ① 最新一個交易日收盤價（OpenAPI，幾秒鐘）→ ② 回補歷史股價與籌碼 → ③ 月營收、財報、股利。"""
+    ① 最新一個交易日收盤價（OpenAPI，幾秒鐘）→ ② 回補歷史股價與籌碼 → ③ 月營收、財報、股利。
+    fast=True（盤後快速更新）：只抓最近 FAST_DAYS 天的行情與籌碼、除權息、月營收，重算一次就發布；
+    較舊的歷史股價、財報與股利留給晚上的完整更新。"""
     cfg = config.load()
     errors: list[str] = []
     stages = []
-    if daily:
+    if fast:
+        near = {**cfg, "price_backfill_days": FAST_DAYS, "flow_backfill_days": FAST_DAYS, "history_dates_per_run": 0}
+        stages.append(("快速收盤更新", lambda: (_latest_only(cfg, errors), update_daily(near, progress, errors), update_exrights(near, errors),
+                                                update_revenue_bulk(cfg, errors), events.update(cfg, errors))))
+    elif daily:
         stages.append(("最新收盤價", lambda: _latest_only(cfg, errors)))
         stages.append(("回補歷史股價與籌碼", lambda: (update_daily(cfg, progress, errors), update_exrights(cfg, errors),
                                                           update_revenue_bulk(cfg, errors), events.update(cfg, errors))))
@@ -372,6 +382,7 @@ def main():
     ap.add_argument("--demo", action="store_true", help="重建示範資料庫")
     ap.add_argument("--daily-only", action="store_true")
     ap.add_argument("--fundamentals-only", action="store_true")
+    ap.add_argument("--fast", action="store_true", help="盤後快速更新：只抓最近幾天，不回補歷史、不抓財報")
     a = ap.parse_args()
     if a.demo:
         from .sources import demo
@@ -380,7 +391,9 @@ def main():
         snapshot.build(demo=True)
         print("完成")
         return
-    errs = run(daily=not a.fundamentals_only, fundamentals=not a.daily_only)
+    with db.connect() as con:
+        db.set_meta(con, "update_mode", "fast" if a.fast else "full")
+    errs = run(daily=not a.fundamentals_only, fundamentals=not a.daily_only and not a.fast, fast=a.fast)
     print(f"\n完成，{len(errs)} 個警告")
     for e in errs[:30]:
         print(" -", e)

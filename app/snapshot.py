@@ -239,7 +239,7 @@ def build(demo: bool = False) -> dict:
 
     with db.connect(dbname) as con:
         meta = {k: db.get_meta(con, k) for k in ("last_update", "source", "last_errors", "updated_prices",
-                                                 "updated_revenue", "updated_financials", "update_state", "official_latest_twse")}
+                                                 "updated_revenue", "updated_financials", "update_state", "official_latest_twse", "update_mode")}
         hist_days = con.execute("SELECT COUNT(DISTINCT date) FROM prices").fetchone()[0]
         idx = db.read(con, "SELECT * FROM index_prices ORDER BY date DESC LIMIT 260")
         health = [] if demo else _health(con)

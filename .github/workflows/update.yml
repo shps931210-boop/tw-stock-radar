@@ -3,14 +3,24 @@
 #         Settings → Secrets and variables → Actions 新增 FINMIND_TOKEN（財報、股利用，可不填但額度較低）。
 # GitHub 的排程可能延遲或偶爾被略過，所以排了多個時段；程式只補缺少的資料，重複執行沒有副作用。
 # 也可以在 Actions 頁面按「Run workflow」手動更新。
+# 兩種模式：
+#   快速（14:10、14:40、16:30）：只抓最近幾天的收盤行情與籌碼，重算一次就發布，不等歷史回補與財報。
+#   完整（21:00）：再加上歷史股價回補、財報、股利與連線診斷。今天的行情不會因為舊資料還沒補完而延後。
 name: 盤後更新
 
 on:
   schedule:                    # 時間是 UTC，以下換算成台灣時間
-    - cron: "40 6 * * 1-5"     # 14:40 收盤行情
-    - cron: "30 8 * * 1-5"     # 16:30 補跑（萬一前一次延遲或失敗）
-    - cron: "0 13 * * 1-5"     # 21:00 法人、融資等較晚公布的資料
+    - cron: "10 6 * * 1-5"     # 14:10 快速：收盤行情（證交所通常 14:00 後陸續公布）
+    - cron: "40 6 * * 1-5"     # 14:40 快速：補上較晚公布的櫃買與法人資料
+    - cron: "30 8 * * 1-5"     # 16:30 快速：補跑（萬一前一次延遲或失敗）
+    - cron: "0 13 * * 1-5"     # 21:00 完整：融資等最晚公布的資料＋歷史回補、財報、股利
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "fast＝快速收盤更新；full＝完整更新（含歷史回補、財報）"
+        default: fast
+        type: choice
+        options: [fast, full]
 
 permissions:
   contents: write              # 把每日選股紀錄 commit 回 repository
@@ -23,10 +33,26 @@ concurrency:
 
 env:
   TZ: Asia/Taipei
+  # 21:00 的排程與手動選 full 跑完整更新，其他都是快速更新
+  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || inputs.mode == 'full') && 'full' || 'fast' }}
   SUPABASE_URL: ${{ vars.SUPABASE_URL }}   # 會員登入（公開值，放在 repository variables）
   SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
 
 jobs:
+  # 完整測試和資料更新同時跑（不再排在更新前面）；測試沒過就不部署
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 自動測試（資料對齊、完整性、備援同步；失敗就不更新網站）
+        run: python -m unittest discover tests
+
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 150
@@ -39,8 +65,7 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - name: 自動測試（資料對齊、完整性、備援同步；失敗就不更新網站）
-        run: python -m unittest discover tests
+      - run: echo "這次是 ${MODE} 更新" >> "$GITHUB_STEP_SUMMARY"
 
       # 資料庫存在 Actions 快取（7 天沒用到或容量滿會被清掉，屆時自動重新回補）。
       # 長期使用建議改存到持久化儲存，見 README。
@@ -64,15 +89,16 @@ jobs:
           fi
 
       # 連線診斷只用來查問題，失敗不影響更新；資料是否可用由後面的「檢查資料是否最新」把關
-      - name: 連線診斷（結果發布在網站的 data/probe.json）
+      - name: 連線診斷（結果發布在網站的 data/probe.json；只在完整更新時跑）
+        if: env.MODE == 'full'
         continue-on-error: true
         run: python -m app.probe
 
-      - name: 更新資料（先抓最新收盤價，再回補歷史）
+      - name: 更新資料（快速：最近幾天；完整：再回補歷史、財報）
         id: update
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-        run: python -m app.update
+        run: python -m app.update $([ "$MODE" = fast ] && echo --fast)
 
       # 新聞與公告失敗不影響股價更新；網站新聞中心會顯示最後成功時間與警告
       - name: 新聞與公司公告
@@ -153,8 +179,8 @@ jobs:
         run: python -m app.check
 
   deploy:
-    needs: update
-    if: always() && needs.update.outputs.site == 'ok'
+    needs: [test, update]
+    if: always() && needs.test.result == 'success' && needs.update.outputs.site == 'ok'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

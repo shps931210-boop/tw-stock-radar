@@ -758,6 +758,29 @@ function homeSummary() {
   return `<ul style="margin:0;padding-left:18px;display:grid;gap:4px">${out.map((x) => `<li>${x}</li>`).join("")}</ul>
     <p class="faint small" style="margin:8px 0 0">以上都是 ${esc(d)} 收盤資料直接算出的數字，不是預測。</p>`;
 }
+// 首頁「資料更新狀態」：行情、籌碼、AI 量化選股各自標日期與時間；排程時間只當「下次啟動」，不當完成時間
+// 和 .github/workflows/update.yml、app/version.py 的 SCHEDULE 一致（台灣時間、週一到週五）
+const SCHED = [[14, 10], [14, 40], [16, 30], [21, 0]];
+function nextRun() {
+  const tw = new Date(Date.now() + 8 * 36e5);  // 用 UTC 欄位表示台灣時間
+  for (let d = 0; d < 8; d++) { const x = new Date(Date.UTC(tw.getUTCFullYear(), tw.getUTCMonth(), tw.getUTCDate() + d)); if ([0, 6].includes(x.getUTCDay())) continue;
+    for (const [h, m] of SCHED) { const c = new Date(x.getTime() + (h * 60 + m) * 6e4); if (c > tw) return c.toISOString().slice(0, 16); } }
+  return "";
+}
+function statusCard() {
+  const d = SNAP.data_dates || {}, px = d.prices, st = SNAP.stocks.filter((s) => s.is_common);
+  const mx = (k) => st.reduce((a, s) => (s[k] && s[k] > a ? s[k] : a), "");
+  const inst = mx("inst_date"), mg = mx("margin_date"), V = VER || {};
+  const lag = (x) => !x ? '<span class="faint">沒有資料</span>' : x < px ? `<span style="color:var(--warn)">${esc(x)}（比行情晚）</span>` : esc(x);
+  const cell = (h, main, sub) => `<div class="kpi"><span>${h}</span><b style="font-size:16px">${main}</b><small class="faint">${sub}</small></div>`;
+  return `<section class="card"><div class="card-h"><h2>資料更新狀態</h2>${V.data_state_label ? `<span class="pill ${V.data_state === "postclose_final" ? "s-ok" : "warn"}">${esc(V.data_state_label)}</span>` : ""}</div>
+    <div class="kpis">
+      ${cell("收盤行情", `<span class="num">${esc(px || "—")}</span>`, `網站發布 ${twTime(V.published_at)}${V.update_mode === "fast" ? "・快速收盤更新" : V.update_mode === "full" ? "・完整更新" : ""}`)}
+      ${cell("法人／融資", `<span class="num">${lag(inst)}</span>`, `融資 ${lag(mg)}・融資約 21:00 才公布`)}
+      ${cell("AI 量化選股", `模型 ${esc(SNAP.model?.version || "—")}`, `計算於 ${twTime(SNAP.generated_at)}・用 ${esc(px || "—")} 行情`)}
+      ${cell("財報與營收", `<span class="num">${esc(d.financials || "—")}</span>`, `月營收 ${esc(d.revenue || "—")}・財報與股利在每晚完整更新`)}</div>
+    <p class="faint small" style="margin:8px 0 0">${nextRun() ? `下次排程啟動 ${twTime(nextRun())}（GitHub 排程常會晚幾分鐘到幾十分鐘，跑完約 5 分鐘才會出現在網站）。` : ""}只有盤後資料，沒有盤中即時行情。</p></section>`;
+}
 function pageHome() {
   const m = SNAP.market, b = SNAP.breadth, MB = SNAP.market_board?.markets;
   const ranked = SNAP.stocks.filter((s) => s.ai.modes.balanced.rank).sort((a, b) => a.ai.modes.balanced.rank - b.ai.modes.balanced.rank);
@@ -777,6 +800,7 @@ function pageHome() {
         ${A ? `<div class="kpi"><span>漲停／跌停家數</span><b><span class="up">${A.limit_up}</span> / <span class="down">${A.limit_down}</span></b><small class="faint">依實際漲跌停價判定</small></div>
         <div class="kpi"><span>成交金額</span><b>${money(A.value)}</b><small class="faint">上市 ${money(MB.twse.value)}・上櫃 ${money(MB.tpex.value)}</small></div>` : ""}</div>
 </section>
+    ${statusCard()}
     <section class="core">
       <a class="corecard" href="#/ai"><span class="eyebrow">系統主動排名</span><h2>AI 量化選股</h2>
         <p>五個因子替全市場評分排名，每檔附理由。</p>
