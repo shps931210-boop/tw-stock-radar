@@ -44,7 +44,7 @@ class Parse(unittest.TestCase):
 
 class Latest(unittest.TestCase):
     def test_latest_shape(self):
-        with tempfile.TemporaryDirectory() as d, mock.patch.object(config, "DATA_DIR", Path(d)):
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(config, "DATA_DIR", Path(d)), mock.patch.object(db, "DATA_DIR", Path(d)):
             today = config.today().isoformat()
             with db.connect("t.db") as con:
                 con.executescript(news.SCHEMA)

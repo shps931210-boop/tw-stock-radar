@@ -20,7 +20,8 @@ class ModelHash(unittest.TestCase):
 
 class Wording(unittest.TestCase):
     """術語表：舊名稱不應再出現在網站上（README 的術語表除外）。"""
-    OLD = ["觀察清單", "我的排行", "今日技術訊號", "成績單", "可信度中心", "策略雷達", "條件選股", "AI 選股", "我的儀表板", "尚未經台股歷史回測驗證"]
+    OLD = ["觀察清單", "我的排行", "今日技術訊號", "成績單", "可信度中心", "策略雷達", "AI 選股", "我的儀表板", "尚未經台股歷史回測驗證",
+           "多因子篩選器", "個人化選股", "投資儀表板", "數據品質與來源", "績效驗證"]  # V15 改名
 
     def test_no_old_terms_in_site(self):
         html = (ROOT / "static" / "index.html").read_text("utf-8")

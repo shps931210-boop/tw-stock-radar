@@ -401,7 +401,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
         <a href="#/watch" data-r="watch">自選股<span class="cnt" id="wcnt">0</span><small>追蹤加入後的價格與評分</small></a>
         <a href="#/mine" data-r="mine">我的 AI 推薦<small>依你的研究偏好重新排序，不改變客觀模型分數</small></a>
         <a href="#/alerts" data-r="alerts">通知<small>自選股的訊號、評分與事件提醒</small></a></div></details>
-      <a href="#/performance" data-r="performance" title="AI 選股名單上線後的事後追蹤、技術訊號歷史回測">績效與回測</a>
+      <a href="#/performance" data-r="performance" title="AI 名單上線後的事後追蹤、技術訊號歷史回測">績效與回測</a>
       <details class="grp" data-g="data"><summary>資料與設定</summary><div class="menu">
         <a href="#/trust" data-r="trust">資料來源與方法<small>資料日期、來源狀態、模型版本與驗證</small></a>
         <a href="#/catalog" data-r="catalog">指標資料庫<small>每個指標的公式、單位與限制</small></a>
@@ -990,7 +990,7 @@ function pagePerformance() {
   const g = (x) => x?.avg == null ? "—" : `<span class="${signCls(x.avg)}">${pctTxt(x.avg)}</span>`;
   const gx = (x) => x?.excess == null ? "—" : `<span class="${signCls(x.excess)}">${pctTxt(x.excess)}</span>`;
   $("#app").innerHTML = `
-    <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 選股績效與回測</h1>
+    <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 量化選股績效與回測</h1>
       <p class="lead">每天收盤後的 AI 名單在開盤前就公開存檔，之後用固定規則計算：隔天開盤買進、第 N 個交易日收盤賣出、扣交易成本，和 0050、全市場、同產業比較。這是真實的事後紀錄，不是回測，也不代表未來報酬。</p></section>
     <section class="card"><div class="card-h"><h2>三種驗證，狀態不同</h2></div>
       <div class="tbl"><table class="wrap"><thead><tr><th>驗證方式</th><th>回答的問題</th><th>狀態</th></tr></thead><tbody>
@@ -998,7 +998,7 @@ function pagePerformance() {
         <tr><td><b>AI 多因子歷史回測</b><br><span class="faint small">用過去資料重建當時的 AI 排名</span></td><td>如果過去每個月都照模型選前 N 名，結果如何？</td><td><span class="pill warn">尚未完成</span> 正在建立「只用當時已公布資料」的評分引擎；完成前，網站不宣稱 AI 模型已通過歷史回測</td></tr>
         <tr><td><b>技術訊號歷史回測</b><br><span class="faint small">只檢驗技術訊號，不是 AI 綜合分數</span></td><td>出現某個技術訊號後 5、20 天的表現？</td><td><span class="pill">已有結果</span> 見 <a href="#/trust">資料來源與方法</a>；目前結果沒有勝過大盤</td></tr>
       </tbody></table></div>
-      <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 選股的歷史獲利能力」。</p></section>
+      <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 量化選股的歷史獲利能力」。</p></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
     ${modelCompare(tr)}
