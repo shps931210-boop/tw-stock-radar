@@ -99,7 +99,7 @@ def strengths(r: dict) -> list[str]:
 def risks(r: dict) -> list[str]:
     out = []
     if r.get("base_ok") and r.get("missing_factors"):
-        out.append(f"資料不足：{'；'.join(r.get('missing_detail') or r['missing_factors'])}，暫不列入完整綜合排名")
+        out.append(f"排行榜資料不完整：{'；'.join(r.get('missing_detail') or r['missing_factors'])}，暫不列入完整綜合排名")
     for n in r.get("stale_notes") or []:
         out.append(f"資料過期：{n}，不列入計分")
     if r.get("eps_q_turn") in ("盈轉虧", "持續虧損"):
@@ -193,7 +193,7 @@ def summary(r: dict) -> str:
     """一句話結論。"""
     t, a = r.get("timing", {}), r["ai"]
     if r.get("exclude_reasons"):
-        return f"未通過基本門檻（{'、'.join(r['exclude_reasons'])}），不列入選股。"
+        return f"未通過排行榜基本門檻（{'、'.join(r['exclude_reasons'])}），不列入選股排名；下方研究卡仍提供已取得的分項分數、估值與進出場條件。"
     body = a["tag"] if a["tag"] not in ("資料不足", "各項表現普通") else "體質表現普通"
     if t.get("status") == "buy":
         when = f"目前出現「{TRIGGERS[t['triggers'][0]]}」技術訊號（歷史回測並未證明能勝過大盤）"
@@ -202,7 +202,7 @@ def summary(r: dict) -> str:
     elif t.get("status") == "watch":
         when = "趨勢仍在，但還沒出現技術訊號，可列入觀察"
     elif r.get("missing_factors"):
-        return f"資料不足（{'；'.join(r.get('missing_detail') or r['missing_factors'])}），暫不列入完整綜合排名與技術訊號。"
+        return f"排行榜需要的因子還缺{'、'.join(r['missing_factors'])}，暫不列入完整綜合排名與技術訊號；其他已取得的分析照常顯示。"
     elif not t.get("quality_ok"):
         when = "AI 體質分數未達技術訊號的門檻"
     else:

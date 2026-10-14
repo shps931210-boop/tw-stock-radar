@@ -255,7 +255,13 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .dtile span { font-size: 12px; color: var(--muted); } .dtile b { font-size: 20px; } .dtile b small { font-size: 12px; color: var(--muted); font-weight: 400; } .dtile small { font-size: 12px; color: var(--faint); }
 .dtile.good { border-color: color-mix(in srgb, var(--info) 45%, var(--line)); background: var(--info-bg); } .dtile.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); background: var(--warn-bg); }
 .dtile.acc { background: var(--accent-soft); }
-.qmini { display: inline-flex; align-items: flex-end; gap: 2px; height: 20px; vertical-align: middle; }
+.mods { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .pbars { display: grid; gap: 6px; margin-top: 8px; }
+  .pbar { display: grid; grid-template-columns: 80px minmax(0, 1fr) 64px; gap: 8px; align-items: center; font-size: 13px; }
+  .pbar i { display: block; height: 8px; border-radius: 4px; background: var(--chip); overflow: hidden; }
+  .pbar i.na { background: repeating-linear-gradient(45deg, var(--chip) 0 4px, transparent 4px 8px); }
+  .pbar em { display: block; height: 100%; background: var(--accent); }
+  .qmini { display: inline-flex; align-items: flex-end; gap: 2px; height: 20px; vertical-align: middle; }
   .qmini i { display: block; width: 7px; border-radius: 1px; background: var(--up); }
   .qmini i.down { background: var(--down); }
   .qbars { display: grid; gap: 6px; } .qrow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1.4fr); gap: 10px; align-items: center; font-size: 13px; }
@@ -1188,6 +1194,24 @@ function pagePerformance() {
 }
 
 // 對帳報告：網站另外用一套獨立寫法，從資料庫的原始成交價重算績效和產業數字，逐筆比對（app/audit.py）
+// 個股研究資料覆蓋率（data/coverage.json，app/coverage.py 每次重算快照時產生）
+async function loadCoverage() {
+  const el = $("#covCard"); if (!el || !SITE) return;
+  let C; try { const r = await fetch("data/coverage.json?v=" + (VER?.datasets?.["coverage.json"] || Date.now())); C = r.ok ? await r.json() : null; } catch (e) { C = null; }
+  if (!C) return;
+  const ST = { ready: "完成", partial: "部分完成", insufficient_history: "歷史不足", stale: "資料過期", not_applicable: "不適用", missing_source: "尚未取得", calculation_error: "計算異常" };
+  const ks = Object.keys(ST);
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>個股研究資料覆蓋率</h2><span class="muted small">${C.stocks} 檔普通股・資料日 ${esc(C.prices || "")}</span></div>
+    <p class="small" style="margin:0 0 10px">個股研究卡的每個部分分開判斷：缺一項資料只影響那一項，其他已取得的分析照常顯示。「可用」= 完成＋部分完成。</p>
+    <div class="tbl"><table><thead><tr><th>研究模組</th><th class="r">可用</th>${ks.map((k) => `<th class="r">${ST[k]}</th>`).join("")}</tr></thead><tbody>
+      ${Object.values(C.modules).map((m) => `<tr><td>${esc(m.name)}</td><td class="r num"><b>${m.usable ?? "—"}%</b></td>${ks.map((k) => `<td class="r num">${m.counts[k] || ""}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <h3 style="margin:14px 0 6px">缺漏原因排行（影響檔數）</h3>
+    <div class="tbl"><table class="wrap"><tbody>${C.reasons.slice(0, 12).map((r) => `<tr><td style="white-space:nowrap">${esc(r.module)}</td><td>${esc(r.why)}</td><td class="r num">${r.stocks}</td></tr>`).join("")}</tbody></table></div>
+    <details style="margin-top:10px"><summary class="small">八類代表股票的研究狀態（驗收樣本）</summary><div class="tbl"><table><thead><tr><th>類別</th><th>股票</th>${["行情", "基本面", "估值", "短線", "波段", "長期", "AI"].map((x) => `<th>${x}</th>`).join("")}</tr></thead><tbody>
+      ${Object.entries(C.samples).map(([k, x]) => `<tr><td>${esc(k)}</td>${x ? `<td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td>${Object.values(x.status).map((v) => `<td class="small">${esc(ST[v] || "—")}</td>`).join("")}` : '<td colspan="8" class="faint">目前沒有這類股票</td>'}</tr>`).join("")}</tbody></table></div></details>
+    <p class="faint small" style="margin:8px 0 0">財報與月營收歷史來自 FinMind，免費額度每小時有限；每次完整更新先補從沒抓過的股票（依成交金額排序），額度用完就停，下一次接著補。完整 AI 排行榜仍要求五個因子都齊全才排名。</p>`;
+}
 async function loadAudit() {
   const el = $("#auditCard"); if (!el) return;
   const A = SITE ? await fetch("data/audit/latest.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null;
@@ -1204,7 +1228,7 @@ async function loadAudit() {
     ${(A.warnings || []).length ? `<p class="small" style="color:var(--warn);margin:6px 0 0">${esc(A.warnings.join("；"))}</p>` : ""}`;
 }
 function pageTrust() {
-  setTimeout(loadAudit, 0);
+  setTimeout(loadAudit, 0); setTimeout(loadCoverage, 0);
   const d = SNAP.data_dates, q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h])), fr = SNAP.freshness_rule || {};
   const base = SNAP.stocks.filter((s) => s.base_ok), comp = base.filter((s) => s.complete).length;
   const miss = {}; base.forEach((s) => (s.missing_factors || []).forEach((f) => (miss[f] = (miss[f] || 0) + 1)));
@@ -1213,6 +1237,7 @@ function pageTrust() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">資料、模型、績效都攤開來看</div><h1>資料來源與方法</h1>
       <p class="lead">每個資料來源的最新資料日、更新時間與狀態，目前使用的模型版本，以及模型的驗證結果。「資料日」是行情所屬的交易日；「發布時間」是網站完成計算的時間。</p></section>
+    <section class="card" id="covCard" hidden></section>
     <section class="card" id="auditCard"><h2 style="margin-top:0">獨立對帳</h2><p class="muted small" style="margin:0">讀取對帳報告中…</p></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>資料狀態</h2>${SNAP.rankings_blocked ? '<span class="pill bad">暫停排名</span>' : '<span class="pill acc">正常</span>'}</div>
@@ -2782,7 +2807,7 @@ function researchCard(s, d) {
   const r = s.ai.modes.balanced.rank;
   if (r && r > 20 && r <= 30) tr.push(`AI 均衡型排名第 ${r} 名，接近前 20 名${at(s.date)}`);
   if (r && r > 15 && r <= 20) tr.push(`AI 均衡型排名第 ${r} 名，在前 20 名的邊緣${at(s.date)}`);
-  if (s.base_ok && !s.complete) tr.push(`資料不足、暫不排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}`);
+  if (s.base_ok && !s.complete) tr.push(`排行榜資料不完整、暫不排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}`);
   const col = (t, cls, xs, none) => `<div><h3 class="${cls}">${t}</h3><ul style="margin:4px 0 0;padding-left:18px;font-size:13px;display:grid;gap:3px">${xs.map((x) => `<li>${x}</li>`).join("") || `<li class="muted">${none}</li>`}</ul></div>`;
   return `<section class="card"><div class="card-h"><h2>研究摘要</h2><span class="muted small">由數據規則整理，括號是資料日期</span></div>
     <div class="three">${col("優勢", "ok", st, "沒有特別突出的指標")}${col("風險", "down", rk, "沒有偵測到明顯風險指標")}${col("近期變化", "", ch, "沒有資料")}${col("待追蹤", "", tr, "近期沒有已知事件")}</div>
@@ -2797,20 +2822,39 @@ function valLabel(v) {
 }
 function planLine(s) {
   const p = s.plan; if (!p) return "";
-  const a = s.ai?.modes?.balanced?.score, q = a == null ? "量化分數不足" : a >= 70 ? "量化品質較高" : a >= 50 ? "量化品質中等" : "量化品質偏弱";
+  const a = s.complete ? s.ai?.modes?.balanced?.score : null, q = a == null ? "未列入 AI 排名" : a >= 70 ? "量化品質較高" : a >= 50 ? "量化品質中等" : "量化品質偏弱";
   const sw = { triggered: "波段進場條件成立", setup: "波段觀察中", none: "波段條件未成立", na: "波段無法判定", blocked: "波段暫停" }[p.swing];
-  const v = p.pe_pct == null ? "估值無法判定" : p.pe_pct >= 70 ? "估值偏高" : p.pe_pct <= 30 ? "估值偏低" : "估值中間";
+  const v = p.pe_pct == null ? "沒有歷史估值區間" : p.pe_pct >= 70 ? "估值偏高" : p.pe_pct <= 30 ? "估值偏低" : "估值中間";
   return `${q}｜${sw}｜${v}`;
+}
+const MODS = { quote: "行情", fundamental: "基本面", valuation: "估值", short: "短線", swing: "波段", long: "長期", ai: "AI 評分" };
+const MCLS = { ready: "acc", partial: "", not_applicable: "", insufficient_history: "warn", missing_source: "warn", stale: "warn", calculation_error: "warn" };
+const FNAME = { quality: "財務品質", growth: "成長能力", value: "估值合理性", momentum: "股價動能", trend: "趨勢確認" };
+function modStrip(MD) {
+  const ks = Object.keys(MODS).filter((k) => MD[k]); if (!ks.length) return "";
+  const todo = ks.filter((k) => MD[k].status !== "ready" && MD[k].why);
+  return `<div class="mods">${ks.map((k) => `<span class="pill ${MCLS[MD[k].status] ?? ""}" title="${esc(MD[k].why || "")}">${MODS[k]}・${esc(MD[k].label)}</span>`).join("")}</div>
+    ${todo.length ? `<details class="small" style="margin:-4px 0 12px"><summary>還沒完成的部分與原因（${todo.length}）</summary><ul style="margin:6px 0 0;padding-left:18px">${todo.map((k) => `<li><b>${MODS[k]}</b>：${esc(MD[k].why)}${MD[k].asof ? `<span class="faint">（資料 ${esc(MD[k].asof)}）</span>` : ""}</li>`).join("")}</ul></details>` : ""}`;
+}
+function partScores(s, D) {
+  if (s.complete) return "";
+  const sc = s.base_ok ? Object.fromEntries(Object.keys(FNAME).map((f) => [f, s["score_" + f]]).filter(([, v]) => v != null)) : (D.ref_scores || {});
+  const ks = Object.keys(FNAME);
+  if (!Object.keys(sc).length) return "";
+  return `<div class="dbt" style="margin-top:12px"><b>${s.base_ok ? "已取得的分項分數" : "參考分項分數"}</b><span class="muted small">　${s.base_ok ? "五個因子沒有全部算得出來，所以沒有完整綜合分數與排名" : "沒有進排行榜的股票，拿自己的指標和排行榜股票比較，算出在全市場的相對位置；不計算綜合分數、不排名"}</span>
+    <div class="pbars">${ks.map((f) => `<div class="pbar"><span>${FNAME[f]}</span>${sc[f] == null ? '<i class="na"></i><small class="faint">還不能算</small>' : `<i><em style="width:${Math.max(2, sc[f])}%"></em></i><small class="num">${fmtNum(sc[f], 0)}</small>`}</div>`).join("")}</div>
+    <p class="faint small" style="margin:6px 0 0">分數 0～100，50 是中間。缺的因子不當作 0 分，也不用其他因子補。</p></div>`;
 }
 function decisionCard(s, d) {
   const D = d.decision; if (!D) return "";
+  const MD = D.modules || {}, ref = D.ref_scores;
   const hz = store.get("hz", "swing"), st = D.strategy || {}, V = D.valuation || {}, BT = SNAP.strategy_bt || {};
   const a = s.ai?.modes?.balanced || {}, vl = valLabel(V);
   const tile = (h, main, sub, cls = "") => `<div class="dtile ${cls}"><span>${h}</span><b>${main}</b><small>${sub}</small></div>`;
   const plan = hz === "long" ? D.long : st[hz];
   const stTxt = D.blocked ? PLAN_TXT.blocked : PLAN_TXT[(plan || {}).state || "na"];
   const R = hz === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[hz];
-  const lv = hz !== "long" && st.ready ? st[hz] : null;
+  const lv = hz !== "long" && st.ready && st[hz]?.state !== "na" ? st[hz] : null;
   const bt = hz !== "long" ? BT.modes?.[hz] : null;
   const btLine = !bt || !bt.n ? "" : `<div class="dbt"><b>這套規則過去的表現</b>（${esc(BT.start || "")}～${esc(BT.end || "")}，全市場 ${fmtNum(bt.n, 0)} 筆交易，已扣成本）
       <div class="kpis" style="margin-top:6px">${[["勝率", bt.win + "%"], ["平均每筆", pctTxt(bt.avg)], ["中位數", pctTxt(bt.median)], ["平均比 0050", pctTxt(bt.excess)], ["平均持有", bt.days + " 天"], ["平均最大浮虧", pctTxt(bt.mae)]]
@@ -2823,12 +2867,20 @@ function decisionCard(s, d) {
       <p class="small" style="margin:6px 0 0">目前股價 <b class="num">${fmtNum(s.close)}</b>，本益比 <b class="num">${fmtNum(V.pe, 1)}</b> 倍，高於自己近兩年 <b class="num">${fmtNum(V.pct, 0)}%</b> 的日子${V.peer ? `；同產業中位數 ${fmtNum(V.peer, 1)} 倍（${V.peer_n} 檔）` : ""}。
         ${V.implied_growth > 0 ? `要回到自己的中位數本益比，近四季 EPS 需要再成長約 <b>${fmtNum(V.implied_growth, 0)}%</b>，這就是目前股價隱含的成長預期。` : `目前本益比低於自己的中位數，就算 EPS 下滑約 ${fmtNum(-V.implied_growth, 0)}%，本益比也只會回到中位數。`}</p>
       <p class="faint small" style="margin:4px 0 0">三情境 = 近四季 EPS ${fmtNum(V.eps)} 元 × 自己歷史本益比第 20／50／80 百分位（${fmtNum(V.p20, 1)}／${fmtNum(V.p50, 1)}／${fmtNum(V.p80, 1)} 倍，${esc(V.from)} 起 ${V.days} 個交易日）。本益比用財報 EPS 自算，季報在法定期限隔天才算公布。${V.note ? esc(V.note) + "。" : ""}這是研究區間，不是目標價。</p>`; })()
-    : `<p class="muted small" style="margin:0">${esc(V.why || "沒有估值資料")}</p>`;
+    : `${V.pe != null || V.pbr || V.dy ? `<p class="small" style="margin:0">${[V.pe != null ? `目前本益比 <b class="num">${fmtNum(V.pe, 1)}</b> 倍（${V.pe_src === "official" ? `交易所公布，${esc(V.val_date || "")}` : `近四季 EPS ${fmtNum(V.eps)} 元自算`}）` : "",
+        V.peer ? `同產業本益比中位數 <b class="num">${fmtNum(V.peer, 1)}</b> 倍（${V.peer_n} 檔）${V.pe != null ? `，${V.pe <= V.peer ? "低於" : "高於"}同業` : ""}` : "",
+        V.pbr ? `股價淨值比 <b class="num">${fmtNum(V.pbr, 2)}</b> 倍` : "", V.dy ? `殖利率 <b class="num">${fmtNum(V.dy, 2)}%</b>` : ""].filter(Boolean).join("；")}。</p>` : ""}
+      <p class="muted small" style="margin:6px 0 0">歷史估值區間：${esc(V.why || "沒有估值資料")}</p>
+      ${V.peer ? `<p class="faint small" style="margin:4px 0 0">同產業的公司業務與獲利結構可能差很多，同業中位數只是粗略參考，不是合理價。</p>` : ""}`;
   return `<section class="card dcard"><div class="card-h"><h2>研究決策卡</h2><span class="muted small">好公司、好價格、好時機分開判斷・資料日 ${esc(s.date)}</span></div>
     <div class="dtiles">
-      ${tile("量化品質", a.score == null ? "—" : `${fmtNum(a.score, 0)} <small>/ 100</small>`, a.rank ? `AI 均衡型第 ${a.rank} 名・全市場相對分數` : "未進排行榜")}
-      ${tile("目前估值", vl ? vl[0] : "無法判定", V.p50 != null ? `本益比 ${fmtNum(V.pe, 1)} 倍・歷史位階 ${fmtNum(V.pct, 0)}%` : esc((V.why || "").slice(0, 30)), vl?.[1] || "")}
-      ${tile(`${HZ[hz]}策略`, stTxt[0], hz === "long" ? "基本面＋估值" : lv ? `參考停損 ${fmtNum(lv.stop)}・風險 ${fmtNum(lv.risk_pct, 1)}%` : "資料不足", stTxt[1])}</div>
+      ${a.score != null && s.complete ? tile("量化品質", `${fmtNum(a.score, 0)} <small>/ 100</small>`, a.rank ? `AI 均衡型第 ${a.rank} 名・全市場相對分數` : "未進排行榜")
+        : (() => { const sc = s.base_ok ? Object.fromEntries(Object.keys(FNAME).map((f) => [f, s["score_" + f]]).filter(([, v]) => v != null)) : (ref || {}), n = Object.keys(sc).length;
+          return tile("量化品質", n ? `${n} / 5 項分數` : "還不能評分", n ? Object.entries(sc).slice(0, 3).map(([f, v]) => `${FNAME[f].slice(0, 2)} ${fmtNum(v, 0)}`).join("・") + "（不排名）" : esc((MD.ai?.why || "").slice(0, 34))); })()}
+      ${tile("目前估值", vl ? vl[0] : V.pe != null ? `本益比 ${fmtNum(V.pe, 1)} 倍` : esc(MD.valuation?.label || "無法判定"),
+        V.p50 != null ? `本益比 ${fmtNum(V.pe, 1)} 倍・歷史位階 ${fmtNum(V.pct, 0)}%` : V.pe != null && V.peer ? `同業中位數 ${fmtNum(V.peer, 1)} 倍・沒有歷史區間` : esc((V.why || "").slice(0, 30)), vl?.[1] || "")}
+      ${tile(`${HZ[hz]}策略`, stTxt[0], hz === "long" ? (plan?.status === "partial" ? "基本面＋估值・部分判斷" : "基本面＋估值") : lv ? `參考停損 ${fmtNum(lv.stop)}・風險 ${fmtNum(lv.risk_pct, 1)}%` : esc((MD[hz]?.why || plan?.miss?.[0] || "").slice(0, 34)), stTxt[1])}</div>
+    ${modStrip(MD)}${partScores(s, D)}
     ${D.blocked ? `<div class="banner warn small">${esc(D.blocked)}</div>` : ""}
     <div class="seg" id="hzSeg" style="margin:14px 0 10px">${Object.entries(HZ).map(([k, n]) => `<button data-h="${k}" class="${k === hz ? "on" : ""}">${n}<small class="hzh">（${esc((k === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[k])?.hold || "")}）</small></button>`).join("")}</div>
     ${R ? `<div class="tbl"><table class="wrap dplan"><tbody>
@@ -2838,6 +2890,7 @@ function decisionCard(s, d) {
         <div class="faint small">實際進場價是訊號隔天開盤價，價位會跟著調整。ATR ${fmtNum(st.atr)}（股價的 ${fmtNum(st.atr_pct, 1)}%）。</div></td></tr>` : ""}
       <tr><th>停損／失效</th><td>${esc(R.stop)}<br><span class="muted small">論點失效：${esc(R.invalid)}</span></td></tr>
       <tr><th>停利／出場</th><td>${esc(hz === "long" ? R.exit : R.target)}${hz === "long" ? "" : `<br><span class="muted small">${esc(R.exit)}</span>`}</td></tr>
+      ${plan?.note ? `<tr><th>判斷範圍</th><td class="small">${esc(plan.note)}</td></tr>` : ""}
       ${(plan?.warn || []).length ? `<tr><th>警示</th><td style="color:var(--warn)">${plan.warn.map(esc).join("；")}</td></tr>` : ""}</tbody></table></div>` : ""}
     ${hz === "long" ? `<p class="small muted" style="margin:8px 0 0">長期規則用的估值歷史還不夠長，沒有單獨回測。最接近的驗證是 <a href="#/performance">AI 多因子歷史回測</a>（每月依均衡型排名換股，規則不完全相同）。</p>` : btLine}
     <h3 style="margin:16px 0 6px">估值區間</h3>${band}
@@ -2891,8 +2944,8 @@ async function pageStock(id) {
       <div style="text-align:right"><div class="px">${fmtNum(s.close)}</div><div class="num ${signCls(s.chg_pct)}" style="font-size:15px">${pctTxt(s.chg_pct)}</div></div></section>
     <div class="actbar" role="navigation" aria-label="研究動作">${starBtn(id)}<button class="btn sm" data-j="j-chat">問 AI 這檔</button>${Object.values(s.ai.modes).some((x) => x.rank) ? '<button class="btn sm ghost" id="toRc">AI 排名理由</button>' : ""}
       <button class="btn sm ghost" data-j="j-bd">分數怎麼來</button><button class="btn sm ghost" data-j="j-peer">同業比較</button><button class="btn sm ghost" data-j="j-tl">研究時間軸</button><button class="btn sm ghost" data-j="j-news">公告新聞</button><a class="btn sm ghost" href="#/alerts">設定通知</a></div>
-    ${s.exclude_reasons?.length ? `<div class="banner bad">未通過基本門檻：${s.exclude_reasons.map(esc).join("、")}</div>` : ""}
-    ${s.base_ok && !s.complete ? `<div class="banner warn">資料不足，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
+    ${s.exclude_reasons?.length ? `<div class="banner warn">未通過排行榜基本門檻（${s.exclude_reasons.map(esc).join("、")}），不列入選股排名；下方研究卡仍提供已取得的分析。</div>` : ""}
+    ${s.base_ok && !s.complete ? `<div class="banner warn">排行榜資料不完整，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
     <div class="meta-row" style="margin-top:0">${[["股價", s.date], ["法人", s.inst_date], ["融資", s.margin_date], ["本益比", s.val_date], ["月營收", s.rev_ym], ["財報", s.fin_period]]
       .map(([l, v]) => `<span>${l} <b class="num">${v || "—"}</b></span>`).join("")}<span>資料完整度 <b class="num">${s.data_completeness ?? "—"}%</b></span>
       ${s.industry_rank ? `<span>產業內 <b class="num">${s.industry_rank} / ${s.industry_n}</b>（${esc(s.industry)}）</span>` : ""}</div>

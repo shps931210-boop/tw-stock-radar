@@ -113,6 +113,8 @@ fac = root / "history" / "backtest" / "factors.json"
 if fac.exists():  # 因子有效性檢驗（python -m app.factor_research，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(fac, out / "data" / "backtest" / "factors.json")
+if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
+    shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
 if (config.DATA_DIR / "probe.json").exists():  # 連線診斷結果（python -m app.probe）
     shutil.copy(config.DATA_DIR / "probe.json", out / "data" / "probe.json")
 

@@ -7,6 +7,7 @@
 """
 from __future__ import annotations
 
+import json
 import argparse
 import re
 import traceback
@@ -286,12 +287,17 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
         plan = [("fm_revenue", 1 if config.today().day <= 12 else 7, fm.month_revenue, "revenue"),
                 ("fm_financials", 20, fm.financials, "financials"),
                 ("fm_dividends", 45, fm.dividends, "dividends")]
-        todo = []
+        # 補齊佇列：從來沒抓過的股票優先（依成交金額排序），再來才是定期重抓；額度用完就停，下次從還沒補到的繼續
+        new, due = [], []
         for sid in ids:
             for src, age, fn, table in plan:
                 t = db.fetched_at(con, src, sid)
-                if not t or config.now() - t > timedelta(days=age):
-                    todo.append((sid, src, fn, table))
+                if not t:
+                    new.append((sid, src, fn, table))
+                elif config.now() - t > timedelta(days=age):
+                    due.append((sid, src, fn, table))
+        todo = new + due
+        db.set_meta(con, "fundamental_queue", json.dumps({"new": len(new), "due": len(due), "stocks": len(ids)}))
         for n, (sid, src, fn, table) in enumerate(todo, 1):
             _say(progress, "財報與營收", n, len(todo), f"{sid} {src[3:]}")
             try:

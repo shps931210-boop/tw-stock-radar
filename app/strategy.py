@@ -68,8 +68,8 @@ def frame(px: pd.DataFrame) -> pd.DataFrame:
     return f
 
 
-def entries(f: pd.DataFrame) -> dict[str, pd.Series]:
-    """每一天收盤後，兩套策略的「進場條件成立」與「觀察條件（setup）成立」。"""
+def entries(f: pd.DataFrame, warmup: int = 60) -> dict[str, pd.Series]:
+    """每一天收盤後，兩套策略的「進場條件成立」與「觀察條件（setup）成立」。回測用 warmup=60 天暖機。"""
     c, o, h, lo = f["close"], f["open"], f["high"], f["low"]
     short_setup = (c > f["ma20"]) & (c >= f["hh20"] * 0.97)
     short = (c > f["hh20"]) & (f["vol_ratio"] >= 1.5) & (c > o) & (c > f["ma20"])
@@ -77,7 +77,7 @@ def entries(f: pd.DataFrame) -> dict[str, pd.Series]:
     touched = (lo <= f["ma20"] * 1.02).astype(float).rolling(3).max() == 1
     swing_setup = trend & touched
     swing = swing_setup & (c > f["ma20"]) & (c > h.shift(1))
-    warm = pd.Series(np.arange(len(f)) >= 60)
+    warm = pd.Series(np.arange(len(f)) >= warmup)
     return {"short": short & warm, "short_setup": short_setup & warm, "swing": swing & warm, "swing_setup": swing_setup & warm}
 
 
@@ -127,17 +127,27 @@ def simulate(f: pd.DataFrame, i: int, mode: str) -> dict | None:
     return None
 
 
+SHORT_MIN, SWING_MIN = 21, 80  # 短線要 20 日高點與 20 日均量；波段要季線與季線 20 天前的位置
+
+
 def status(px: pd.DataFrame) -> dict:
     """今天收盤後兩套技術策略的狀態（網站個股頁、決策卡用）。"""
-    if len(px) < 80:
-        return {"ready": False, "why": f"歷史股價只有 {len(px)} 天，至少要 80 天"}
+    n = len(px)
+    if n < SHORT_MIN:
+        return {"ready": False, "status": "insufficient_history", "days": n,
+                "why": f"歷史股價只有 {n} 天：短線規則至少要 {SHORT_MIN} 天（20 日高點、均量），波段規則要 {SWING_MIN} 天"}
     f = frame(px)
-    e = entries(f)
+    e = entries(f, warmup=0)
     t = f.iloc[-1]
     if pd.isna(t["atr"]) or not t["atr"]:
         return {"ready": False, "why": "波動資料不足"}
-    out = {"ready": True, "date": t["date"], "atr": float(t["atr"]), "atr_pct": float(t["atr"] / t["close"] * 100)}
+    out = {"ready": True, "status": "ready" if n >= SWING_MIN else "partial", "days": n,
+           "date": t["date"], "atr": float(t["atr"]), "atr_pct": float(t["atr"] / t["close"] * 100)}
     for m in ("short", "swing"):
+        if m == "swing" and n < SWING_MIN:
+            out[m] = {"state": "na", "status": "insufficient_history",
+                      "miss": [f"歷史股價只有 {n} 天，波段規則要看季線和季線方向，至少要 {SWING_MIN} 天"]}
+            continue
         on, setup = bool(e[m].iloc[-1]), bool(e[m + "_setup"].iloc[-1])
         lv = levels(m, float(t["close"]), float(t["atr"]))  # 以今天收盤價當參考進場價
         miss = []
@@ -158,30 +168,60 @@ def status(px: pd.DataFrame) -> dict:
 
 
 def long_status(s: dict, pe: dict | None) -> dict:
-    """長期策略：基本面與估值。s 是快照裡的個股資料，pe 是 valuation.band() 的結果。"""
-    q, g, comp = s.get("score_quality"), s.get("score_growth"), (s.get("ai") or {}).get("modes", {}).get("balanced", {}).get("score")
-    if q is None or g is None or comp is None:
-        return {"state": "na", "miss": ["財務或成長資料不足，無法判定"]}
+    """長期策略：基本面與估值。s 是快照裡的個股資料（可帶 ref_scores），pe 是估值結果（valuation.band() 加上交易所本益比）。
+    四項檢查：財務品質 ≥ 60、成長能力 ≥ 60、AI 均衡型綜合分數 ≥ 60、本益比不高於自己歷史中位數或同業中位數。
+    缺其中幾項時，用拿得到的項目做「部分判斷」（status=partial），最多只到「觀察中」，不會給「條件成立」；
+    品質和成長都沒有時才算無法判定。"""
+    ranked = bool(s.get("base_ok"))
+    ref = (s.get("ref_scores") or {}) if not ranked else {}
+    q = s.get("score_quality") if ranked else ref.get("quality")
+    g = s.get("score_growth") if ranked else ref.get("growth")
+    comp = (s.get("ai") or {}).get("modes", {}).get("balanced", {}).get("score") if ranked and s.get("complete") else None
+    det = {x.split("（")[0]: x for x in s.get("missing_detail") or []} if ranked else {}
+    unknown = []
+    if q is None: unknown.append(det.get("財務品質", "財務品質因子還不能計算（缺財報資料）"))
+    if g is None: unknown.append(det.get("成長能力", "成長能力因子還不能計算（缺財報或營收資料）"))
+    if comp is None:
+        ex = s.get("exclude_reasons") or []
+        unknown.append(f"沒有正式 AI 綜合分數：未通過排行榜基本門檻（{'、'.join(ex)}）" if ex else "沒有正式 AI 綜合分數：五個因子還沒有全部算得出來")
+    if q is None and g is None:
+        return {"state": "na", "status": "missing_source", "miss": unknown}
     miss, warn = [], []
-    if q < 60: miss.append(f"財務品質因子 {q:.0f} 分，未達 60")
-    if g < 60: miss.append(f"成長能力因子 {g:.0f} 分，未達 60")
-    if comp < 60: miss.append(f"AI 均衡型綜合分數 {comp:.0f}，未達 60")
+    if q is not None and q < 60: miss.append(f"財務品質因子 {q:.0f} 分，未達 60")
+    if g is not None and g < 60: miss.append(f"成長能力因子 {g:.0f} 分，未達 60")
+    if comp is not None and comp < 60: miss.append(f"AI 均衡型綜合分數 {comp:.0f}，未達 60")
     good = not miss
     cheap = None
-    if pe and pe.get("pe") and pe.get("p50"):
-        cheap = pe["pe"] <= pe["p50"] or (pe.get("peer") and pe["pe"] <= pe["peer"])
-        if not cheap: miss.append(f"本益比 {pe['pe']:.1f} 倍，高於自己近兩年中位數 {pe['p50']:.1f} 倍" + (f"與同業中位數 {pe['peer']:.1f} 倍" if pe.get("peer") else ""))
+    if pe and pe.get("pe") and (pe.get("p50") or pe.get("peer")):
+        cheap = bool((pe.get("p50") and pe["pe"] <= pe["p50"]) or (pe.get("peer") and pe["pe"] <= pe["peer"]))
+        if not cheap:
+            ref_txt = [f"自己近兩年中位數 {pe['p50']:.1f} 倍" if pe.get("p50") else None, f"同業中位數 {pe['peer']:.1f} 倍" if pe.get("peer") else None]
+            miss.append(f"本益比 {pe['pe']:.1f} 倍，高於" + "與".join(x for x in ref_txt if x))
         if pe.get("p80") and pe["pe"] > pe["p80"]: warn.append("本益比高於自己近兩年第 80 百分位，估值偏熱")
+        if not pe.get("p50"): warn.append("歷史本益比區間還不能算，只和同業中位數比較")
     elif pe and pe.get("why"):
-        miss.append(pe["why"])
+        unknown.append(pe["why"])
     ma240, close = s.get("ma240"), s.get("close")
     if ma240 and close:
         d = (close / ma240 - 1) * 100
         if d < -10: miss.append(f"股價在年線下方 {abs(d):.0f}%")
         if d < -15: warn.append("股價跌破年線 15% 以上，長期論點需要重新檢查")
-    if q < 40 or g < 40: warn.append("財務品質或成長因子低於 40 分，原本的長期論點可能已經不成立")
-    state = "na" if cheap is None and good else "triggered" if good and cheap and not [m for m in miss if "年線" in m] else "setup" if good else "none"
-    return {"state": state, "miss": miss, "warn": warn}
+    if (q is not None and q < 40) or (g is not None and g < 40): warn.append("財務品質或成長因子低於 40 分，原本的長期論點可能已經不成立")
+    full = not unknown and cheap is not None and bool(pe.get("p50"))
+    if not good:
+        state = "none"
+    elif cheap is None:
+        state = "na" if full else "setup"
+    elif cheap and not [m for m in miss if "年線" in m]:
+        state = "triggered" if not unknown else "setup"
+    else:
+        state = "setup"
+    out = {"state": state, "status": "ready" if full or (not unknown and cheap is not None) else "partial", "miss": miss + unknown, "warn": warn}
+    if unknown and state != "na":
+        out["note"] = "部分判斷：" + "；".join(unknown) + "。拿得到的項目照常檢查，少的項目不當作通過，所以最多只到「觀察中」"
+    if not ranked:
+        out["basis"] = "ref"
+    return out
 
 
 def backtest(dbname: str = "stocks.db") -> dict:

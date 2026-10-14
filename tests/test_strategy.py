@@ -73,7 +73,19 @@ class StatusMatchesBacktest(unittest.TestCase):
             self.assertAlmostEqual(st[m]["stop"], round(lv["stop"], 2))
 
     def test_not_ready_short_history(self):
-        self.assertFalse(strategy.status(bars([100] * 50))["ready"])
+        st = strategy.status(bars([100] * 10))
+        self.assertFalse(st["ready"])
+        self.assertEqual(st["status"], "insufficient_history")
+
+    def test_partial_history_runs_short_rule_only(self):
+        # 21～79 天：短線規則照算，波段明確標示歷史不足，不硬算
+        st = strategy.status(bars(list(np.linspace(100, 120, 50))))
+        self.assertTrue(st["ready"])
+        self.assertEqual(st["status"], "partial")
+        self.assertIn(st["short"]["state"], ("triggered", "setup", "none"))
+        self.assertIsNotNone(st["short"]["stop"])
+        self.assertEqual(st["swing"]["state"], "na")
+        self.assertEqual(st["swing"]["status"], "insufficient_history")
 
 
 class Valuation(unittest.TestCase):

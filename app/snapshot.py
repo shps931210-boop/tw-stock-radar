@@ -70,6 +70,59 @@ def _pctrank(s: pd.Series, mask: pd.Series, sign: int = 1) -> pd.Series:
     return x.rank(pct=True) * 100
 
 
+def _pct_vs(x: pd.Series, ref: pd.Series) -> pd.Series:
+    """x 在參考分布 ref 裡的百分位（0～100，同值取中間）。"""
+    r = np.sort(ref.dropna().to_numpy(float))
+    if not len(r):
+        return pd.Series(np.nan, index=x.index)
+    v = x.to_numpy(float)
+    p = (np.searchsorted(r, v, "left") + np.searchsorted(r, v, "right")) / 2 / len(r) * 100
+    return pd.Series(np.where(np.isnan(v), np.nan, p), index=x.index)
+
+
+def _ref_scores(df: pd.DataFrame, S_in: pd.DataFrame, base: pd.Series) -> list:
+    """個股研究用的「參考分項分數」：沒通過基本門檻（成交金額過低、交易日數不足等）的普通股，
+    拿自己的指標和「通過門檻的股票」比，算出各因子在全市場的相對位置。
+    必要欄位規則和正式分數相同，缺資料的因子不給分；這些分數不進綜合分數、不進排行榜。
+    通過門檻的股票直接用正式分數，不另外算。"""
+    out = [None] * len(df)
+    cand = df["is_common"].astype(bool) & ~base
+    if not cand.any():
+        return out
+    fin = df["is_financial"].astype(bool)
+    res = {}
+    for f, parts in FACTORS.items():
+        cols, have = [], []
+        for k, sign in parts:
+            x = S_in[k] * sign
+            applies = ~fin if k in ("debt_ratio", "op_margin") else pd.Series(True, index=df.index)
+            if f in ("quality", "value"):
+                v = pd.concat([_pct_vs(x.where(g), x.where(base & g)) for g in (fin, ~fin)], axis=1).bfill(axis=1).iloc[:, 0]
+            else:
+                v = _pct_vs(x, x.where(base & applies))
+            cols.append(v.where(applies))
+            have.append((S_in[k].notna() & applies).rename(k))
+        H = pd.concat(have, axis=1)
+        req, need = REQUIRED[f]
+        ok = H[req].all(axis=1) & (H.sum(axis=1) >= need)
+        res[f] = pd.concat(cols, axis=1).mean(axis=1, skipna=True).where(ok)
+    if "mom_12_1" in df:
+        res["momentum"] = _pct_vs(df["mom_12_1"], df["mom_12_1"].where(base))
+    tchecks = []
+    for a, b in (("close", "ma20"), ("ma20", "ma60"), ("ma60", "ma120"), ("close", "ma240")):
+        if a in df and b in df:
+            tchecks.append((df[a] > df[b]).where(df[b].notna()))
+    if "ma60_slope_20" in df:
+        tchecks.append((df["ma60_slope_20"] > 0).where(df["ma60_slope_20"].notna()))
+    if tchecks:
+        T = pd.concat(tchecks, axis=1).astype(float)
+        res["trend"] = (T.mean(axis=1) * 100).where(T.notna().sum(axis=1) >= TREND_MIN)
+    for i in np.flatnonzero(cand.to_numpy()):
+        d = {f: round(float(v.iloc[i]), 1) for f, v in res.items() if pd.notna(v.iloc[i])}
+        out[i] = d or None
+    return out
+
+
 def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]:
     """多因子評分（基本門檻、因子百分位、綜合分數）。today：判斷財報、營收是否過期的基準日（歷史回測傳當時的日期）。"""
     bf = cfg["base_filter"]
@@ -193,6 +246,7 @@ def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]
     small = (df["industry_n"] < 5) | (df["industry"].fillna("") == "")
     df.loc[small, ["industry_rank", "industry_n"]] = np.nan
     df["market_rank_pct"] = df["composite"].rank(pct=True) * 100
+    df["ref_scores"] = _ref_scores(df, S_in, base)
     if "earnings_yield" in df and "roa" in df:
         ok = base & ~df["is_financial"] & df["earnings_yield"].notna() & df["roa"].notna()
         combo = df["earnings_yield"].where(ok).rank(ascending=False) + df["roa"].where(ok).rank(ascending=False)
@@ -218,7 +272,9 @@ def build(demo: bool = False) -> dict:
         rows.append(rec)
     ai_model.annotate(rows)
     ai_model.timing(rows, cfg.get("buy_point", {}))
-    decision = _decision(rows)
+    with db.connect(dbname) as con:
+        fm_done = {k for (k,) in con.execute("SELECT key FROM fetch_log WHERE source='fm_financials' AND ok=1")} if not demo else None
+    decision = _decision(rows, max((r.get("date") or "" for r in rows), default=""), fm_done)
 
     with db.connect(dbname) as con:
         official = None if demo else db.get_meta(con, "official_latest_twse")
@@ -315,22 +371,92 @@ def build(demo: bool = False) -> dict:
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     (config.DATA_DIR / ("decision_demo.json" if demo else "decision.json")).write_text(json.dumps(decision, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    try:  # 個股研究資料覆蓋率（各模組狀態、缺漏原因排行）
+        from . import coverage
+        cov = {**coverage.build(rows, decision), "generated_at": out.get("generated_at"), "prices": price_day}
+        (config.DATA_DIR / ("coverage_demo.json" if demo else "coverage.json")).write_text(json.dumps(cov, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    except Exception as e:
+        print("覆蓋率報告失敗：", e)
     return out
 
 
-def _decision(rows: list[dict]) -> dict:
-    """個股研究決策卡：進出場策略狀態、估值區間、長期判斷。完整內容另存 data/decision.json（只放進個股 JSON），
+# 研究模組的資料狀態（個股研究卡分開顯示，不因一項缺資料就整張卡失效）
+STATUS_TXT = {"ready": "完成", "partial": "部分完成", "insufficient_history": "歷史不足", "missing_source": "尚未取得資料",
+              "stale": "資料過期", "not_applicable": "不適用", "calculation_error": "計算異常"}
+
+
+def _valuation_fill(r: dict, vb: dict | None) -> dict:
+    """自己算不出歷史本益比區間時，仍提供交易所公布的目前本益比、股價淨值比、殖利率與同業中位數（標明來源）。"""
+    v = dict(vb) if isinstance(vb, dict) else {"status": "missing_source", "why": "沒有估值計算結果"}
+    v.setdefault("status", "ready" if v.get("p50") is not None else "missing_source")
+    if v["status"] != "ready":
+        per, pbr, dy = r.get("per"), r.get("pbr"), r.get("dy")
+        if v.get("pe") is None and per and per > 0 and v["status"] != "not_applicable":
+            v["pe"], v["pe_src"] = per, "official"
+        v.update({k: x for k, x in (("pbr", pbr), ("dy", dy)) if x is not None and x > 0})
+        v["val_date"] = r.get("val_date")
+        if v["status"] == "missing_source" and (v.get("pe") or v.get("pbr")):
+            v["status"] = "partial"
+    return v
+
+
+def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set | None) -> dict:
+    """行情、基本面、估值、短線、波段、長期、AI 評分，各自的狀態與原因。"""
+    M = {}
+    d = r.get("date")
+    M["quote"] = ({"status": "ready", "asof": d} if d and d >= price_day else
+                  {"status": "stale", "asof": d, "why": f"最後成交 {d}，可能停牌或暫停交易"} if d else
+                  {"status": "missing_source", "why": "沒有收盤行情"})
+    fin, rev = r.get("fin_period"), r.get("rev_ym")
+    why = []
+    if not fin:
+        why.append("尚未取得季報" + ("（已排入補齊佇列，依成交金額與缺漏優先順序逐日抓取）" if fm_done is not None and r["stock_id"] not in fm_done else ""))
+    elif r.get("fin_stale"):
+        why.append(f"季報停在 {fin}")
+    if not rev:
+        why.append("尚未取得月營收")
+    elif r.get("rev_stale"):
+        why.append(f"月營收停在 {rev}")
+    M["fundamental"] = {"status": "ready" if not why else "stale" if fin and rev else "partial" if fin or rev else "missing_source",
+                        "asof": " / ".join(x for x in (fin, rev) if x) or None, "why": "；".join(why) or None}
+    M["valuation"] = {"status": v["status"], "why": v.get("why")}
+    if st.get("ready"):
+        M["short"] = {"status": "ready"}
+        M["swing"] = {"status": (st.get("swing") or {}).get("status", "ready"), "why": ((st.get("swing") or {}).get("miss") or [None])[0]
+                      if (st.get("swing") or {}).get("status") else None}
+    else:
+        M["short"] = M["swing"] = {"status": st.get("status", "calculation_error"), "why": st.get("why")}
+    M["long"] = {"status": lg.get("status", "ready"), "why": lg.get("note") or ("；".join(lg.get("miss") or []) if lg.get("state") == "na" else None)}
+    have = [f for f in SCORE_FACTORS if r.get(f"score_{f}") is not None] if r.get("base_ok") else list((r.get("ref_scores") or {}))
+    if r.get("base_ok") and r.get("complete"):
+        M["ai"] = {"status": "ready"}
+    else:
+        miss = [FACTOR_LABEL[f] for f in SCORE_FACTORS if f not in have]
+        ex = r.get("exclude_reasons") or []
+        why = (f"未通過排行榜基本門檻（{'、'.join(ex)}），只提供參考分項分數" if ex else "五個因子沒有全部算得出來，不列入排行榜")
+        M["ai"] = {"status": "partial" if have else "missing_source", "why": why + (f"；缺：{'、'.join(miss)}" if miss else "")}
+    for m in M.values():
+        m["label"] = STATUS_TXT.get(m["status"], m["status"])
+    return M
+
+
+def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None) -> dict:
+    """個股研究決策卡：進出場策略狀態、估值區間、長期判斷、各模組資料狀態。完整內容另存 data/decision.json（只放進個股 JSON），
     快照裡只留一行摘要（plan），避免整份快照變大。"""
     from . import strategy, valuation
     valuation.add_peers(rows)
     out = {}
     for r in rows:
-        st, vb = r.pop("strategy", None), r.pop("valuation_band", None)
-        if not r.get("is_common") or not isinstance(st, dict):
+        st, vb, ref = r.pop("strategy", None), r.pop("valuation_band", None), r.pop("ref_scores", None)
+        if not r.get("is_common"):
             continue
+        st = st if isinstance(st, dict) else {"ready": False, "status": "calculation_error", "why": "沒有策略計算結果"}
         vb = vb if isinstance(vb, dict) else None
-        lg = strategy.long_status(r, vb)
-        out[r["stock_id"]] = {"strategy": st, "long": lg, "valuation": vb}
+        v = _valuation_fill(r, vb)
+        lg = strategy.long_status({**r, "ref_scores": ref}, v)
+        out[r["stock_id"]] = {"strategy": st, "long": lg, "valuation": v, "ref_scores": ref if isinstance(ref, dict) else None,
+                              "modules": _modules({**r, "ref_scores": ref}, st, v, lg, price_day, fm_done)}
+        vb = v if v.get("p50") is not None else None
         tech = lambda m: (st.get(m) or {}).get("state", "na") if st.get("ready") else "na"
         r["plan"] = {"short": tech("short"), "swing": tech("swing"), "long": lg["state"],
                      "pe_pct": (vb or {}).get("pct"), "vs_base": round((r["close"] / vb["base"] - 1) * 100, 1) if vb and vb.get("base") and r.get("close") else None}

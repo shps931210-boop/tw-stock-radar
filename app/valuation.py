@@ -42,7 +42,7 @@ def band(raw: pd.DataFrame, fin: pd.DataFrame, is_financial: bool) -> dict:
     """raw：實際成交價（未還原）。回傳目前本益比、歷史分位、三情境價與反推成長。"""
     s = eps_ttm_series(fin, is_financial)
     if not s or not len(raw):
-        return {"why": "沒有連續四季 EPS，無法用本益比估值"}
+        return {"status": "missing_source", "why": "還沒有取得連續四季 EPS，無法自己算歷史本益比區間"}
     d = raw["date"].to_numpy(str)
     c = raw["close"].to_numpy(float)
     when = [x[0] for x in s]
@@ -50,17 +50,18 @@ def band(raw: pd.DataFrame, fin: pd.DataFrame, is_financial: bool) -> dict:
     eps = np.array([s[j][1] if j >= 0 else np.nan for j in k])
     now_eps = eps[-1]
     if np.isnan(now_eps):
-        return {"why": "近四季 EPS 還沒公布齊"}
+        return {"status": "missing_source", "why": "近四季 EPS 還沒公布齊"}
     if now_eps <= 0:
-        return {"why": f"近四季 EPS {now_eps:.2f} 元（虧損），本益比沒有意義，改看股價淨值比與營收", "eps": float(now_eps)}
+        return {"status": "not_applicable", "why": f"近四季 EPS {now_eps:.2f} 元（虧損），本益比沒有意義，改看股價淨值比與營收", "eps": float(now_eps)}
     ok = (eps > 0) & ~np.isnan(c)
     pe = c[ok] / eps[ok]
     if len(pe) < MIN_DAYS:
-        return {"why": f"可用的歷史本益比只有 {len(pe)} 天，至少要 {MIN_DAYS} 天", "eps": float(now_eps), "pe": float(c[-1] / now_eps)}
+        return {"status": "insufficient_history", "why": f"可用的歷史本益比只有 {len(pe)} 天，至少要 {MIN_DAYS} 天才畫歷史區間；目前本益比照常顯示",
+                "eps": round(float(now_eps), 2), "pe": round(float(c[-1] / now_eps), 2), "days": int(len(pe))}
     pe = pe[-500:]  # 約近兩年
     p20, p50, p80 = (float(np.percentile(pe, q)) for q in (20, 50, 80))
     cur = float(c[-1] / now_eps)
-    return {"eps": round(float(now_eps), 2), "pe": round(cur, 2), "p20": round(p20, 2), "p50": round(p50, 2), "p80": round(p80, 2),
+    return {"status": "ready", "eps": round(float(now_eps), 2), "pe": round(cur, 2), "p20": round(p20, 2), "p50": round(p50, 2), "p80": round(p80, 2),
             "pct": round(float((pe < cur).mean() * 100), 0), "days": int(len(pe)), "from": str(d[ok][-len(pe)]),
             "low": round(now_eps * p20, 2), "base": round(now_eps * p50, 2), "high": round(now_eps * p80, 2),
             "implied_growth": round((cur / p50 - 1) * 100, 1),
