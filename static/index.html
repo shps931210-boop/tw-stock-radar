@@ -11,6 +11,7 @@
 /* 股栗子 V13 設計系統：冷灰白底、白色卡片、深藍黑文字。
    栗棕只當品牌色（標誌、選單目前位置、主要按鈕）；資訊藍負責連結與「公司公告」；紅漲綠跌（台股慣例）另外加 ▲▼，不只靠顏色辨識。 */
 :root {
+  --hm-dn3: #1d7048; --hm-dn2: #5aa985; --hm-dn1: #bfe0cf; --hm-flat: #e4e8ed; --hm-up1: #f5c9c3; --hm-up2: #e27b70; --hm-up3: #b3302a; --hm-fg3: #ffffff; --hm-na: #f3f4f6;
   --bg: #f5f7fa; --panel: #ffffff; --line: #e3e8ef; --ink: #17212f; --muted: #5b6676; --faint: #8a94a3;
   --accent: #84552f; --accent-2: #285ea8; --accent-soft: #f3ebe3; --hero: #84552f; --hero-ink: #ffffff; --hero-muted: #f0dfcd;
   --info: #285ea8; --info-bg: #e8f0fb; --brand: #84552f; --alert-bg: #b3261e;
@@ -25,6 +26,7 @@
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --hm-dn3: #2f9a68; --hm-dn2: #276b4f; --hm-dn1: #1f3d33; --hm-flat: #2a313b; --hm-up1: #4a2a2a; --hm-up2: #8c3a33; --hm-up3: #d4483c; --hm-fg3: #ffffff; --hm-na: #1b2129;
   --bg: #0f141b; --panel: #18202a; --line: #2a3441; --ink: #e8edf3; --muted: #a3aebd; --faint: #75808f;
   --accent: #d4a276; --accent-2: #7fb0f0; --accent-soft: #2e2620; --hero: #5a3a20; --hero-ink: #fbf2e6; --hero-muted: #e3c9ad;
   --info: #7fb0f0; --info-bg: #1b2a40; --brand: #d4a276; --alert-bg: #8c1d18;
@@ -33,6 +35,7 @@
   --gold: #e6bb5c; --silver: #b5bdc7; --bronze: #d29a6c;
   --ma5: #e6bd60; --ma20: #7fb0f0; --ma60: #c79ae0; --ma120: #5fd0bd; --ma240: #d4a276; color-scheme: dark; } }
 :root[data-theme="dark"] {
+  --hm-dn3: #2f9a68; --hm-dn2: #276b4f; --hm-dn1: #1f3d33; --hm-flat: #2a313b; --hm-up1: #4a2a2a; --hm-up2: #8c3a33; --hm-up3: #d4483c; --hm-fg3: #ffffff; --hm-na: #1b2129;
   --bg: #0f141b; --panel: #18202a; --line: #2a3441; --ink: #e8edf3; --muted: #a3aebd; --faint: #75808f;
   --accent: #d4a276; --accent-2: #7fb0f0; --accent-soft: #2e2620; --hero: #5a3a20; --hero-ink: #fbf2e6; --hero-muted: #e3c9ad;
   --info: #7fb0f0; --info-bg: #1b2a40; --brand: #d4a276; --alert-bg: #8c1d18;
@@ -281,6 +284,9 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .tm:hover, .tm:focus-visible { filter: brightness(1.08); z-index: 2; }
 .tm-legend { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
 .tm-legend i { display: inline-block; width: 120px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--down), var(--panel), var(--up)); }
+.hl-row { gap: 4px 10px; } .hl { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.hl i, .tm-legend .hl i { width: 22px; height: 12px; border-radius: 3px; border: 1px solid var(--line); background-image: none; }
+.hl i.na, .tm.na { background-color: var(--hm-na); background-image: repeating-linear-gradient(135deg, transparent 0 5px, color-mix(in srgb, var(--faint) 35%, transparent) 5px 7px); }
 .tm-legend i.seq { background: linear-gradient(90deg, var(--panel), var(--accent)); border: 1px solid var(--line); }
 .core { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; margin: 16px 0; }
 .corecard { display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 14px; background: var(--panel); padding: 18px 20px; color: var(--ink); text-decoration: none; }
@@ -821,14 +827,14 @@ function pageMarket() {
           <p class="small" style="margin:6px 0 0"><a href="#/sectors">看全部產業、資金與法人 →</a></p></div></div></section>
     ${SNAP.market_board?.markets?.all ? `<section class="card"><div class="card-h"><h2>漲跌停與排行</h2><span class="muted small">普通股・${esc(SNAP.market_board.date || "")} 對 ${esc(SNAP.market_board.prev_date || "")}</span></div><div id="mvbox"></div></section>` : ""}
     ${(SNAP.sectors?.industries || []).length ? `<section class="card"><div class="card-h"><h2>產業熱力圖</h2><a href="#/sectors">產業熱力圖與分析（漲跌、廣度、成交、量化雷達）→</a></div>
-      <p class="small muted" style="margin:0 0 10px">面積＝${esc(SNAP.sectors.data_as_of || "")} 成交金額（只代表規模，不是資金流入）；顏色＝近 5 個交易日產業等權報酬，<span class="up">紅</span>漲<span class="down">綠</span>跌。點色塊看產業詳細資料。</p>
-      <div class="tmap small" id="hmap" role="group" aria-label="產業熱力圖"></div></section>` : ""}`;
+      <p class="small muted" style="margin:0 0 10px">面積＝${esc(SNAP.sectors.data_as_of || "")} 成交金額（只代表規模，不是資金流入）；顏色＝當日產業等權漲跌幅，紅漲綠跌。點色塊看產業詳細資料。</p>
+      <div class="tmap small" id="hmap" role="group" aria-label="產業熱力圖"></div>${heatLegend(HEAT_STEPS["1d"], (v) => pctTxt(v))}</section>` : ""}`;
   renderMovers();
   drawTreemap($("#hmap"), (SNAP.sectors?.industries || []).map((x) => {
-    const v = x.ret?.["5d"]?.eq ?? null;
+    const r = x.ret?.["1d"], v = r?.eq ?? null;
     return { key: x.industry, size: x.value?.today || 0, v, label: x.industry, vtxt: pctTxt(v), sub: `成交 ${money(x.value?.today)}`,
-      tip: `${x.industry}：近 5 日 ${pctTxt(v)}・成交金額 ${money(x.value?.today)}`, cls: x.n < 3 ? "thin" : "" };
-  }), (ind) => { store.set("sect", { ...store.get("sect", {}), sel: ind, view: "price", per: "5d", lay: "map" }); location.hash = "#/sectors"; });
+      tip: `${x.industry}：當日 ${pctTxt(v)}・成交金額 ${money(x.value?.today)}${r && r.n ? `・上漲 ${r.up}／下跌 ${r.down} 家（上漲比例 ${Math.round(r.up / r.n * 100)}%）` : ""}・${x.n} 檔`, cls: x.n < 3 ? "thin" : "" };
+  }), (ind) => { store.set("sect", { ...store.get("sect", {}), sel: ind, view: "price", per: "1d", lay: "map" }); location.hash = "#/sectors"; }, "", HEAT_STEPS["1d"]);
   if (hasLWC() && SNAP.index_series?.length) {
     const c = mkChart($("#ix"));
     c.addAreaSeries({ lineColor: css("--accent-2"), topColor: css("--accent-soft"), bottomColor: "transparent", lineWidth: 2, priceLineVisible: false }).setData(SNAP.index_series);
@@ -1697,12 +1703,29 @@ function squarify(items, W, H) {
   return out;
 }
 // 顏色：紅漲綠跌，越深差距越大；max 是全部格子裡最大的絕對值
-function heatColor(v, max, pal) {
-  if (v == null) return { bg: "var(--chip)", fg: "var(--muted)" };
-  const k = Math.min(1, Math.abs(v) / (max || 1));
+// 漲跌用固定分級（steps = [平盤上限, 小漲跌上限, 中漲跌上限]），同樣的漲幅每天都是同一個顏色；沒有資料另用斜線灰，不當成平盤
+function heatColor(v, max, pal, steps) {
+  if (v == null) return { bg: "var(--hm-na)", fg: "var(--muted)", na: true };
   // 量化雷達用栗色單色深淺（不是漲跌，不用紅綠）
-  if (pal === "seq") return { bg: v > 0 ? `color-mix(in srgb, var(--accent) ${Math.round(10 + 55 * k)}%, var(--panel))` : "var(--panel)", fg: "var(--ink)" };
-  return { bg: `color-mix(in srgb, var(${v >= 0 ? "--up" : "--down"}) ${Math.round(12 + 58 * k)}%, var(--panel))`, fg: "var(--ink)" };
+  if (pal === "seq") { const k = Math.min(1, Math.abs(v) / (max || 1)); return { bg: v > 0 ? `color-mix(in srgb, var(--accent) ${Math.round(10 + 55 * k)}%, var(--panel))` : "var(--panel)", fg: "var(--ink)" }; }
+  const t = steps || [max * 0.1, max * 0.45, max * 0.9], a = Math.abs(v), lv = a < t[0] ? 0 : a < t[1] ? 1 : a < t[2] ? 2 : 3;
+  if (!lv) return { bg: "var(--hm-flat)", fg: "var(--ink)" };
+  const k = (v > 0 ? "up" : "dn") + lv;
+  return { bg: `var(--hm-${k})`, fg: lv === 3 ? "var(--hm-fg3)" : "var(--ink)" };
+}
+// 固定色階：漲跌幅依期間分級；其他指標各自固定
+const HEAT_STEPS = { "1d": [0.3, 1.5, 3.5], "5d": [0.8, 3, 7], "20d": [1.5, 6, 12] };
+function heatSteps(o) {
+  if (o.view === "price" || o.view === "rel") return HEAT_STEPS[o.per] || HEAT_STEPS["1d"];
+  if (o.view === "breadth") return [5, 15, 25];
+  if (o.view === "flow" && o.flow === "value") return [10, 30, 60];
+  return null;
+}
+// 圖例：七個色塊＋無資料；txt 把數值轉成文字
+function heatLegend(steps, txt) {
+  const sw = (k, label) => `<span class="hl"><i style="background:var(--hm-${k})"></i>${label}</span>`;
+  const [a, b, c] = steps;
+  return `<div class="tm-legend hl-row">${sw("dn3", `≤ ${txt(-c)}`)}${sw("dn2", `${txt(-c)} ~ ${txt(-b)}`)}${sw("dn1", `${txt(-b)} ~ ${txt(-a)}`)}${sw("flat", "平盤附近")}${sw("up1", `${txt(a)} ~ ${txt(b)}`)}${sw("up2", `${txt(b)} ~ ${txt(c)}`)}${sw("up3", `≥ ${txt(c)}`)}<span class="hl"><i class="na"></i>無資料</span></div>`;
 }
 // 顏色的滿格值：用絕對值的第 90 百分位，避免單一極端值讓其他格子都變得很淡
 function heatMax(vals) {
@@ -1710,17 +1733,18 @@ function heatMax(vals) {
   return a.length ? Math.max(1e-9, a[Math.min(a.length - 1, Math.floor(a.length * 0.9))]) : 1;
 }
 // 把格子畫進 el（依容器實際大小排版，視窗大小改變時重排）
-function drawTreemap(el, items, onPick, pal) {
+function drawTreemap(el, items, onPick, pal, steps) {
   if (!el) return;
   const paint = () => {
     const W = el.clientWidth, H = el.clientHeight;
     if (!W || !H) return;
     const max = heatMax(items.map((it) => it.v));
     el.innerHTML = squarify(items, W, H).map((r) => {
-      const c = heatColor(r.v, max, pal), area = r.w * r.h;
+      const c = heatColor(r.v, max, pal, steps), area = r.w * r.h;
+      if (c.na) { r = { ...r, vtxt: "無資料", cls: (r.cls || "") + " na" }; }
       const cls = area > 36000 && r.w > 150 ? "big" : r.w < 34 || r.h < 22 ? "xxs" : r.w < 70 || r.h < 44 ? "xs" : r.h < 64 ? "sm" : "";
       return `<button class="tm ${cls} ${r.cls || ""}" data-k="${esc(r.key)}" title="${esc(r.tip)}" aria-label="${esc(r.tip)}"
-        style="left:${(r.x / W * 100).toFixed(3)}%;top:${(r.y / H * 100).toFixed(3)}%;width:${(r.w / W * 100).toFixed(3)}%;height:${(r.h / H * 100).toFixed(3)}%;background:${c.bg};color:${c.fg}">
+        style="left:${(r.x / W * 100).toFixed(3)}%;top:${(r.y / H * 100).toFixed(3)}%;width:${(r.w / W * 100).toFixed(3)}%;height:${(r.h / H * 100).toFixed(3)}%;background-color:${c.bg};color:${c.fg}">
         <b>${esc(r.label)}</b><span class="v">${esc(r.vtxt)}</span><small>${esc(r.sub || "")}</small></button>`;
     }).join("");
     el.onclick = (e) => { const b = e.target.closest(".tm"); if (b) onPick(b.dataset.k); };
@@ -1739,12 +1763,13 @@ function sectSize(x, o, day) {
 
 function pageSectors() {
   const S = SNAP.sectors || { industries: [] };
-  const o = { view: "price", per: "5d", w: "eq", flow: "value", sort: "val", lay: "map", size: "value", ...store.get("sect", {}) };
+  const o = { view: "price", per: "1d", w: "eq", flow: "value", sort: "val", lay: "map", size: "value", ...store.get("sect", {}) };
+  if (!store.get("sect17")) { o.per = "1d"; store.set("sect17", 1); }  // V17 起預設當日
   const save = () => { store.set("sect", o); pageSectors(); };
   const rows = S.industries.map((x) => ({ x, v: sectVal(x, o) }));
   rows.sort((a, b) => o.sort === "n" ? b.x.n_total - a.x.n_total : (b.v ?? -1e18) - (a.v ?? -1e18));
   const max = Math.max(1e-9, ...rows.map((r) => Math.abs(r.v ?? 0)));
-  const bg = (v) => v == null ? "var(--chip)" : o.view === "quant" ? heatColor(v, max, "seq").bg : `color-mix(in srgb, var(${v >= 0 ? "--up" : "--down"}) ${Math.round(8 + 50 * Math.min(1, Math.abs(v) / max))}%, var(--panel))`;
+  const steps = heatSteps(o), lmax = heatMax(rows.map((r) => r.v)), hc = (v) => heatColor(v, lmax, o.view === "quant" ? "seq" : "", steps);
   const sel = S.industries.find((x) => x.industry === o.sel) || null;
   const sizeWhat = o.size === "value" ? `${S.data_as_of || "最新資料日"}的產業成交金額合計` : o.size === "cap" ? "產業內有最新價格股票的市值合計" : "產業的股票檔數";
   const legendMax = heatMax(rows.map((r) => r.v));
@@ -1757,19 +1782,23 @@ function pageSectors() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">資料日 ${esc(S.data_as_of || "—")}</div><h1>產業熱力圖與分析</h1>
       <p class="lead">哪些產業最近比較強、成交比較熱、法人在買還是賣。點產業可以看成分股和 AI 高分股票。</p></section>
-    <section class="card"><div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      ${seg("sv", SECT_VIEW, o.view)}
-      ${o.view === "flow" ? seg("sf", SECT_FLOW, o.flow) : o.view === "quant" ? "" : seg("sp", { "1d": "1 天", "5d": "5 天", "20d": "20 天" }, o.per)}
-      ${o.view === "price" ? seg("sw", { eq: "等權", cap: "市值加權" }, o.w) : ""}
-      ${seg("sl", { map: "熱力圖", grid: "格子" }, o.lay)}
-      ${o.lay === "map" ? seg("sz", SECT_SIZE, o.size) : seg("ss", { val: "依強弱", n: "依股票數" }, o.sort)}</div>
-      <p class="small muted" style="margin:0 0 10px">${o.lay === "map" ? `面積：${esc(sizeWhat)}，只代表規模大小，不代表資金流入或推薦程度。` : ""}顏色和數字：${esc(what)}。${o.view === "quant" ? "" : '<span class="up">紅</span>色是正、<span class="down">綠</span>色是負，顏色越深差距越大。'}</p>
+    <section class="card"><div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+      ${o.view === "flow" ? seg("sf", SECT_FLOW, o.flow) : o.view === "quant" ? "" : seg("sp", { "1d": "當日", "5d": "5 日", "20d": "20 日" }, o.per)}
+      ${o.view !== "price" ? `<span class="pill acc">${esc(SECT_VIEW[o.view])}</span><button class="btn sm ghost" id="sreset">回到產業漲跌</button>` : ""}</div>
+      <details class="adv" style="margin-bottom:12px" ${o.view !== "price" || o.w !== "eq" || o.lay !== "map" || o.size !== "value" ? "open" : ""}><summary class="small muted">進階分析：相對大盤、市場廣度、成交與法人、量化雷達、面積與版面</summary>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${seg("sv", SECT_VIEW, o.view)}
+        ${o.view === "price" ? seg("sw", { eq: "等權", cap: "市值加權" }, o.w) : ""}
+        ${seg("sl", { map: "熱力圖", grid: "格子" }, o.lay)}
+        ${o.lay === "map" ? seg("sz", SECT_SIZE, o.size) : seg("ss", { val: "依強弱", n: "依股票數" }, o.sort)}</div></details>
+      <p class="small muted" style="margin:0 0 10px">${o.lay === "map" ? `面積：${esc(sizeWhat)}，只代表規模大小，不代表資金流入或推薦程度。` : ""}顏色和數字：${esc(what)}。${o.view === "quant" ? "" : "紅色是正、綠色是負，色階固定，同樣的數字每天都是同一個顏色。"}</p>
       ${o.view === "quant" && SNAP.rankings_blocked ? `<p class="small" style="color:var(--warn);margin:0 0 10px">${esc(SNAP.rankings_blocked)}，量化雷達暫時沒有資料。</p>` : ""}
       ${rows.length && o.lay === "map" ? `<div class="tmap" id="tmap" role="group" aria-label="產業熱力圖"></div>
-        <div class="tm-legend">${o.view === "quant" ? `<span>0 檔</span><i class="seq"></i><span>${esc(sectTxt(legendMax, o))}</span>` : `<span class="down">${esc(sectTxt(-legendMax, o))}</span><i></i><span class="up">${esc(sectTxt(legendMax, o))}</span>`}<span>・點色塊看產業詳細資料；小格子可以把滑鼠移上去看名稱</span></div>`
-      : rows.length ? `<div class="heat">${rows.map(({ x, v }) => `<button class="tile ${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}" data-ind="${esc(x.industry)}" style="background:${bg(v)}" aria-label="${esc(x.industry)} ${esc(sectTxt(v, o))}">
+        ${o.view === "quant" ? `<div class="tm-legend"><span>0 檔</span><i class="seq"></i><span>${esc(sectTxt(legendMax, o))}</span></div>` : heatLegend(steps || [legendMax * 0.1, legendMax * 0.45, legendMax * 0.9], (v) => esc(sectTxt(v, o)))}
+        <p class="faint small" style="margin:4px 0 0">點色塊看產業詳細資料；小格子把滑鼠移上去（手機長按）看名稱與數字。</p>`
+      : rows.length ? `<div class="heat">${rows.map(({ x, v }) => `<button class="tile ${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}" data-ind="${esc(x.industry)}" style="background:${hc(v).bg};color:${hc(v).fg}" aria-label="${esc(x.industry)} ${esc(sectTxt(v, o))}">
         <b>${esc(x.industry)}</b><span class="v num">${esc(sectTxt(v, o))}</span><br><small>${x.n}／${x.n_total} 檔${o.view === "flow" && o.flow !== "value" ? `・覆蓋 ${fmtNum(x.flows.coverage, 0)}%` : ""}</small></button>`).join("")}</div>`
         : '<div class="empty">還沒有產業資料，下一次盤後更新後會出現。</div>'}
+      ${rows.length && o.lay !== "map" && o.view !== "quant" ? heatLegend(steps || [legendMax * 0.1, legendMax * 0.45, legendMax * 0.9], (v) => esc(sectTxt(v, o))) : ""}
       <p class="faint small" style="margin:10px 0 0">${o.lay === "map" ? "有斜線" : "淡色"}的格子是有效股票不到 3 檔的產業，結果容易被單一股票左右。</p></section>
     <section class="card" id="sdet">${sel ? sectDetail(sel, S) : '<p class="muted" style="margin:0">點上面任何一個產業，這裡會顯示詳細數字和成分股。</p>'}</section>
     <section class="card"><h2 style="margin-top:0">怎麼算的</h2><ul class="small" style="margin:0;padding-left:18px">
@@ -1783,14 +1812,16 @@ function pageSectors() {
       ${(S.warnings || []).length ? `<p class="small down" style="margin:8px 0 0">${esc(S.warnings.join("；"))}</p>` : ""}
       <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/industry/latest.json">industry/latest.json</a>（網站版才有）</p></section>`;
   const bindSeg = (id, key) => { const el = $("#" + id); if (el) el.onclick = (e) => { const b = e.target.closest("button"); if (b) { o[key] = b.dataset.k; save(); } }; };
+  const sr = $("#sreset"); if (sr) sr.onclick = () => { o.view = "price"; save(); };
   bindSeg("sv", "view"); bindSeg("sf", "flow"); bindSeg("sp", "per"); bindSeg("sw", "w"); bindSeg("ss", "sort"); bindSeg("sl", "lay"); bindSeg("sz", "size");
   const pick = (ind) => { o.sel = o.sel === ind ? null : ind; store.set("sect", o); pageSectors(); if (o.sel) $("#sdet").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
   drawTreemap($("#tmap"), rows.map(({ x, v }) => {
     const sz = sectSize(x, o, S.data_as_of), q = o.view === "quant" ? sectQuant(x) : null;
+    const br = x.ret?.[o.per === "flow" ? "1d" : o.per] || x.ret?.["1d"];
     return { key: x.industry, size: sz, v, label: x.industry, vtxt: sectTxt(v, o), sub: q ? `平均 ${q.avg == null ? "—" : fmtNum(q.avg, 0)} 分` : `${SECT_SIZE[o.size]} ${o.size === "n" ? sz + " 檔" : money(sz)}`,
-      tip: `${x.industry}：${sectTxt(v, o)}・${SECT_SIZE[o.size]} ${o.size === "n" ? sz + " 檔" : money(sz)}・${x.n}／${x.n_total} 檔有最新價格`,
+      tip: `${x.industry}：${sectTxt(v, o)}・成交金額 ${money(x.value?.today)}・${br && br.n ? `上漲 ${br.up}／下跌 ${br.down} 家（上漲比例 ${Math.round(br.up / br.n * 100)}%）・` : ""}${x.n}／${x.n_total} 檔有最新價格`,
       cls: `${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}` };
-  }), pick, o.view === "quant" ? "seq" : "");
+  }), pick, o.view === "quant" ? "seq" : "", steps);
   if (sel) drawTreemap($("#smap"), sel.members.map((id) => BYID[id]).filter((s) => s && s.date === S.data_as_of).map((s) => {
     const a = s.ai?.modes?.balanced || {};
     if (o.view === "quant") return { key: s.stock_id, size: s.market_cap > 0 ? s.market_cap : (s.value_1d || 0), v: a.score == null ? null : Math.max(0, a.score - 50), label: s.name,
@@ -1798,7 +1829,7 @@ function pageSectors() {
     const v = { "1d": s.chg_pct, "5d": s.ret_5d, "20d": s.ret_20d }[o.per === "1d" || o.per === "20d" ? o.per : "5d"];
     return { key: s.stock_id, size: s.market_cap > 0 ? s.market_cap : (s.value_1d || 0), v, label: `${s.name}`, vtxt: pctTxt(v), sub: s.stock_id,
       tip: `${s.stock_id} ${s.name}：${pctTxt(v)}・市值 ${s.market_cap > 0 ? money(s.market_cap) : "—"}` };
-  }), (id) => { location.hash = `#/stock/${id}`; }, o.view === "quant" ? "seq" : "");
+  }), (id) => { location.hash = `#/stock/${id}`; }, o.view === "quant" ? "seq" : "", HEAT_STEPS[o.per === "1d" || o.per === "20d" ? o.per : "5d"]);
   $$(".heat .tile").forEach((b) => (b.onclick = () => pick(b.dataset.ind)));
   bindRows($("#sdet"), [], () => {});
 }
