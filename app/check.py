@@ -1,5 +1,6 @@
 """檢查資料是否最新、備份是否成功：python -m app.check（GitHub Actions 用，過期或有來源失敗就回傳錯誤碼，GitHub 會寄失敗通知）。"""
 import json
+import os
 import sys
 
 from . import config
@@ -16,9 +17,15 @@ def main() -> int:
     if s.get("expected_date") and price and price < s["expected_date"]:
         basis = "證交所已公布" if s.get("expected_basis") == "official" else "推估應有"
         problems.append(f"股價只到 {price}，{basis} {s['expected_date']}")
+    # 14:10、14:40 的快速更新時，櫃買中心常常還沒公布：16:00 前只提醒、不算失敗（不寄失敗通知信）
+    early = os.environ.get("MODE") == "fast" and config.now().hour < 16
     for h in s.get("health", []):
         if h["source"] in ("twse_quotes", "tpex_quotes") and (not h["last_ok"] or h["last_ok"] < (price or "")):
-            problems.append(f"{h['label']}最後成功：{h['last_ok'] or '從未成功'}")
+            msg = f"{h['label']}最後成功：{h['last_ok'] or '從未成功'}"
+            if early:
+                print(f"⏳ {msg}（16:00 前的快速更新，下一次排程會再補）")
+            else:
+                problems.append(msg)
     b = config.DATA_DIR / "backup_status.json"
     if b.exists():
         bs = json.loads(b.read_text("utf-8"))
