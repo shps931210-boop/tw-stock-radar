@@ -245,6 +245,15 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 /* 條件建構器 */
 .crow { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(90px, .6fr) minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed var(--line); }
 .crow select, .crow input { width: 100%; }
+.actbar { position: sticky; top: var(--hdr, 0px); z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; padding: 8px 0; margin: 4px 0 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
+@media (max-width: 640px) { .actbar { flex-wrap: nowrap; overflow-x: auto; } .actbar .btn { white-space: nowrap; flex: none; } }
+.flow { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 14px; flex-wrap: wrap; }
+.flow li { display: flex; align-items: center; gap: 6px; padding: 6px 12px 6px 6px; border-radius: 999px; background: var(--chip); color: var(--muted); font-size: 13px; }
+.flow li b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--panel); font-size: 12px; }
+.flow li.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; } .flow li.done { color: var(--ink); } .flow li.done b { background: var(--accent); color: #fff; }
+.live { margin-top: 12px; padding: 12px; border-radius: 12px; background: var(--chip); }
+.live-h { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; } .live-h b { font-size: 26px; color: var(--accent); }
+.live table { background: transparent; }
 .crow .val { display: flex; gap: 6px; align-items: center; } .crow .val span { font-size: 12px; color: var(--muted); white-space: nowrap; }
 @media (max-width: 640px) { .crow { grid-template-columns: 1fr 1fr; } }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
@@ -753,7 +762,7 @@ function pageHome() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">${SNAP.source === "demo" ? "模擬資料示範" : `台灣時間・${esc(SNAP.data_dates.prices || "")} 收盤後`}</div>
       <h1>今日台股研究總覽</h1>
-      <p class="lead">股栗子用可驗證的量化方法，幫你更有效率地找到並研究股票：讓 AI 先排名，或用你自己的條件篩選。</p></section>
+      <p class="lead">讓 AI 先排名，或用你自己的條件篩選。</p></section>
     <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看個股研究</button></form>
     <section class="card"><div class="card-h"><h2>市場概況</h2><a href="#/market">今日市場詳細數據 →</a></div>
       <div class="kpis">
@@ -761,14 +770,14 @@ function pageHome() {
         <div class="kpi"><span>上漲／下跌家數</span><b><span class="up">${up}</span> / <span class="down">${dn}</span></b><small class="faint">${A ? `上市櫃普通股・上漲 ${fmtNum(A.up_ratio, 0)}%` : "普通股"}</small></div>
         ${A ? `<div class="kpi"><span>漲停／跌停家數</span><b><span class="up">${A.limit_up}</span> / <span class="down">${A.limit_down}</span></b><small class="faint">依實際漲跌停價判定</small></div>
         <div class="kpi"><span>成交金額</span><b>${money(A.value)}</b><small class="faint">上市 ${money(MB.twse.value)}・上櫃 ${money(MB.tpex.value)}</small></div>` : ""}</div>
-      <p class="small muted" style="margin:10px 0 0">漲跌停名單、漲跌幅排行、產業熱力圖都在 <a href="#/market">今日市場</a>。上漲家數是市場廣度，不等於漲停家數。</p></section>
+</section>
     <section class="core">
       <a class="corecard" href="#/ai"><span class="eyebrow">系統主動排名</span><h2>AI 量化選股</h2>
-        <p>系統綜合財務品質、成長、估值、動能、趨勢等因子，替全市場股票評分排名，附加分與扣分理由。</p>
+        <p>五個因子替全市場評分排名，每檔附理由。</p>
         <div class="corelist">${ranked.slice(0, 3).map((s) => `<span class="pill acc">${s.ai.modes.balanced.rank}. ${esc(s.name)}</span>`).join("") || `<span class="faint small">${SNAP.rankings_blocked ? "暫停排名" : "目前沒有可排名的股票"}</span>`}</div>
         <span class="btn">查看 AI 排行 →</span></a>
       <a class="corecard" href="#/screener"><span class="eyebrow">你自己決定條件</span><h2>自訂條件選股</h2>
-        <p>自行設定財務、成長、估值、技術與籌碼條件篩選全市場，或從策略範本開始修改。</p>
+        <p>自己設門檻篩選全市場，即時看符合幾檔。</p>
         <div class="corelist">${strat.map((x) => `<span class="pill">${esc(x.name)}・${x.count} 檔</span>`).join("")}</div>
         <span class="btn">開始選股 →</span></a></section>
     <h2 style="margin:26px 0 10px">今日量化研究重點</h2>
@@ -1348,8 +1357,9 @@ const saved = () => store.get("strategies", []);
 function pageScreener() {
   draft = store.get("draft", null) || defaultDraft();
   $("#app").innerHTML = `
-    <section><div class="eyebrow">你自己決定條件</div><h1>自訂條件選股</h1><p class="lead">自己制定選股策略，網站自動執行。選指標、設門檻，條件可以設定為全部符合或任一符合；不知道從哪開始，可以先套用策略範本。</p></section>
+    <section><div class="eyebrow">你自己決定條件</div><h1>自訂條件選股</h1><p class="lead">選指標、設門檻，每改一項就即時顯示符合幾檔。不知道從哪開始，先套用右側的策略範本。</p></section>
     ${subTabs("screener")}
+    <ol class="flow" id="flow"><li data-s="1"><b>1</b>選擇條件</li><li data-s="2"><b>2</b>查看符合數量</li><li data-s="3"><b>3</b>比較結果</li><li data-s="4"><b>4</b>儲存策略</li></ol>
     <div class="side">
       <div style="display:grid;gap:16px;min-width:0">
         <section class="card">
@@ -1357,8 +1367,9 @@ function pageScreener() {
           <div class="toolbar" style="margin-bottom:10px"><input type="text" id="sname" aria-label="策略名稱" style="flex:1;min-width:180px;font-weight:500">
             <div class="seg" id="logic"><button data-l="AND">全部符合 AND</button><button data-l="OR">任一符合 OR</button></div></div>
           <div id="conds"></div>
+          <div id="live" class="live" aria-live="polite"></div>
           <div class="toolbar" style="margin-top:12px"><button class="btn ghost sm" id="add">＋ 新增條件</button><span class="faint small">指標依基本面、成長面、估值面、技術面、動能面、籌碼面、風險面、交易條件分類</span></div>
-          <div class="toolbar" style="margin-top:16px"><button class="btn" id="go">開始篩選</button><button class="btn ghost" id="save">儲存策略</button><button class="btn ghost" id="saveas">另存新策略</button><button class="btn ghost" id="clear">清空條件</button></div>
+          <div class="toolbar" style="margin-top:16px"><button class="btn" id="go">查看結果</button><button class="btn ghost" id="save">儲存策略</button><button class="btn ghost" id="saveas">另存新策略</button><button class="btn ghost" id="clear">清空條件</button></div>
         </section>
         <section class="card"><div class="card-h"><h2 id="rh">篩選結果</h2><button class="btn ghost" id="ask">請 AI 分析我的篩選結果</button></div>
           <div id="ana"></div><div id="rt"></div></section>
@@ -1376,15 +1387,33 @@ function pageScreener() {
     $("#conds").innerHTML = draft.conds.map(condRow).join("") || '<div class="empty">還沒有條件，按「新增條件」或從右側套用範本</div>';
     $("#aiNote").innerHTML = draft.fromAI ? `<div class="banner info small" style="margin-bottom:12px">已帶入 AI ${esc(SNAP.ai_modes[draft.fromAI].name)}的硬性與參考條件。AI 排行榜另外使用五因子加權排名，篩選結果不會與排行榜完全相同。</div>` :
       draft.template ? `<div class="banner info small" style="margin-bottom:12px"><b>${esc(draft.template.name)}</b>：${esc(draft.template.concept)}<br><span class="muted">研究依據：${esc(draft.template.evidence)}　主要風險：${esc(draft.template.risks)}</span></div>` : "";
-    store.set("draft", draft);
+    store.set("draft", draft); liveSoon();
   };
+  const flow = (n) => $$("#flow li").forEach((li) => { li.classList.toggle("done", +li.dataset.s < n); li.classList.toggle("on", +li.dataset.s === n); });
+  let liveT, seen = null;
+  const key = () => JSON.stringify([draft.logic, draft.conds]);
+  const live = () => {
+    const all = SNAP.stocks.filter((s) => s.is_common), cs = draft.conds;
+    if (!cs.length) { $("#live").innerHTML = ""; $("#go").textContent = "查看結果"; flow(1); return; }
+    const hit = (c, s) => { const r = check(c, s); return draft.logic === "OR" ? r === true : r === true || r === "na"; };
+    let left = all;
+    const steps = cs.map((c) => { const alone = all.filter((s) => hit(c, s)).length; if (draft.logic === "AND") left = left.filter((s) => hit(c, s)); return { c, alone, left: left.length }; });
+    const n = runConds(draft).length, tight = draft.logic === "AND" ? steps.reduce((a, b) => (b.alone < a.alone ? b : a)) : null;
+    $("#live").innerHTML = `<div class="live-h"><span>目前符合</span><b class="num">${n}</b><span>檔／${all.length} 檔</span>${n === 0 ? '<span class="small" style="color:var(--warn)">沒有股票符合，試著放寬門檻或刪掉一項條件</span>' : n > 300 ? '<span class="muted small">結果很多，可以再加條件縮小範圍</span>' : ""}</div>
+      <div class="tbl"><table class="small"><thead><tr><th>條件</th><th class="r">單獨符合</th>${draft.logic === "AND" ? '<th class="r">逐項疊加後剩</th>' : ""}</tr></thead><tbody>
+      ${steps.map((x) => `<tr><td>${esc(condLabel(x.c))}${tight && x === tight && cs.length > 1 ? ' <span class="pill">最嚴格</span>' : ""}</td><td class="r num">${x.alone}</td>${draft.logic === "AND" ? `<td class="r num">${x.left}</td>` : ""}</tr>`).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:6px 0 0">資料不足的股票不算符合；「不適用」（例如金融業不看負債比）視為通過。</p>`;
+    $("#go").textContent = `查看這 ${n} 檔`; flow(seen === key() ? 3 : 2);
+    if (seen && seen !== key()) $("#rh").innerHTML = `篩選結果 <span class="muted small" style="font-weight:400">條件已修改，按「查看這 ${n} 檔」更新</span>`;
+  };
+  const liveSoon = () => { clearTimeout(liveT); liveT = setTimeout(live, 150); };
   const results = () => {
     const rows = runConds(draft).sort((a, b) => (b.ai.modes.balanced.score ?? -1) - (a.ai.modes.balanced.score ?? -1));
     const cols = [...new Set(draft.conds.map((c) => c.m).filter((m) => CAT[m] && !["close", "base_ok"].includes(m)))].slice(0, 7);
     const total = SNAP.stocks.filter((s) => s.is_common).length;
     $("#rh").innerHTML = `篩選結果 <span class="num">${rows.length}</span> 檔 <span class="muted small" style="font-weight:400">／${total} 檔・${draft.conds.length} 項條件・${draft.logic === "AND" ? "全部符合" : "任一符合"}・依 AI 均衡分數排序</span>`;
     $("#rt").innerHTML = stockTable(rows, cols); bindRows($("#rt"), rows, () => { $("#rt").innerHTML = stockTable(rows, cols); });
-    $("#ana").innerHTML = "";
+    $("#ana").innerHTML = ""; seen = key(); live();
     return rows;
   };
   const drawSide = () => {
@@ -1421,8 +1450,9 @@ function pageScreener() {
     if (f === "v") c.v = isBoolM(c.m) ? e.target.value === "true" : (c.op === ">m" || c.op === "<m") ? e.target.value : +e.target.value * sc;
     if (f === "v0") c.v[0] = +e.target.value * sc;
     if (f === "v1") c.v[1] = +e.target.value * sc;
-    store.set("draft", draft);
+    store.set("draft", draft); liveSoon();
   };
+  $("#conds").oninput = (e) => { if (e.target.tagName === "INPUT" && e.target.type === "number") $("#conds").onchange(e); };
   $("#conds").onclick = (e) => { const b = e.target.closest("[data-del]"); if (b) { draft.conds.splice(+b.dataset.del, 1); draw(); } };
   $("#add").onclick = () => { draft.conds.push({ m: "roe", op: ">", v: 15 }); draw(); };
   $("#clear").onclick = () => { draft = { name: "新策略", logic: "AND", conds: [] }; draw(); results(); };
@@ -1433,7 +1463,7 @@ function pageScreener() {
     const i = asNew ? -1 : list.findIndex((s) => s.name === item.name);
     if (asNew && list.some((s) => s.name === item.name)) item.name += "（副本）";
     if (i >= 0) list[i] = item; else list.push(item);
-    store.set("strategies", list); draft.name = item.name; draw(); drawSide();
+    store.set("strategies", list); draft.name = item.name; draw(); drawSide(); flow(5); toast(`已儲存「${item.name}」，可以在「我的策略」勾選兩個來比較`);
   };
   $("#save").onclick = () => doSave(false);
   $("#saveas").onclick = () => doSave(true);
@@ -2660,6 +2690,8 @@ async function pageStock(id) {
         <h1 style="margin-top:4px">${starBtn(id)}<span class="num">${s.stock_id}</span> ${esc(s.name)} ${stPill(s)}</h1>
         <div class="muted small">${esc(s.industry || "")}・${s.market === "tpex" ? "上櫃" : "上市"}・資料日 <span class="num">${s.date}</span>・成交 <span class="num">${fmtNum(s.volume_lots, 0)}</span> 張</div></div>
       <div style="text-align:right"><div class="px">${fmtNum(s.close)}</div><div class="num ${signCls(s.chg_pct)}" style="font-size:15px">${pctTxt(s.chg_pct)}</div></div></section>
+    <div class="actbar" role="navigation" aria-label="研究動作">${starBtn(id)}<button class="btn sm" data-j="j-chat">問 AI 這檔</button>${Object.values(s.ai.modes).some((x) => x.rank) ? '<button class="btn sm ghost" id="toRc">AI 排名理由</button>' : ""}
+      <button class="btn sm ghost" data-j="j-bd">分數怎麼來</button><button class="btn sm ghost" data-j="j-peer">同業比較</button><button class="btn sm ghost" data-j="j-tl">研究時間軸</button><button class="btn sm ghost" data-j="j-news">公告新聞</button><a class="btn sm ghost" href="#/alerts">設定通知</a></div>
     ${s.exclude_reasons?.length ? `<div class="banner bad">未通過基本門檻：${s.exclude_reasons.map(esc).join("、")}</div>` : ""}
     ${s.base_ok && !s.complete ? `<div class="banner warn">資料不足，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
     <div class="meta-row" style="margin-top:0">${[["股價", s.date], ["法人", s.inst_date], ["融資", s.margin_date], ["本益比", s.val_date], ["月營收", s.rev_ym], ["財報", s.fin_period]]
@@ -2669,8 +2701,8 @@ async function pageStock(id) {
     <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
     ${researchCard(s, d)}
     ${profileCard(d.profile)}
-    ${chatCard(id)}
-    <section class="card"><div class="card-h"><h2>AI 分數怎麼來的</h2><div class="seg" id="bdSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="bd"></div></section>
+    <div id="j-chat"></div>${chatCard(id)}
+    <section class="card" id="j-bd"><div class="card-h"><h2>AI 分數怎麼來的</h2><div class="seg" id="bdSeg">${Object.entries(M).map(([k, m]) => `<button data-m="${k}" class="${k === mode ? "on" : ""}">${esc(m.name)}</button>`).join("")}</div></div><div id="bd"></div></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>六面向評分</h2><span class="muted small">虛線 = 全市場中位數 50</span></div>
         <div style="display:grid;place-items:center">${radar(s, 300)}</div>
@@ -2705,15 +2737,19 @@ async function pageStock(id) {
       <div class="card"><div class="card-h"><h2>股利紀錄</h2><span class="muted small">連續配息 ${s.div_years ?? "—"} 年・發放率 ${fmt("payout", s.payout)}</span></div>
         <div class="tbl"><table><thead><tr><th>年度</th><th class="r">現金股利</th><th class="r">股票股利</th></tr></thead><tbody>
         ${(d.dividends || []).slice(-8).reverse().map((x) => `<tr><td class="num">${x.year}</td><td class="r num">${fmtNum(x.cash)}</td><td class="r num">${fmtNum(x.stock)}</td></tr>`).join("") || '<tr><td colspan="3" class="empty">無資料</td></tr>'}</tbody></table></div></div></section>
-    ${peerCard(s)}
-    ${timelineCard(s, d)}
+    <div id="j-peer"></div>${peerCard(s)}
+    <div id="j-tl"></div>${timelineCard(s, d)}
     <section class="two">
       <div class="card"><div class="card-h"><h2>策略範本檢查</h2><span class="muted small">符合 ${s.strategies.length} / ${SNAP.strategies.length}</span></div>
         ${SNAP.strategies.map((st) => { const ok = s.strategies.includes(st.id); return `<details class="strat"${ok ? " open" : ""}><summary>${ok ? '<span class="pill good">符合</span>' : '<span class="pill">未符合</span>'} ${esc(st.name)}</summary>
           ${st.conditions.map((c) => `<div class="ck">${mark(check(c, s))}<span>${esc(c.label)}</span><span class="num muted">${CAT[c.m] ? fmt(c.m, s[c.m]) : ""}</span></div>`).join("")}</details>`; }).join("")}</div>
-      <div class="card"><div class="card-h"><h2>公告與新聞</h2><span class="muted small">「標題用詞」只看字詞，不是 AI 判斷</span></div>
+      <div class="card" id="j-news"><div class="card-h"><h2>公告與新聞</h2><span class="muted small">「標題用詞」只看字詞，不是 AI 判斷</span></div>
         ${groupNews(d.news || []).map((g) => newsItem(g.x, { stock: false, dups: g.dups })).join("") || '<p class="muted">最近 90 天沒有抓到這檔股票的公告或新聞。</p>'}
         <p class="faint small" style="margin:8px 0 0"><a href="#/news">到市場新聞中心看全部</a></p></div></section>`;
+  const hdr = $(".top")?.offsetHeight || 0; document.documentElement.style.setProperty("--hdr", hdr + "px");
+  $$(".actbar [data-j]").forEach((b) => b.onclick = () => { const el = $("#" + b.dataset.j); if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - hdr - $(".actbar").offsetHeight - 8, behavior: "smooth" }); });
+  const toRc = $("#toRc"); if (toRc) toRc.onclick = () => { const k = Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank && m === store.get("aipage", {}).mode) || Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank);
+    store.set("aipage", { ...store.get("aipage", {}), mode: k, sel: id, cmp: null }); location.hash = "#/ai"; };
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
   bindRows($("#app"), [], () => {});
