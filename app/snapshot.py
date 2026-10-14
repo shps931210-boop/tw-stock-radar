@@ -285,6 +285,10 @@ def build(demo: bool = False) -> dict:
     }
     out["changes"] = None if demo else track.changes(out)
     try:
+        out["prev_scores"] = prev_scores(out, dbname)
+    except Exception as e:  # 分數變化失敗不影響選股結果
+        out["prev_scores"] = {"date": None, "warnings": [f"分數變化計算失敗：{e}"]}
+    try:
         out["sectors"] = sectors.build(out, dbname)
     except Exception as e:  # 產業熱力圖失敗不影響選股結果
         out["sectors"] = {"schema_version": 1, "industries": [], "warnings": [f"產業熱力圖計算失敗：{e}"]}
@@ -299,6 +303,46 @@ def build(demo: bool = False) -> dict:
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out
+
+
+SCORE_FACTORS = ("quality", "growth", "value", "momentum", "trend")
+
+
+def prev_scores(snap: dict, dbname: str) -> dict:
+    """上一個交易日的 AI 分數、名次與五個因子分數，給「和昨天相比」用。
+    存在資料庫 meta：scores_today（這個交易日最新一次）、scores_prev（上一個交易日）。同一天重跑只更新 today，不會把今天當成昨天。"""
+    day = (snap.get("data_dates") or {}).get("prices")
+    cur = {"date": day, "s": {}}
+    for r in snap["stocks"]:
+        a = (r.get("ai") or {}).get("modes") or {}
+        if not any((a.get(m) or {}).get("rank") for m in a):
+            continue
+        cur["s"][r["stock_id"]] = {"r": {m: v.get("rank") for m, v in a.items()}, "sc": {m: v.get("score") for m, v in a.items()},
+                                   "f": {f: None if r.get(f"score_{f}") is None else round(r[f"score_{f}"], 1) for f in SCORE_FACTORS}}
+    with db.connect(dbname) as con:
+        today = json.loads(db.get_meta(con, "scores_today") or "null")
+        prev = json.loads(db.get_meta(con, "scores_prev") or "null")
+        if today and day and today.get("date") and today["date"] < day:
+            prev = today
+            db.set_meta(con, "scores_prev", json.dumps(prev, ensure_ascii=False, separators=(",", ":")))
+        if day and cur["s"]:
+            db.set_meta(con, "scores_today", json.dumps(cur, ensure_ascii=False, separators=(",", ":")))
+    partial = False
+    if not prev and day:  # 剛上線還沒有前一天的完整紀錄：先用每日存檔的前 20 名名單
+        logs = [L for L in track.load(first_only=False) if L["date"] < day]
+        if logs:
+            last = max(logs, key=lambda L: (L["date"], L.get("version", 1)))
+            st: dict = {}
+            for m, picks in (last.get("picks") or {}).items():
+                for p_ in picks:
+                    x = st.setdefault(p_["stock_id"], {"r": {}, "sc": {}, "f": {k: (None if v is None else round(v, 1)) for k, v in (p_.get("factors") or {}).items()}})
+                    x["r"][m], x["sc"][m] = p_.get("rank"), p_.get("score")
+            prev, partial = {"date": last["date"], "s": st}, True
+    if not prev or not day or prev.get("date") == day:
+        return {"date": None, "stocks": {}}
+    # 只送現在或之前有名次的股票
+    keep = set(cur["s"]) | set(prev["s"])
+    return {"date": prev["date"], "partial": partial, "stocks": {k: v for k, v in prev["s"].items() if k in keep}}
 
 
 HEALTH = [("twse_quotes", "上市行情"), ("tpex_quotes", "上櫃行情"), ("twse_inst", "上市三大法人"), ("tpex_inst", "上櫃三大法人"),

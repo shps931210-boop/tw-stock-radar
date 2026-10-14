@@ -282,6 +282,12 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .subtabs { display: flex; gap: 6px; margin: 0 0 14px; flex-wrap: wrap; } .subtabs a { padding: 4px 14px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 13px; }
 .subtabs a.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; font-weight: 500; }
 table.wrap td { white-space: normal; min-width: 120px; }
+.rcgrid { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: start; }
+.rcscore { display: flex; flex-direction: column; gap: 2px; } .rcscore b { font-size: 40px; line-height: 1.1; color: var(--accent); } .rcscore span { color: var(--muted); font-size: 13px; }
+.rcbars .frow { grid-template-columns: 70px minmax(0, 1fr) 30px 128px; row-gap: 2px; }
+.rcbars .frow .raw { grid-column: 2 / -1; font-size: 11px; color: var(--faint); }
+@media (max-width: 600px) { .rcgrid { grid-template-columns: 1fr; } .rcbars .frow { grid-template-columns: 64px minmax(0, 1fr) 28px; } .rcbars .frow .c { grid-column: 2 / -1; text-align: left; } }
+tr.pick.on td { background: var(--accent-soft); }
 .layer { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
 .layer h2 { margin: 0; font-size: 17px; } .layer span { color: var(--muted); font-size: 13px; }
 .mb-tbl td, .mb-tbl th { white-space: nowrap; }
@@ -1193,34 +1199,91 @@ function aiTable(rows, mode) {
       <td>${s.ai.risks.length ? `<span class="pill warn" title="${esc(s.ai.risks.join("\n"))}">${s.ai.risks.length} 項</span>` : '<span class="faint small">無明顯</span>'}</td></tr>`; }).join("")}</tbody></table></div>`;
 }
 function pageAI() {
-  const mode = store.get("aimode", "balanced"), M = SNAP.ai_modes;
+  const M = SNAP.ai_modes, o = { mode: "balanced", sel: null, cmp: null, ...store.get("aipage", {}) };
+  if (!M[o.mode]) o.mode = "balanced";
+  const k = o.mode, m = M[k];
+  const rows = SNAP.stocks.filter((s) => s.ai.modes[k].rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank);
+  const top = rows.slice(0, 30);
+  const sel = BYID[o.sel] && BYID[o.sel].ai.modes[k].rank ? BYID[o.sel] : top[0];
+  const save = () => { store.set("aipage", o); pageAI(); };
+  const P = SNAP.prev_scores || {}, prev = (id) => P.stocks?.[id];
+  const chg = (s) => {
+    const p = prev(s.stock_id), r = s.ai.modes[k].rank;
+    if (!P.date) return '<span class="faint">—</span>';
+    if (!p || !p.r?.[k]) return P.partial && r > 20 ? '<span class="faint">—</span>' : '<span class="pill acc">新進</span>';
+    const d = p.r[k] - r;
+    return d === 0 ? '<span class="faint">持平</span>' : `<span class="num">${d > 0 ? "↑" : "↓"}${Math.abs(d)}</span>`;
+  };
   $("#app").innerHTML = `
-    <section><div class="eyebrow">系統 A</div><h1>AI 量化選股</h1><p class="lead">用財務品質、成長、估值、動能、趨勢五類因子，對全市場股票做規則式量化評分（0～100 是全市場百分位，50 是中位數）。選一種模式按下開始，會列出排名、入選原因與風險。這裡的「AI」是固定規則的計算，不是大型語言模型的預測。想照自己的偏好排序，可以看 <a href="#/mine">我的 AI 推薦</a>。</p></section>
-    <section class="modes" id="modes">${Object.entries(M).map(([k, m]) => `<button class="mode ${k === mode ? "on" : ""}" data-m="${k}"><b>${esc(m.name)}</b><span>${esc(m.tagline)}</span>${weightBar(m.weights)}</button>`).join("")}</section>
-    <section class="card"><div class="go"><div><h2 id="mname"></h2><p class="muted small" id="mdesc" style="margin:4px 0 0"></p></div>
-      <button class="btn lg" id="run">開始 AI 量化選股</button></div>
-      <ul class="steps" id="steps" style="margin-top:14px">${STEPS.map((s) => `<li>${s}</li>`).join("")}</ul></section>
-    <section class="card" id="res" hidden><div class="card-h"><h2 id="rh"></h2><span class="muted small">滑過「風險提示」可看細節，點股票看完整分析報告</span></div><div id="rt"></div></section>
-    <section class="card" id="spec"></section>`;
-  const show = (k) => {
-    const m = M[k];
-    $("#mname").textContent = `${m.name}：${m.tagline}`; $("#mdesc").textContent = m.desc;
-    const rows = SNAP.stocks.filter((s) => s.ai.modes[k].rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank);
-    $("#rh").innerHTML = `${esc(m.name)}關注排行榜 <span class="muted small" style="font-weight:400">${rows.length} 檔通過硬性條件，顯示前 ${Math.min(30, rows.length)} 名</span>`;
-    const top = rows.slice(0, 30);
-    $("#rt").innerHTML = aiTable(top, k); bindRows($("#rt"), top, () => {});
-    $("#spec").innerHTML = specHtml(k);
-    $("#toScreener").onclick = () => { store.set("draft", { name: `AI ${m.name}條件`, logic: "AND", conds: m.hard.concat(m.reference).map(stripLabel), fromAI: k }); location.hash = "#/screener"; };
-  };
-  const reveal = () => { $$("#steps li").forEach((li) => li.classList.add("done")); $("#res").hidden = false; };
-  $("#modes").onclick = (e) => { const b = e.target.closest(".mode"); if (!b) return; store.set("aimode", b.dataset.m); $$(".mode").forEach((x) => x.classList.toggle("on", x === b)); show(b.dataset.m); };
-  $("#run").onclick = () => {
-    const li = $$("#steps li"); li.forEach((x) => x.classList.remove("done")); $("#res").hidden = true; $("#run").disabled = true;
-    const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    li.forEach((x, i) => setTimeout(() => { x.classList.add("done"); if (i === li.length - 1) { reveal(); aiRan = true; $("#run").disabled = false; $("#run").textContent = "重新分析"; $("#res").scrollIntoView({ behavior: fast ? "auto" : "smooth" }); } }, fast ? 0 : 160 * (i + 1)));
-  };
-  show(mode);
-  if (aiRan) { reveal(); $("#run").textContent = "重新分析"; }
+    <section><div class="eyebrow">系統主動排名・資料日 ${esc(SNAP.data_dates.prices || "—")}</div><h1>AI 量化選股</h1>
+      <p class="lead">全市場股票依五類因子評分排名。分數是全市場百分位（50 是中位數），不是上漲機率。點任何一檔，看它為什麼排在這裡。</p></section>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px"><div class="seg" id="aim">${Object.entries(M).map(([key, x]) => `<button data-k="${key}" class="${key === k ? "on" : ""}">${esc(x.name)}</button>`).join("")}</div>
+      <span class="muted small">${esc(m.tagline)}・${rows.length} 檔通過條件</span></div>
+    ${SNAP.rankings_blocked ? `<div class="card" style="color:var(--warn)">${esc(SNAP.rankings_blocked)}</div>` : ""}
+    ${sel ? `<section class="card" id="rc">${pickCard(sel, k, o.cmp)}</section>` : ""}
+    <section class="card"><div class="card-h"><h2>${esc(m.name)}排行榜</h2><span class="muted small">前 ${top.length} 名・點一列看研究卡${P.date ? `・名次變化和 ${esc(P.date)} 比` : ""}</span></div>
+      ${top.length ? `<div class="tbl"><table class="wrap"><thead><tr><th>名次</th><th>變化</th><th>股票</th><th class="r">分數</th><th class="r">漲跌</th><th>主要理由</th><th>需要留意</th></tr></thead><tbody>
+        ${top.map((s) => `<tr class="pick ${sel && s.stock_id === sel.stock_id ? "on" : ""}" data-pick="${s.stock_id}" style="cursor:pointer"><td><span class="medal ${s.ai.modes[k].rank <= 3 ? "m" + s.ai.modes[k].rank : ""}">${s.ai.modes[k].rank}</span></td><td>${chg(s)}</td>
+          <td>${stockCell(s)}</td><td class="r num"><b>${fmtNum(s.ai.modes[k].score, 1)}</b></td><td class="r num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</td>
+          <td class="small">${esc(s.ai.strengths[0] || "—")}</td><td class="small">${s.ai.risks.length ? esc(s.ai.risks[0]) + (s.ai.risks.length > 1 ? `<span class="faint">（另 ${s.ai.risks.length - 1} 項）</span>` : "") : '<span class="faint">沒有明顯風險訊號</span>'}</td></tr>`).join("")}</tbody></table></div>`
+        : `<div class="empty">${SNAP.rankings_blocked ? "暫停排名" : "沒有股票通過這個模式的條件"}</div>`}</section>
+    <section class="card"><details><summary><b>模型怎麼算</b>：五個因子的權重、硬性條件與計算步驟</summary><div id="spec" style="margin-top:12px">${specHtml(k)}</div>
+      <ol class="small muted" style="margin:10px 0 0;padding-left:18px">${STEPS.map((x) => `<li>${x}</li>`).join("")}</ol></details></section>`;
+  $("#aim").onclick = (e) => { const b = e.target.closest("button"); if (b) { o.mode = b.dataset.k; o.cmp = null; save(); } };
+  $$("tr.pick").forEach((tr) => tr.onclick = (e) => { if (e.target.closest("a,button")) return; o.sel = tr.dataset.pick; o.cmp = null; store.set("aipage", o); pageAI(); $("#rc")?.scrollIntoView({ block: "nearest" }); });
+  const ts = $("#toScreener"); if (ts) ts.onclick = () => { store.set("draft", { name: `AI ${m.name}條件`, logic: "AND", conds: m.hard.concat(m.reference).map(stripLabel), fromAI: k }); location.hash = "#/screener"; };
+  pageAIbind();
+  function pageAIbind() {
+    const c2 = $("#rccmp"); if (c2) c2.onchange = () => { o.cmp = c2.value || null; store.set("aipage", o); $("#rc").innerHTML = pickCard(sel, k, o.cmp); pageAIbind(); };
+    const ask = $("#rcask"); if (ask) ask.onclick = () => { sessionStorage.setItem("askq", `請分析 ${sel.stock_id} ${sel.name} 在 AI ${m.name}排第 ${sel.ai.modes[k].rank} 名的原因與風險`); store.set("aichatCur", null); location.hash = "#/ask"; };
+  }
+}
+// 每個因子的原始指標（研究卡顯示目前數值，讓使用者回查分數來源）
+const FACTOR_ITEMS = {
+  quality: [["roe", "ROE", "%"], ["roa", "ROA", "%"], ["op_margin", "營業利益率", "%"], ["debt_ratio", "負債比", "%"]],
+  growth: [["rev_yoy", "月營收年增", "%"], ["rev_yoy_3m", "近三月營收年增", "%"], ["eps_q_yoy", "單季 EPS 年增", "%"]],
+  value: [["per", "本益比", "倍"], ["pbr", "股價淨值比", "倍"], ["fcf_yield", "自由現金流收益率", "%"]],
+  momentum: [["ret_12m", "近一年報酬", "%"], ["ret_3m", "近三月報酬", "%"]],
+  trend: [["dist_ma60", "距季線", "%"], ["ma60_slope_20", "季線斜率", ""]],
+};
+function pickCard(s, k, cmpId) {
+  const a = s.ai.modes[k], m = SNAP.ai_modes[k], w = m.weights, tw = Object.values(w).reduce((x, y) => x + y, 0);
+  const P = SNAP.prev_scores || {}, p = P.stocks?.[s.stock_id];
+  const items = (f) => (FACTOR_ITEMS[f] || []).map(([key, lab, u]) => `${lab} ${s[key] == null ? "—" : fmtNum(s[key], 1) + u}`).join("・");
+  const ks = Object.keys(w).sort((x, y) => w[y] - w[x]);
+  const bars = ks.map((f) => { const v = s["score_" + f], pv = p?.f?.[f], d = v != null && pv != null ? v - pv : null;
+    return `<div class="frow"><span>${FL[f]}</span><span class="track"><i style="width:${v ?? 0}%;background:${FC[f]}"></i><em></em></span><b class="num r">${v == null ? "—" : fmtNum(v, 0)}</b>
+      <span class="c">權重 ${Math.round(w[f] * 100)}%${v == null ? "" : `・貢獻 ${fmtNum(v * w[f] / tw, 1)}`}${d != null && Math.abs(d) >= 1 ? `・<span class="num">${d > 0 ? "+" : ""}${fmtNum(d, 0)}</span>` : ""}</span><span class="raw">${items(f)}</span></div>`; }).join("");
+  let change = "";
+  if (P.date) {
+    if (p && p.r?.[k]) {
+      const fd = ks.map((f) => [f, (s["score_" + f] ?? null) != null && p.f?.[f] != null ? s["score_" + f] - p.f[f] : null]).filter(([, d]) => d != null).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1]));
+      const top = fd[0], ds = a.score - p.sc[k], dr = p.r[k] - a.rank;
+      change = `和 ${esc(P.date)} 相比：分數 ${p.sc[k] == null ? "—" : `${fmtNum(p.sc[k], 1)} → ${fmtNum(a.score, 1)}（${ds >= 0 ? "+" : ""}${fmtNum(ds, 1)}）`}，名次 ${p.r[k]} → ${a.rank}${dr ? `（${dr > 0 ? "上升" : "下降"} ${Math.abs(dr)} 名）` : "（持平）"}。`
+        + (top && Math.abs(top[1]) >= 1 ? `變化最大的是「${FL[top[0]]}」${top[1] > 0 ? "+" : ""}${fmtNum(top[1], 0)} 分（目前 ${items(top[0])}）。` : "五個因子的分數都沒有明顯變化，名次變動來自其他股票的分數改變。");
+    } else change = P.partial && a.rank > 20 ? `${esc(P.date)} 只保存了前 20 名，無法比較這檔的變化。` : `${esc(P.date)} 時不在排行榜上，這次新進榜。`;
+  }
+  const peers = SNAP.stocks.filter((x) => x.industry === s.industry && x.stock_id !== s.stock_id && x.ai.modes[k].rank).sort((x, y) => x.ai.modes[k].rank - y.ai.modes[k].rank);
+  const cands = SNAP.stocks.filter((x) => x.ai.modes[k].rank && x.stock_id !== s.stock_id).sort((x, y) => x.ai.modes[k].rank - y.ai.modes[k].rank).slice(0, 40);
+  const c = cmpId && BYID[cmpId];
+  const cmpRow = (lab, f, dig = 1, u = "") => `<tr><td>${lab}</td><td class="r num">${f(s) == null ? "—" : fmtNum(f(s), dig) + u}</td><td class="r num">${f(c) == null ? "—" : fmtNum(f(c), dig) + u}</td></tr>`;
+  return `<div class="card-h"><h2><a href="#/stock/${s.stock_id}"><span class="num">${s.stock_id}</span> ${esc(s.name)}</a> <span class="faint small" style="font-weight:400">${esc(s.industry || "")}</span></h2>${starBtn(s.stock_id)}</div>
+    <div class="rcgrid"><div class="rcscore"><b class="num">${fmtNum(a.score, 1)}</b><span>/ 100・${esc(m.name)}</span><span>第 ${a.rank} 名</span>
+      ${s.industry_rank && k === "balanced" ? `<span class="faint small">產業內第 ${s.industry_rank}／${s.industry_n}</span>` : peers.length ? `<span class="faint small">同產業另有 ${peers.length} 檔上榜</span>` : ""}</div>
+      <div class="rcbars">${bars}</div></div>
+    ${change ? `<p style="margin:10px 0 0">${change}</p>` : ""}
+    <div class="two" style="margin-top:12px"><div><h3 style="margin-bottom:4px">主要優勢</h3><ul class="small" style="margin:0;padding-left:18px">${s.ai.strengths.map((x) => `<li>${esc(x)}</li>`).join("") || '<li class="faint">沒有特別突出的因子</li>'}</ul></div>
+      <div><h3 style="margin-bottom:4px">需要留意</h3><ul class="small" style="margin:0;padding-left:18px">${s.ai.risks.map((x) => `<li>${esc(x)}</li>`).join("") || '<li class="faint">模型沒有偵測到明顯風險訊號，但這不代表沒有風險</li>'}</ul></div></div>
+    <p class="faint small" style="margin:10px 0 0">資料日期：股價 ${esc(s.date || "—")}・財報 ${esc(s.fin_period || "—")}・月營收 ${esc(s.rev_ym || "—")}${s.val_date ? `・本益比 ${esc(s.val_date)}` : ""}</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px">
+      <a class="btn" href="#/stock/${s.stock_id}">完整個股研究 →</a><button class="btn ghost" id="rcask">問 AI 這檔</button>
+      <label class="small muted">為什麼選它，而不是 <select id="rccmp"><option value="">選一檔比較…</option>${cands.map((x) => `<option value="${x.stock_id}" ${x.stock_id === cmpId ? "selected" : ""}>${x.ai.modes[k].rank}. ${x.stock_id} ${esc(x.name)}</option>`).join("")}</select></label></div>
+    ${c ? `<div class="tbl" style="margin-top:10px"><table><thead><tr><th></th><th class="r">${esc(s.name)}</th><th class="r">${esc(c.name)}</th></tr></thead><tbody>
+      ${cmpRow("綜合分數", (x) => x.ai.modes[k].score)}${cmpRow("名次", (x) => x.ai.modes[k].rank, 0)}
+      ${ks.map((f) => cmpRow(FL[f] + ` <span class="faint small">權重 ${Math.round(w[f] * 100)}%</span>`, (x) => x["score_" + f], 0)).join("")}
+      ${cmpRow("ROE", (x) => x.roe, 1, "%")}${cmpRow("月營收年增", (x) => x.rev_yoy, 1, "%")}${cmpRow("本益比", (x) => x.per, 1, " 倍")}${cmpRow("近一年報酬", (x) => x.ret_12m, 1, "%")}</tbody></table></div>
+      <p class="small" style="margin:6px 0 0">${(() => { const g = ks.map((f) => [f, (s["score_" + f] ?? 0) - (c["score_" + f] ?? 0)]).sort((x, y) => y[1] * w[y[0]] - x[1] * w[x[0]]); const best = g[0], worst = g.at(-1);
+        return `${esc(s.name)}領先最多的是「${FL[best[0]]}」（${best[1] >= 0 ? "+" : ""}${fmtNum(best[1], 0)} 分）${worst[1] < 0 ? `，落後最多的是「${FL[worst[0]]}」（${fmtNum(worst[1], 0)} 分）` : ""}。差距乘上權重後加總，就是兩檔綜合分數的差。`; })()}</p>` : ""}`;
 }
 const stripLabel = (c) => ({ m: c.m, op: c.op, v: c.v, skip_financial: c.skip_financial });
 function specHtml(k, s) {
