@@ -70,10 +70,8 @@ def _pctrank(s: pd.Series, mask: pd.Series, sign: int = 1) -> pd.Series:
     return x.rank(pct=True) * 100
 
 
-def build(demo: bool = False) -> dict:
-    cfg = config.load()
-    dbname = "demo.db" if demo else "stocks.db"
-    df = metrics.compute_all(dbname)
+def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]:
+    """多因子評分（基本門檻、因子百分位、綜合分數）。today：判斷財報、營收是否過期的基準日（歷史回測傳當時的日期）。"""
     bf = cfg["base_filter"]
 
     # ---------- 第一層：基本門檻 ----------
@@ -99,7 +97,6 @@ def build(demo: bool = False) -> dict:
     df["rs_rank"] = _pctrank(df.get("mom_12_1"), base) if "mom_12_1" in df else None
     df["vol_1y_pct"] = _pctrank(df.get("vol_1y"), base) if "vol_1y" in df else None
     # ---------- 資料新鮮度：過期的財報、營收、本益比不能當成最新資料計分 ----------
-    today = config.today()
     fin_exp, rev_exp = expected_fin_end(today), expected_rev_ym(today)
     older = lambda col, exp: df[col].map(lambda x: isinstance(x, str) and x < exp) if col in df else False
     df["fin_stale"] = older("fin_period_end", fin_exp)
@@ -200,6 +197,16 @@ def build(demo: bool = False) -> dict:
         ok = base & ~df["is_financial"] & df["earnings_yield"].notna() & df["roa"].notna()
         combo = df["earnings_yield"].where(ok).rank(ascending=False) + df["roa"].where(ok).rank(ascending=False)
         df["magic_rank"] = combo.rank(ascending=False, pct=True) * 100
+    return df, w
+
+
+def build(demo: bool = False) -> dict:
+    cfg = config.load()
+    dbname = "demo.db" if demo else "stocks.db"
+    df = metrics.compute_all(dbname)
+    bf = cfg["base_filter"]
+    df, w = score_frame(df, cfg, config.today())
+    bf = cfg["base_filter"]
 
     rows = []
     for rec in df.to_dict("records"):

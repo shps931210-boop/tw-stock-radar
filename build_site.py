@@ -105,6 +105,10 @@ if (config.DATA_DIR / "stocks.db").exists():
 if (config.DATA_DIR / "global_markets.json").exists():  # 國際市場（python -m app.global_mkt）
     (out / "data" / "global").mkdir(parents=True, exist_ok=True)
     shutil.copy(config.DATA_DIR / "global_markets.json", out / "data" / "global" / "markets.json")
+pit = root / "history" / "backtest" / "ai_pit.json"
+if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
+    (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
+    shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
 if (config.DATA_DIR / "probe.json").exists():  # 連線診斷結果（python -m app.probe）
     shutil.copy(config.DATA_DIR / "probe.json", out / "data" / "probe.json")
 

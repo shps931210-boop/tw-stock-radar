@@ -859,6 +859,55 @@ function renderMovers() {
   el.querySelector("tbody")?.addEventListener("click", (e) => { if (e.target.closest("a")) return; const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
 }
 
+// ---------- AI 多因子歷史回測（history/backtest/ai_pit.json，每週重算） ----------
+let PIT = null;
+async function loadPit() {
+  if (!SITE) return;
+  if (!PIT) { try { const r = await fetch("data/backtest/ai_pit.json?v=" + (VER?.datasets?.["backtest/ai_pit.json"] || Date.now())); PIT = r.ok ? await r.json() : false; } catch (e) { PIT = false; } }
+  const el = $("#pit"); if (!el || !PIT) return;
+  const st = $("#pitst"); if (st) st.innerHTML = `<span class="pill acc">已有結果</span> ${esc(PIT.timeline[0]?.entry || "")} 到 ${esc(PIT.timeline.at(-1)?.exit || "")}，${PIT.timeline.length} 個月（回測，不是實際交易紀錄，見下方）`;
+  el.hidden = false; renderPit();
+}
+function renderPit() {
+  const el = $("#pit"), P = PIT, o = { m: "balanced", n: "20", ...store.get("pit", {}) };
+  const M = P.modes[o.m], T = M.top[o.n], U = M.universe, B = P.bench_stats;
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${n}</button>`).join("")}</div>`;
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`;
+  const kpi = (lab, v, sub) => `<div class="kpi"><span>${lab}</span><b>${v}</b>${sub ? `<small class="faint">${sub}</small>` : ""}</div>`;
+  const rows = P.timeline.map((t, i) => ({ t, r: T.monthly[i], p: T.picks[i] }));
+  el.innerHTML = `<div class="card-h"><h2>AI 多因子歷史回測</h2><span class="muted small">只用當時已公布的資料・模型 ${esc(P.model_version)}・每週重算</span></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">${seg("pitm", Object.fromEntries(Object.entries(P.modes).map(([k, x]) => [k, x.name])), o.m)}${seg("pitn", { 5: "前 5 名", 10: "前 10 名", 20: "前 20 名" }, o.n)}</div>
+    <div class="kpis">
+      ${kpi("累積報酬（扣成本）", pc(T.total), `0050 同期 ${B?.total == null ? "—" : pctTxt(B.total)}`)}
+      ${kpi("年化報酬", pc(T.cagr), `0050 ${B?.cagr == null ? "—" : pctTxt(B.cagr)}`)}
+      ${kpi("最大回撤", pc(T.mdd), `0050 ${B?.mdd == null ? "—" : pctTxt(B.mdd)}`)}
+      ${kpi("贏過 0050 的月份", T.win_vs_bench == null ? "—" : fmtNum(T.win_vs_bench, 0) + "%", `共 ${T.periods} 個月・平均每月超額 ${T.avg_excess == null ? "—" : pctTxt(T.avg_excess)}`)}
+      ${kpi("所有可排名股票等權", pc(U.total), "同一模型能排名的全部股票")}</div>
+    <p style="margin:12px 0 0">${T.total == null || B?.total == null ? "" : `這段期間，${esc(M.name)}前 ${o.n} 名扣成本後${T.total > B.total ? "<b>贏過</b>" : "<b>落後</b>"} 0050（${pctTxt(T.total)} 對 ${pctTxt(B.total)}），${T.total > U.total ? "但贏過" : "也落後"}同一模型所有可排名股票的等權平均（${pctTxt(U.total)}）。${T.total <= B.total ? "0050 集中在大型權值股，權值股大漲時，等權的選股組合不容易跟上。" : ""}`}</p>
+    ${hasLWC() ? '<div class="chart sm" id="pitc" style="margin-top:12px"></div>' : ""}
+    <p class="faint small" style="margin:4px 0 10px">${hasLWC() ? "線：" : "（圖表元件沒有載入）"}<span style="color:var(--accent)">■</span> 模型前 ${o.n} 名　<span style="color:var(--accent-2)">■</span> 0050　<span style="color:var(--faint)">■</span> 所有可排名股票等權（起點 = 100）</p>
+    <details><summary>逐月結果</summary><div class="tbl"><table><thead><tr><th>進場日</th><th class="r">組合（扣成本）</th><th class="r">0050</th><th class="r">超額</th><th class="r">買不到</th><th class="r">當時可排名</th>${o.n === "20" ? "<th>持股</th>" : ""}</tr></thead><tbody>
+      ${rows.map(({ t, r, p }) => `<tr><td class="num">${esc(t.entry)}</td><td class="r">${pc(r)}</td><td class="r">${pc(t.bench)}</td><td class="r">${t.bench == null ? "—" : pc(r - t.bench)}</td><td class="r num">${p.skipped}</td><td class="r num">${t.complete}</td>
+        ${o.n === "20" ? `<td class="small">${(p.legs || []).map((l) => `<a href="#/stock/${esc(l.id)}">${esc(BYID[l.id]?.name || l.id)}</a> <span class="${signCls(l.ret)}">${l.ret == null ? "買不到" : pctTxt(l.ret)}</span>`).join("、")}</td>` : ""}</tr>`).join("")}</tbody></table></div></details>
+    <h3 style="margin:14px 0 6px">怎麼算的、有什麼限制</h3>
+    <ul class="small" style="margin:0;padding-left:18px">
+      <li><b>不偷看未來：</b>每個月用前一個交易日收盤為止的資料重算三種模型。季報要過法定公布期限才使用（Q1 5/15、Q2 8/14、Q3 11/14、年報隔年 3/31，金融業半年報 8/31），月營收隔月 11 日才使用。</li>
+      <li><b>估值：</b>交易所的歷史本益比資料只從 2026 年 8 月開始有，所以用當時股價 ÷ 已公布的近四季 EPS、股價 × 股數 ÷ 股東權益計算。</li>
+      <li><b>交易：</b>每月第一個交易日開盤等權買進前 N 名，下個月第一個交易日開盤賣出；新買進的股票扣來回成本 ${P.cost_pct}%，續抱不扣。進場日沒成交、開盤鎖漲停或成交金額不到 300 萬元的股票買不到，那一份留現金。持有中停牌或下市用最後收盤價。</li>
+      <li><b>限制：</b>模型規則是 2026 年 10 月訂的，雖然沒有用回測結果調整，但仍是回測，不是當時真的公開的名單；財報是更正後的版本；約一半股票有財報資料；沒有處置股的歷史紀錄；期間只有 ${P.timeline.length} 個月，結果容易受單一行情影響。</li>
+      <li>真正的樣本外證據是上面的「AI 名單上線後追蹤」。回測結果不代表未來報酬，也不是投資建議。</li></ul>
+    <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/backtest/ai_pit.json">backtest/ai_pit.json</a>・產生於 ${esc((P.generated_at || "").slice(0, 16).replace("T", " "))}・資料到 ${esc(P.data_end || "")}</p>`;
+  const bind = (id, k) => { const g = $("#" + id); if (g) g.onclick = (e) => { const b = e.target.closest("button"); if (b) { o[k] = b.dataset.k; store.set("pit", o); renderPit(); } }; };
+  bind("pitm", "m"); bind("pitn", "n");
+  if (hasLWC() && $("#pitc")) {
+    const c = mkChart($("#pitc")), curve = (xs) => { let v = 100; const out = [{ time: P.timeline[0].entry, value: 100 }]; xs.forEach((x, i) => { v *= 1 + (x || 0) / 100; out.push({ time: P.timeline[i].exit, value: +v.toFixed(2) }); }); return out; };
+    c.addLineSeries({ color: css("--accent"), lineWidth: 2, priceLineVisible: false }).setData(curve(T.monthly));
+    c.addLineSeries({ color: css("--accent-2"), lineWidth: 2, priceLineVisible: false }).setData(curve(P.timeline.map((t) => t.bench)));
+    if (M.universe_monthly) c.addLineSeries({ color: css("--faint"), lineWidth: 1, priceLineVisible: false }).setData(curve(M.universe_monthly));
+    c.timeScale().fitContent();
+  }
+}
+
 // ---------- 個股 AI 分數拆解 ----------
 function breakdown(s, md) {
   const m = SNAP.ai_modes[md], w = m.weights, sc = s.ai.modes[md], tw = Object.values(w).reduce((a, b) => a + b, 0);
@@ -995,10 +1044,11 @@ function pagePerformance() {
     <section class="card"><div class="card-h"><h2>三種驗證，狀態不同</h2></div>
       <div class="tbl"><table class="wrap"><thead><tr><th>驗證方式</th><th>回答的問題</th><th>狀態</th></tr></thead><tbody>
         <tr><td><b>AI 名單上線後追蹤</b><br><span class="faint small">樣本外、事後紀錄</span></td><td>每天公開存檔的 AI 名單，之後真的表現如何？</td><td><span class="pill acc">進行中</span> 已累積 ${tr.days || 0} 個選股日（本頁下方）</td></tr>
-        <tr><td><b>AI 多因子歷史回測</b><br><span class="faint small">用過去資料重建當時的 AI 排名</span></td><td>如果過去每個月都照模型選前 N 名，結果如何？</td><td><span class="pill warn">尚未完成</span> 正在建立「只用當時已公布資料」的評分引擎；完成前，網站不宣稱 AI 模型已通過歷史回測</td></tr>
+        <tr><td><b>AI 多因子歷史回測</b><br><span class="faint small">用過去資料重建當時的 AI 排名</span></td><td>如果過去每個月都照模型選前 N 名，結果如何？</td><td id="pitst"><span class="pill warn">尚未完成</span> 正在建立「只用當時已公布資料」的評分引擎；完成前，網站不宣稱 AI 模型已通過歷史回測</td></tr>
         <tr><td><b>技術訊號歷史回測</b><br><span class="faint small">只檢驗技術訊號，不是 AI 綜合分數</span></td><td>出現某個技術訊號後 5、20 天的表現？</td><td><span class="pill">已有結果</span> 見 <a href="#/trust">資料來源與方法</a>；目前結果沒有勝過大盤</td></tr>
       </tbody></table></div>
       <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 量化選股的歷史獲利能力」。</p></section>
+    <section class="card" id="pit" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
     ${modelCompare(tr)}
@@ -1014,6 +1064,7 @@ function pagePerformance() {
         <span class="faint">每天第一次發布的名單存成「日期.json」；同一天稍後的更新只要名單、排名、分數、因子分數、模型版本或資料日期有任何改變，就另存「日期.v2.json」補正版並寫明原因，舊檔不覆寫。績效與回測只用第一次發布的名單。</span></p></section>
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
+  loadPit();
 }
 
 // 對帳報告：網站另外用一套獨立寫法，從資料庫的原始成交價重算績效和產業數字，逐筆比對（app/audit.py）
