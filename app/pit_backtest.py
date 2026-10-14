@@ -165,12 +165,18 @@ def frame_at(D: dict, sig: str, max_rows: int = 520) -> pd.DataFrame:
     return df
 
 
-def ranks_at(D: dict, sig: str, cfg: dict) -> dict:
-    """訊號日收盤後的三種模型排名：{mode: [(stock_id, score), ...]}，以及可排名股票數。"""
+def scored_rows(D: dict, sig: str, cfg: dict) -> list[dict]:
+    """訊號日收盤後、用當時資料算出的每檔股票因子分數與三種模型分數（和網站同一套程式）。"""
     df = frame_at(D, sig)
     df, _ = snapshot.score_frame(df, cfg, date.fromisoformat(sig))
     rows = [{k: snapshot._clean(v) for k, v in r.items()} for r in df.to_dict("records")]
     ai_model.annotate(rows)
+    return rows
+
+
+def ranks_at(D: dict, sig: str, cfg: dict, rows: list[dict] | None = None) -> dict:
+    """訊號日收盤後的三種模型排名：{mode: [(stock_id, score), ...]}，以及可排名股票數。"""
+    rows = scored_rows(D, sig, cfg) if rows is None else rows
     out = {}
     for mode in ai_model.MODES:
         rk = sorted(((r["stock_id"], r["ai"]["modes"][mode]["score"], r["ai"]["modes"][mode]["rank"]) for r in rows if r["ai"]["modes"][mode]["rank"]),

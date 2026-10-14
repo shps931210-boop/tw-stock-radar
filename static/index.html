@@ -255,7 +255,10 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .dtile span { font-size: 12px; color: var(--muted); } .dtile b { font-size: 20px; } .dtile b small { font-size: 12px; color: var(--muted); font-weight: 400; } .dtile small { font-size: 12px; color: var(--faint); }
 .dtile.good { border-color: color-mix(in srgb, var(--info) 45%, var(--line)); background: var(--info-bg); } .dtile.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); background: var(--warn-bg); }
 .dtile.acc { background: var(--accent-soft); }
-.qbars { display: grid; gap: 6px; } .qrow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1.4fr); gap: 10px; align-items: center; font-size: 13px; }
+.qmini { display: inline-flex; align-items: flex-end; gap: 2px; height: 20px; vertical-align: middle; }
+  .qmini i { display: block; width: 7px; border-radius: 1px; background: var(--up); }
+  .qmini i.down { background: var(--down); }
+  .qbars { display: grid; gap: 6px; } .qrow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1.4fr); gap: 10px; align-items: center; font-size: 13px; }
 .qname { all: unset; cursor: pointer; font-weight: 600; color: var(--accent-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .qbar { position: relative; height: 18px; background: var(--chip); border-radius: 4px; } .qbar i { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 4px; opacity: .8; }
 .qbar span { position: absolute; left: 6px; top: 0; line-height: 18px; font-size: 12px; color: var(--ink); } .qtops { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -924,6 +927,55 @@ function renderMovers() {
   el.querySelector("tbody")?.addEventListener("click", (e) => { if (e.target.closest("a")) return; const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
 }
 
+// ---------- 因子有效性檢驗（history/backtest/factors.json，每週重算；研究結果，沒有拿來改模型） ----------
+let FAC = null;
+async function loadFac() {
+  if (!SITE) return;
+  if (!FAC) { try { const r = await fetch("data/backtest/factors.json?v=" + (VER?.datasets?.["backtest/factors.json"] || Date.now())); FAC = r.ok ? await r.json() : false; } catch (e) { FAC = false; } }
+  const el = $("#fac"); if (!el || !FAC) return;
+  el.hidden = false; renderFac();
+}
+function icVerdict(x) {
+  if (!x || x.ic == null) return '<span class="pill">樣本不足</span>';
+  if (x.ic > 0 && x.t != null && x.t >= 2) return '<span class="pill acc">有預測力</span>';
+  if (x.ic > 0.01) return '<span class="pill">方向對、不顯著</span>';
+  if (x.ic < -0.01) return '<span class="pill warn">方向相反</span>';
+  return '<span class="pill">幾乎沒有</span>';
+}
+function renderFac() {
+  const el = $("#fac"), F = FAC, o = { h: "1m", m: "balanced", n: "10", ...store.get("fac", {}) };
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${n}</button>`).join("")}</div>`;
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`;
+  const icv = (x) => x?.ic == null ? "—" : `<span class="num">${x.ic.toFixed(3)}</span>`;
+  const qbar = (q) => { if (!q) return "—"; const mx = Math.max(...q.map(Math.abs), 0.01); return `<span class="qmini">${q.map((v) => `<i title="${pctTxt(v)}" class="${v >= 0 ? "up" : "down"}" style="height:${Math.max(2, Math.abs(v) / mx * 18)}px"></i>`).join("")}</span>`; };
+  const row = (x, lab) => { const h = x[o.h]; return `<tr><td><b>${esc(lab)}</b></td><td class="r">${icv(h.raw)}</td><td class="r num">${h.raw?.t ?? "—"}</td><td class="r num">${h.raw?.pos == null ? "—" : fmtNum(h.raw.pos, 0) + "%"}</td><td class="r">${icv(h.neutral)}</td>
+    <td class="r">${qbar(h.quint)}</td><td class="r">${pc(h.spread)}</td><td class="r">${icv(x.regime.bull)}</td><td class="r">${icv(x.regime.bear)}</td><td>${icVerdict(h.raw)}</td></tr>`; };
+  const ms = F.months, nb = ms.filter((m) => m.regime === "bull").length, nr = ms.filter((m) => m.regime === "bear").length;
+  const PF = F.portfolios[o.m] || F.portfolios.balanced, T = PF[o.n], capLab = { none: "不設上限", 40: "每產業最多 40%", 30: "每產業最多 30%", 20: "每產業最多 20%" };
+  el.innerHTML = `<div class="card-h"><h2>因子有效性檢驗</h2><span class="muted small">研究結果，還沒有用來修改模型・每週重算</span></div>
+    <p class="small" style="margin:0 0 10px">先量清楚現在的模型有沒有預測能力，再談優化。用和上面回測相同的「只用當時已公布資料」重建，${ms.length} 個月（多頭 ${nb} 個月、空頭 ${nr} 個月）。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${seg("fach", F.horizons, o.h)}</div>
+    <div class="tbl"><table><thead><tr><th>因子／模型</th><th class="r">Rank IC</th><th class="r">t 值</th><th class="r">IC 為正的月份</th><th class="r">產業中性 IC</th><th class="r">五分組（低→高）</th><th class="r">最高減最低組</th><th class="r">多頭 IC<br><span class="faint small">${nb} 個月</span></th><th class="r">空頭 IC<br><span class="faint small">${nr} 個月</span></th><th>判讀</th></tr></thead><tbody>
+      ${Object.values(F.factors).map((x) => row(x, x.name + "分數")).join("")}
+      <tr><td colspan="10" class="faint small">三種模型的綜合分數（只在通過各模型門檻的股票裡比較）</td></tr>
+      ${Object.values(F.models).map((x) => row(x, x.name)).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:6px 0 0">Rank IC：分數排名和之後報酬排名的相關係數，正值代表分數高的股票之後表現較好；台股月資料 0.03～0.05 就算有用，t 值大於 2 才比較不像運氣。產業中性：分數和報酬都先扣掉同產業平均，看扣掉「押對產業」之後還剩多少選股能力。多頭／空頭：訊號日加權指數在 120 日均線之上或之下（當下就知道，不是事後分類）。${o.h === "3m" ? "3 個月的區間互相重疊，t 值已用有效樣本數修正。" : ""}五分組是各組平均報酬（未扣成本）。一次檢驗 8 個項目，就算全都沒用，偶然出現一個 t 值大於 2 也不奇怪；空頭月份太少時，多空分開的數字只能參考。</p>
+    <h3 style="margin:16px 0 6px">產業集中度上限測試</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${seg("facm", Object.fromEntries(Object.entries(F.portfolios).map(([k, x]) => [k, x.name])), o.m)}${seg("facn", { 10: "前 10 名", 20: "前 20 名" }, o.n)}</div>
+    <div class="tbl"><table><thead><tr><th>條件</th><th class="r">累積（扣成本）</th><th class="r">平均每月超額</th><th class="r">贏 0050 月份</th><th class="r">個股贏 0050 比例</th><th class="r">最大回撤</th><th class="r">最大產業占比</th><th class="r">多頭月超額</th><th class="r">空頭月超額</th></tr></thead><tbody>
+      ${["none", "40", "30", "20"].map((c) => { const x = T[c]; return `<tr><td>${capLab[c]}</td><td class="r">${pc(x.total)}</td><td class="r">${pc(x.avg_excess)}</td><td class="r num">${x.win_vs_bench == null ? "—" : fmtNum(x.win_vs_bench, 0) + "%"}</td><td class="r num">${x.hit == null ? "—" : fmtNum(x.hit, 0) + "%"}</td><td class="r">${pc(x.mdd)}</td><td class="r num">${x.ind_max == null ? "—" : fmtNum(x.ind_max, 0) + "%"}</td><td class="r">${pc(x.by_regime.bull.avg_excess)}</td><td class="r">${pc(x.by_regime.bear.avg_excess)}</td></tr>`; }).join("")}
+      <tr><td class="faint">0050 同期</td><td class="r">${pc(F.bench_stats?.total)}</td><td colspan="7"></td></tr></tbody></table></div>
+    <p class="faint small" style="margin:6px 0 0">依模型排名往下挑，同產業超過上限就跳過。每月第一個交易日開盤買進、下個月第一個交易日開盤賣出，新買進扣成本 ${F.cost_pct}%。「單純動能」只看過去一年漲幅排名，是最簡單的對照組：模型如果連它都贏不了，加再多因子也沒有意義。</p>
+    <h3 style="margin:14px 0 6px">怎麼解讀</h3>
+    <ul class="small" style="margin:0;padding-left:18px">
+      <li>這些是<b>研究結果，不會直接拿來調權重</b>。只有 ${ms.length} 個月的資料，照著結果調整很容易「過度擬合」：在過去看起來很好，未來不一定有效。</li>
+      <li>現在的三種模型是固定的比較基準。之後若要換新版，必須在沒參與調整的期間（樣本外）、扣成本後仍然勝過現在的模型與 0050，才會上線。</li>
+      <li>限制和上面的歷史回測相同：財報是更正後版本、約一半股票有財報、沒有處置股歷史、籌碼沒有足夠歷史所以不列入。</li></ul>
+    <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/backtest/factors.json">backtest/factors.json</a>・產生於 ${esc((F.generated_at || "").slice(0, 16).replace("T", " "))}・資料到 ${esc(F.data_end || "")}</p>`;
+  const bind = (id, k) => { const g = $("#" + id); if (g) g.onclick = (e) => { const b = e.target.closest("button"); if (b) { o[k] = b.dataset.k; store.set("fac", o); renderFac(); } }; };
+  bind("fach", "h"); bind("facm", "m"); bind("facn", "n");
+}
+
 // ---------- AI 多因子歷史回測（history/backtest/ai_pit.json，每週重算） ----------
 let PIT = null;
 async function loadPit() {
@@ -1106,14 +1158,16 @@ function pagePerformance() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 量化選股績效與回測</h1>
       <p class="lead">每天收盤後的 AI 名單在開盤前就公開存檔，之後用固定規則計算：隔天開盤買進、第 N 個交易日收盤賣出、扣交易成本，和 0050、全市場、同產業比較。這是真實的事後紀錄，不是回測，也不代表未來報酬。</p></section>
-    <section class="card"><div class="card-h"><h2>三種驗證，狀態不同</h2></div>
+    <section class="card"><div class="card-h"><h2>四種驗證，狀態不同</h2></div>
       <div class="tbl"><table class="wrap"><thead><tr><th>驗證方式</th><th>回答的問題</th><th>狀態</th></tr></thead><tbody>
         <tr><td><b>AI 名單上線後追蹤</b><br><span class="faint small">樣本外、事後紀錄</span></td><td>每天公開存檔的 AI 名單，之後真的表現如何？</td><td><span class="pill acc">進行中</span> 已累積 ${tr.days || 0} 個選股日（本頁下方）</td></tr>
         <tr><td><b>AI 多因子歷史回測</b><br><span class="faint small">用過去資料重建當時的 AI 排名</span></td><td>如果過去每個月都照模型選前 N 名，結果如何？</td><td id="pitst"><span class="pill warn">尚未完成</span> 正在建立「只用當時已公布資料」的評分引擎；完成前，網站不宣稱 AI 模型已通過歷史回測</td></tr>
+        <tr><td><b>因子有效性檢驗</b><br><span class="faint small">研究：每個因子到底有沒有預測力</span></td><td>分數高的股票之後真的比較好嗎？扣掉產業、分多空之後呢？</td><td>${'<span class="pill">研究中</span> 見下方；結果還沒有用來修改模型'}</td></tr>
         <tr><td><b>技術訊號歷史回測</b><br><span class="faint small">只檢驗技術訊號，不是 AI 綜合分數</span></td><td>出現某個技術訊號後 5、20 天的表現？</td><td><span class="pill">已有結果</span> 見 <a href="#/trust">資料來源與方法</a>；目前結果沒有勝過大盤</td></tr>
       </tbody></table></div>
       <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 量化選股的歷史獲利能力」。</p></section>
     <section class="card" id="pit" hidden></section>
+    <section class="card" id="fac" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
     ${modelCompare(tr)}
@@ -1130,6 +1184,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
+  loadFac();
 }
 
 // 對帳報告：網站另外用一套獨立寫法，從資料庫的原始成交價重算績效和產業數字，逐筆比對（app/audit.py）

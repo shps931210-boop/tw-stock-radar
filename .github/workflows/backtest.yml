@@ -1,5 +1,5 @@
 # AI 多因子歷史回測（只用當時已公布的資料重建每個月的 AI 排名）。
-# 每週六早上跑一次（需要約 20～30 分鐘），結果存到 history/backtest/ai_pit.json，下一次盤後更新時發布到網站。
+# 每週六早上跑一次（需要約 40～60 分鐘），結果存到 history/backtest/ai_pit.json 與 factors.json（因子有效性檢驗），下一次盤後更新時發布到網站。
 # 也可以在 Actions 頁面按「Run workflow」手動執行。
 name: AI 歷史回測
 
@@ -21,7 +21,7 @@ env:
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,11 +38,13 @@ jobs:
           python -c "import sqlite3; print('股價筆數', sqlite3.connect('data/stocks.db').execute('SELECT COUNT(*) FROM prices').fetchone()[0])"
       - name: 執行回測
         run: python -m app.pit_backtest
+      - name: 因子有效性檢驗
+        run: python -m app.factor_research
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/backtest/ai_pit.json
+          git add history/backtest/ai_pit.json history/backtest/factors.json
           if git diff --cached --quiet; then echo "結果沒有變化"; exit 0; fi
           git commit -q -m "AI 歷史回測 $(date +%F)"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
