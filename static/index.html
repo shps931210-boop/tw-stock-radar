@@ -250,6 +250,26 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .crow select, .crow input { width: 100%; }
 .actbar { position: sticky; top: var(--hdr, 0px); z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; padding: 8px 0; margin: 4px 0 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
 @media (max-width: 640px) { .actbar { flex-wrap: nowrap; overflow-x: auto; } .actbar .btn { white-space: nowrap; flex: none; } }
+.dtiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dtile { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+.dtile span { font-size: 12px; color: var(--muted); } .dtile b { font-size: 20px; } .dtile b small { font-size: 12px; color: var(--muted); font-weight: 400; } .dtile small { font-size: 12px; color: var(--faint); }
+.dtile.good { border-color: color-mix(in srgb, var(--info) 45%, var(--line)); background: var(--info-bg); } .dtile.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); background: var(--warn-bg); }
+.dtile.acc { background: var(--accent-soft); }
+.qbars { display: grid; gap: 6px; } .qrow { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1.4fr); gap: 10px; align-items: center; font-size: 13px; }
+.qname { all: unset; cursor: pointer; font-weight: 600; color: var(--accent-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qbar { position: relative; height: 18px; background: var(--chip); border-radius: 4px; } .qbar i { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 4px; opacity: .8; }
+.qbar span { position: absolute; left: 6px; top: 0; line-height: 18px; font-size: 12px; color: var(--ink); } .qtops { display: flex; gap: 4px; flex-wrap: wrap; }
+@media (max-width: 760px) { .qrow { grid-template-columns: 110px minmax(0, 1fr); } .qrow > .small, .qrow .qtops { grid-column: 1 / -1; } }
+.dplan th { width: 92px; white-space: nowrap; vertical-align: top; color: var(--muted); font-weight: 500; text-align: left; }
+.dbt { margin-top: 12px; padding: 12px; border-radius: 12px; background: var(--chip); font-size: 13px; }
+.vband { position: relative; height: 14px; border-radius: 7px; background: var(--chip); margin: 18px 0 4px; }
+.vband i { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: color-mix(in srgb, var(--info) 30%, var(--panel)); }
+.vband em { position: absolute; top: -3px; bottom: -3px; border-left: 2px solid var(--info); }
+.vband b { position: absolute; top: -7px; width: 4px; height: 28px; margin-left: -2px; border-radius: 2px; background: var(--ink); }
+.vband b::after { content: "目前"; position: absolute; top: -18px; left: -10px; font-size: 11px; color: var(--ink); white-space: nowrap; }
+.vlab { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.hzh { font-size: 12px; color: inherit; opacity: .8; }
+@media (max-width: 640px) { .hzh { display: none; } .dtiles { grid-template-columns: 1fr; } .dtile { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; } .dtile small { width: 100%; } }
 .flow { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 14px; flex-wrap: wrap; }
 .flow li { display: flex; align-items: center; gap: 6px; padding: 6px 12px 6px 6px; border-radius: 999px; background: var(--chip); color: var(--muted); font-size: 13px; }
 .flow li b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--panel); font-size: 12px; }
@@ -1692,6 +1712,19 @@ function sectQuant(x) {
   const sc = x.members.map((id) => BYID[id]?.ai?.modes?.balanced).filter((a) => a && a.score != null);
   return { top: sc.filter((a) => a.rank && a.rank <= QUANT_TOP).length, avg: sc.length ? sc.reduce((t, a) => t + a.score, 0) / sc.length : null, n: sc.length };
 }
+// 量化雷達：產業排名長條圖＋各產業最高分股票（不用色塊，避免和行情紅綠混淆）
+function quantBars(list) {
+  const qs = list.map((x) => ({ x, q: sectQuant(x) })).filter((r) => r.q.top > 0).sort((a, b) => b.q.top - a.q.top || b.q.top / b.q.n - a.q.top / a.q.n);
+  const mx = Math.max(1, ...qs.map((r) => r.q.top));
+  if (!qs.length) return '<div class="empty">目前沒有產業有股票進入前 ' + QUANT_TOP + ' 名</div>';
+  return `<div class="qbars">${qs.map(({ x, q }) => {
+    const tops = x.members.map((id) => BYID[id]).filter((s) => s?.ai?.modes?.balanced?.rank && s.ai.modes.balanced.rank <= QUANT_TOP).sort((a, b) => a.ai.modes.balanced.rank - b.ai.modes.balanced.rank).slice(0, 3);
+    return `<div class="qrow"><button class="qname" data-ind="${esc(x.industry)}">${esc(x.industry)}</button>
+      <div class="qbar"><i style="width:${(q.top / mx * 100).toFixed(1)}%"></i><span class="num">${q.top} 檔</span></div>
+      <span class="small muted num">占產業 ${fmtNum(q.top / q.n * 100, 0)}%・平均 ${fmtNum(q.avg, 0)} 分</span>
+      <span class="qtops">${tops.map((s) => `<a class="pill acc" href="#/stock/${s.stock_id}">${s.ai.modes.balanced.rank}. ${esc(s.name)}</a>`).join("")}</span></div>`; }).join("")}</div>
+    <p class="faint small" style="margin:8px 0 0">長條＝產業裡有幾檔進入均衡型 AI 量化評分前 ${QUANT_TOP} 名；「占產業」＝高分股占產業有分數股票的比例。這是模型分數的分布，不是漲跌或推薦。</p>`;
+}
 function sectVal(x, o) {
   if (o.view === "price") return x.ret[o.per]?.[o.w] ?? null;
   if (o.view === "breadth") { const r = x.ret[o.per]; return r && r.n ? r.up / r.n * 100 - 50 : null; }  // 上漲比例 − 50%：過半上漲是正
@@ -1816,7 +1849,7 @@ function pageSectors() {
         ${o.lay === "map" ? seg("sz", SECT_SIZE, o.size) : seg("ss", { val: "依強弱", n: "依股票數" }, o.sort)}</div></details>
       <p class="small muted" style="margin:0 0 10px">${o.lay === "map" ? `面積：${esc(sizeWhat)}，只代表規模大小，不代表資金流入或推薦程度。` : ""}顏色和數字：${esc(what)}。${o.view === "quant" ? "" : "紅色是正、綠色是負，色階固定，同樣的數字每天都是同一個顏色。"}</p>
       ${o.view === "quant" && SNAP.rankings_blocked ? `<p class="small" style="color:var(--warn);margin:0 0 10px">${esc(SNAP.rankings_blocked)}，量化雷達暫時沒有資料。</p>` : ""}
-      ${rows.length && o.lay === "map" ? `<div class="tmap" id="tmap" role="group" aria-label="產業熱力圖"></div>
+      ${o.view === "quant" ? quantBars(S.industries) : rows.length && o.lay === "map" ? `<div class="tmap" id="tmap" role="group" aria-label="產業熱力圖"></div>
         ${o.view === "quant" ? `<div class="tm-legend"><span>0 檔</span><i class="seq"></i><span>${esc(sectTxt(legendMax, o))}</span></div>` : heatLegend(steps || [legendMax * 0.1, legendMax * 0.45, legendMax * 0.9], (v) => esc(sectTxt(v, o)))}
         <p class="faint small" style="margin:4px 0 0">點色塊看產業詳細資料；小格子把滑鼠移上去（手機長按）看名稱與數字。</p>`
       : rows.length ? `<div class="heat">${rows.map(({ x, v }) => `<button class="tile ${o.sel === x.industry ? "sel" : ""} ${x.n < 3 ? "thin" : ""}" data-ind="${esc(x.industry)}" style="background:${hc(v).bg};color:${hc(v).fg}" aria-label="${esc(x.industry)} ${esc(sectTxt(v, o))}">
@@ -1854,7 +1887,7 @@ function pageSectors() {
     return { key: s.stock_id, size: s.market_cap > 0 ? s.market_cap : (s.value_1d || 0), v, label: `${s.name}`, vtxt: pctTxt(v), sub: s.stock_id,
       tip: `${s.stock_id} ${s.name}：${pctTxt(v)}・市值 ${s.market_cap > 0 ? money(s.market_cap) : "—"}` };
   }), (id) => { location.hash = `#/stock/${id}`; }, o.view === "quant" ? "seq" : "", HEAT_STEPS[o.per === "1d" || o.per === "20d" ? o.per : "5d"]);
-  $$(".heat .tile").forEach((b) => (b.onclick = () => pick(b.dataset.ind)));
+  $$(".heat .tile, .qname").forEach((b) => (b.onclick = () => pick(b.dataset.ind)));
   bindRows($("#sdet"), [], () => {});
 }
 function sectDetail(x, S) {
@@ -2700,6 +2733,61 @@ function researchCard(s, d) {
     <div class="three">${col("優勢", "ok", st, "沒有特別突出的指標")}${col("風險", "down", rk, "沒有偵測到明顯風險指標")}${col("近期變化", "", ch, "沒有資料")}${col("待追蹤", "", tr, "近期沒有已知事件")}</div>
     <p class="faint small" style="margin:8px 0 0">門檻：因子分數 ≥ 80 或 ≤ 20、月營收年增 ≥ 20% 或 ≤ −10%、ROE ≥ 15% 或小於 0、F-Score ≥ 7 或 ≤ 3、殖利率 ≥ 5%、法人連買 ≥ 3 日、本益比一年位階 ≥ 90%、最大回撤 ≤ −40%、負債比 ≥ 70%。這是資訊整理，不是投資建議。</p></section>`;
 }
+// ---------- 個股研究決策卡：好公司 vs 好價格 vs 進場條件，三件事分開看 ----------
+const PLAN_TXT = { triggered: ["進場條件成立", "acc"], setup: ["觀察中，條件未齊", ""], none: ["不符合", ""], na: ["無法判定", ""], blocked: ["暫停（行情未更新）", "warn"] };
+const HZ = { short: "短線", swing: "波段", long: "長期" };
+function valLabel(v) {
+  if (!v || v.p50 == null) return null;
+  return v.pct <= 30 ? ["相對自己歷史偏低", "good"] : v.pct >= 70 ? ["相對自己歷史偏高", "warn"] : ["在自己歷史的中間區間", ""];
+}
+function planLine(s) {
+  const p = s.plan; if (!p) return "";
+  const a = s.ai?.modes?.balanced?.score, q = a == null ? "量化分數不足" : a >= 70 ? "量化品質較高" : a >= 50 ? "量化品質中等" : "量化品質偏弱";
+  const sw = { triggered: "波段進場條件成立", setup: "波段觀察中", none: "波段條件未成立", na: "波段無法判定", blocked: "波段暫停" }[p.swing];
+  const v = p.pe_pct == null ? "估值無法判定" : p.pe_pct >= 70 ? "估值偏高" : p.pe_pct <= 30 ? "估值偏低" : "估值中間";
+  return `${q}｜${sw}｜${v}`;
+}
+function decisionCard(s, d) {
+  const D = d.decision; if (!D) return "";
+  const hz = store.get("hz", "swing"), st = D.strategy || {}, V = D.valuation || {}, BT = SNAP.strategy_bt || {};
+  const a = s.ai?.modes?.balanced || {}, vl = valLabel(V);
+  const tile = (h, main, sub, cls = "") => `<div class="dtile ${cls}"><span>${h}</span><b>${main}</b><small>${sub}</small></div>`;
+  const plan = hz === "long" ? D.long : st[hz];
+  const stTxt = D.blocked ? PLAN_TXT.blocked : PLAN_TXT[(plan || {}).state || "na"];
+  const R = hz === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[hz];
+  const lv = hz !== "long" && st.ready ? st[hz] : null;
+  const bt = hz !== "long" ? BT.modes?.[hz] : null;
+  const btLine = !bt || !bt.n ? "" : `<div class="dbt"><b>這套規則過去的表現</b>（${esc(BT.start || "")}～${esc(BT.end || "")}，全市場 ${fmtNum(bt.n, 0)} 筆交易，已扣成本）
+      <div class="kpis" style="margin-top:6px">${[["勝率", bt.win + "%"], ["平均每筆", pctTxt(bt.avg)], ["中位數", pctTxt(bt.median)], ["平均比 0050", pctTxt(bt.excess)], ["平均持有", bt.days + " 天"], ["平均最大浮虧", pctTxt(bt.mae)]]
+        .map(([k, v]) => `<div class="kpi"><span>${k}</span><b style="font-size:16px">${v}</b></div>`).join("")}</div>
+      <p class="small" style="margin:6px 0 0">${bt.excess != null && bt.excess < 0 ? `<b>過去平均輸給同期間的 0050</b>，只照這條規則機械式交易並不划算；請把它當成「觀察與風險控管」的工具，不是買進理由。` : bt.avg > 0 ? "過去平均為正，但樣本期間有限，不代表未來。" : "過去平均為負，請謹慎看待。"}
+        出場原因：${Object.entries(bt.why || {}).map(([k, v]) => `${esc(k)} ${fmtNum(v / bt.n * 100, 0)}%`).join("、")}。另有 ${bt.funnel?.limit_up ?? 0} 次訊號因漲停鎖死買不到、${bt.funnel?.thin ?? 0} 次成交太少，沒有算進績效。</p></div>`;
+  const band = V.p50 != null ? (() => { const lo = Math.min(V.low, s.close) * 0.95, hi = Math.max(V.high, s.close) * 1.05, x = (v) => ((v - lo) / (hi - lo) * 100).toFixed(1);
+    return `<div class="vband"><i style="left:${x(V.low)}%;width:${x(V.high) - x(V.low)}%"></i><em style="left:${x(V.base)}%"></em><b style="left:${x(s.close)}%" title="目前股價"></b></div>
+      <div class="vlab"><span>保守 ${fmtNum(V.low)}</span><span>基準 ${fmtNum(V.base)}</span><span>樂觀 ${fmtNum(V.high)}</span></div>
+      <p class="small" style="margin:6px 0 0">目前股價 <b class="num">${fmtNum(s.close)}</b>，本益比 <b class="num">${fmtNum(V.pe, 1)}</b> 倍，高於自己近兩年 <b class="num">${fmtNum(V.pct, 0)}%</b> 的日子${V.peer ? `；同產業中位數 ${fmtNum(V.peer, 1)} 倍（${V.peer_n} 檔）` : ""}。
+        ${V.implied_growth > 0 ? `要回到自己的中位數本益比，近四季 EPS 需要再成長約 <b>${fmtNum(V.implied_growth, 0)}%</b>，這就是目前股價隱含的成長預期。` : `目前本益比低於自己的中位數，就算 EPS 下滑約 ${fmtNum(-V.implied_growth, 0)}%，本益比也只會回到中位數。`}</p>
+      <p class="faint small" style="margin:4px 0 0">三情境 = 近四季 EPS ${fmtNum(V.eps)} 元 × 自己歷史本益比第 20／50／80 百分位（${fmtNum(V.p20, 1)}／${fmtNum(V.p50, 1)}／${fmtNum(V.p80, 1)} 倍，${esc(V.from)} 起 ${V.days} 個交易日）。本益比用財報 EPS 自算，季報在法定期限隔天才算公布。${V.note ? esc(V.note) + "。" : ""}這是研究區間，不是目標價。</p>`; })()
+    : `<p class="muted small" style="margin:0">${esc(V.why || "沒有估值資料")}</p>`;
+  return `<section class="card dcard"><div class="card-h"><h2>研究決策卡</h2><span class="muted small">好公司、好價格、好時機分開判斷・資料日 ${esc(s.date)}</span></div>
+    <div class="dtiles">
+      ${tile("量化品質", a.score == null ? "—" : `${fmtNum(a.score, 0)} <small>/ 100</small>`, a.rank ? `AI 均衡型第 ${a.rank} 名・全市場相對分數` : "未進排行榜")}
+      ${tile("目前估值", vl ? vl[0] : "無法判定", V.p50 != null ? `本益比 ${fmtNum(V.pe, 1)} 倍・歷史位階 ${fmtNum(V.pct, 0)}%` : esc((V.why || "").slice(0, 30)), vl?.[1] || "")}
+      ${tile(`${HZ[hz]}策略`, stTxt[0], hz === "long" ? "基本面＋估值" : lv ? `參考停損 ${fmtNum(lv.stop)}・風險 ${fmtNum(lv.risk_pct, 1)}%` : "資料不足", stTxt[1])}</div>
+    ${D.blocked ? `<div class="banner warn small">${esc(D.blocked)}</div>` : ""}
+    <div class="seg" id="hzSeg" style="margin:14px 0 10px">${Object.entries(HZ).map(([k, n]) => `<button data-h="${k}" class="${k === hz ? "on" : ""}">${n}<small class="hzh">（${esc((k === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[k])?.hold || "")}）</small></button>`).join("")}</div>
+    ${R ? `<div class="tbl"><table class="wrap dplan"><tbody>
+      <tr><th>觀察條件</th><td>${esc(R.setup)}</td></tr>
+      <tr><th>進場條件</th><td>${esc(R.entry)}<div style="margin-top:4px"><span class="pill ${stTxt[1]}">${stTxt[0]}</span> ${(plan?.miss || []).map((m) => `<span class="small muted">・${esc(m)}</span>`).join(" ")}</div></td></tr>
+      ${lv ? `<tr><th>參考價位</th><td>以今天收盤 <b class="num">${fmtNum(lv.entry)}</b> 當參考進場價：停損 <b class="num">${fmtNum(lv.stop)}</b>（−${fmtNum(lv.risk_pct, 1)}%）、${hz === "short" ? "停利" : "第一參考目標"} <b class="num">${fmtNum(lv.target)}</b>（+${fmtNum(lv.reward_pct, 1)}%）、風險報酬比 <b class="num">${fmtNum(lv.rr, 1)} : 1</b>
+        <div class="faint small">實際進場價是訊號隔天開盤價，價位會跟著調整。ATR ${fmtNum(st.atr)}（股價的 ${fmtNum(st.atr_pct, 1)}%）。</div></td></tr>` : ""}
+      <tr><th>停損／失效</th><td>${esc(R.stop)}<br><span class="muted small">論點失效：${esc(R.invalid)}</span></td></tr>
+      <tr><th>停利／出場</th><td>${esc(hz === "long" ? R.exit : R.target)}${hz === "long" ? "" : `<br><span class="muted small">${esc(R.exit)}</span>`}</td></tr>
+      ${(plan?.warn || []).length ? `<tr><th>警示</th><td style="color:var(--warn)">${plan.warn.map(esc).join("；")}</td></tr>` : ""}</tbody></table></div>` : ""}
+    ${hz === "long" ? `<p class="small muted" style="margin:8px 0 0">長期規則用的估值歷史還不夠長，沒有單獨回測。最接近的驗證是 <a href="#/performance">AI 多因子歷史回測</a>（每月依均衡型排名換股，規則不完全相同）。</p>` : btLine}
+    <h3 style="margin:16px 0 6px">估值區間</h3>${band}
+    <p class="faint small" style="margin:12px 0 0">以上價位都是規則計算的研究參考，不是投資建議；停損不保證能以該價格成交，跳空或流動性不足時可能損失更多。外資券商目標價需要授權資料，目前沒有提供。</p></section>`;
+}
 function timelineCard(s, d) {
   const ev = [], px = d.prices || [];
   for (let i = Math.max(1, px.length - 120); i < px.length; i++) { const r = (px[i].close / px[i - 1].close - 1) * 100;
@@ -2743,7 +2831,8 @@ async function pageStock(id) {
   $("#app").innerHTML = `
     <section class="s-head"><div><a href="javascript:history.back()">← 返回</a>
         <h1 style="margin-top:4px">${starBtn(id)}<span class="num">${s.stock_id}</span> ${esc(s.name)} ${stPill(s)}</h1>
-        <div class="muted small">${esc(s.industry || "")}・${s.market === "tpex" ? "上櫃" : "上市"}・資料日 <span class="num">${s.date}</span>・成交 <span class="num">${fmtNum(s.volume_lots, 0)}</span> 張</div></div>
+        <div class="muted small">${esc(s.industry || "")}・${s.market === "tpex" ? "上櫃" : "上市"}・資料日 <span class="num">${s.date}</span>・成交 <span class="num">${fmtNum(s.volume_lots, 0)}</span> 張</div>
+        ${s.plan ? `<div class="small" style="margin-top:4px"><b>${esc(planLine(s))}</b></div>` : ""}</div>
       <div style="text-align:right"><div class="px">${fmtNum(s.close)}</div><div class="num ${signCls(s.chg_pct)}" style="font-size:15px">${pctTxt(s.chg_pct)}</div></div></section>
     <div class="actbar" role="navigation" aria-label="研究動作">${starBtn(id)}<button class="btn sm" data-j="j-chat">問 AI 這檔</button>${Object.values(s.ai.modes).some((x) => x.rank) ? '<button class="btn sm ghost" id="toRc">AI 排名理由</button>' : ""}
       <button class="btn sm ghost" data-j="j-bd">分數怎麼來</button><button class="btn sm ghost" data-j="j-peer">同業比較</button><button class="btn sm ghost" data-j="j-tl">研究時間軸</button><button class="btn sm ghost" data-j="j-news">公告新聞</button><a class="btn sm ghost" href="#/alerts">設定通知</a></div>
@@ -2754,6 +2843,7 @@ async function pageStock(id) {
       ${s.industry_rank ? `<span>產業內 <b class="num">${s.industry_rank} / ${s.industry_n}</b>（${esc(s.industry)}）</span>` : ""}</div>
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
     <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
+    ${decisionCard(s, d)}
     ${researchCard(s, d)}
     ${profileCard(d.profile)}
     <div id="j-chat"></div>${chatCard(id)}
@@ -2805,6 +2895,8 @@ async function pageStock(id) {
   $$(".actbar [data-j]").forEach((b) => b.onclick = () => { const el = $("#" + b.dataset.j); if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - hdr - $(".actbar").offsetHeight - 8, behavior: "smooth" }); });
   const toRc = $("#toRc"); if (toRc) toRc.onclick = () => { const k = Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank && m === store.get("aipage", {}).mode) || Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank);
     store.set("aipage", { ...store.get("aipage", {}), mode: k, sel: id, cmp: null }); location.hash = "#/ai"; };
+  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; };
+  if ($("#hzSeg")) $("#hzSeg").onclick = onHz;
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
   bindRows($("#app"), [], () => {});

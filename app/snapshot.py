@@ -218,6 +218,7 @@ def build(demo: bool = False) -> dict:
         rows.append(rec)
     ai_model.annotate(rows)
     ai_model.timing(rows, cfg.get("buy_point", {}))
+    decision = _decision(rows)
 
     with db.connect(dbname) as con:
         official = None if demo else db.get_meta(con, "official_latest_twse")
@@ -300,9 +301,52 @@ def build(demo: bool = False) -> dict:
         out["calendar"] = events.calendar(out, dbname)
     except Exception as e:  # 日曆失敗不影響其他功能
         out["calendar"] = {"schema_version": 1, "events": [], "warnings": [f"財報與事件日曆計算失敗：{e}"]}
+    try:  # 進出場策略回測（同一個資料日只算一次）
+        out["strategy_bt"] = _strategy_bt(dbname, price_day)
+        from . import strategy
+        out["strategy_rules"] = {**{k: {x: y for x, y in v.items() if isinstance(y, str)} for k, v in strategy.RULES.items()}, "long": strategy.LONG_RULE}
+    except Exception as e:
+        out["strategy_bt"] = {"ready": False, "reason": f"策略回測失敗：{e}"}
+    if blocked:
+        decision = {sid: {**d, "blocked": blocked} for sid, d in decision.items()}
+        for r in rows:
+            if r.get("plan"):
+                r["plan"].update(short="blocked", swing="blocked")
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    (config.DATA_DIR / ("decision_demo.json" if demo else "decision.json")).write_text(json.dumps(decision, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out
+
+
+def _decision(rows: list[dict]) -> dict:
+    """個股研究決策卡：進出場策略狀態、估值區間、長期判斷。完整內容另存 data/decision.json（只放進個股 JSON），
+    快照裡只留一行摘要（plan），避免整份快照變大。"""
+    from . import strategy, valuation
+    valuation.add_peers(rows)
+    out = {}
+    for r in rows:
+        st, vb = r.pop("strategy", None), r.pop("valuation_band", None)
+        if not r.get("is_common") or not isinstance(st, dict):
+            continue
+        vb = vb if isinstance(vb, dict) else None
+        lg = strategy.long_status(r, vb)
+        out[r["stock_id"]] = {"strategy": st, "long": lg, "valuation": vb}
+        tech = lambda m: (st.get(m) or {}).get("state", "na") if st.get("ready") else "na"
+        r["plan"] = {"short": tech("short"), "swing": tech("swing"), "long": lg["state"],
+                     "pe_pct": (vb or {}).get("pct"), "vs_base": round((r["close"] / vb["base"] - 1) * 100, 1) if vb and vb.get("base") and r.get("close") else None}
+    return out
+
+
+def _strategy_bt(dbname: str, price_day: str) -> dict:
+    from . import strategy
+    cache = config.DATA_DIR / f"strategy_bt_{dbname.split('.')[0]}.json"
+    if cache.exists():
+        old = json.loads(cache.read_text("utf-8"))
+        if old.get("end") == price_day and old.get("method") == strategy.METHOD:
+            return old
+    res = strategy.backtest(dbname)
+    cache.write_text(json.dumps(res, ensure_ascii=False), "utf-8")
+    return res
 
 
 SCORE_FACTORS = ("quality", "growth", "value", "momentum", "trend")

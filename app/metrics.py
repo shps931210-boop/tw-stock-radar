@@ -385,11 +385,15 @@ def compute_all(dbname: str = "stocks.db", stock_ids: list[str] | None = None) -
         adj, m["adj_events"] = adjust_prices(p, exg.get(sid, empty))
         m.update(price_metrics(adj, idx_s))
         m["close"] = float(p["close"].iloc[-1])  # 顯示用的收盤價永遠是實際成交價
+        if m["is_common"]:  # 進出場策略狀態（還原股價）與本益比估值區間（實際成交價、當時已公布的 EPS）
+            from . import strategy, valuation
+            m["strategy"] = strategy.status(adj)
+            m["valuation_band"] = valuation.band(p, fing.get(sid, empty), m["is_financial"])
         m.update(fundamental_metrics(fing.get(sid, empty), revg.get(sid, empty), divg.get(sid, empty), valg.get(sid, empty)))
         m.update(chip_metrics(instg.get(sid, empty), mgg.get(sid, empty), p))  # 籌碼與量用原始成交資料
         rows.append(m)
     df = pd.DataFrame(rows)
     for c in df.columns:  # 全部為 None 的欄位轉成數值 NaN，布林與文字欄位保留
-        if df[c].dtype == object and not df[c].map(lambda x: isinstance(x, (bool, str, list))).any():
+        if df[c].dtype == object and not df[c].map(lambda x: isinstance(x, (bool, str, list, dict))).any():
             df[c] = pd.to_numeric(df[c], errors="coerce")
     return df

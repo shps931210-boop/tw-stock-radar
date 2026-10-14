@@ -120,9 +120,11 @@ if snap_path.exists():
     (out / "data" / "snapshot.json").write_text(json.dumps(snap, ensure_ascii=False, separators=(",", ":")), "utf-8")
     rows = {s["stock_id"]: s for s in snap["stocks"] if s.get("is_common")}
     ids = list(rows)
+    dec_path = config.DATA_DIR / "decision.json"  # 個股研究決策卡（app/snapshot.py _decision）
+    dec = json.loads(dec_path.read_text("utf-8")) if dec_path.exists() else {}
     for sid in ids:
         (out / "data" / "stock" / f"{sid}.json").write_text(
-            json.dumps(stock_detail(sid, "stocks.db", rows[sid]), ensure_ascii=False, separators=(",", ":")), "utf-8")
+            json.dumps({**stock_detail(sid, "stocks.db", rows[sid]), "decision": dec.get(sid)}, ensure_ascii=False, separators=(",", ":")), "utf-8")
     (out / "data" / "quality.json").write_text(json.dumps(quality(snap), ensure_ascii=False, indent=1), "utf-8")
     for path, data in public_data(snap).items():  # 給其他程式讀的公開資料（不含任何會員資料）
         (out / "data" / path).parent.mkdir(parents=True, exist_ok=True)
