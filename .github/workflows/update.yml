@@ -55,6 +55,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # 快取裡的資料庫太小或讀不到股價（例如之前失敗的執行存了空檔），當作沒有快取，改用備份
+          if [ -f data/stocks.db ] && ! python -c "import sqlite3,sys; n=sqlite3.connect('data/stocks.db').execute('SELECT COUNT(*) FROM prices').fetchone()[0]; print('快取資料庫股價筆數', n); sys.exit(0 if n >= 100000 else 1)"; then
+            echo "快取的資料庫不完整，改從備份還原"; rm -f data/stocks.db
+          fi
           if [ ! -f data/stocks.db ]; then
             gh release download db-backup -p stocks.db.gz -D data && gunzip -f data/stocks.db.gz && echo "已從備份還原資料庫" || echo "沒有備份，從頭回補"
           fi
@@ -65,6 +69,7 @@ jobs:
         run: python -m app.probe
 
       - name: 更新資料（先抓最新收盤價，再回補歷史）
+        id: update
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python -m app.update
@@ -109,8 +114,9 @@ jobs:
         if: always()
         run: python -m app.backup status "${{ steps.backup.outcome }}" "${{ steps.restore.outcome }}"
 
+      # 只有資料更新成功才存快取，避免把失敗或不完整的資料庫存成下一次的起點
       - uses: actions/cache/save@v4
-        if: always()
+        if: always() && steps.update.outcome == 'success'
         with:
           path: data/stocks.db
           key: stocks-db-${{ github.run_id }}
