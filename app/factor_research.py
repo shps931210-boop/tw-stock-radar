@@ -59,16 +59,64 @@ def _ind_groups(ind: pd.Series) -> pd.Series:
     return ind.where(cnt >= MIN_IND, "其他")
 
 
+def t_pvalue(t: float, df: int) -> float:
+    """雙尾 t 檢定 p 值（Student t 分布，數值積分；不需要 scipy）。"""
+    import math
+    if df < 1 or t is None or math.isnan(t):
+        return float("nan")
+    c = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2)) / math.sqrt(df * math.pi)
+    f = lambda x: c * (1 + x * x / df) ** (-(df + 1) / 2)
+    a, n = abs(t), 2000
+    h = a / n
+    area = f(0) + f(a) + sum((4 if k % 2 else 2) * f(k * h) for k in range(1, n))
+    return max(0.0, min(1.0, 1 - 2 * area * h / 3))
+
+
+def _nw_se(x: np.ndarray, lag: int) -> float:
+    """Newey-West 標準誤：重疊期間（3 個月）的報酬前後相關，要用這個，不能直接 ÷ √n。"""
+    n = len(x)
+    e = x - x.mean()
+    s = float(e @ e) / n
+    for L in range(1, lag + 1):
+        s += 2 * (1 - L / (lag + 1)) * float(e[L:] @ e[:-L]) / n
+    return float(np.sqrt(max(s, 1e-12) / n))
+
+
+def _boot_ci(x: np.ndarray, block: int, reps: int = 2000, seed: int = 7) -> tuple[float, float]:
+    """平均 IC 的 95% 信賴區間（區塊 bootstrap；重疊期間用相同長度的區塊抽樣）。"""
+    rng = np.random.default_rng(seed)
+    n, b = len(x), max(1, block)
+    starts = np.arange(n - b + 1)
+    k = int(np.ceil(n / b))
+    means = [np.concatenate([x[s:s + b] for s in rng.choice(starts, k)])[:n].mean() for _ in range(reps)]
+    return float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))
+
+
 def _summ(ics: list, months_eff: float = 1) -> dict:
     x = np.array([v for v in ics if v is not None], float)
     if len(x) < 3:
         return {"n": int(len(x)), "ic": None}
     sd = float(x.std(ddof=1))
-    n_eff = len(x) / months_eff
+    lag = int(months_eff) - 1
+    se = _nw_se(x, lag) if lag > 0 else sd / np.sqrt(len(x))
+    t = float(x.mean()) / se if se else None
+    lo, hi = _boot_ci(x, int(months_eff))
     return {"n": int(len(x)), "ic": round(float(x.mean()), 4), "ic_sd": round(sd, 4),
             "ir": round(float(x.mean()) / sd, 2) if sd else None,
-            "t": round(float(x.mean()) / sd * np.sqrt(n_eff), 2) if sd and n_eff >= 2 else None,
+            "t": round(t, 2) if t is not None else None,
+            "p": round(t_pvalue(t, len(x) - 1), 4) if t is not None else None,
+            "ci": [round(lo, 4), round(hi, 4)],
             "pos": round(float((x > 0).mean()) * 100, 1)}
+
+
+def holm(ps: dict) -> dict:
+    """Holm 多重檢定修正：同時檢驗很多個因子時，避免「試越多次、越容易碰巧顯著」。"""
+    items = sorted((p, k) for k, p in ps.items() if p is not None and not np.isnan(p))
+    m, out, run = len(items), {}, 0.0
+    for i, (p, k) in enumerate(items):
+        run = max(run, min(1.0, (m - i) * p))
+        out[k] = round(run, 4)
+    return out
 
 
 def _quint(score: pd.Series, ret: pd.Series) -> list | None:
@@ -120,7 +168,7 @@ def run(dbname: str = "stocks.db", start: str = pb.START, limit: int | None = No
     ic = {h: {k: {"raw": [], "neu": []} for k in keys} for h in HORIZONS}
     qs = {h: {k: [] for k in keys} for h in HORIZONS}
     reg_ic = {k: {"bull": [], "bear": []} for k in keys}
-    port = {(m, n, c): {"rets": [], "hit": [], "ind_max": [], "prev": set()} for m in [*modes, "momentum"] for n in TOPS for c in CAPS}
+    port = {(m, n, c): {"rets": [], "hit": [], "ind_max": [], "invested": [], "skip": {}, "prev": set()} for m in [*modes, "momentum"] for n in TOPS for c in CAPS}
     bench, months = [], []
     for j, ((sig, entry), (_, exit1)) in enumerate(periods):
         rows = pb.scored_rows(D, sig, cfg)
@@ -135,7 +183,10 @@ def run(dbname: str = "stocks.db", start: str = pb.START, limit: int | None = No
               "3m": rb[k1 + 3][1] if k1 + 3 < len(rb) else None}
         rets = {}
         for h, e in ex.items():
-            rets[h] = pd.Series({sid: (pb.hold_return(D, sid, entry, e)[0] if e else None) for sid in df.index}, dtype=float)
+            hr = {sid: (pb.hold_return(D, sid, entry, e) if e else (None, "no_exit")) for sid in df.index}
+            rets[h] = pd.Series({sid: x[0] for sid, x in hr.items()}, dtype=float)
+            if h == "1m":
+                st1 = {sid: x[1] for sid, x in hr.items()}
         b = pb._bench(D, entry, exit1)
         reg = _regime(D, sig)
         bench.append(b)
@@ -169,6 +220,12 @@ def run(dbname: str = "stocks.db", start: str = pb.START, limit: int | None = No
             cost = sum(pb.COST * w for sid, x in got if x is not None and not np.isnan(x) and sid not in P["prev"])
             P["rets"].append(gross - cost)
             ok = [x for _, x in got if x is not None and not np.isnan(x)]
+            P["invested"].append(len([1 for _, x in got if x is not None and not np.isnan(x)]) / n)
+            for sid, x in got:
+                if x is None or np.isnan(x):
+                    P["skip"][st1.get(sid, "not_traded")] = P["skip"].get(st1.get(sid, "not_traded"), 0) + 1
+                elif st1.get(sid) == "stale":
+                    P["skip"]["stale"] = P["skip"].get("stale", 0) + 1
             P["hit"].append(float(np.mean([x > b for x in ok])) if ok and b is not None else None)
             inds = pd.Series([df.at[sid, "ind"] or sid for sid in pick])
             P["ind_max"].append(float(inds.value_counts().iloc[0] / n) if len(inds) else None)
@@ -197,16 +254,25 @@ def run(dbname: str = "stocks.db", start: str = pb.START, limit: int | None = No
         st["hit"] = round(float(np.mean(h)) * 100, 1) if h else None
         im = [x for x in P["ind_max"] if x is not None]
         st["ind_max"] = round(float(np.mean(im)) * 100, 1) if im else None
+        # 每期真正投入的資金：買不到的那一份留現金（報酬 0），這裡揭露平均投入比例與原因
+        st["invested"] = round(float(np.mean(P["invested"])) * 100, 1) if P["invested"] else None
+        st["skip"] = P["skip"]
         st["monthly"] = [round(x * 100, 2) for x in P["rets"]]
         return st
 
-    return {"schema_version": 1, "method": METHOD, "model_version": ai_model.MODEL_VERSION, "model_hash": pb.model_hash(),
+    res_f = {k: {"name": FACTORS[k], **factor_block(k)} for k in FACTORS}
+    res_m = {m: {"name": ai_model.MODES[m]["name"], **factor_block(m)} for m in modes}
+    for h in HORIZONS:  # 同一個期間一起檢驗 8 個項目，做 Holm 修正
+        for kind in ("raw", "neutral"):
+            adj = holm({k: x[h][kind].get("p") for k, x in {**res_f, **res_m}.items()})
+            for k, x in {**res_f, **res_m}.items():
+                x[h][kind]["p_holm"] = adj.get(k)
+    return {"schema_version": 2, "method": METHOD, "model_version": ai_model.MODEL_VERSION, "model_hash": pb.model_hash(),
             "generated_at": config.now().isoformat(timespec="seconds") + "+08:00", "start": start,
             "data_end": dates[-1] if dates else None, "bench": pb.BENCH, "cost_pct": round(pb.COST * 100, 3),
             "regime_rule": f"訊號日加權指數 ≥ {REGIME_MA} 日均線為多頭", "months": months,
             "horizons": {h: v[0] for h, v in HORIZONS.items()},
-            "factors": {k: {"name": FACTORS[k], **factor_block(k)} for k in FACTORS},
-            "models": {m: {"name": ai_model.MODES[m]["name"], **factor_block(m)} for m in modes},
+            "factors": res_f, "models": res_m,
             "portfolios": {m: {"name": ai_model.MODES[m]["name"] if m in ai_model.MODES else "單純動能（對照組）",
                                **{str(n): {("none" if c is None else str(int(c * 100))): port_block(port[(m, n, c)]) for c in CAPS} for n in TOPS}}
                            for m in [*modes, "momentum"]},

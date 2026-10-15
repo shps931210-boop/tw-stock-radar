@@ -109,6 +109,10 @@ pit = root / "history" / "backtest" / "ai_pit.json"
 if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
+for extra in ("joint.json",):  # AI 量化選股＋進出場聯合回測（python -m app.joint_backtest）
+    if (root / "history" / "backtest" / extra).exists():
+        (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
+        shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)
 fac = root / "history" / "backtest" / "factors.json"
 if fac.exists():  # 因子有效性檢驗（python -m app.factor_research，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)

@@ -933,6 +933,62 @@ function renderMovers() {
   el.querySelector("tbody")?.addEventListener("click", (e) => { if (e.target.closest("a")) return; const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
 }
 
+// ---------- AI 量化選股＋進出場聯合回測（history/backtest/joint.json，每週重算） ----------
+let JOINT = null;
+async function loadJoint() {
+  if (!SITE) return;
+  if (!JOINT) { try { const r = await fetch("data/backtest/joint.json?v=" + (VER?.datasets?.["backtest/joint.json"] || Date.now())); JOINT = r.ok ? await r.json() : false; } catch (e) { JOINT = false; } }
+  const el = $("#joint"); if (!el || !JOINT) return;
+  el.hidden = false; renderJoint();
+}
+function renderJoint() {
+  const el = $("#joint"), J = JOINT, o = { m: "balanced", n: "20", ...store.get("joint", {}) };
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${n}</button>`).join("")}</div>`;
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`;
+  const V = J.modes[o.m].top[o.n], B = J.bench_stats, ks = Object.keys(J.variants);
+  const best = (f, lo) => ks.reduce((a, k) => (V[k][f] ?? -1e9) * (lo ? -1 : 1) > (V[a][f] ?? -1e9) * (lo ? -1 : 1) ? k : a, ks[0]);
+  const bt = best("total"), bm = best("mdd"), beat = ks.filter((k) => V[k].total > B.total);
+  const R = (lab, f) => `<tr><td>${lab}</td>${ks.map((k) => `<td class="r">${f(V[k])}</td>`).join("")}</tr>`;
+  const n0 = (v, d = 0, suf = "") => v == null ? "—" : `<span class="num">${fmtNum(v, d)}${suf}</span>`;
+  const XL = { "換股": "換股", "停損": "停損", "停損（跳空）": "跳空停損", "停利": "停利", "跌破季線": "跌破季線", "持有期滿": "持有期滿" };
+  const SK = { not_traded: "沒成交", locked: "鎖漲停", thin: "成交太少", no_slot: "資金滿檔", no_data: "沒有價格" };
+  el.innerHTML = `<div class="card-h"><h2>AI 量化選股＋進出場規則聯合回測</h2><span class="muted small">同一份 AI 名單、四種買賣方式・每週重算</span></div>
+    <p class="small" style="margin:0 0 10px">問題：拿 AI 每個月的名單，再加上個股研究卡的進場訊號與停損停利，會不會比「整個月抱著」更好？名單直接用上面「AI 多因子歷史回測」每個月當時算出的前 N 名，四種做法只差在買賣方式。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">${seg("jm", Object.fromEntries(Object.entries(J.modes).map(([k, x]) => [k, x.name])), o.m)}${seg("jn", { 10: "前 10 名", 20: "前 20 名" }, o.n)}</div>
+    <p style="margin:0 0 10px">${esc(J.modes[o.m].name)}前 ${o.n} 名：報酬最高的是「${esc(J.variants[bt])}」（${pctTxt(V[bt].total)}），回撤最小的是「${esc(J.variants[bm])}」（${pctTxt(V[bm].mdd)}）。
+      ${beat.length ? `贏過 0050（${pctTxt(B.total)}）的有：${beat.map((k) => "「" + esc(J.variants[k]) + "」").join("、")}。` : `<b>四種做法都沒有贏過同期間的 0050（${pctTxt(B.total)}）。</b>`}
+      ${V.swing.mdd > V.hold.mdd ? "加上進場訊號後回撤變小，但因為常常空手，報酬也通常變少。" : ""}</p>
+    <div class="tbl"><table><thead><tr><th></th>${ks.map((k) => `<th class="r">${esc(J.variants[k])}</th>`).join("")}</tr></thead><tbody>
+      ${R("累積報酬（扣成本）", (x) => pc(x.total))}${R("年化報酬", (x) => pc(x.cagr))}${R("最大回撤（每日）", (x) => pc(x.mdd))}
+      ${R("年化報酬 ÷ 最大回撤", (x) => n0(x.calmar, 2))}${R("交易次數", (x) => n0(x.trades))}${R("勝率（每筆）", (x) => n0(x.win, 0, "%"))}
+      ${R("平均每筆報酬", (x) => pc(x.avg_trade))}${R("每筆中位數", (x) => pc(x.median_trade))}${R("年換手率", (x) => n0(x.turnover, 1, " 倍"))}
+      ${R("交易成本合計", (x) => n0(x.cost_total, 1, "%"))}${R("平均現金比例", (x) => n0(x.cash, 0, "%"))}
+      ${R("平均每月比 0050", (x) => pc(x.avg_excess))}${R("贏 0050 的月份", (x) => n0(x.beat, 0, "%"))}${R("最差單月比 0050", (x) => pc(x.worst_excess))}
+      ${R("跑輸 0050 的月份數", (x) => `${n0(x.lagging.length)} / ${x.months}`)}
+      <tr class="faint"><td>0050 同期</td><td class="r">${pc(B.total)}</td><td colspan="${ks.length - 1}" class="small">最大回撤 ${pctTxt(B.mdd)}</td></tr></tbody></table></div>
+    ${hasLWC() ? '<div class="chart sm" id="jc" style="margin-top:12px"></div>' : ""}
+    <p class="faint small" style="margin:4px 0 10px">${hasLWC() ? ks.map((k, i) => `<span style="color:${["var(--accent)", "var(--warn)", "var(--accent-2)", "var(--muted)"][i]}">■</span> ${esc(J.variants[k])}`).join("　") + '　<span style="color:var(--faint)">■</span> 0050（起點 = 1）' : "（圖表元件沒有載入）"}</p>
+    <details><summary class="small">出場原因、買不到的原因、跑輸 0050 的月份</summary><div class="tbl"><table class="wrap"><thead><tr><th></th>${ks.map((k) => `<th>${esc(J.variants[k])}</th>`).join("")}</tr></thead><tbody>
+      <tr><td>出場原因</td>${ks.map((k) => `<td class="small">${Object.entries(V[k].exits).map(([w, c]) => `${esc(XL[w] || w)} ${c}`).join("、")}</td>`).join("")}</tr>
+      <tr><td>沒買到</td>${ks.map((k) => `<td class="small">${Object.entries(V[k].skips).filter(([, c]) => c).map(([w, c]) => `${SK[w] || w} ${c}`).join("、") || "—"}</td>`).join("")}</tr>
+      <tr><td>跑輸 0050 的月份</td>${ks.map((k) => `<td class="small">${V[k].lagging.map((m) => `${esc(m.entry.slice(0, 7))} ${pctTxt(m.excess)}`).join("、") || "—"}</td>`).join("")}</tr></tbody></table></div></details>
+    <h3 style="margin:14px 0 6px">規則與限制</h3>
+    <ul class="small" style="margin:0;padding-left:18px">
+      <li><b>整月持有：</b>每月第一個交易日開盤等權買進，下個月第一個交易日開盤換股。<b>＋停損：</b>進場價 − ${J.stop_atr} ATR，停損後留現金到下個月。</li>
+      <li><b>等訊號：</b>名單公布期間，名單裡的股票出現個股研究卡的波段或短線進場訊號，隔天開盤才買；出場完全照該規則，可以跨月。資金分成 N 份，同時最多持有 N 檔，空著的份額是現金。</li>
+      <li>成本：買進時一次扣來回成本 ${J.cost_pct}%。最大回撤用每天收盤的資產計算，比月資料更嚴格。每月比較用換月前一天收盤的資產，0050 用開盤到開盤，有小幅時間差。</li>
+      <li>只有 ${J.modes[o.m].top[o.n].hold.months} 個月、而且多數是多頭；四種做法×三個模型×兩種名單數一起比較，挑出「最好的一格」很容易是運氣，不能直接當成新規則。</li></ul>
+    <p class="faint small" style="margin:8px 0 0">公開資料：<a href="data/backtest/joint.json">backtest/joint.json</a>・產生於 ${esc((J.generated_at || "").slice(0, 16).replace("T", " "))}・資料到 ${esc(J.data_end || "")}</p>`;
+  const bind = (id, k) => { const g = $("#" + id); if (g) g.onclick = (e) => { const b = e.target.closest("button"); if (b) { o[k] = b.dataset.k; store.set("joint", o); renderJoint(); } }; };
+  bind("jm", "m"); bind("jn", "n");
+  if (hasLWC() && $("#jc")) {
+    const c = mkChart($("#jc")), cols = [css("--accent"), css("--warn"), css("--accent-2"), css("--muted")];
+    ks.forEach((k, i) => c.addLineSeries({ color: cols[i], lineWidth: k === "hold" ? 2 : 1.5, priceLineVisible: false }).setData(V[k].curve.map(([t, v]) => ({ time: t, value: v }))));
+    c.addLineSeries({ color: css("--faint"), lineWidth: 1, priceLineVisible: false }).setData(B.curve.map(([t, v]) => ({ time: t, value: v })));
+    c.timeScale().fitContent();
+  }
+}
+
 // ---------- 因子有效性檢驗（history/backtest/factors.json，每週重算；研究結果，沒有拿來改模型） ----------
 let FAC = null;
 async function loadFac() {
@@ -943,7 +999,10 @@ async function loadFac() {
 }
 function icVerdict(x) {
   if (!x || x.ic == null) return '<span class="pill">樣本不足</span>';
-  if (x.ic > 0 && x.t != null && x.t >= 2) return '<span class="pill acc">有預測力</span>';
+  if (x.p_holm != null) {
+    if (x.ic > 0 && x.p_holm < 0.05) return '<span class="pill acc">有預測力</span>';
+    if (x.ic > 0 && x.p < 0.05) return '<span class="pill">修正後不顯著</span>';
+  } else if (x.ic > 0 && x.t != null && x.t >= 2) return '<span class="pill acc">有預測力</span>';
   if (x.ic > 0.01) return '<span class="pill">方向對、不顯著</span>';
   if (x.ic < -0.01) return '<span class="pill warn">方向相反</span>';
   return '<span class="pill">幾乎沒有</span>';
@@ -954,24 +1013,24 @@ function renderFac() {
   const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`;
   const icv = (x) => x?.ic == null ? "—" : `<span class="num">${x.ic.toFixed(3)}</span>`;
   const qbar = (q) => { if (!q) return "—"; const mx = Math.max(...q.map(Math.abs), 0.01); return `<span class="qmini">${q.map((v) => `<i title="${pctTxt(v)}" class="${v >= 0 ? "up" : "down"}" style="height:${Math.max(2, Math.abs(v) / mx * 18)}px"></i>`).join("")}</span>`; };
-  const row = (x, lab) => { const h = x[o.h]; return `<tr><td><b>${esc(lab)}</b></td><td class="r">${icv(h.raw)}</td><td class="r num">${h.raw?.t ?? "—"}</td><td class="r num">${h.raw?.pos == null ? "—" : fmtNum(h.raw.pos, 0) + "%"}</td><td class="r">${icv(h.neutral)}</td>
+  const row = (x, lab) => { const h = x[o.h]; return `<tr><td><b>${esc(lab)}</b></td><td class="r">${icv(h.raw)}</td><td class="r num small">${h.raw?.ci ? `${h.raw.ci[0].toFixed(3)}～${h.raw.ci[1].toFixed(3)}` : "—"}</td><td class="r num">${h.raw?.t ?? "—"}</td><td class="r num">${h.raw?.p == null ? "—" : fmtNum(h.raw.p, 3)}</td><td class="r num">${h.raw?.p_holm == null ? "—" : fmtNum(h.raw.p_holm, 3)}</td><td class="r num">${h.raw?.pos == null ? "—" : fmtNum(h.raw.pos, 0) + "%"}</td><td class="r">${icv(h.neutral)}</td>
     <td class="r">${qbar(h.quint)}</td><td class="r">${pc(h.spread)}</td><td class="r">${icv(x.regime.bull)}</td><td class="r">${icv(x.regime.bear)}</td><td>${icVerdict(h.raw)}</td></tr>`; };
   const ms = F.months, nb = ms.filter((m) => m.regime === "bull").length, nr = ms.filter((m) => m.regime === "bear").length;
   const PF = F.portfolios[o.m] || F.portfolios.balanced, T = PF[o.n], capLab = { none: "不設上限", 40: "每產業最多 40%", 30: "每產業最多 30%", 20: "每產業最多 20%" };
   el.innerHTML = `<div class="card-h"><h2>因子有效性檢驗</h2><span class="muted small">研究結果，還沒有用來修改模型・每週重算</span></div>
     <p class="small" style="margin:0 0 10px">先量清楚現在的模型有沒有預測能力，再談優化。用和上面回測相同的「只用當時已公布資料」重建，${ms.length} 個月（多頭 ${nb} 個月、空頭 ${nr} 個月）。</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${seg("fach", F.horizons, o.h)}</div>
-    <div class="tbl"><table><thead><tr><th>因子／模型</th><th class="r">Rank IC</th><th class="r">t 值</th><th class="r">IC 為正的月份</th><th class="r">產業中性 IC</th><th class="r">五分組（低→高）</th><th class="r">最高減最低組</th><th class="r">多頭 IC<br><span class="faint small">${nb} 個月</span></th><th class="r">空頭 IC<br><span class="faint small">${nr} 個月</span></th><th>判讀</th></tr></thead><tbody>
+    <div class="tbl"><table><thead><tr><th>因子／模型</th><th class="r">Rank IC</th><th class="r">95% 信賴區間</th><th class="r">t 值</th><th class="r">p 值</th><th class="r">修正後 p</th><th class="r">IC 為正的月份</th><th class="r">產業中性 IC</th><th class="r">五分組（低→高）</th><th class="r">最高減最低組</th><th class="r">多頭 IC<br><span class="faint small">${nb} 個月</span></th><th class="r">空頭 IC<br><span class="faint small">${nr} 個月</span></th><th>判讀</th></tr></thead><tbody>
       ${Object.values(F.factors).map((x) => row(x, x.name + "分數")).join("")}
-      <tr><td colspan="10" class="faint small">三種模型的綜合分數（只在通過各模型門檻的股票裡比較）</td></tr>
+      <tr><td colspan="13" class="faint small">三種模型的綜合分數（只在通過各模型門檻的股票裡比較）</td></tr>
       ${Object.values(F.models).map((x) => row(x, x.name)).join("")}</tbody></table></div>
-    <p class="faint small" style="margin:6px 0 0">Rank IC：分數排名和之後報酬排名的相關係數，正值代表分數高的股票之後表現較好；台股月資料 0.03～0.05 就算有用，t 值大於 2 才比較不像運氣。產業中性：分數和報酬都先扣掉同產業平均，看扣掉「押對產業」之後還剩多少選股能力。多頭／空頭：訊號日加權指數在 120 日均線之上或之下（當下就知道，不是事後分類）。${o.h === "3m" ? "3 個月的區間互相重疊，t 值已用有效樣本數修正。" : ""}五分組是各組平均報酬（未扣成本）。一次檢驗 8 個項目，就算全都沒用，偶然出現一個 t 值大於 2 也不奇怪；空頭月份太少時，多空分開的數字只能參考。</p>
+    <p class="faint small" style="margin:6px 0 0">Rank IC：分數排名和之後報酬排名的相關係數，正值代表分數高的股票之後表現較好；台股月資料 0.03～0.05 就算有用，t 值大於 2 才比較不像運氣。產業中性：分數和報酬都先扣掉同產業平均，看扣掉「押對產業」之後還剩多少選股能力。多頭／空頭：訊號日加權指數在 120 日均線之上或之下（當下就知道，不是事後分類）。${o.h === "3m" ? "3 個月的區間互相重疊，t 值用 Newey-West 標準誤、信賴區間用區塊抽樣計算。" : ""}五分組是各組平均報酬（未扣成本）。95% 信賴區間用 bootstrap 重新抽樣 2,000 次；區間包含 0，代表無法排除「其實沒有預測力」。同一期間一起檢驗 8 個項目，就算全都沒用也可能碰巧出現顯著，所以「修正後 p」用 Holm 方法調整，小於 0.05 才判讀為「有預測力」。空頭月份太少時，多空分開的數字只能參考。</p>
     <h3 style="margin:16px 0 6px">產業集中度上限測試</h3>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${seg("facm", Object.fromEntries(Object.entries(F.portfolios).map(([k, x]) => [k, x.name])), o.m)}${seg("facn", { 10: "前 10 名", 20: "前 20 名" }, o.n)}</div>
-    <div class="tbl"><table><thead><tr><th>條件</th><th class="r">累積（扣成本）</th><th class="r">平均每月超額</th><th class="r">贏 0050 月份</th><th class="r">個股贏 0050 比例</th><th class="r">最大回撤</th><th class="r">最大產業占比</th><th class="r">多頭月超額</th><th class="r">空頭月超額</th></tr></thead><tbody>
-      ${["none", "40", "30", "20"].map((c) => { const x = T[c]; return `<tr><td>${capLab[c]}</td><td class="r">${pc(x.total)}</td><td class="r">${pc(x.avg_excess)}</td><td class="r num">${x.win_vs_bench == null ? "—" : fmtNum(x.win_vs_bench, 0) + "%"}</td><td class="r num">${x.hit == null ? "—" : fmtNum(x.hit, 0) + "%"}</td><td class="r">${pc(x.mdd)}</td><td class="r num">${x.ind_max == null ? "—" : fmtNum(x.ind_max, 0) + "%"}</td><td class="r">${pc(x.by_regime.bull.avg_excess)}</td><td class="r">${pc(x.by_regime.bear.avg_excess)}</td></tr>`; }).join("")}
-      <tr><td class="faint">0050 同期</td><td class="r">${pc(F.bench_stats?.total)}</td><td colspan="7"></td></tr></tbody></table></div>
-    <p class="faint small" style="margin:6px 0 0">依模型排名往下挑，同產業超過上限就跳過。每月第一個交易日開盤買進、下個月第一個交易日開盤賣出，新買進扣成本 ${F.cost_pct}%。「單純動能」只看過去一年漲幅排名，是最簡單的對照組：模型如果連它都贏不了，加再多因子也沒有意義。</p>
+    <div class="tbl"><table><thead><tr><th>條件</th><th class="r">累積（扣成本）</th><th class="r">平均每月超額</th><th class="r">贏 0050 月份</th><th class="r">個股贏 0050 比例</th><th class="r">最大回撤</th><th class="r">最大產業占比</th><th class="r">平均投入資金</th><th class="r">多頭月超額</th><th class="r">空頭月超額</th></tr></thead><tbody>
+      ${["none", "40", "30", "20"].map((c) => { const x = T[c]; return `<tr><td>${capLab[c]}</td><td class="r">${pc(x.total)}</td><td class="r">${pc(x.avg_excess)}</td><td class="r num">${x.win_vs_bench == null ? "—" : fmtNum(x.win_vs_bench, 0) + "%"}</td><td class="r num">${x.hit == null ? "—" : fmtNum(x.hit, 0) + "%"}</td><td class="r">${pc(x.mdd)}</td><td class="r num">${x.ind_max == null ? "—" : fmtNum(x.ind_max, 0) + "%"}</td><td class="r num">${x.invested == null ? "—" : fmtNum(x.invested, 0) + "%"}</td><td class="r">${pc(x.by_regime.bull.avg_excess)}</td><td class="r">${pc(x.by_regime.bear.avg_excess)}</td></tr>`; }).join("")}
+      <tr><td class="faint">0050 同期</td><td class="r">${pc(F.bench_stats?.total)}</td><td colspan="8"></td></tr></tbody></table></div>
+    <p class="faint small" style="margin:6px 0 0">依模型排名往下挑，同產業超過上限就跳過。每月第一個交易日開盤買進、下個月第一個交易日開盤賣出，新買進扣成本 ${F.cost_pct}%。買不到的股票（沒成交、開盤鎖漲停、成交太少）那一份留現金、報酬算 0，「平均投入資金」就是扣掉這些之後真正投入的比例${(() => { const sk = T.none?.skip || {}, L = { not_traded: "沒成交", locked: "鎖漲停", thin: "成交太少", stale: "持有中停牌（用最後收盤價）" }; const t = Object.entries(sk).map(([k, v]) => `${L[k] || k} ${v} 次`).join("、"); return t ? `（不設上限時：${t}）` : ""; })()}。「單純動能」只看過去一年漲幅排名，是最簡單的對照組：模型如果連它都贏不了，加再多因子也沒有意義。</p>
     <h3 style="margin:14px 0 6px">怎麼解讀</h3>
     <ul class="small" style="margin:0;padding-left:18px">
       <li>這些是<b>研究結果，不會直接拿來調權重</b>。只有 ${ms.length} 個月的資料，照著結果調整很容易「過度擬合」：在過去看起來很好，未來不一定有效。</li>
@@ -1173,6 +1232,7 @@ function pagePerformance() {
       </tbody></table></div>
       <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 量化選股的歷史獲利能力」。</p></section>
     <section class="card" id="pit" hidden></section>
+    <section class="card" id="joint" hidden></section>
     <section class="card" id="fac" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
@@ -1190,6 +1250,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
+  loadJoint();
   loadFac();
 }
 
@@ -2845,6 +2906,23 @@ function partScores(s, D) {
     <div class="pbars">${ks.map((f) => `<div class="pbar"><span>${FNAME[f]}</span>${sc[f] == null ? '<i class="na"></i><small class="faint">還不能算</small>' : `<i><em style="width:${Math.max(2, sc[f])}%"></em></i><small class="num">${fmtNum(sc[f], 0)}</small>`}</div>`).join("")}</div>
     <p class="faint small" style="margin:6px 0 0">分數 0～100，50 是中間。缺的因子不當作 0 分，也不用其他因子補。</p></div>`;
 }
+// 個股的高分主因，這項因子過去到底有沒有預測力（因子有效性檢驗 factors.json）
+async function facHint(s, D) {
+  const el = $("#facHint"); if (!el || !SITE) return;
+  if (FAC === null) { try { const r = await fetch("data/backtest/factors.json?v=" + (VER?.datasets?.["backtest/factors.json"] || Date.now())); FAC = r.ok ? await r.json() : false; } catch (e) { FAC = false; } }
+  if (!FAC) return;
+  const sc = s.base_ok ? Object.fromEntries(Object.keys(FNAME).map((f) => [f, s["score_" + f]]).filter(([, v]) => v != null)) : (D?.ref_scores || {});
+  const w = (f, v) => v * (f === "trend" ? 0.75 : 1);  // 趨勢分數只有 5 個級距，和 AI 解讀一樣降低比重
+  const top = Object.entries(sc).sort((a, b) => w(...b) - w(...a))[0];
+  if (!top || top[1] < 60) return;
+  const x = FAC.factors[top[0]]?.["1m"]?.raw; if (!x || x.ic == null) return;
+  const sig = x.p_holm != null ? x.ic > 0 && x.p_holm < 0.05 : x.ic > 0 && x.t >= 2;
+  const txt = sig ? "在可驗證的歷史期間有預測力（多重檢定修正後仍顯著），但仍不保證未來有效"
+    : x.ic > 0 ? "方向正確，但在可驗證的歷史期間還不顯著，不能當成主要買進理由"
+    : "在可驗證的歷史期間方向相反（分數高的股票之後反而較差），請特別保守看待";
+  el.innerHTML = `<b>高分主因：${FNAME[top[0]]}（${fmtNum(top[1], 0)} 分）。</b>這項因子過去 ${x.n} 個月的 Rank IC ${x.ic.toFixed(3)}，${txt}。<a href="#/performance">看因子有效性檢驗</a>`;
+  el.hidden = false;
+}
 function decisionCard(s, d) {
   const D = d.decision; if (!D) return "";
   const MD = D.modules || {}, ref = D.ref_scores;
@@ -2880,6 +2958,7 @@ function decisionCard(s, d) {
       ${tile("目前估值", vl ? vl[0] : V.pe != null ? `本益比 ${fmtNum(V.pe, 1)} 倍` : esc(MD.valuation?.label || "無法判定"),
         V.p50 != null ? `本益比 ${fmtNum(V.pe, 1)} 倍・歷史位階 ${fmtNum(V.pct, 0)}%` : V.pe != null && V.peer ? `同業中位數 ${fmtNum(V.peer, 1)} 倍・沒有歷史區間` : esc((V.why || "").slice(0, 30)), vl?.[1] || "")}
       ${tile(`${HZ[hz]}策略`, stTxt[0], hz === "long" ? (plan?.status === "partial" ? "基本面＋估值・部分判斷" : "基本面＋估值") : lv ? `參考停損 ${fmtNum(lv.stop)}・風險 ${fmtNum(lv.risk_pct, 1)}%` : esc((MD[hz]?.why || plan?.miss?.[0] || "").slice(0, 34)), stTxt[1])}</div>
+    <p class="small" id="facHint" style="margin:10px 0 0" hidden></p>
     ${modStrip(MD)}${partScores(s, D)}
     ${D.blocked ? `<div class="banner warn small">${esc(D.blocked)}</div>` : ""}
     <div class="seg" id="hzSeg" style="margin:14px 0 10px">${Object.entries(HZ).map(([k, n]) => `<button data-h="${k}" class="${k === hz ? "on" : ""}">${n}<small class="hzh">（${esc((k === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[k])?.hold || "")}）</small></button>`).join("")}</div>
@@ -3003,8 +3082,9 @@ async function pageStock(id) {
   $$(".actbar [data-j]").forEach((b) => b.onclick = () => { const el = $("#" + b.dataset.j); if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - hdr - $(".actbar").offsetHeight - 8, behavior: "smooth" }); });
   const toRc = $("#toRc"); if (toRc) toRc.onclick = () => { const k = Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank && m === store.get("aipage", {}).mode) || Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank);
     store.set("aipage", { ...store.get("aipage", {}), mode: k, sel: id, cmp: null }); location.hash = "#/ai"; };
-  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; };
+  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; facHint(s, d.decision); };
   if ($("#hzSeg")) $("#hzSeg").onclick = onHz;
+  facHint(s, d.decision);
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
   bindRows($("#app"), [], () => {});

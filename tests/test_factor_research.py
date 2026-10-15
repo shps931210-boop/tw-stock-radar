@@ -53,8 +53,6 @@ class FactorResearchTest(unittest.TestCase):
         self.assertAlmostEqual(x["ic"], 0.05)
         self.assertEqual(x["pos"], 100.0)
         self.assertGreater(x["t"], 2)
-        # 重疊的 3 個月期間：有效樣本數 ÷ 3，t 值變小
-        self.assertLess(fr._summ([0.05, 0.04, 0.06, 0.05, 0.05, 0.04], 3)["t"], fr._summ([0.05, 0.04, 0.06, 0.05, 0.05, 0.04])["t"])
         self.assertIsNone(fr._summ([0.1, None])["ic"])
 
     def test_quintiles(self):
@@ -62,6 +60,28 @@ class FactorResearchTest(unittest.TestCase):
         q = fr._quint(s, s / 100)
         self.assertEqual(len(q), 5)
         self.assertTrue(all(a < b for a, b in zip(q, q[1:])))
+
+
+    def test_t_pvalue_matches_table(self):
+        self.assertAlmostEqual(fr.t_pvalue(2.101, 18), 0.05, places=3)   # t 分布表：df 18、雙尾 5%
+        self.assertAlmostEqual(fr.t_pvalue(1.96, 100000), 0.05, places=3)
+        self.assertAlmostEqual(fr.t_pvalue(0, 10), 1.0, places=3)
+
+    def test_holm(self):
+        adj = fr.holm({"a": 0.01, "b": 0.04, "c": 0.03})
+        self.assertEqual(adj, {"a": 0.03, "c": 0.06, "b": 0.06})
+        self.assertEqual(fr.holm({"a": None}), {})
+
+    def test_overlap_lowers_t(self):
+        rng = np.random.default_rng(1)
+        x = np.convolve(rng.normal(0.03, 0.05, 40), np.ones(3) / 3, "valid")  # 前後相關的序列
+        self.assertLess(fr._summ(list(x), 3)["t"], fr._summ(list(x), 1)["t"])
+
+    def test_summary_has_ci_and_p(self):
+        x = fr._summ([0.05, 0.04, 0.06, 0.05, 0.03, 0.07])
+        lo, hi = x["ci"]
+        self.assertTrue(lo < x["ic"] < hi)
+        self.assertLess(x["p"], 0.05)
 
 
 if __name__ == "__main__":
