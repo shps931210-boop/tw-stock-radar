@@ -957,6 +957,38 @@ function renderMovers() {
 
 // ---------- AI 量化選股＋進出場聯合回測（history/backtest/joint.json，每週重算） ----------
 let JOINT = null;
+// V22 預測模型研究（app/ml_research.py，影子模式）：V21 固定權重 vs Ridge／Logistic／LightGBM，時序滾動、purge
+let MLR = null;
+async function loadML() {
+  if (!SITE) return;
+  if (MLR === null) { try { const r = await fetch("data/backtest/ml.json" + verQ("backtest/ml.json")); MLR = r.ok ? await r.json() : false; } catch (e) { MLR = false; } }
+  const el = $("#ml"); if (!el || !MLR) return;
+  el.hidden = false; renderML();
+}
+function renderML() {
+  const el = $("#ml"), M = MLR, h = String(store.get("mlh", M.main)), H = M.horizons[h] || {}, part = store.get("mlp", "all");
+  const E = H[part] || {}, S = (M.horizons[String(M.main)] || {}).sufficiency || {}, P = E.prob;
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${n}</button>`).join("")}</div>`;
+  const f = (v, d = 3) => (v == null ? "—" : fmtNum(v, d));
+  const vs = (m) => { const x = H.vs_v21?.[m]; return !x ? "—" : `${x.diff > 0 ? "+" : ""}${f(x.diff)}（t ${f(x.t, 1)}）`; };
+  el.innerHTML = `<div class="card-h"><h2>預測模型研究（V22，影子模式）</h2><span class="muted small">${esc(M.start)}～${esc(M.end)}・每 ${M.step} 個交易日一次・${fmtNum(M.rows, 0)} 筆股票 × 日期</span></div>
+    <div class="banner ${S.enough ? "info" : ""} small" style="margin-bottom:10px"><b>現有資料夠不夠訓練可靠的 ${M.main} 日超額報酬預測模型？${esc(M.verdict)}。</b>
+      測試期約 ${fmtNum(S.test_trading_days, 0)} 個交易日，只等於 ${f(S.independent_periods, 1)} 個不重疊的 ${M.main} 日期間；以實際的 IC 波動計算，這段資料<b>最小能偵測到的 Rank IC 是 ${f(S.min_detectable_ic)}</b>。
+      一般有用的選股因子 IC 大約 0.03～0.05，要可靠偵測 0.03 大約需要 ${fmtNum(S["periods_needed_for_0.03"], 0)} 個獨立期間（約 ${f(S["years_needed_for_0.03"], 1)} 年）。所以下表的差異大多還不能區分是模型真的比較好，還是運氣。</div>
+    <div class="toolbar" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">${seg("mlH", Object.fromEntries(Object.keys(M.horizons).map((k) => [k, k + " 日"])), h)}${seg("mlP", { all: "全部測試期", rolling: "滾動驗證期", holdout: "最終保留測試期" }, part)}</div>
+    <div class="tbl"><table><thead><tr><th>模型</th><th class="r">Rank IC</th><th class="r">t 值</th><th class="r">IC 為正</th><th class="r">前 ${20} 名平均超額</th><th class="r">比全體平均多</th><th class="r">IC 比 V21 高</th></tr></thead><tbody>
+      ${Object.entries(M.models).filter(([k]) => E[k]).map(([k, n]) => `<tr><td>${esc(n)}</td><td class="r num">${f(E[k].ic)}</td><td class="r num">${f(E[k].ic_t, 1)}</td><td class="r num">${f(E[k].ic_pos, 0)}%</td>
+        <td class="r num ${signCls(E[k].top_excess)}">${pctTxt(E[k].top_excess)}</td><td class="r num ${signCls(E[k].top_vs_all)}">${pctTxt(E[k].top_vs_all)}</td><td class="r num">${k === "v21" ? "基準" : vs(k)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:4px 0 0">${H.tests || 0} 個測試日（${esc(H.first_test || "")}～${esc(H.last_test || "")}，最終保留測試期從 ${esc(H.holdout_from || "")} 起）。超額報酬 = 隔天開盤買進、${h} 個交易日後開盤賣出，減去同期間 0050；未扣交易成本。t 值已用 Newey-West 處理持有期間重疊。</p>
+    ${P ? `<h3 style="margin:14px 0 6px">「跑贏 0050 的機率」準不準（Logistic 迴歸）</h3>
+      <p class="small" style="margin:0 0 6px">方向命中率 <b>${f(P.hit, 1)}%</b>，但一律猜「多數那一邊」就有 ${f(P.base_hit, 1)}%；Brier 分數 ${f(P.brier, 4)}，只用歷史平均勝率是 ${f(P.brier_base, 4)}（技巧分數 ${f(P.skill, 3)}，大於 0 才代表比猜平均好）。</p>
+      <div class="tbl"><table><thead><tr><th>模型給的機率</th><th class="r">股票數</th><th class="r">平均預測</th><th class="r">實際跑贏比例</th></tr></thead><tbody>
+        ${P.calibration.map((c) => `<tr><td class="num">${esc(c.bin)}</td><td class="r num">${fmtNum(c.n, 0)}</td><td class="r num">${f(c.pred, 1)}%</td><td class="r num">${f(c.actual, 1)}%</td></tr>`).join("")}</tbody></table></div>` : ""}
+    <p class="faint small" style="margin:8px 0 0">做法：每個訊號日只用當時看得到的資料（股價到訊號日、季報在法定期限後、月營收次月 10 日後）；訓練資料只用「標籤在測試日之前就已確定」的期間（purge）。特徵是 V21 五個因子分數加 27 個事先選定的指標，模型參數事先固定、沒有依結果調整${M.lgbm ? "" : "；這次沒有安裝 LightGBM"}。
+      這是研究結果，<b>不會改變正式排行榜</b>，網站也不顯示「上漲機率」，直到樣本外證據足夠。</p>`;
+  $("#mlH").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("mlh", b.dataset.k); renderML(); } };
+  $("#mlP").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("mlp", b.dataset.k); renderML(); } };
+}
 async function loadJoint() {
   if (!SITE) return;
   if (!JOINT) { try { const r = await fetch("data/backtest/joint.json?v=" + (VER?.datasets?.["backtest/joint.json"] || Date.now())); JOINT = r.ok ? await r.json() : false; } catch (e) { JOINT = false; } }
@@ -1250,12 +1282,14 @@ function pagePerformance() {
         <tr><td><b>AI 名單上線後追蹤</b><br><span class="faint small">樣本外、事後紀錄</span></td><td>每天公開存檔的 AI 名單，之後真的表現如何？</td><td><span class="pill acc">進行中</span> 已累積 ${tr.days || 0} 個選股日（本頁下方）</td></tr>
         <tr><td><b>AI 多因子歷史回測</b><br><span class="faint small">用過去資料重建當時的 AI 排名</span></td><td>如果過去每個月都照模型選前 N 名，結果如何？</td><td id="pitst"><span class="pill warn">尚未完成</span> 正在建立「只用當時已公布資料」的評分引擎；完成前，網站不宣稱 AI 模型已通過歷史回測</td></tr>
         <tr><td><b>因子有效性檢驗</b><br><span class="faint small">研究：每個因子到底有沒有預測力</span></td><td>分數高的股票之後真的比較好嗎？扣掉產業、分多空之後呢？</td><td>${'<span class="pill">研究中</span> 見下方；結果還沒有用來修改模型'}</td></tr>
+        <tr><td><b>預測模型研究（V22）</b><br><span class="faint small">影子模式：不影響正式排行榜</span></td><td>用機器學習預測 20 日超額報酬，會比固定權重準嗎？資料夠不夠證明？</td><td><span class="pill">研究中</span> 見下方「預測模型研究」</td></tr>
         <tr><td><b>技術訊號歷史回測</b><br><span class="faint small">只檢驗技術訊號，不是 AI 綜合分數</span></td><td>出現某個技術訊號後 5、20 天的表現？</td><td><span class="pill">已有結果</span> 見 <a href="#/trust">資料來源與方法</a>；目前結果沒有勝過大盤</td></tr>
       </tbody></table></div>
       <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 量化選股的歷史獲利能力」。</p></section>
     <section class="card" id="pit" hidden></section>
     <section class="card" id="joint" hidden></section>
     <section class="card" id="fac" hidden></section>
+    <section class="card" id="ml" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
     ${modelCompare(tr)}
@@ -1272,7 +1306,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint();
+  loadJoint(); loadML();
   loadFac();
 }
 
