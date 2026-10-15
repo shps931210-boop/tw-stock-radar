@@ -46,6 +46,11 @@ def index():
     return FileResponse(STATIC / "index.html")
 
 
+@app.get("/portfolio.js")
+def portfolio_js():
+    return FileResponse(STATIC / "portfolio.js", media_type="text/javascript")
+
+
 @app.get("/api/snapshot")
 def snapshot(demo: bool = False):
     p, _ = _snapshot_path(demo)

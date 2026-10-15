@@ -12,6 +12,8 @@ create table if not exists public.user_state (
 );
 -- 版本號：每次存檔 +1。網站存檔時要帶上次讀到的版本號，不一樣就代表另一台裝置剛改過，不覆寫（避免資料遺失）。
 alter table public.user_state add column if not exists version integer not null default 1;
+-- 我的投資組合（V21）：交易紀錄 {trades: [...], settings: {...}}，實際持股與模擬投資分開記錄。
+alter table public.user_state add column if not exists portfolio jsonb not null default '{}'::jsonb;
 
 alter table public.user_state enable row level security;
 

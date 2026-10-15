@@ -274,7 +274,11 @@ def build(demo: bool = False) -> dict:
     ai_model.timing(rows, cfg.get("buy_point", {}))
     with db.connect(dbname) as con:
         fm_done = {k for (k,) in con.execute("SELECT key FROM fetch_log WHERE source='fm_financials' AND ok=1")} if not demo else None
-    decision = _decision(rows, max((r.get("date") or "" for r in rows), default=""), fm_done)
+        try:
+            fm_queue = json.loads(db.get_meta(con, "fundamental_queue") or "null")
+        except ValueError:
+            fm_queue = None
+    decision = _decision(rows, max((r.get("date") or "" for r in rows), default=""), fm_done, fm_queue)
 
     with db.connect(dbname) as con:
         official = None if demo else db.get_meta(con, "official_latest_twse")
@@ -373,7 +377,7 @@ def build(demo: bool = False) -> dict:
     (config.DATA_DIR / ("decision_demo.json" if demo else "decision.json")).write_text(json.dumps(decision, ensure_ascii=False, separators=(",", ":")), "utf-8")
     try:  # 個股研究資料覆蓋率（各模組狀態、缺漏原因排行）
         from . import coverage
-        cov = {**coverage.build(rows, decision), "generated_at": out.get("generated_at"), "prices": price_day}
+        cov = {**coverage.build(rows, decision), "generated_at": out.get("generated_at"), "prices": price_day, "fundamental_queue": fm_queue}
         (config.DATA_DIR / ("coverage_demo.json" if demo else "coverage.json")).write_text(json.dumps(cov, ensure_ascii=False, separators=(",", ":")), "utf-8")
     except Exception as e:
         print("覆蓋率報告失敗：", e)
@@ -400,7 +404,17 @@ def _valuation_fill(r: dict, vb: dict | None) -> dict:
     return v
 
 
-def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set | None) -> dict:
+def _queue_txt(q: dict | None) -> str:
+    """財報補齊佇列的實際狀態（來自上一次完整更新的紀錄，不是前端推測）。"""
+    if not q or "done" not in q:
+        return "（已排入補齊佇列，每晚完整更新時依成交金額優先補抓）"
+    when = (q.get("finished_at") or q.get("run_at") or "")[:16].replace("T", " ")
+    tail = "免費額度用完，下一次完整更新（每晚 21:00）接著補" if q.get("quota_hit") else "下一次完整更新（每晚 21:00）繼續"
+    left = f"，還有 {q['never_fin']} 檔沒有財報" if q.get("never_fin") is not None else ""
+    return f"（財報補齊中：{when} 補了 {q['done']} 筆{left}；{tail}）"
+
+
+def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set | None, fm_queue: dict | None = None) -> dict:
     """行情、基本面、估值、短線、波段、長期、AI 評分，各自的狀態與原因。"""
     M = {}
     d = r.get("date")
@@ -410,7 +424,7 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
     fin, rev = r.get("fin_period"), r.get("rev_ym")
     why = []
     if not fin:
-        why.append("尚未取得季報" + ("（已排入補齊佇列，依成交金額與缺漏優先順序逐日抓取）" if fm_done is not None and r["stock_id"] not in fm_done else ""))
+        why.append("尚未取得季報" + (_queue_txt(fm_queue) if fm_done is not None and r["stock_id"] not in fm_done else ""))
     elif r.get("fin_stale"):
         why.append(f"季報停在 {fin}")
     if not rev:
@@ -440,7 +454,7 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
     return M
 
 
-def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None) -> dict:
+def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None, fm_queue: dict | None = None) -> dict:
     """個股研究決策卡：進出場策略狀態、估值區間、長期判斷、各模組資料狀態。完整內容另存 data/decision.json（只放進個股 JSON），
     快照裡只留一行摘要（plan），避免整份快照變大。"""
     from . import strategy, valuation
@@ -455,7 +469,7 @@ def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None)
         v = _valuation_fill(r, vb)
         lg = strategy.long_status({**r, "ref_scores": ref}, v)
         out[r["stock_id"]] = {"strategy": st, "long": lg, "valuation": v, "ref_scores": ref if isinstance(ref, dict) else None,
-                              "modules": _modules({**r, "ref_scores": ref}, st, v, lg, price_day, fm_done)}
+                              "modules": _modules({**r, "ref_scores": ref}, st, v, lg, price_day, fm_done, fm_queue)}
         vb = v if v.get("p50") is not None else None
         tech = lambda m: (st.get(m) or {}).get("state", "na") if st.get("ready") else "na"
         r["plan"] = {"short": tech("short"), "swing": tech("swing"), "long": lg["state"],

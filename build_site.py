@@ -92,6 +92,7 @@ chat = chat_cfg.get("url")
 chat_provider = chat_cfg.get("provider") if chat_cfg.get("provider") in ("claude", "free") else "claude"
 html = html.replace("<script>\nconst STATIC", f"<script>window.STATIC_SITE = true; window.CHAT_URL = {json.dumps(chat)}; window.CHAT_PROVIDER = {json.dumps(chat_provider)}; window.SUPA = {json.dumps(supabase_config())};</script>\n<script>\nconst STATIC", 1)
 (out / "index.html").write_text(html, "utf-8")
+shutil.copy(root / "static" / "portfolio.js", out / "portfolio.js")  # 我的投資組合：計算模組（網站與測試共用）
 
 errors, last = [], None
 if (config.DATA_DIR / "stocks.db").exists():
@@ -117,6 +118,26 @@ fac = root / "history" / "backtest" / "factors.json"
 if fac.exists():  # 因子有效性檢驗（python -m app.factor_research，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(fac, out / "data" / "backtest" / "factors.json")
+# 我的投資組合用：AI 每日名單的入選紀錄索引（只用每天第一次發布的名單）、0050 還原股價（比較用）
+try:
+    idx: dict = {}
+    for f in sorted((root / "history" / "picks").glob("????-??-??.json")):
+        lg = json.loads(f.read_text("utf-8"))
+        for mode, xs in (lg.get("picks") or {}).items():
+            for x in xs:
+                idx.setdefault(x["stock_id"], []).append([lg["date"], mode, x.get("rank"), x.get("score"), x.get("close")])
+    (out / "data" / "picks_index.json").write_text(json.dumps(idx, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    if (config.DATA_DIR / "stocks.db").exists():
+        from app import db as _db, track as _track
+        with _db.connect("stocks.db") as con:
+            b, kind = _track.benchmark(con)
+        if kind == _track.BENCH_ID and len(b):
+            (out / "data" / "bench").mkdir(parents=True, exist_ok=True)
+            (out / "data" / "bench" / "0050.json").write_text(json.dumps(
+                {"id": "0050", "note": "還原除權息收盤價（含配息再投入）", "prices": [[d, round(float(c), 4), round(float(r), 2)] for d, c, r in zip(b.index, b["close"], b["close_raw"])]},
+                ensure_ascii=False, separators=(",", ":")), "utf-8")
+except Exception as e:
+    print("投資組合輔助資料失敗：", e)
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
 if (config.DATA_DIR / "probe.json").exists():  # 連線診斷結果（python -m app.probe）

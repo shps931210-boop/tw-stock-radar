@@ -297,19 +297,32 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
                 elif config.now() - t > timedelta(days=age):
                     due.append((sid, src, fn, table))
         todo = new + due
-        db.set_meta(con, "fundamental_queue", json.dumps({"new": len(new), "due": len(due), "stocks": len(ids)}))
+        # 補齊進度（網站「資料來源與方法」和個股研究卡會顯示）：這次要補多少、補了多少、失敗原因、是否因額度用完而停下
+        Q = {"run_at": config.now().isoformat(timespec="seconds"), "stocks": len(ids), "new": len(new), "due": len(due),
+             "done": 0, "failed": 0, "quota_hit": False, "errors": []}
+        db.set_meta(con, "fundamental_queue", json.dumps(Q, ensure_ascii=False))
         for n, (sid, src, fn, table) in enumerate(todo, 1):
             _say(progress, "財報與營收", n, len(todo), f"{sid} {src[3:]}")
             try:
                 db.upsert(con, table, fn(sid))
                 db.log_fetch(con, src, sid)
                 con.commit()
+                Q["done"] += 1
             except FinMindError as e:
                 errors.append(str(e))
+                Q["failed"] += 1
+                Q["errors"] = (Q["errors"] + [str(e)[:120]])[-5:]
                 if "用完" in str(e):
+                    Q["quota_hit"] = True
                     break  # 額度用完，下次排程再繼續
             except Exception as e:
                 errors.append(f"{sid} {src}: {http.describe(e)}")
+                Q["failed"] += 1
+                Q["errors"] = (Q["errors"] + [f"{sid} {src[3:]}：{http.describe(e)}"[:120]])[-5:]
+        # 補完這次之後，還有幾檔普通股從來沒有財報（下一次完整更新優先補）
+        Q["never_fin"] = sum(1 for sid in ids if not db.fetched_at(con, "fm_financials", sid))
+        Q["finished_at"] = config.now().isoformat(timespec="seconds")
+        db.set_meta(con, "fundamental_queue", json.dumps(Q, ensure_ascii=False))
         now = config.now().isoformat(timespec="seconds")
         for k in ("revenue", "financials", "dividends"):
             db.set_meta(con, f"updated_{k}", now)

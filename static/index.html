@@ -250,7 +250,7 @@ tr.link { cursor: pointer; } tr.link:hover td { background: var(--chip); }
 .crow select, .crow input { width: 100%; }
 .actbar { position: sticky; top: var(--hdr, 0px); z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; padding: 8px 0; margin: 4px 0 8px; background: var(--bg); border-bottom: 1px solid var(--line); }
 @media (max-width: 640px) { .actbar { flex-wrap: nowrap; overflow-x: auto; } .actbar .btn { white-space: nowrap; flex: none; } }
-.dtiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dtiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .dtile { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
 .dtile span { font-size: 12px; color: var(--muted); } .dtile b { font-size: 20px; } .dtile b small { font-size: 12px; color: var(--muted); font-weight: 400; } .dtile small { font-size: 12px; color: var(--faint); }
 .dtile.good { border-color: color-mix(in srgb, var(--info) 45%, var(--line)); background: var(--info-bg); } .dtile.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--line)); background: var(--warn-bg); }
@@ -340,6 +340,26 @@ tr.pick.on td { background: var(--accent-soft); }
 .tag-lim { display: inline-block; font-size: 11px; padding: 0 5px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); margin-left: 4px; }
 .pref h3 { margin: 14px 0 2px; font-size: 15px; }
 .seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+.seg.hzst { display: flex; width: 100%; }
+.pfgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px 12px; margin: 6px 0 8px; }
+.pfgrid div { display: flex; flex-direction: column; } .pfgrid span, .pfgrid small { font-size: 12px; color: var(--muted); } .pfgrid b { font-size: 15px; }
+.pfai { border-top: 1px dashed var(--line); padding-top: 8px; display: grid; gap: 4px; }
+.pfsheet { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; }
+.pfback { position: absolute; inset: 0; background: rgba(40, 28, 20, .35); }
+.pfpanel { position: relative; background: var(--panel); color: var(--ink); width: min(560px, 94vw); max-height: 90vh; overflow: auto; border-radius: 14px; padding: 16px; box-shadow: 0 8px 32px rgba(0,0,0,.25); }
+.pfform { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; margin-top: 10px; }
+.pfform .full { grid-column: 1 / -1; }
+.pfform > * { min-width: 0; }
+.pfform input, .pfform textarea { width: 100%; box-sizing: border-box; }
+.pfc { display: grid; grid-template-columns: minmax(90px, 140px) 1fr auto; gap: 8px; align-items: center; font-size: 13px; margin: 4px 0; }
+.pfform label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.pfform label small { color: var(--faint); font-size: 11px; }
+.pfform input, .pfform textarea { padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink); font: inherit; font-size: 16px; }
+.pfform .seg button { padding: 7px 14px; font-size: 14px; }
+.pfform [hidden] { display: none !important; }
+@media (max-width: 640px) { .pfsheet { align-items: flex-end; } .pfpanel { width: 100%; border-radius: 16px 16px 0 0; max-height: 92vh; padding-bottom: calc(16px + env(safe-area-inset-bottom)); } }
+.seg.hzst button { flex: 1; padding: 8px 6px; line-height: 1.5; }
+.seg.hzst .pill { margin-top: 2px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .list { display: grid; gap: 4px; }
 .li { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 7px; font-size: 13px; }
@@ -449,6 +469,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
       <details class="grp" data-g="mine"><summary>我的投資研究</summary><div class="menu">
         <a href="#/me" data-r="me">我的研究總覽<small>自選股變化、通知、事件，一頁看完（不是券商持倉）</small></a>
         <a href="#/watch" data-r="watch">自選股<span class="cnt" id="wcnt">0</span><small>追蹤加入後的價格與評分</small></a>
+        <a href="#/portfolio" data-r="portfolio">我的投資組合<small>交易紀錄、持股損益，和 0050 比較</small></a>
         <a href="#/mine" data-r="mine">我的 AI 推薦<small>依你的研究偏好重新排序，不改變客觀模型分數</small></a>
         <a href="#/alerts" data-r="alerts">通知<small>自選股的訊號、評分與事件提醒</small></a></div></details>
       <a href="#/performance" data-r="performance" title="AI 名單上線後的事後追蹤、技術訊號歷史回測">績效與回測</a>
@@ -466,6 +487,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 </header>
 <main id="app"><div class="empty">載入中…</div></main>
 <footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤，AI 多因子歷史回測尚未完成（見<a href="#/performance">績效與回測</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
+<script src="portfolio.js"></script>
 <script>
 const STATIC = window.STATIC_DATA || null;
 const SITE = !!window.STATIC_SITE;  // build_site.py 產生的靜態網站：讀 data/*.json，沒有後端
@@ -476,7 +498,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 // 自選股、策略、偏好：未登入時存在 yx_ 底下；登入後每個帳號有自己的一份（yx_u_帳號_），不同帳號不會混在一起
 let UID = null;
-const SYNC_KEYS = ["watch", "strategies", "pref"];
+const SYNC_KEYS = ["watch", "strategies", "pref", "portfolio"];
 const ACCT_KEYS = ["alert_rules", "notif", "alert_state"];  // 智慧警報：每個帳號分開存，雲端另外放在 alert_* 資料表
 const lsKey = (k) => (UID && (SYNC_KEYS.includes(k) || ACCT_KEYS.includes(k)) ? `yx_u_${UID}_` : "yx_") + k;
 const store = { get(k, d) { try { const v = localStorage.getItem(lsKey(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
@@ -1267,6 +1289,10 @@ async function loadCoverage() {
     <p class="small" style="margin:0 0 10px">個股研究卡的每個部分分開判斷：缺一項資料只影響那一項，其他已取得的分析照常顯示。「可用」= 完成＋部分完成。</p>
     <div class="tbl"><table><thead><tr><th>研究模組</th><th class="r">可用</th>${ks.map((k) => `<th class="r">${ST[k]}</th>`).join("")}</tr></thead><tbody>
       ${Object.values(C.modules).map((m) => `<tr><td>${esc(m.name)}</td><td class="r num"><b>${m.usable ?? "—"}%</b></td>${ks.map((k) => `<td class="r num">${m.counts[k] || ""}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    ${(() => { const Q = C.fundamental_queue; if (!Q || Q.done == null) return "";
+      return `<div class="dbt" style="margin-top:12px"><b>財報補齊進度</b>（上一次完整更新 ${esc((Q.finished_at || Q.run_at || "").slice(0, 16).replace("T", " "))}）
+        <p class="small" style="margin:4px 0 0">這次補抓 ${fmtNum(Q.done, 0)} 筆、失敗 ${fmtNum(Q.failed, 0)} 筆${Q.quota_hit ? "，<b>免費額度用完先停下</b>" : ""}；${Q.never_fin != null ? `目前還有 <b>${fmtNum(Q.never_fin, 0)}</b> 檔普通股沒有財報，` : ""}下一次完整更新（每晚 21:00）會從沒抓過的股票接著補。</p>
+        ${(Q.errors || []).length ? `<p class="faint small" style="margin:4px 0 0">最近的失敗原因：${Q.errors.map(esc).join("；")}</p>` : ""}</div>`; })()}
     <h3 style="margin:14px 0 6px">缺漏原因排行（影響檔數）</h3>
     <div class="tbl"><table class="wrap"><tbody>${C.reasons.slice(0, 12).map((r) => `<tr><td style="white-space:nowrap">${esc(r.module)}</td><td>${esc(r.why)}</td><td class="r num">${r.stocks}</td></tr>`).join("")}</tbody></table></div>
     <details style="margin-top:10px"><summary class="small">八類代表股票的研究狀態（驗收樣本）</summary><div class="tbl"><table><thead><tr><th>類別</th><th>股票</th>${["行情", "基本面", "估值", "短線", "波段", "長期", "AI"].map((x) => `<th>${x}</th>`).join("")}</tr></thead><tbody>
@@ -2396,24 +2422,34 @@ function toast(msg) {
 }
 function markDirty() { if (!UID) return; meta("dirty", true); clearTimeout(pushT); pushT = setTimeout(() => pushState(), 1500); }
 const localState = () => Object.fromEntries(SYNC_KEYS.map((k) => [k, store.get(k, k === "strategies" ? [] : {})]));
+// 投資組合欄位是 V21 新增的：雲端資料表還沒加上（schema.sql 沒重新執行）時，其他資料照常同步，投資組合先只存在這台
+const cloudKeys = () => SYNC_KEYS.filter((k) => k !== "portfolio" || meta("pf_col") !== false);
+const colMissing = (err) => err && (err.code === "42703" || err.code === "PGRST204" || /portfolio/.test(err.message || ""));
+const cloudBody = () => { const L = localState(); return Object.fromEntries(cloudKeys().map((k) => [k, L[k]])); };
+async function selectRow() {
+  let r = await sb.from("user_state").select(cloudKeys().join(",") + ",version").eq("user_id", user.id).maybeSingle();
+  if (r.error && cloudKeys().includes("portfolio") && colMissing(r.error)) { meta("pf_col", false); r = await selectRow(); }
+  return r;
+}
 function applyRemote(row) {
-  SYNC_KEYS.forEach((k) => { try { localStorage.setItem(`yx_u_${UID}_${k}`, JSON.stringify(row[k] ?? (k === "strategies" ? [] : {}))); } catch (e) {} });
+  SYNC_KEYS.forEach((k) => { if (!(k in row)) return; try { localStorage.setItem(`yx_u_${UID}_${k}`, JSON.stringify(row[k] ?? (k === "strategies" ? [] : {}))); } catch (e) {} });
   meta("ver", row.version); meta("dirty", false);
 }
-function refreshView() { renderWcnt(); renderNcnt(); if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash)) route(); }
+function refreshView() { renderWcnt(); renderNcnt(); if (["#/watch", "#/mine", "#/screener", "#/account"].includes(location.hash) || location.hash.startsWith("#/portfolio")) route(); }
 async function pushState() {
   clearTimeout(pushT); pushT = null;
   if (!sb || !user || pushing) return pushing;
   pushing = (async () => {
-    const ver = meta("ver") || 0, body = { ...localState(), version: ver + 1, updated_at: new Date().toISOString() };
-    let res = ver
-      ? await sb.from("user_state").update(body).eq("user_id", user.id).eq("version", ver).select("version")
-      : await sb.from("user_state").insert({ user_id: user.id, ...body }).select("version");
+    const ver = meta("ver") || 0, send = () => { const body = { ...cloudBody(), version: ver + 1, updated_at: new Date().toISOString() };
+      return ver ? sb.from("user_state").update(body).eq("user_id", user.id).eq("version", ver).select("version")
+        : sb.from("user_state").insert({ user_id: user.id, ...body }).select("version"); };
+    let res = await send();
+    if (res.error && cloudKeys().includes("portfolio") && colMissing(res.error)) { meta("pf_col", false); res = await send(); }
     if (res.error && res.error.code !== "23505") {  // 網路中斷等：修改保留在這台（標記未同步），30 秒後或網路恢復時重試
       syncMsg = `同步失敗：${res.error.message}（修改保留在這台，會自動重試）`; setTimeout(() => { if (meta("dirty") && !pushT) pushT = setTimeout(pushState, 0); }, 30000); return; }
     if (res.error || !res.data?.length) {  // 版本號對不上：另一台裝置剛改過
       const mine = localState();
-      const { data } = await sb.from("user_state").select("watch,strategies,pref,version").eq("user_id", user.id).maybeSingle();
+      const { data } = await selectRow();
       if (data) applyRemote(data);
       meta("conflict", { at: new Date().toISOString(), local: mine });  // 這台沒存到的修改先保留，可以重新套用
       syncMsg = `已載入雲端最新資料 ${nowTxt()}`;
@@ -2429,24 +2465,39 @@ async function pushState() {
 async function pullState() {
   if (!sb || !user || pushT || pushing) return;
   if (meta("dirty")) return pushState();  // 上次有改了還沒存到雲端：先存（版本對不上就不覆寫）
-  const { data, error } = await sb.from("user_state").select("watch,strategies,pref,version").eq("user_id", user.id).maybeSingle();
+  if (meta("pf_col") === false) meta("pf_col", null);  // 每次重新讀取時再試一次投資組合欄位（使用者可能已經重新執行 schema.sql）
+  const { data, error } = await selectRow();
   if (error) { syncMsg = `讀取雲端資料失敗：${error.message}`; return; }
   if (data) { if (data.version !== meta("ver")) { applyRemote(data); refreshView(); } syncMsg = `已同步 ${nowTxt()}`; }
   else { meta("ver", 0); await pushState(); }
   offerImport();
 }
 // 同步衝突：比較暫存的本機修改和雲端版本，可以合併套用（自選股、策略取聯集，偏好以這台為準）
+// 投資組合合併：交易依 id 取聯集；同一筆兩邊都有時，刪除優先，否則取較晚修改的那份
+function pfMerge(A, B) {
+  const m = {}, a = (A && A.trades) || [], b = (B && B.trades) || [];
+  let added = 0;
+  for (const t of a) m[t.id] = t;
+  for (const t of b) {
+    const o = m[t.id];
+    if (!o) { m[t.id] = t; added++; continue; }
+    if (o.del || t.del) { if (!o.del) added++; m[t.id] = { ...(o.del ? o : t), del: o.del || t.del }; continue; }
+    if ((t.mod || t.at || "") > (o.mod || o.at || "")) { m[t.id] = t; added++; }
+  }
+  return { pf: { ...(A || {}), ...(B || {}), settings: { ...((A && A.settings) || {}), ...((B && B.settings) || {}) }, trades: Object.values(m) }, added };
+}
 function conflictDiff(c) {
   const R = localState(), L = c.local, ids = (o) => new Set(Object.keys(o || {}));
   const lw = ids(L.watch), rw = ids(R.watch), ln = new Set((L.strategies || []).map((x) => x.name)), rn = new Set((R.strategies || []).map((x) => x.name));
   return { addW: [...lw].filter((x) => !rw.has(x)), onlyRemoteW: [...rw].filter((x) => !lw.has(x)), addS: [...ln].filter((x) => !rn.has(x)),
-    prefChanged: JSON.stringify(L.pref || {}) !== JSON.stringify(R.pref || {}) };
+    prefChanged: JSON.stringify(L.pref || {}) !== JSON.stringify(R.pref || {}), addT: pfMerge(R.portfolio, L.portfolio).added };
 }
 function applyConflict(c) {
   const R = localState(), L = c.local, names = new Set((L.strategies || []).map((x) => x.name));
   store.set("watch", { ...R.watch, ...L.watch });
   store.set("strategies", (L.strategies || []).concat((R.strategies || []).filter((x) => !names.has(x.name))));
   store.set("pref", { ...R.pref, ...L.pref, hidden: { ...(R.pref.hidden || {}), ...(L.pref.hidden || {}) } });
+  store.set("portfolio", pfMerge(R.portfolio, L.portfolio).pf);
   meta("conflict", null); toast("已把這台的修改合併進雲端版本，正在同步。"); refreshView();
 }
 function conflictCard() {
@@ -2458,6 +2509,7 @@ function conflictCard() {
       <li>這台多出的自選股：${d.addW.length ? esc(d.addW.map(nm).join("、")) : "沒有"}</li>
       <li>雲端有、這台暫存裡沒有的自選股（合併後會保留）：${d.onlyRemoteW.length ? esc(d.onlyRemoteW.map(nm).join("、")) : "沒有"}</li>
       <li>這台多出的策略：${d.addS.length ? esc(d.addS.join("、")) : "沒有"}</li>
+      <li>這台多出或修改過的交易紀錄：${d.addT ? d.addT + " 筆（合併後保留，刪除過的不會復原）" : "沒有"}</li>
       <li>我的 AI 推薦偏好：${d.prefChanged ? "不同（合併後以這台為準）" : "相同"}</li></ul>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="cfApply">合併套用這台的修改</button><button class="btn ghost sm" id="cfDrop">捨棄暫存，用雲端版本</button></div></section>`;
 }
@@ -2468,18 +2520,19 @@ function bindConflict(after) {
 }
 function guestState() {
   const g = (k, d) => { try { return JSON.parse(localStorage.getItem("yx_" + k) ?? "null") ?? d; } catch (e) { return d; } };
-  return { watch: g("watch", {}), strategies: g("strategies", []), pref: g("pref", {}) };
+  return { watch: g("watch", {}), strategies: g("strategies", []), pref: g("pref", {}), portfolio: g("portfolio", {}) };
 }
 function offerImport() {
-  const g = guestState(), nw = Object.keys(g.watch).length, ns = g.strategies.length, nh = Object.keys(g.pref.hidden || {}).length;
-  if (!(nw || ns || nh) || meta("import_asked")) return;
+  const g = guestState(), nw = Object.keys(g.watch).length, ns = g.strategies.length, nh = Object.keys(g.pref.hidden || {}).length, nt = (g.portfolio.trades || []).filter((t) => !t.del).length;
+  if (!(nw || ns || nh || nt) || meta("import_asked")) return;
   meta("import_asked", true);
-  if (!confirm(`這台裝置有未登入時建立的資料：自選股 ${nw} 檔、策略 ${ns} 個、隱藏的股票 ${nh} 檔。\n要匯入 ${user.email || "這個帳號"} 嗎？\n\n按「確定」匯入（匯入後未登入的那份會清空）；按「取消」保留在未登入狀態使用。`)) return;
+  if (!confirm(`這台裝置有未登入時建立的資料：自選股 ${nw} 檔、策略 ${ns} 個、隱藏的股票 ${nh} 檔、交易紀錄 ${nt} 筆。\n要匯入 ${user.email || "這個帳號"} 嗎？\n\n按「確定」匯入（匯入後未登入的那份會清空）；按「取消」保留在未登入狀態使用。`)) return;
   const L = localState();
   store.set("watch", { ...g.watch, ...L.watch });
   const names = new Set(L.strategies.map((s) => s.name));
   store.set("strategies", L.strategies.concat(g.strategies.filter((s) => !names.has(s.name))));
   store.set("pref", { ...g.pref, ...L.pref, hidden: { ...(g.pref.hidden || {}), ...(L.pref.hidden || {}) } });
+  if (nt) store.set("portfolio", pfMerge(L.portfolio, g.portfolio).pf);
   SYNC_KEYS.forEach((k) => { try { localStorage.removeItem("yx_" + k); } catch (e) {} });
   toast("已匯入，正在同步到雲端。"); refreshView();
 }
@@ -2536,10 +2589,10 @@ function pagePrivacy() {
 }
 function pageAccount() {
   if (!SUPA) { $("#app").innerHTML = '<section class="card"><div class="empty">網站還沒有開啟會員功能。所有功能都可以不登入使用，資料會存在這台裝置。</div></section>'; return; }
-  const what = `<p class="faint small" style="margin:10px 0 0">會同步：自選股、自訂多因子篩選策略、我的 AI 推薦偏好（含隱藏的股票）。只存你的 Email 和這些設定，每個人只能讀到自己的資料。不登入也能使用所有功能。</p>`;
+  const what = `<p class="faint small" style="margin:10px 0 0">會同步：自選股、自訂多因子篩選策略、我的 AI 推薦偏好（含隱藏的股票）、我的投資組合（交易紀錄）。只存你的 Email 和這些設定，每個人只能讀到自己的資料。不登入也能使用所有功能。</p>`;
   if (user) {
     $("#app").innerHTML = `<section><h1>我的帳號</h1></section>${conflictCard()}<section class="card"><div class="card-h"><h2>${esc(user.email || "")}</h2><span class="muted small">${esc(syncMsg || "同步中…")}</span></div>
-      <p style="margin:0">在其他手機、電腦用同一個 Email 登入，就會看到一樣的自選股和設定。</p>
+      <p style="margin:0">在其他手機、電腦用同一個 Email 登入，就會看到一樣的自選股和設定。</p>${meta("pf_col") === false ? `<p class="small" style="margin:8px 0 0;color:var(--warn)">投資組合的交易紀錄目前只存在這台裝置：雲端資料表還沒有投資組合欄位。請管理員在 Supabase 的 SQL Editor 重新執行一次 supabase/schema.sql（重複執行不會出錯），之後按「立即同步」。</p>` : ""}
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" id="syncNow">立即同步</button><button class="btn ghost" id="logout">登出</button></div>${what}
       <details style="margin-top:12px"><summary class="small muted">刪除帳號</summary>
         <p class="small" style="margin:6px 0">會永久刪除這個帳號，以及雲端上的自選股、策略、偏好、通知、通知規則和 AI 問答用量紀錄，<b>無法復原</b>。這台裝置上這個帳號的資料也會一起清除。</p>
@@ -2950,18 +3003,27 @@ function decisionCard(s, d) {
         V.pbr ? `股價淨值比 <b class="num">${fmtNum(V.pbr, 2)}</b> 倍` : "", V.dy ? `殖利率 <b class="num">${fmtNum(V.dy, 2)}%</b>` : ""].filter(Boolean).join("；")}。</p>` : ""}
       <p class="muted small" style="margin:6px 0 0">歷史估值區間：${esc(V.why || "沒有估值資料")}</p>
       ${V.peer ? `<p class="faint small" style="margin:4px 0 0">同產業的公司業務與獲利結構可能差很多，同業中位數只是粗略參考，不是合理價。</p>` : ""}`;
+  const stOf = (k) => { const p = k === "long" ? D.long : st[k]; return D.blocked ? PLAN_TXT.blocked : PLAN_TXT[(p || {}).state || "na"]; };
+  const streak = (n) => n > 0 ? `連買 ${n} 天` : n < 0 ? `連賣 ${-n} 天` : "";
+  const chips = s.foreign_5d != null || s.trust_5d != null || s.margin_chg_20d != null ? `<h3 style="margin:16px 0 6px">法人與籌碼</h3>
+    <div class="kpis">${[["外資近 5 日", s.foreign_5d, streak(s.foreign_streak)], ["投信近 5 日", s.trust_5d, streak(s.trust_streak)]].map(([k, v, x]) =>
+      `<div class="kpi"><span>${k}</span><b style="font-size:16px" class="num">${v == null ? "—" : `${v >= 0 ? "買超" : "賣超"} ${fmtNum(Math.abs(v), 0)} 張`}</b><small class="muted">${x || "&nbsp;"}</small></div>`).join("")}
+      <div class="kpi"><span>融資近 20 日</span><b style="font-size:16px" class="num">${s.margin_chg_20d == null ? "—" : `${s.margin_chg_20d > 0 ? "+" : ""}${fmtNum(s.margin_chg_20d, 1)}%`}</b><small class="muted">${s.price_up_margin_down ? "股價漲、融資減" : "&nbsp;"}</small></div></div>
+    <p class="faint small" style="margin:4px 0 0">法人資料到 ${esc(s.inst_date || "—")}、融資到 ${esc(s.margin_date || "—")}。籌碼變化只供輔助觀察，短期買賣超不代表後續漲跌。</p>` : "";
   return `<section class="card dcard"><div class="card-h"><h2>研究決策卡</h2><span class="muted small">好公司、好價格、好時機分開判斷・資料日 ${esc(s.date)}</span></div>
     <div class="dtiles">
+      ${tile("目前估值", vl ? vl[0] : V.pe != null ? `本益比 ${fmtNum(V.pe, 1)} 倍` : esc(MD.valuation?.label || "無法判定"),
+        V.p50 != null ? `本益比 ${fmtNum(V.pe, 1)} 倍・歷史位階 ${fmtNum(V.pct, 0)}%` : V.pe != null && V.peer ? `同業中位數 ${fmtNum(V.peer, 1)} 倍・沒有歷史區間` : esc((V.why || "").slice(0, 30)), vl?.[1] || "")}
       ${a.score != null && s.complete ? tile("量化品質", `${fmtNum(a.score, 0)} <small>/ 100</small>`, a.rank ? `AI 均衡型第 ${a.rank} 名・全市場相對分數` : "未進排行榜")
         : (() => { const sc = s.base_ok ? Object.fromEntries(Object.keys(FNAME).map((f) => [f, s["score_" + f]]).filter(([, v]) => v != null)) : (ref || {}), n = Object.keys(sc).length;
           return tile("量化品質", n ? `${n} / 5 項分數` : "還不能評分", n ? Object.entries(sc).slice(0, 3).map(([f, v]) => `${FNAME[f].slice(0, 2)} ${fmtNum(v, 0)}`).join("・") + "（不排名）" : esc((MD.ai?.why || "").slice(0, 34))); })()}
-      ${tile("目前估值", vl ? vl[0] : V.pe != null ? `本益比 ${fmtNum(V.pe, 1)} 倍` : esc(MD.valuation?.label || "無法判定"),
-        V.p50 != null ? `本益比 ${fmtNum(V.pe, 1)} 倍・歷史位階 ${fmtNum(V.pct, 0)}%` : V.pe != null && V.peer ? `同業中位數 ${fmtNum(V.peer, 1)} 倍・沒有歷史區間` : esc((V.why || "").slice(0, 30)), vl?.[1] || "")}
-      ${tile(`${HZ[hz]}策略`, stTxt[0], hz === "long" ? (plan?.status === "partial" ? "基本面＋估值・部分判斷" : "基本面＋估值") : lv ? `參考停損 ${fmtNum(lv.stop)}・風險 ${fmtNum(lv.risk_pct, 1)}%` : esc((MD[hz]?.why || plan?.miss?.[0] || "").slice(0, 34)), stTxt[1])}</div>
+    </div>
+    <h3 style="margin:14px 0 6px">估值區間</h3>${band}
     <p class="small" id="facHint" style="margin:10px 0 0" hidden></p>
-    ${modStrip(MD)}${partScores(s, D)}
+    <h3 style="margin:16px 0 6px">短線／波段／長期研究狀態</h3>
     ${D.blocked ? `<div class="banner warn small">${esc(D.blocked)}</div>` : ""}
-    <div class="seg" id="hzSeg" style="margin:14px 0 10px">${Object.entries(HZ).map(([k, n]) => `<button data-h="${k}" class="${k === hz ? "on" : ""}">${n}<small class="hzh">（${esc((k === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[k])?.hold || "")}）</small></button>`).join("")}</div>
+    <div class="seg hzst" id="hzSeg" style="margin:0 0 10px">${Object.entries(HZ).map(([k, n]) => { const t = stOf(k); return `<button data-h="${k}" class="${k === hz ? "on" : ""}">${n}<small class="hzh">（${esc((k === "long" ? SNAP.strategy_rules?.long : SNAP.strategy_rules?.[k])?.hold || "")}）</small><br><span class="pill ${t[1]}">${t[0]}</span></button>`; }).join("")}</div>
+    <p class="faint small" style="margin:0 0 8px">點選上面的期間，下面會列出該期間的進出場條件。</p>
     ${R ? `<div class="tbl"><table class="wrap dplan"><tbody>
       <tr><th>觀察條件</th><td>${esc(R.setup)}</td></tr>
       <tr><th>進場條件</th><td>${esc(R.entry)}<div style="margin-top:4px"><span class="pill ${stTxt[1]}">${stTxt[0]}</span> ${(plan?.miss || []).map((m) => `<span class="small muted">・${esc(m)}</span>`).join(" ")}</div></td></tr>
@@ -2971,8 +3033,10 @@ function decisionCard(s, d) {
       <tr><th>停利／出場</th><td>${esc(hz === "long" ? R.exit : R.target)}${hz === "long" ? "" : `<br><span class="muted small">${esc(R.exit)}</span>`}</td></tr>
       ${plan?.note ? `<tr><th>判斷範圍</th><td class="small">${esc(plan.note)}</td></tr>` : ""}
       ${(plan?.warn || []).length ? `<tr><th>警示</th><td style="color:var(--warn)">${plan.warn.map(esc).join("；")}</td></tr>` : ""}</tbody></table></div>` : ""}
+    ${chips}
+    <h3 style="margin:16px 0 6px">策略歷史績效</h3>
     ${hz === "long" ? `<p class="small muted" style="margin:8px 0 0">長期規則用的估值歷史還不夠長，沒有單獨回測。最接近的驗證是 <a href="#/performance">AI 多因子歷史回測</a>（每月依均衡型排名換股，規則不完全相同）。</p>` : btLine}
-    <h3 style="margin:16px 0 6px">估值區間</h3>${band}
+    ${modStrip(MD)}${partScores(s, D)}
     <p class="faint small" style="margin:12px 0 0">以上價位都是規則計算的研究參考，不是投資建議；停損不保證能以該價格成交，跳空或流動性不足時可能損失更多。外資券商目標價需要授權資料，目前沒有提供。</p></section>`;
 }
 function timelineCard(s, d) {
@@ -3022,7 +3086,8 @@ async function pageStock(id) {
         ${s.plan ? `<div class="small" style="margin-top:4px"><b>${esc(planLine(s))}</b></div>` : ""}</div>
       <div style="text-align:right"><div class="px">${fmtNum(s.close)}</div><div class="num ${signCls(s.chg_pct)}" style="font-size:15px">${pctTxt(s.chg_pct)}</div></div></section>
     <div class="actbar" role="navigation" aria-label="研究動作">${starBtn(id)}<button class="btn sm" data-j="j-chat">問 AI 這檔</button>${Object.values(s.ai.modes).some((x) => x.rank) ? '<button class="btn sm ghost" id="toRc">AI 排名理由</button>' : ""}
-      <button class="btn sm ghost" data-j="j-bd">分數怎麼來</button><button class="btn sm ghost" data-j="j-peer">同業比較</button><button class="btn sm ghost" data-j="j-tl">研究時間軸</button><button class="btn sm ghost" data-j="j-news">公告新聞</button><a class="btn sm ghost" href="#/alerts">設定通知</a></div>
+      <button class="btn sm ghost" data-j="j-bd">分數怎麼來</button><button class="btn sm ghost" data-j="j-peer">同業比較</button><button class="btn sm ghost" data-j="j-tl">研究時間軸</button><button class="btn sm ghost" data-j="j-news">公告新聞</button><a class="btn sm ghost" href="#/alerts">設定通知</a><a class="btn sm ghost" href="#/portfolio/add/${id}">記一筆交易</a></div>
+    ${pfHeld(id)}
     ${s.exclude_reasons?.length ? `<div class="banner warn">未通過排行榜基本門檻（${s.exclude_reasons.map(esc).join("、")}），不列入選股排名；下方研究卡仍提供已取得的分析。</div>` : ""}
     ${s.base_ok && !s.complete ? `<div class="banner warn">排行榜資料不完整，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
     <div class="meta-row" style="margin-top:0">${[["股價", s.date], ["法人", s.inst_date], ["融資", s.margin_date], ["本益比", s.val_date], ["月營收", s.rev_ym], ["財報", s.fin_period]]
@@ -3142,6 +3207,300 @@ function drawSmall(d) {
 }
 
 // ---------- 路由 ----------
+// ---------- 我的投資組合（計算在 portfolio.js；這裡只負責畫面與資料載入） ----------
+// 交易紀錄存在 store("portfolio") = {trades: [...], settings: {...}}，登入後跟自選股一起同步。
+// 成交價一定由使用者輸入：表單只顯示當天的收盤、最高、最低當參考，不會自動帶入最新股價。
+const PFX = { cache: {}, picks: undefined, bench: undefined, form: null };
+const pfGet = () => { const p = store.get("portfolio", {}); return { ...p, trades: p.trades || [] }; };
+const pfBook = () => (store.get("pf_book", "real") === "sim" ? "sim" : "real");
+const BOOKS = { real: "實際持股", sim: "模擬投資" };
+const SIDE_TXT = { buy: ["買進", "up"], sell: ["賣出", "down"], div: ["現金股利", "acc"] };
+const pfName = (sid) => (BYID[sid]?.name || (sid === "0050" ? "元大台灣50" : ""));
+const lotTxt = (n) => n >= 1000 && n % 1000 === 0 ? `${fmtNum(n / 1000, 0)} 張` : n >= 1000 ? `${fmtNum(Math.floor(n / 1000), 0)} 張 ${n % 1000} 股` : `${fmtNum(n, 0)} 股`;
+async function pfJson(path) {
+  try { const r = await fetch(`data/${path}` + (verQ(path) || `?d=${SNAP?.data_dates?.prices || ""}`)); return r.ok ? r.json() : null; } catch (e) { return null; }
+}
+async function pfBench() { if (PFX.bench === undefined) PFX.bench = SITE ? await pfJson("bench/0050.json") : null; return PFX.bench; }
+async function pfPicks() { if (PFX.picks === undefined) PFX.picks = SITE ? (await pfJson("picks_index.json")) || {} : {}; return PFX.picks; }
+// 個股日線：[{date, open, high, low, close, volume}]；0050 用基準檔的實際收盤價
+async function pfPrices(sid) {
+  if (PFX.cache[sid]) return PFX.cache[sid];
+  let out = null;
+  if (sid === "0050") { const b = await pfBench(); out = b ? { prices: b.prices.map(([date, , close]) => ({ date, close })), decision: null } : null; }
+  else if (BYID[sid]) { const d = await loadStock(sid); out = d ? { prices: d.prices || [], decision: d.decision || null } : null; }
+  return (PFX.cache[sid] = out);
+}
+const pfLatest = (sid) => BYID[sid] ? [BYID[sid].close, BYID[sid].date] : sid === "0050" && PFX.bench?.prices?.length ? [PFX.bench.prices.at(-1)[2], PFX.bench.prices.at(-1)[0]] : [null, null];
+// 某天的成交資料（模擬投資用來檢查價格區間、漲跌停、成交量）
+function pfDay(P, date) {
+  const xs = P?.prices || [], i = xs.findIndex((x) => x.date === date);
+  if (i < 0) return null;
+  const x = xs[i], prev = i > 0 ? xs[i - 1].close : null;
+  const chg = prev ? (x.close / prev - 1) * 100 : null;
+  return { ...x, prev, chg, lockUp: chg != null && chg >= 9.4 && x.high === x.low, lockDown: chg != null && chg <= -9.4 && x.high === x.low };
+}
+
+// 個股頁：如果你持有這檔，顯示持股和成本
+function pfHeld(sid) {
+  const pf = pfGet(), out = [];
+  for (const b of ["real", "sim"]) {
+    const p = PF.ledger(pf.trades, b).pos[sid]; if (!p || !p.shares) continue;
+    const px = BYID[sid]?.close, u = px != null ? p.shares * px - p.cost : null;
+    out.push(`${BOOKS[b]}：持有 ${lotTxt(p.shares)}、均價 <b class="num">${fmtNum(p.cost / p.shares)}</b>${u == null ? "" : `、未實現 <b class="num ${signCls(u)}">${u > 0 ? "+" : ""}${fmtNum(u, 0)}</b>（${pctTxt((px * p.shares / p.cost - 1) * 100)}）`}`);
+  }
+  return out.length ? `<div class="banner info small">${out.join("；")}。<a href="#/portfolio">看我的投資組合</a></div>` : "";
+}
+function pagePortfolio() {
+  const parts = location.hash.replace(/^#\/?/, "").split("/"), tab = ["trades", "perf"].includes(parts[1]) ? parts[1] : "hold";
+  const book = pfBook(), pf = pfGet(), L = PF.ledger(pf.trades, book), n = PF.live(pf.trades, book).length;
+  const tabs = { hold: "持股總覽", trades: "交易紀錄", perf: "績效分析" };
+  $("#app").innerHTML = `<section><h1>我的投資組合</h1>
+      <p class="lead">記錄你自己的買賣，計算成本與損益，並對照股栗子對這些股票的研究。這裡不連券商，成交價、股數、費用都以你輸入的為準。${user ? "" : '未登入時存在這台裝置；<a href="#/account">登入</a>後可在不同裝置同步。'}</p></section>
+    <div class="toolbar" style="justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="seg" id="pfBook">${Object.entries(BOOKS).map(([k, v]) => `<button data-b="${k}" class="${k === book ? "on" : ""}">${v}</button>`).join("")}</div>
+      <div class="seg" id="pfTab">${Object.entries(tabs).map(([k, v]) => `<button data-t="${k}" class="${k === tab ? "on" : ""}">${v}</button>`).join("")}</div>
+      <button class="btn" id="pfAdd">＋ 記一筆交易</button></div>
+    ${book === "sim" ? `<div class="banner info small" style="margin-bottom:12px">模擬投資和實際持股分開計算。模擬交易會檢查當天的價格區間、漲跌停鎖死和成交量，避免記到實際上買不到的價格。</div>` : ""}
+    ${L.errors.length ? `<div class="banner bad" style="margin-bottom:12px"><b>交易紀錄有問題，持股可能算錯：</b>${L.errors.map((e) => esc(e.msg)).join("；")}。請到「交易紀錄」修改或刪除。</div>` : ""}
+    <div id="pfBody">${n ? '<div class="card empty">計算中…</div>' : `<section class="card empty">${BOOKS[book]}還沒有交易紀錄。按「＋ 記一筆交易」開始；也可以在個股頁按「記一筆交易」。</section>`}</div>`;
+  $("#pfBook").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("pf_book", b.dataset.b); pagePortfolio(); } };
+  $("#pfTab").onclick = (e) => { const b = e.target.closest("button"); if (b) location.hash = b.dataset.t === "hold" ? "#/portfolio" : "#/portfolio/" + b.dataset.t; };
+  $("#pfAdd").onclick = () => pfForm({});
+  if (parts[1] === "add" && parts[2]) { history.replaceState(null, "", "#/portfolio"); pfForm({ sid: parts[2] }); }
+  if (!n) return;
+  ({ hold: pfHold, trades: pfTradesTab, perf: pfPerf })[tab](pf, book, L);
+}
+
+async function pfHold(pf, book, L) {
+  const st = PF.settings(pf), sids = Object.keys(L.pos);
+  await pfBench();
+  const [picks] = await Promise.all([pfPicks(), ...sids.map(pfPrices)]);
+  const prices = Object.fromEntries(sids.map((s) => [s, pfLatest(s)[0]]));
+  const H = PF.holdings(L, prices, st), open = H.filter((h) => h.shares > 0), closed = H.filter((h) => !h.shares);
+  const sum = (k) => H.reduce((a, h) => a + (h[k] || 0), 0);
+  const cost = open.reduce((a, h) => a + h.cost, 0), mv = sum("mv"), unreal = open.reduce((a, h) => a + (h.unreal || 0), 0);
+  const realized = sum("realized"), divs = sum("divs"), big = open.filter((h) => h.weight > 30);
+  const kpi = (lab, v, sub, cls = "") => `<div class="kpi"><span>${lab}</span><b class="num ${cls}" style="font-size:18px">${v}</b>${sub ? `<small class="muted">${sub}</small>` : ""}</div>`;
+  const sgn = (v) => `${v > 0 ? "+" : ""}${fmtNum(v, 0)}`;
+  const firstPick = (sid, h) => {
+    const xs = picks?.[sid]; if (!picks || !Object.keys(picks).length) return "";
+    const buy = h.open || h.first, prior = (xs || []).filter((x) => x[0] <= buy);
+    const own = `你在 ${esc(buy)} 買進（目前均價 ${fmtNum(h.avg)}）`;
+    if (prior.length) { const p = prior[0], last = prior.at(-1);
+      return `股栗子在 <b class="num">${esc(p[0])}</b> 首次把它選入 AI ${esc(SNAP.ai_modes?.[p[1]]?.name || p[1])}第 ${p[2]} 名（當天收盤 ${fmtNum(p[4])}）${last !== p ? `，最近一次在 ${esc(last[0])}` : ""}；${own}。`; }
+    const after = (xs || []).find((x) => x[0] > buy);
+    return after ? `${own}；股栗子之後在 ${esc(after[0])} 才把它選入名單。` : `${own}；買進前股栗子的 AI 名單沒有選入這檔（名單紀錄從 ${esc(Object.values(picks).flat().map((x) => x[0]).sort()[0] || "—")} 開始）。`;
+  };
+  const lastBuy = (sid) => PF.live(pf.trades, book).filter((t) => t.sid === sid && t.side === "buy").at(-1) || {};
+  const dist = (px, lv) => (px && lv ? `${fmtNum(lv)}（${pctTxt((lv / px - 1) * 100)}）` : "—");
+  const card = (h) => {
+    const s = BYID[h.sid], P = PFX.cache[h.sid], D = P?.decision, V = D?.valuation || {}, sw = D?.strategy?.swing, lb = lastBuy(h.sid);
+    const a = s?.ai?.modes?.balanced || {}, vl = valLabel(V), [, pxDate] = pfLatest(h.sid);
+    const lv = sw && sw.state !== "na" && D?.strategy?.ready ? sw : null;
+    return `<div class="card pfh"><div class="card-h"><h3 style="margin:0">${s ? `<a href="#/stock/${h.sid}">` : ""}<span class="num">${h.sid}</span> ${esc(pfName(h.sid))}${s ? "</a>" : ""}</h3>
+        <span class="num ${signCls(h.unreal)}" style="font-weight:600">${h.unreal == null ? "—" : `${sgn(h.unreal)}（${pctTxt(h.unreal_pct)}）`}</span></div>
+      <div class="pfgrid">
+        <div><span>持有</span><b class="num">${lotTxt(h.shares)}</b></div><div><span>平均成本</span><b class="num">${fmtNum(h.avg)}</b></div>
+        <div><span>最新收盤</span><b class="num">${fmtNum(h.price)}</b><small>${esc(pxDate || "")}</small></div><div><span>市值</span><b class="num">${fmtNum(h.mv, 0)}</b><small>占 ${fmtNum(h.weight, 0)}%</small></div>
+        <div><span>已實現</span><b class="num ${signCls(h.realized)}">${sgn(h.realized)}</b></div><div><span>扣賣出成本後</span><b class="num ${signCls(h.unreal_net)}">${h.unreal_net == null ? "—" : sgn(h.unreal_net)}</b><small>估手續費＋交易稅</small></div></div>
+      <div class="pfai small">
+        ${s ? `<div><b>股栗子研究：</b>${a.score != null && s.complete ? `AI 均衡型 ${fmtNum(a.score, 0)} 分${a.rank ? `・第 ${a.rank} 名` : "・未進排行榜"}` : "未列入 AI 排名"}・${esc(vl ? vl[0] : V.pe != null ? `本益比 ${fmtNum(V.pe, 1)} 倍` : "估值無法判定")}・波段：${esc((PLAN_TXT[sw?.state || "na"] || PLAN_TXT.na)[0])}</div>` : `<div class="muted">這檔是 ETF，沒有個股研究資料。</div>`}
+        <div><b>停損／目標：</b>${lb.stop || lb.target ? `你設的停損 ${dist(h.price, lb.stop)}、目標 ${dist(h.price, lb.target)}` : "沒有設定（記交易時可以填）"}${lv ? `；波段規則參考停損 ${dist(h.price, lv.stop)}、參考目標 ${dist(h.price, lv.target)}` : s?.stop_ref ? `；規則參考停損 ${dist(h.price, s.stop_ref)}` : ""}</div>
+        ${firstPick(h.sid, h) ? `<div>${firstPick(h.sid, h)}</div>` : ""}
+        ${lb.note ? `<div class="muted">買進理由：${esc(lb.note)}</div>` : ""}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn sm ghost" data-add="${h.sid}" data-side="buy">加碼</button><button class="btn sm ghost" data-add="${h.sid}" data-side="sell">賣出</button><button class="btn sm ghost" data-add="${h.sid}" data-side="div">記股利</button>${s ? `<a class="btn sm ghost" href="#/stock/${h.sid}">看個股研究</a>` : ""}</div></div>`;
+  };
+  $("#pfBody").innerHTML = `<section class="kpis" style="margin-bottom:12px">
+      ${kpi("持股市值", fmtNum(mv, 0), `${open.length} 檔`)}${kpi("持有成本", fmtNum(cost, 0), "含買進手續費")}
+      ${kpi("未實現損益", sgn(unreal), cost ? pctTxt(unreal / cost * 100) : "", signCls(unreal))}${kpi("已實現損益", sgn(realized), "已扣費用與交易稅", signCls(realized))}
+      ${kpi("現金股利", fmtNum(divs, 0), "自己記錄的")}${kpi("總損益", sgn(unreal + realized + divs), "未實現＋已實現＋股利", signCls(unreal + realized + divs))}</section>
+    ${big.length ? `<div class="banner small" style="margin-bottom:12px">集中度提醒：${big.map((h) => `${h.sid} ${esc(pfName(h.sid))} 占 ${fmtNum(h.weight, 0)}%`).join("、")}，單一股票超過三成，波動會比較大。</div>` : ""}
+    ${open.length ? open.map(card).join("") : '<section class="card empty">目前沒有持股（都已賣出）。</section>'}
+    ${closed.length ? `<section class="card"><h3 style="margin-top:0">已出清</h3><div class="tbl"><table><thead><tr><th>股票</th><th>最後交易</th><th class="r">已實現損益</th><th class="r">股利</th></tr></thead><tbody>
+      ${closed.map((h) => `<tr><td><span class="num">${h.sid}</span> ${esc(pfName(h.sid))}</td><td class="num">${esc(h.last)}</td><td class="r num ${signCls(h.realized)}">${sgn(h.realized)}</td><td class="r num">${fmtNum(h.divs, 0)}</td></tr>`).join("")}</tbody></table></div></section>` : ""}
+    <p class="faint small">最新收盤是網站資料日的收盤價，不是即時價。「扣賣出成本後」是假設今天用收盤價全部賣出，估算手續費與交易稅後的損益。成本用移動平均法計算，可能和券商對帳單的計算方式略有不同。股票分割、減資、股票股利目前不會自動調整，請用交易紀錄手動處理。</p>`;
+  $$("#pfBody [data-add]").forEach((b) => (b.onclick = () => pfForm({ sid: b.dataset.add, side: b.dataset.side })));
+}
+
+function pfTradesTab(pf, book, L) {
+  const T = PF.live(pf.trades, book).reverse(), bad = new Set(L.errors.map((e) => e.id)), st = PF.settings(pf);
+  $("#pfBody").innerHTML = `<section class="card"><div class="tbl"><table class="wrap"><thead><tr><th>日期</th><th>類型</th><th>股票</th><th class="r">股數</th><th class="r">成交價</th><th class="r">手續費</th><th class="r">交易稅</th><th class="r">金額</th><th></th></tr></thead><tbody>
+      ${T.map((t) => { const amt = t.side === "div" ? t.amount : t.side === "buy" ? -(t.shares * t.price + (t.fee || 0)) : t.shares * t.price - (t.fee || 0) - (t.tax || 0);
+        return `<tr${bad.has(t.id) ? ' style="background:var(--warn-bg)"' : ""}><td class="num">${esc(t.date)}</td><td><span class="pill">${SIDE_TXT[t.side][0]}</span></td><td><span class="num">${esc(t.sid)}</span> ${esc(pfName(t.sid))}${t.note ? `<div class="faint small">${esc(t.note)}</div>` : ""}</td>
+          <td class="r num">${t.side === "div" ? "—" : lotTxt(t.shares)}</td><td class="r num">${t.side === "div" ? "—" : fmtNum(t.price)}</td><td class="r num">${t.side === "div" ? "—" : fmtNum(t.fee || 0, 0)}</td><td class="r num">${t.side === "sell" ? fmtNum(t.tax || 0, 0) : "—"}</td>
+          <td class="r num">${amt > 0 ? "+" : ""}${fmtNum(amt, 0)}</td><td style="white-space:nowrap"><button class="btn sm ghost" data-ed="${esc(t.id)}">修改</button> <button class="btn sm ghost" data-del="${esc(t.id)}">刪除</button></td></tr>`; }).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:8px 0 0">金額：買進為負（付出），賣出與股利為正（收到），已含手續費與交易稅。</p>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="btn sm ghost" id="pfCsv">下載 CSV</button></div></section>
+    <section class="card"><h3 style="margin-top:0">手續費設定</h3>
+      <div class="pfform" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <label>手續費折扣<input id="stDisc" type="number" step="0.01" min="0.1" max="1" value="${st.discount}"><small>例如 6 折填 0.6</small></label>
+        <label>整股最低手續費<input id="stMin" type="number" step="1" min="0" value="${st.min_fee}"><small>元</small></label>
+        <label>零股最低手續費<input id="stOdd" type="number" step="1" min="0" value="${st.odd_min_fee}"><small>元，依券商規定</small></label></div>
+      <p class="faint small" style="margin:6px 0 0">手續費 = 成交金額 × 0.1425% × 折扣（無條件捨去），交易稅：股票 0.3%、ETF 0.1%（賣出才收）。設定只影響之後新增交易的預設值，已記錄的金額不會改；每筆都可以手動改成券商實收的金額。</p>
+      <button class="btn sm" id="stSave" style="margin-top:8px">儲存設定</button></section>`;
+  $$("#pfBody [data-ed]").forEach((b) => (b.onclick = () => pfForm(pf.trades.find((t) => t.id === b.dataset.ed))));
+  $$("#pfBody [data-del]").forEach((b) => (b.onclick = () => {
+    const t = pf.trades.find((x) => x.id === b.dataset.del), rest = pf.trades.map((x) => (x.id === t.id ? { ...x, del: true } : x));
+    if (PF.ledger(rest, book).errors.length > L.errors.filter((e) => e.id !== t.id).length) return toast("刪除這筆後，之後的賣出會超過持股。請先修改或刪除之後的賣出。");
+    if (!confirm(`刪除 ${t.date} ${SIDE_TXT[t.side][0]} ${t.sid} ${pfName(t.sid)}？`)) return;
+    store.set("portfolio", { ...pf, trades: pf.trades.map((x) => (x.id === t.id ? { ...x, del: true, mod: new Date().toISOString() } : x)) });
+    toast("已刪除。"); pagePortfolio();
+  }));
+  $("#pfCsv").onclick = () => {
+    const rows = [["日期", "帳本", "類型", "代號", "名稱", "股數", "成交價", "手續費", "交易稅", "股利金額", "備註"]].concat(PF.live(pf.trades, book).map((t) =>
+      [t.date, BOOKS[t.book || "real"], SIDE_TXT[t.side][0], t.sid, pfName(t.sid), t.shares ?? "", t.price ?? "", t.fee ?? "", t.tax ?? "", t.amount ?? "", t.note || ""]));
+    const csv = "﻿" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `股栗子-${BOOKS[book]}-${twToday()}.csv`; a.click();
+  };
+  $("#stSave").onclick = () => {
+    const v = (id) => Number($(id).value), disc = v("#stDisc");
+    if (!(disc > 0 && disc <= 1) || v("#stMin") < 0 || v("#stOdd") < 0) return toast("設定的數字不合理。");
+    store.set("portfolio", { ...pfGet(), settings: { ...(pfGet().settings || {}), discount: disc, min_fee: v("#stMin"), odd_min_fee: v("#stOdd") } }); toast("已儲存手續費設定。");
+  };
+}
+
+function pfLine(series, w = 640, h = 180) {  // series = [{name, color, pts: [[日期, 值]]}]，值是累積報酬 %
+  const all = series.flatMap((s) => s.pts.map((p) => p[1])); if (!all.length) return "";
+  const dates = [...new Set(series.flatMap((s) => s.pts.map((p) => p[0])))].sort(), xi = Object.fromEntries(dates.map((d, i) => [d, i]));
+  const lo = Math.min(0, ...all), hi = Math.max(0, ...all), pad = (hi - lo) * 0.08 || 1, y = (v) => h - 20 - (v - lo + pad) / (hi - lo + 2 * pad) * (h - 30), x = (d) => 40 + xi[d] / Math.max(1, dates.length - 1) * (w - 50);
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto" role="img" aria-label="累積報酬走勢">
+    <line x1="40" x2="${w - 10}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/><text x="4" y="${y(0) + 4}" font-size="11" fill="var(--faint)">0%</text>
+    <text x="4" y="${y(hi) + 4}" font-size="11" fill="var(--faint)">${fmtNum(hi, 0)}%</text>${lo < 0 && y(lo) - y(0) > 14 ? `<text x="4" y="${y(lo) + 4}" font-size="11" fill="var(--faint)">${fmtNum(lo, 0)}%</text>` : ""}
+    <text x="40" y="${h - 4}" font-size="11" fill="var(--faint)">${dates[0]}</text><text x="${w - 10}" y="${h - 4}" font-size="11" fill="var(--faint)" text-anchor="end">${dates.at(-1)}</text>
+    ${series.map((s) => `<polyline fill="none" stroke="${s.color}" stroke-width="2" points="${s.pts.map(([d, v]) => `${x(d).toFixed(1)},${y(v).toFixed(1)}`).join(" ")}"/>`).join("")}</svg>
+    <div class="small" style="display:flex;gap:14px">${series.map((s) => `<span><i style="display:inline-block;width:12px;height:3px;background:${s.color};vertical-align:middle"></i> ${esc(s.name)}</span>`).join("")}</div>`;
+}
+
+async function pfPerf(pf, book, L) {
+  const T = PF.live(pf.trades, book), sids = [...new Set(T.map((t) => t.sid))];
+  const bench = await pfBench(); await Promise.all(sids.map(pfPrices));
+  const series = Object.fromEntries(sids.map((s) => [s, (PFX.cache[s]?.prices || []).map((x) => [x.date, x.close])]));
+  const asof = SNAP?.data_dates?.prices, st = PF.settings(pf);
+  const H = PF.holdings(L, Object.fromEntries(sids.map((s) => [s, pfLatest(s)[0]])), st), mv = H.reduce((a, h) => a + h.mv, 0);
+  const R = PF.daily(pf.trades, book, series, asof), irr = PF.xirr(PF.cashflows(pf.trades, book, mv, asof));
+  const B = bench?.prices || [], adj = B.map(([d, a]) => [d, a]), sh = adj.length ? PF.shadow(pf.trades, book, adj, asof) : null;
+  const first = T[0].date, b0 = adj.filter((x) => x[0] <= first).at(-1) || adj.find((x) => x[0] >= first);
+  const bpts = b0 ? adj.filter((x) => x[0] >= b0[0] && (!asof || x[0] <= asof)).map(([d, v]) => [d, (v / b0[1] - 1) * 100]) : [];
+  const kpi = (lab, v, sub, cls = "") => `<div class="kpi"><span>${lab}</span><b class="num ${cls}" style="font-size:18px">${v}</b>${sub ? `<small class="muted">${sub}</small>` : ""}</div>`;
+  const contrib = H.map((h) => ({ sid: h.sid, v: h.total })).sort((a, b) => b.v - a.v), mx = Math.max(1, ...contrib.map((c) => Math.abs(c.v)));
+  const missing = sids.filter((s) => !series[s].length);
+  $("#pfBody").innerHTML = `<section class="kpis" style="margin-bottom:12px">
+      ${kpi("時間加權報酬", R.twr == null ? "—" : pctTxt(R.twr), `${esc(first)} 起`, signCls(R.twr))}
+      ${kpi("同期間 0050", sh?.bench_ret == null ? "—" : pctTxt(sh.bench_ret), "還原除權息", signCls(sh?.bench_ret))}
+      ${kpi("資金加權年化", irr == null ? "—" : pctTxt(irr * 100), irr == null ? "期間不到 30 天，年化沒有意義" : "XIRR，反映實際進出時點", signCls(irr))}
+      ${kpi("同樣進出改買 0050", sh ? fmtNum(sh.value, 0) : "—", `你的持股市值 ${fmtNum(mv, 0)}`)}</section>
+    ${missing.length ? `<div class="banner small" style="margin-bottom:12px">${missing.map((s) => `${s} ${esc(pfName(s))}`).join("、")} 沒有歷史股價，報酬率計算會把它當成沒有變動。</div>` : ""}
+    <section class="card"><div class="card-h"><h2>累積報酬（時間加權）</h2><span class="muted small">和 0050 比較</span></div>
+      ${pfLine([{ name: `你的${BOOKS[book]}`, color: "var(--accent)", pts: R.curve.map(([d, , g]) => [d, (g - 1) * 100]) }, { name: "0050（還原除權息）", color: "var(--faint)", pts: bpts }])}</section>
+    <section class="card"><div class="card-h"><h2>各股票損益貢獻</h2><span class="muted small">未實現＋已實現＋股利</span></div>
+      ${contrib.map((c) => `<div class="pfc"><span><span class="num">${c.sid}</span> ${esc(pfName(c.sid))}</span><span><i style="display:block;height:10px;border-radius:3px;width:${Math.abs(c.v) / mx * 100}%;background:${c.v >= 0 ? "var(--up)" : "var(--down)"}"></i></span><b class="num ${signCls(c.v)}">${c.v > 0 ? "+" : ""}${fmtNum(c.v, 0)}</b></div>`).join("")}</section>
+    <section class="card small"><h3 style="margin-top:0">兩種報酬率的差別</h3>
+      <p style="margin:0 0 6px"><b>時間加權報酬（TWR）</b>：把每次加碼、賣出的金額影響拿掉，只看選股和持有的表現，適合和 0050 比較。</p>
+      <p style="margin:0 0 6px"><b>資金加權報酬（MWR，年化 XIRR）</b>：把每筆買賣當成現金進出，反映你實際賺到的報酬率；在上漲前加碼會比較高，在下跌前加碼會比較低。</p>
+      <p style="margin:0 0 6px"><b>同樣進出改買 0050</b>：每次買進時，把同樣的金額改買 0050；每次賣出或領股利時，賣掉同樣金額的 0050。${sh?.capped ? "（中間有一次賣出金額超過當時 0050 部位，已當成全部賣光。）" : ""}</p>
+      <p class="faint" style="margin:0">個股報酬用實際收盤價計算，沒有記錄的除息不會自動加回（除息日股價下跌會讓報酬偏低），請記一筆「現金股利」；0050 用還原除權息股價。週末或休市日的交易會算到下一個交易日。這些是你自己的紀錄，不是投資建議。</p></section>`;
+}
+
+// 新增／修改交易（手機是底部滑出的表單）
+async function pfForm(init) {
+  const pf = pfGet(), st = PF.settings(pf), book = init.book || pfBook(), edit = !!init.id;
+  const t0 = { side: "buy", date: twToday(), ...init };
+  const lots = t0.shares ? t0.shares % 1000 === 0 : true;
+  document.querySelector(".pfsheet")?.remove();
+  const el = document.createElement("div"); el.className = "pfsheet";
+  el.innerHTML = `<div class="pfback"></div><form class="pfpanel" novalidate>
+    <div class="card-h"><h2 style="margin:0">${edit ? "修改交易" : "記一筆交易"}・${BOOKS[book]}</h2><button type="button" class="btn ghost sm" data-x>關閉</button></div>
+    <div class="pfform">
+      <label class="full">股票<input id="fSid" list="stockList" autocomplete="off" placeholder="代號或名稱，例如 2330" value="${esc(t0.sid ? `${t0.sid} ${pfName(t0.sid)}`.trim() : "")}"></label>
+      <div class="full seg" id="fSide">${Object.entries(SIDE_TXT).map(([k, [v]]) => `<button type="button" data-s="${k}" class="${k === t0.side ? "on" : ""}">${v}</button>`).join("")}</div>
+      <label>成交日期<input id="fDate" type="date" max="${twToday()}" value="${esc(t0.date)}"></label>
+      <div class="ftrade"><span class="small muted">單位</span><div class="seg" id="fUnit"><button type="button" data-u="lot" class="${lots ? "on" : ""}">整張</button><button type="button" data-u="odd" class="${lots ? "" : "on"}">零股</button></div></div>
+      <label class="ftrade"><span id="fQtyL">${lots ? "張數" : "股數"}</span><input id="fQty" type="number" inputmode="numeric" min="1" step="1" value="${t0.shares ? (lots ? t0.shares / 1000 : t0.shares) : ""}"></label>
+      <label class="ftrade">實際成交價<input id="fPx" type="number" inputmode="decimal" step="0.01" min="0" value="${t0.price ?? ""}" placeholder="請輸入券商成交價"></label>
+      <p class="full small muted" id="fRef" style="margin:0"></p>
+      <label class="ftrade">手續費<input id="fFee" type="number" inputmode="numeric" min="0" step="1" value="${t0.fee ?? ""}"><small id="fFeeH">自動計算，可修改</small></label>
+      <label class="ftrade fsell">交易稅<input id="fTax" type="number" inputmode="numeric" min="0" step="1" value="${t0.tax ?? ""}"><small>自動計算，可修改</small></label>
+      <label class="fdiv">股利金額（元）<input id="fAmt" type="number" inputmode="numeric" min="0" step="1" value="${t0.amount ?? ""}"><small>實際入帳金額（扣掉匯費、補充保費後）</small></label>
+      <label class="fbuy">停損價（選填）<input id="fStop" type="number" step="0.01" min="0" value="${t0.stop ?? ""}"></label>
+      <label class="fbuy">目標價（選填）<input id="fTgt" type="number" step="0.01" min="0" value="${t0.target ?? ""}"></label>
+      <label class="full"><span id="fNoteL">買進理由／筆記（選填）</span><textarea id="fNote" rows="2" maxlength="300">${esc(t0.note || "")}</textarea></label>
+      <p class="full small" id="fSum" style="margin:0"></p>
+      <div class="full down small" id="fErr" role="alert"></div>
+      <div class="full" style="display:flex;gap:8px"><button class="btn" type="submit">${edit ? "儲存修改" : "新增"}</button><button type="button" class="btn ghost" data-x>取消</button></div></div></form>`;
+  document.body.appendChild(el);
+  const F = { side: t0.side, unit: lots ? "lot" : "odd", feeAuto: t0.fee == null, taxAuto: t0.tax == null, P: null, day: null };
+  const sidOf = () => { const v = $("#fSid", el).value.trim(), m = v.match(/^(\d{4,6}[A-Z]?)/); if (m) return m[1];
+    const hit = Object.values(BYID).find((s) => s.name === v.split(" ")[0]); return hit ? hit.stock_id : v === "元大台灣50" ? "0050" : ""; };
+  const shares = () => { const q = Number($("#fQty", el).value); return F.unit === "lot" ? Math.round(q * 1000) : q; };
+  const close = () => el.remove();
+  $$("[data-x]", el).forEach((b) => (b.onclick = close)); $(".pfback", el).onclick = close;
+  const show = () => {
+    el.querySelectorAll(".ftrade").forEach((x) => (x.hidden = F.side === "div"));
+    el.querySelectorAll(".fsell").forEach((x) => (x.hidden = F.side !== "sell"));
+    el.querySelectorAll(".fbuy").forEach((x) => (x.hidden = F.side !== "buy"));
+    el.querySelectorAll(".fdiv").forEach((x) => (x.hidden = F.side !== "div"));
+    $("#fNoteL", el).textContent = F.side === "buy" ? "買進理由／筆記（選填）" : F.side === "sell" ? "賣出理由／筆記（選填）" : "備註（選填）";
+  };
+  const recalc = () => {
+    const sid = sidOf(), n = shares(), px = Number($("#fPx", el).value), amt = n * px;
+    if (F.feeAuto) $("#fFee", el).value = amt > 0 ? PF.estFee(amt, n, st) : "";
+    if (F.taxAuto) $("#fTax", el).value = amt > 0 && F.side === "sell" ? PF.estTax(amt, sid, st) : "";
+    const fee = Number($("#fFee", el).value) || 0, tax = Number($("#fTax", el).value) || 0;
+    $("#fSum", el).innerHTML = F.side === "div" || !(amt > 0) ? "" : F.side === "buy" ? `買進成本 <b class="num">${fmtNum(amt + fee, 0)}</b> 元（成交 ${fmtNum(amt, 0)} ＋ 手續費 ${fmtNum(fee, 0)}）`
+      : `賣出實收 <b class="num">${fmtNum(amt - fee - tax, 0)}</b> 元（成交 ${fmtNum(amt, 0)} − 手續費 ${fmtNum(fee, 0)} − 交易稅 ${fmtNum(tax, 0)}）`;
+  };
+  const refDay = async () => {
+    const sid = sidOf(), date = $("#fDate", el).value; F.day = null;
+    if (!sid) { $("#fRef", el).textContent = ""; return; }
+    if (!BYID[sid] && sid !== "0050") { $("#fRef", el).innerHTML = `<span class="down">找不到 ${esc(sid)}。目前只支援網站有資料的上市櫃普通股和 0050。</span>`; return; }
+    F.P = await pfPrices(sid); const d = pfDay(F.P, date);
+    F.day = d;
+    const xs = F.P?.prices || [];
+    $("#fRef", el).innerHTML = !date ? "" : d ? `${esc(date)} 參考：收盤 <b class="num">${fmtNum(d.close)}</b>${d.high != null ? `、最高 ${fmtNum(d.high)}、最低 ${fmtNum(d.low)}` : ""}${d.lockUp ? "・<span class=\"up\">漲停鎖死</span>" : d.lockDown ? "・<span class=\"down\">跌停鎖死</span>" : ""}。請填你實際的成交價。`
+      : xs.length && date >= xs[0].date && date <= xs.at(-1).date ? `${esc(date)} 沒有這檔的成交資料（休市、停牌或週末）。` : xs.length ? `網站沒有 ${esc(date)} 的股價資料（只有 ${esc(xs[0].date)}～${esc(xs.at(-1).date)}），無法核對價格。` : "";
+  };
+  $("#fSide", el).onclick = (e) => { const b = e.target.closest("button"); if (!b) return; F.side = b.dataset.s; $$("#fSide button", el).forEach((x) => x.classList.toggle("on", x === b)); show(); recalc(); };
+  $("#fUnit", el).onclick = (e) => { const b = e.target.closest("button"); if (!b || b.dataset.u === F.unit) return; const n = shares(); F.unit = b.dataset.u;
+    $$("#fUnit button", el).forEach((x) => x.classList.toggle("on", x === b)); $("#fQtyL", el).textContent = F.unit === "lot" ? "張數" : "股數";
+    if (n) $("#fQty", el).value = F.unit === "lot" ? n / 1000 : n; recalc(); };
+  $("#fFee", el).oninput = () => { F.feeAuto = $("#fFee", el).value === ""; recalc(); };
+  $("#fTax", el).oninput = () => { F.taxAuto = $("#fTax", el).value === ""; recalc(); };
+  ["#fQty", "#fPx"].forEach((id) => ($(id, el).oninput = recalc));
+  $("#fSid", el).onchange = () => { refDay(); recalc(); }; $("#fDate", el).onchange = refDay;
+  show(); recalc(); refDay();
+  $("form", el).onsubmit = async (e) => {
+    e.preventDefault();
+    const sid = sidOf(), num = (id) => ($(id, el).value === "" ? null : Number($(id, el).value)), now = new Date().toISOString();
+    const t = { id: init.id || Date.now().toString(36) + Math.random().toString(36).slice(2, 7), book, sid, side: F.side, date: $("#fDate", el).value,
+      note: $("#fNote", el).value.trim() || undefined, at: init.at || now, ...(edit ? { mod: now } : {}) };
+    if (F.side === "div") t.amount = num("#fAmt");
+    else { t.shares = shares(); t.price = num("#fPx"); t.fee = num("#fFee") ?? 0; if (F.side === "sell") t.tax = num("#fTax") ?? 0;
+      if (F.side === "buy") { t.stop = num("#fStop") || undefined; t.target = num("#fTgt") || undefined; } }
+    const errs = PF.validate(pf.trades, t, twToday());
+    if (sid && !BYID[sid] && sid !== "0050") errs.unshift("目前只支援網站有資料的上市櫃普通股和 0050");
+    if (F.side !== "div" && F.unit === "lot" && !Number.isInteger(Number($("#fQty", el).value))) errs.push("整張請輸入整數張數；不足一張請切換到「零股」");
+    if (!errs.length && F.side !== "div") {
+      await refDay(); const d = F.day;
+      const probs = [];
+      if (d && d.high != null && (t.price > d.high * 1.0001 || t.price < d.low * 0.9999)) probs.push(`成交價 ${fmtNum(t.price)} 不在這天的價格區間（${fmtNum(d.low)}～${fmtNum(d.high)}）`);
+      if (book === "sim") {
+        if (!d) probs.push("這天沒有成交資料，模擬投資無法成交");
+        else {
+          if (t.side === "buy" && d.lockUp) probs.push("這天漲停鎖死，實際上幾乎買不到");
+          if (t.side === "sell" && d.lockDown) probs.push("這天跌停鎖死，實際上幾乎賣不掉");
+          if (d.volume && t.shares > d.volume * 0.05) probs.push(`股數超過這天成交量的 5%（成交 ${lotTxt(Math.round(d.volume))}），實際上很難用這個價格成交`);
+        }
+        errs.push(...probs);
+      } else if (probs.length && !confirm(`${probs.join("\n")}\n\n確定要記錄嗎？（盤後零股、鉅額交易可能不同）`)) return;
+    }
+    if (errs.length) { $("#fErr", el).innerHTML = errs.map(esc).join("<br>"); return; }
+    const cur = pfGet();
+    store.set("portfolio", { ...cur, trades: edit ? cur.trades.map((x) => (x.id === t.id ? t : x)) : cur.trades.concat(t) });
+    close(); toast(edit ? "已修改。" : `已記錄：${t.date} ${SIDE_TXT[t.side][0]} ${t.sid} ${pfName(t.sid)}。`);
+    if (location.hash.startsWith("#/portfolio")) pagePortfolio(); else if (location.hash === "#/stock/" + sid) route();
+  };
+}
+
 function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
@@ -3151,7 +3510,7 @@ function route() {
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
   if (RF.cls !== "new") rfSay("");  // 上一頁的「已是最新」等訊息不帶到下一頁；「有新版」的提示保留
   if (SITE && SNAP && Date.now() - RF.checked > 5 * 60e3) refreshData({ quiet: true });
-  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, performance: pagePerformance, sectors: pageSectors, market: pageMarket, calendar: pageCalendar, news: pageNews, ask: pageAsk, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
+  ({ buy: pageBuy, radar: pageRadar, s: () => pageStrategy(arg), ai: pageAI, mine: pageMine, account: pageAccount, portfolio: pagePortfolio, performance: pagePerformance, sectors: pageSectors, market: pageMarket, calendar: pageCalendar, news: pageNews, ask: pageAsk, alerts: pageAlerts, me: pageMe, privacy: pagePrivacy, screener: pageScreener, watch: pageWatch, catalog: pageCatalog, trust: pageTrust, stock: () => pageStock(arg) }[p] || pageHome)();
   window.scrollTo(0, 0);
 }
 $("#q").addEventListener("change", (e) => { const id = e.target.value.trim().split(/\s+/)[0]; if (BYID[id]) { location.hash = `#/stock/${id}`; e.target.value = ""; } });

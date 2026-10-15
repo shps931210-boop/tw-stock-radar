@@ -16,6 +16,7 @@ ORDER = ["ready", "partial", "insufficient_history", "stale", "not_applicable", 
 
 def _norm(why: str) -> str:
     """把原因裡的數字、日期、股票各自的值拿掉，相同原因才能合併計數。"""
+    why = re.sub(r"（財報補齊中：.*?）", "（財報補齊中）", why)
     s = re.sub(r"\d{4}-\d{2}(-\d{2})?(-Q\d)?", "某期", why)
     s = re.sub(r"-?\d+(\.\d+)?", "N", s)
     return s.split("；")[0][:80]
