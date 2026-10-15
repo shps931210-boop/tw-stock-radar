@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+import os
 import argparse
 import re
 import traceback
@@ -264,6 +265,30 @@ def update_revenue_bulk(cfg: dict, errors: list) -> None:
         db.set_meta(con, "updated_revenue", config.now().isoformat(timespec="seconds"))
 
 
+def _fin_requests() -> tuple[list[str], object]:
+    """會員在個股頁按「優先補抓財報」的請求（Supabase fin_requests 表）。只在 Actions 裡用 secret key 讀，讀不到就略過。"""
+    url, key = os.environ.get("SUPABASE_URL", ""), os.environ.get("SUPABASE_SECRET_KEY", "")
+    if not url or not key:
+        return [], None
+    try:
+        from .alerts import Supa
+        supa = Supa(url, key)
+        r = supa.s.get(supa.url + "fin_requests", params={"select": "stock_id,requested_at", "order": "requested_at", "limit": 2000}, timeout=30)
+        if r.status_code >= 400:
+            return [], None
+        return list(dict.fromkeys(x["stock_id"] for x in r.json())), supa
+    except Exception:
+        return [], None
+
+
+def _clear_requests(supa, sids: list[str]) -> None:
+    if supa and sids:
+        try:
+            supa.s.delete(supa.url + "fin_requests", params={"stock_id": f"in.({','.join(sids)})"}, timeout=30)
+        except Exception:
+            pass
+
+
 def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) -> None:
     errors = errors if errors is not None else []
     fm = FinMindSource(cfg.get("finmind_token", ""), cfg["finmind_interval_sec"])
@@ -283,7 +308,10 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
             WHERE date >= (SELECT date FROM (SELECT DISTINCT date FROM prices ORDER BY date DESC LIMIT 20) ORDER BY date LIMIT 1)
             GROUP BY stock_id ORDER BY v DESC""")
         ids = [s for s in liquid["stock_id"] if is_common_stock(s)][: cfg["fundamental_top_n"]]
-        ids = list(dict.fromkeys(cfg.get("watchlist", []) + ids))
+        common = set(ids)
+        req, supa = _fin_requests()
+        req = [s for s in req if s in common]  # 只接受普通股代號；會員請求的股票排最前面
+        ids = list(dict.fromkeys(req + cfg.get("watchlist", []) + ids))
         plan = [("fm_revenue", 1 if config.today().day <= 12 else 7, fm.month_revenue, "revenue"),
                 ("fm_financials", 20, fm.financials, "financials"),
                 ("fm_dividends", 45, fm.dividends, "dividends")]
@@ -296,10 +324,11 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
                     new.append((sid, src, fn, table))
                 elif config.now() - t > timedelta(days=age):
                     due.append((sid, src, fn, table))
+        new.sort(key=lambda x: x[1] == "fm_dividends")  # 先補財報與營收（研究卡需要），股利最後；同類依原順序（會員申請→成交金額）
         todo = new + due
         # 補齊進度（網站「資料來源與方法」和個股研究卡會顯示）：這次要補多少、補了多少、失敗原因、是否因額度用完而停下
         Q = {"run_at": config.now().isoformat(timespec="seconds"), "stocks": len(ids), "new": len(new), "due": len(due),
-             "done": 0, "failed": 0, "quota_hit": False, "errors": []}
+             "done": 0, "failed": 0, "quota_hit": False, "errors": [], "requested": len(req)}
         db.set_meta(con, "fundamental_queue", json.dumps(Q, ensure_ascii=False))
         for n, (sid, src, fn, table) in enumerate(todo, 1):
             _say(progress, "財報與營收", n, len(todo), f"{sid} {src[3:]}")
@@ -320,7 +349,14 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
                 Q["failed"] += 1
                 Q["errors"] = (Q["errors"] + [f"{sid} {src[3:]}：{http.describe(e)}"[:120]])[-5:]
         # 補完這次之後，還有幾檔普通股從來沒有財報（下一次完整更新優先補）
-        Q["never_fin"] = sum(1 for sid in ids if not db.fetched_at(con, "fm_financials", sid))
+        pending = [sid for sid in ids if not db.fetched_at(con, "fm_financials", sid)]
+        Q["never_fin"] = len(pending)
+        Q["pending"] = pending  # 還沒補到財報的股票，依補抓順序（個股頁顯示「第幾位」）
+        has_fin = {r[0] for r in con.execute("SELECT DISTINCT stock_id FROM financials")}
+        Q["no_data"] = [sid for sid in ids if db.fetched_at(con, "fm_financials", sid) and sid not in has_fin][:500]  # 抓過但資料來源沒有財報
+        done_req = [sid for sid in req if db.fetched_at(con, "fm_financials", sid)]
+        Q["requested_done"] = done_req
+        _clear_requests(supa, done_req)
         Q["finished_at"] = config.now().isoformat(timespec="seconds")
         db.set_meta(con, "fundamental_queue", json.dumps(Q, ensure_ascii=False))
         now = config.now().isoformat(timespec="seconds")
@@ -411,7 +447,7 @@ def main():
         print("完成")
         return
     with db.connect() as con:
-        db.set_meta(con, "update_mode", "fast" if a.fast else "full")
+        db.set_meta(con, "update_mode", "fast" if a.fast else "backfill" if a.fundamentals_only else "full")
     errs = run(daily=not a.fundamentals_only, fundamentals=not a.daily_only and not a.fast, fast=a.fast)
     print(f"\n完成，{len(errs)} 個警告")
     for e in errs[:30]:

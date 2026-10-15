@@ -227,3 +227,24 @@ end;
 $$;
 revoke all on function public.delete_my_account() from public, anon;
 grant execute on function public.delete_my_account() to authenticated;
+
+-- ===== 優先補抓財報（V21.1）=====
+-- 會員在個股頁按「申請優先補抓」：夜間補抓（GitHub Actions，secret key）會先處理這些股票，補完就刪除請求。
+-- 每人同時最多 20 檔；只能看到、刪除自己的請求。
+create table if not exists public.fin_requests (
+  user_id      uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  stock_id     text not null check (stock_id ~ '^[0-9]{4,6}[A-Z]?$'),
+  requested_at timestamptz not null default now(),
+  primary key (user_id, stock_id)
+);
+alter table public.fin_requests enable row level security;
+drop policy if exists "own requests: read" on public.fin_requests;
+drop policy if exists "own requests: insert" on public.fin_requests;
+drop policy if exists "own requests: delete" on public.fin_requests;
+create policy "own requests: read" on public.fin_requests for select to authenticated using ((select auth.uid()) = user_id);
+create policy "own requests: insert" on public.fin_requests for insert to authenticated
+  with check ((select auth.uid()) = user_id and (select count(*) from public.fin_requests r where r.user_id = (select auth.uid())) < 20);
+create policy "own requests: delete" on public.fin_requests for delete to authenticated using ((select auth.uid()) = user_id);
+grant select, insert, delete on public.fin_requests to authenticated;
+revoke all on public.fin_requests from anon;
+grant select, delete on public.fin_requests to service_role;

@@ -23,9 +23,25 @@ SCHEMA = """CREATE TABLE IF NOT EXISTS news_items (id TEXT PRIMARY KEY, kind TEX
 CREATE INDEX IF NOT EXISTS news_items_date ON news_items (date);
 CREATE INDEX IF NOT EXISTS news_items_stock ON news_items (stock_id, date);"""
 TWSE_ANN = f"{OPENAPI}/opendata/t187ap04_L"
+
+
+def _save(con, rows: list[dict]) -> int:
+    """寫入新聞／公告；同一則再次抓到時保留「系統第一次取得的時間」（fetched_at），回測才知道當時是否已經看得到。"""
+    if not rows:
+        return 0
+    con.executescript(SCHEMA)
+    ids, old = [r["id"] for r in rows], {}
+    for i in range(0, len(ids), 500):
+        part = ids[i:i + 500]
+        old.update(con.execute(f"SELECT id, fetched_at FROM news_items WHERE id IN ({','.join('?' * len(part))})", part).fetchall())
+    for r in rows:
+        if old.get(r["id"]):
+            r["fetched_at"] = old[r["id"]]
+    return db.upsert(con, "news_items", rows)
 TPEX_ANN = ["https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap04_O", "https://www.tpex.org.tw/openapi/v1/t187ap04_O"]
 MOPS = "https://mops.twse.com.tw/mops/#/web/t05sr01_1"
 KEEP_DAYS = 30
+ARCHIVE_YEARS = 10  # 新聞與公告長期保存（將來研究新聞因子需要完整歷史）；網站只顯示近期
 POS = ["創新高", "新高", "成長", "年增", "大單", "接單", "調升", "調高", "上修", "利多", "看旺", "擴產", "優於預期", "轉盈", "加碼", "受惠", "突破", "目標價"]
 NEG = ["衰退", "年減", "下滑", "下修", "調降", "利空", "砍單", "虧損", "轉虧", "疲軟", "減產", "低於預期", "庫存調整", "違約", "訴訟", "裁罰", "處分", "停工", "轉讓持股", "下調"]
 
@@ -122,7 +138,7 @@ def update(cfg: dict, errors: list, snap: dict | None = None, extra_ids: list[st
         # 公司公告
         try:
             rows = parse_announcements(http.get(s, TWSE_ANN, timeout=60).json(), "公開資訊觀測站（上市重大訊息）")
-            db.upsert(con, "news_items", rows)
+            _save(con, rows)
             stat["announcements"]["twse"] = len(rows)
         except Exception as e:
             errors.append(f"上市重大訊息: {http.describe(e)}")
@@ -133,7 +149,7 @@ def update(cfg: dict, errors: list, snap: dict | None = None, extra_ids: list[st
                     if not isinstance(js, list):
                         raise ValueError("不是清單")
                     rows = parse_announcements(js, "公開資訊觀測站（上櫃重大訊息）")
-                    db.upsert(con, "news_items", rows)
+                    _save(con, rows)
                     stat["announcements"]["tpex"] = len(rows)
                     stat["announcements"]["tpex_url"] = u
                     break
@@ -162,9 +178,9 @@ def update(cfg: dict, errors: list, snap: dict | None = None, extra_ids: list[st
                 if "請求次數" in stat["news"]["error"]:
                     break
         rows = parse_finmind(got)
-        db.upsert(con, "news_items", rows)
+        _save(con, rows)
         stat["news"]["rows"] = len(rows)
-        cut = (today - timedelta(days=KEEP_DAYS * 3)).isoformat()
+        cut = (today - timedelta(days=365 * ARCHIVE_YEARS)).isoformat()
         con.execute("DELETE FROM news_items WHERE date < ?", (cut,))
         db.log_fetch(con, "news_center", today.isoformat(), True)
         db.set_meta(con, "news_status", json.dumps(stat, ensure_ascii=False))
@@ -181,7 +197,7 @@ def fetch_stock(sid: str, cfg: dict | None = None) -> None:
         if t and config.now() - t < timedelta(hours=3):
             return
         try:
-            db.upsert(con, "news_items", parse_finmind(FinMindSource(cfg.get("finmind_token", ""))._get("TaiwanStockNews", sid, config.today().isoformat())))
+            _save(con, parse_finmind(FinMindSource(cfg.get("finmind_token", ""))._get("TaiwanStockNews", sid, config.today().isoformat())))
             db.log_fetch(con, "fm_news", sid)
         except Exception:
             db.log_fetch(con, "fm_news", sid, ok=False)

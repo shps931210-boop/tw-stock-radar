@@ -6,6 +6,8 @@
 # 兩種模式：
 #   快速（14:10、14:40、16:30）：只抓最近幾天的收盤行情與籌碼，重算一次就發布，不等歷史回補與財報。
 #   完整（21:00）：再加上歷史股價回補、財報、股利與連線診斷。今天的行情不會因為舊資料還沒補完而延後。
+#   夜間財報補齊（22:30～06:30 每小時，每天）：只補財報、月營收、股利。FinMind 免費額度是「每小時」計算，
+#     分成多次補抓才能較快補完全市場；會員申請優先補抓的股票最先處理。不碰行情，不會改變當天的收盤資料。
 name: 盤後更新
 
 on:
@@ -14,13 +16,14 @@ on:
     - cron: "40 6 * * 1-5"     # 14:40 快速：補上較晚公布的櫃買與法人資料
     - cron: "30 8 * * 1-5"     # 16:30 快速：補跑（萬一前一次延遲或失敗）
     - cron: "0 13 * * 1-5"     # 21:00 完整：融資等最晚公布的資料＋歷史回補、財報、股利
+    - cron: "30 14-22 * * *"   # 22:30～06:30 每小時：夜間財報補齊
   workflow_dispatch:
     inputs:
       mode:
-        description: "fast＝快速收盤更新；full＝完整更新（含歷史回補、財報）"
+        description: "fast＝快速收盤更新；full＝完整更新（含歷史回補、財報）；backfill＝只補財報"
         default: fast
         type: choice
-        options: [fast, full]
+        options: [fast, full, backfill]
 
 permissions:
   contents: write              # 把每日選股紀錄 commit 回 repository
@@ -34,7 +37,7 @@ concurrency:
 env:
   TZ: Asia/Taipei
   # 21:00 的排程與手動選 full 跑完整更新，其他都是快速更新
-  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || inputs.mode == 'full') && 'full' || 'fast' }}
+  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || inputs.mode == 'full') && 'full' || (github.event.schedule == '30 14-22 * * *' || inputs.mode == 'backfill') && 'backfill' || 'fast' }}
   SUPABASE_URL: ${{ vars.SUPABASE_URL }}   # 會員登入（公開值，放在 repository variables）
   SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
 
@@ -98,16 +101,19 @@ jobs:
         id: update
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-        run: python -m app.update $([ "$MODE" = fast ] && echo --fast)
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}   # 只用來讀「優先補抓財報」的申請，不會進網站
+        run: python -m app.update $([ "$MODE" = fast ] && echo --fast) $([ "$MODE" = backfill ] && echo --fundamentals-only)
 
       # 新聞與公告失敗不影響股價更新；網站新聞中心會顯示最後成功時間與警告
       - name: 新聞與公司公告
+        if: env.MODE != 'backfill'
         continue-on-error: true
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python -m app.news
 
       - name: 國際市場（美股、費城半導體、匯率）
+        if: env.MODE != 'backfill'
         continue-on-error: true
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}

@@ -1,0 +1,47 @@
+# 正式網站自動驗收：每次「盤後更新」部署成功後，用手機尺寸的瀏覽器實際打開正式網站，
+# 隨機挑 20 檔不同產業、市場、規模的股票，檢查個股頁、研究卡各部分狀態、資料日、手機版寬度。
+# 結果存進 history/audit/e2e.json（下一次網站更新時發布到「資料來源與方法」頁）。有股票沒通過時這次執行標成失敗並寄信。
+name: 網站驗收
+
+on:
+  workflow_run:
+    workflows: ["盤後更新"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: e2e
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: 安裝瀏覽器
+        run: |
+          npm install --no-save --no-package-lock playwright@1.47.2
+          npx playwright install --with-deps chromium
+      - name: 等網站部署生效
+        run: sleep 90
+      - name: 打開正式網站驗收 20 檔股票
+        id: run
+        run: node tests/e2e/live.mjs "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" history/audit/e2e.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 保存驗收結果
+        if: always() && hashFiles('history/audit/e2e.json') != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add history/audit/e2e.json
+          git diff --cached --quiet || git commit -q -m "網站驗收 $(date +%F)"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+      - name: 有股票沒通過就標成失敗
+        run: node -e "const r=require('./history/audit/e2e.json'); if (r.passed < r.results.length) { console.log('未通過：', r.results.filter(x=>!x.ok).map(x=>x.sid+' '+x.problems.join('；')).join('\n')); process.exit(1) }"

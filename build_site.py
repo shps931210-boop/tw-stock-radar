@@ -140,6 +140,15 @@ except Exception as e:
     print("投資組合輔助資料失敗：", e)
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
+try:  # AI 訓練資料盤點（app/data_inventory.py）：每次發布都從資料庫重新查
+    if (config.DATA_DIR / "stocks.db").exists():
+        from app import data_inventory
+        with db.connect() as con:
+            (out / "data" / "data_inventory.json").write_text(json.dumps(data_inventory.build(con), ensure_ascii=False), "utf-8")
+except Exception as e:
+    print("資料盤點失敗：", e)
+if (root / "history" / "audit" / "e2e.json").exists():  # 正式網站自動驗收結果（.github/workflows/e2e.yml）
+    shutil.copy(root / "history" / "audit" / "e2e.json", out / "data" / "e2e.json")
 if (config.DATA_DIR / "probe.json").exists():  # 連線診斷結果（python -m app.probe）
     shutil.copy(config.DATA_DIR / "probe.json", out / "data" / "probe.json")
 

@@ -826,7 +826,7 @@ function statusCard() {
   const cell = (h, main, sub) => `<div class="kpi"><span>${h}</span><b style="font-size:16px">${main}</b><small class="faint">${sub}</small></div>`;
   return `<section class="card"><div class="card-h"><h2>資料更新狀態</h2>${V.data_state_label ? `<span class="pill ${V.data_state === "postclose_final" ? "s-ok" : "warn"}">${esc(V.data_state_label)}</span>` : ""}</div>
     <div class="kpis">
-      ${cell("收盤行情", `<span class="num">${esc(px || "—")}</span>`, `網站發布 ${twTime(V.published_at)}${V.update_mode === "fast" ? "・快速收盤更新" : V.update_mode === "full" ? "・完整更新" : ""}`)}
+      ${cell("收盤行情", `<span class="num">${esc(px || "—")}</span>`, `網站發布 ${twTime(V.published_at)}${V.update_mode === "fast" ? "・快速收盤更新" : V.update_mode === "full" ? "・完整更新" : V.update_mode === "backfill" ? "・夜間財報補齊" : ""}`)}
       ${cell("法人／融資", `<span class="num">${lag(inst)}</span>`, `融資 ${lag(mg)}・融資約 21:00 才公布`)}
       ${cell("AI 量化選股", `模型 ${esc(SNAP.model?.version || "—")}`, `計算於 ${twTime(SNAP.generated_at)}・用 ${esc(px || "—")} 行情`)}
       ${cell("財報與營收", `<span class="num">${esc(d.financials || "—")}</span>`, `月營收 ${esc(d.revenue || "—")}・財報與股利在每晚完整更新`)}</div>
@@ -1290,14 +1290,44 @@ async function loadCoverage() {
     <div class="tbl"><table><thead><tr><th>研究模組</th><th class="r">可用</th>${ks.map((k) => `<th class="r">${ST[k]}</th>`).join("")}</tr></thead><tbody>
       ${Object.values(C.modules).map((m) => `<tr><td>${esc(m.name)}</td><td class="r num"><b>${m.usable ?? "—"}%</b></td>${ks.map((k) => `<td class="r num">${m.counts[k] || ""}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
     ${(() => { const Q = C.fundamental_queue; if (!Q || Q.done == null) return "";
-      return `<div class="dbt" style="margin-top:12px"><b>財報補齊進度</b>（上一次完整更新 ${esc((Q.finished_at || Q.run_at || "").slice(0, 16).replace("T", " "))}）
-        <p class="small" style="margin:4px 0 0">這次補抓 ${fmtNum(Q.done, 0)} 筆、失敗 ${fmtNum(Q.failed, 0)} 筆${Q.quota_hit ? "，<b>免費額度用完先停下</b>" : ""}；${Q.never_fin != null ? `目前還有 <b>${fmtNum(Q.never_fin, 0)}</b> 檔普通股沒有財報，` : ""}下一次完整更新（每晚 21:00）會從沒抓過的股票接著補。</p>
+      return `<div class="dbt" style="margin-top:12px"><b>財報補齊進度</b>（上一次補抓 ${esc((Q.finished_at || Q.run_at || "").slice(0, 16).replace("T", " "))}）
+        <p class="small" style="margin:4px 0 0">這次補抓 ${fmtNum(Q.done, 0)} 筆、失敗 ${fmtNum(Q.failed, 0)} 筆${Q.quota_hit ? "，<b>免費額度用完先停下</b>" : ""}；${Q.never_fin != null ? `目前還有 <b>${fmtNum(Q.never_fin, 0)}</b> 檔普通股沒有財報，` : ""}夜間每小時（22:30～06:30）會從沒抓過的股票接著補${Q.requested ? `；會員申請優先補抓 ${Q.requested} 檔，這次補完 ${(Q.requested_done || []).length} 檔` : ""}。${(Q.no_data || []).length ? `另有 ${Q.no_data.length} 檔已查詢但資料來源沒有季報（多半是新上市或特殊類股）。` : ""}</p>
         ${(Q.errors || []).length ? `<p class="faint small" style="margin:4px 0 0">最近的失敗原因：${Q.errors.map(esc).join("；")}</p>` : ""}</div>`; })()}
     <h3 style="margin:14px 0 6px">缺漏原因排行（影響檔數）</h3>
     <div class="tbl"><table class="wrap"><tbody>${C.reasons.slice(0, 12).map((r) => `<tr><td style="white-space:nowrap">${esc(r.module)}</td><td>${esc(r.why)}</td><td class="r num">${r.stocks}</td></tr>`).join("")}</tbody></table></div>
     <details style="margin-top:10px"><summary class="small">八類代表股票的研究狀態（驗收樣本）</summary><div class="tbl"><table><thead><tr><th>類別</th><th>股票</th>${["行情", "基本面", "估值", "短線", "波段", "長期", "AI"].map((x) => `<th>${x}</th>`).join("")}</tr></thead><tbody>
       ${Object.entries(C.samples).map(([k, x]) => `<tr><td>${esc(k)}</td>${x ? `<td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td>${Object.values(x.status).map((v) => `<td class="small">${esc(ST[v] || "—")}</td>`).join("")}` : '<td colspan="8" class="faint">目前沒有這類股票</td>'}</tr>`).join("")}</tbody></table></div></details>
-    <p class="faint small" style="margin:8px 0 0">財報與月營收歷史來自 FinMind，免費額度每小時有限；每次完整更新先補從沒抓過的股票（依成交金額排序），額度用完就停，下一次接著補。完整 AI 排行榜仍要求五個因子都齊全才排名。</p>`;
+    <p class="faint small" style="margin:8px 0 0">財報與月營收歷史來自 FinMind，免費額度每小時有限；夜間每小時補抓一次：會員申請的股票最優先，再來是從沒抓過的股票（依成交金額排序），額度用完就停，下一個小時接著補。完整 AI 排行榜仍要求五個因子都齊全才排名。</p>`;
+}
+// AI 訓練資料盤點：五個問題的答案都從資料庫查出（app/data_inventory.py）
+async function loadInventory() {
+  const el = $("#invCard"); if (!el || !SITE) return;
+  const I = await fetch("data/data_inventory.json" + verQ("data_inventory.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!I) return;
+  const cls = { ok: "acc", partial: "", gap: "bad" };
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>AI 訓練資料盤點</h2><span class="muted small">${esc((I.generated_at || "").slice(0, 16).replace("T", " "))} 從資料庫查詢</span></div>
+    <p class="small" style="margin:0 0 10px">在改用更複雜的模型或加入新聞因子之前，先確認歷史資料夠不夠、是不是當時就看得到。<b>${esc(I.verdict)}</b></p>
+    ${I.questions.map((x) => `<div class="dbt" style="margin-bottom:8px"><b>${esc(x.q)}</b> <span class="pill ${cls[x.level]}">${esc(I.levels[x.level])}</span>
+      <p class="small" style="margin:4px 0 0">${esc(x.why)}</p>
+      <p class="faint small" style="margin:2px 0 0">${Object.entries(x.facts).map(([k, v]) => `${esc(k)} ${esc(v ?? "—")}`).join("・")}</p></div>`).join("")}
+    <p class="faint small" style="margin:6px 0 0">其他資料起點：${Object.entries(I.starts || {}).map(([k, v]) => `${esc(k)} ${v ? esc(v["起"]) : "沒有"}`).join("・")}</p>`;
+}
+// 正式網站自動驗收（.github/workflows/e2e.yml）：每次網站更新後，用瀏覽器實際打開隨機 20 檔股票
+async function loadE2E() {
+  const el = $("#e2eCard"); if (!el || !SITE) return;
+  const E = await fetch("data/e2e.json" + verQ("e2e.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!E) return;
+  const bad = E.results.filter((r) => !r.ok);
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>正式網站自動驗收</h2><span class="muted small">${esc((E.ran_at || "").slice(0, 16).replace("T", " "))}・網站資料日 ${esc(E.data_date || "—")}</span></div>
+    <p class="small" style="margin:0 0 8px">每次網站更新後，用手機尺寸的瀏覽器實際打開正式網站，隨機挑 ${E.results.length} 檔不同產業、市場、規模的股票，檢查個股頁能不能載入、研究卡各部分的狀態、資料日是否是最新、畫面有沒有超出手機寬度。
+      結果：<b>${E.results.length - bad.length} / ${E.results.length} 通過</b>${E.page_errors ? `，頁面錯誤 ${E.page_errors} 次` : ""}。</p>
+    <div class="tbl"><table class="wrap"><thead><tr><th>股票</th><th>類型</th><th>結果</th><th>研究卡狀態</th></tr></thead><tbody>
+      ${E.results.map((r) => `<tr><td><a href="#/stock/${esc(r.sid)}">${esc(r.sid)} ${esc(r.name || "")}</a></td><td class="small">${esc(r.group || "")}</td>
+        <td>${r.ok ? '<span class="pill acc">通過</span>' : `<span class="pill bad">未通過</span><div class="small down">${esc((r.problems || []).join("；"))}</div>`}</td>
+        <td class="small">${esc((r.modules || []).join("・"))}</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">驗收結果在下一次網站更新時一起發布，所以會比網站資料晚一輪。</p>`;
 }
 async function loadAudit() {
   const el = $("#auditCard"); if (!el) return;
@@ -1315,7 +1345,7 @@ async function loadAudit() {
     ${(A.warnings || []).length ? `<p class="small" style="color:var(--warn);margin:6px 0 0">${esc(A.warnings.join("；"))}</p>` : ""}`;
 }
 function pageTrust() {
-  setTimeout(loadAudit, 0); setTimeout(loadCoverage, 0);
+  setTimeout(loadAudit, 0); setTimeout(loadCoverage, 0); setTimeout(loadInventory, 0); setTimeout(loadE2E, 0);
   const d = SNAP.data_dates, q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h])), fr = SNAP.freshness_rule || {};
   const base = SNAP.stocks.filter((s) => s.base_ok), comp = base.filter((s) => s.complete).length;
   const miss = {}; base.forEach((s) => (s.missing_factors || []).forEach((f) => (miss[f] = (miss[f] || 0) + 1)));
@@ -1325,6 +1355,8 @@ function pageTrust() {
     <section><div class="eyebrow">資料、模型、績效都攤開來看</div><h1>資料來源與方法</h1>
       <p class="lead">每個資料來源的最新資料日、更新時間與狀態，目前使用的模型版本，以及模型的驗證結果。「資料日」是行情所屬的交易日；「發布時間」是網站完成計算的時間。</p></section>
     <section class="card" id="covCard" hidden></section>
+    <section class="card" id="e2eCard" hidden></section>
+    <section class="card" id="invCard" hidden></section>
     <section class="card" id="auditCard"><h2 style="margin-top:0">獨立對帳</h2><p class="muted small" style="margin:0">讀取對帳報告中…</p></section>
     <section class="two">
       <div class="card"><div class="card-h"><h2>資料狀態</h2>${SNAP.rankings_blocked ? '<span class="pill bad">暫停排名</span>' : '<span class="pill acc">正常</span>'}</div>
@@ -2573,10 +2605,10 @@ function pagePrivacy() {
   $("#app").innerHTML = `<section><div class="eyebrow">隱私與資料管理</div><h1>隱私說明</h1>
     <p class="lead">股栗子存了哪些資料、放在哪裡、保留多久、怎麼刪除。</p></section>
     <section class="card"><h2 style="margin-top:0">不登入</h2><ul class="small" style="margin:0;padding-left:18px">
-      <li>自選股、策略、偏好、通知只存在你這台裝置的瀏覽器（localStorage），不會上傳。清除瀏覽資料就會刪除。</li>
+      <li>自選股、策略、偏好、通知、投資組合交易紀錄只存在你這台裝置的瀏覽器（localStorage），不會上傳。清除瀏覽資料就會刪除。</li>
       <li>網站沒有廣告、沒有追蹤碼、不使用分析工具。</li></ul></section>
     <section class="card"><h2 style="margin-top:0">登入後</h2><ul class="small" style="margin:0;padding-left:18px">
-      <li><b>存的資料</b>：Email、自選股、自訂策略、我的 AI 推薦偏好、通知規則、通知內容與已讀時間、AI 問答每日題數與花費。</li>
+      <li><b>存的資料</b>：Email、自選股、自訂策略、我的 AI 推薦偏好、投資組合交易紀錄（你自己輸入的買賣、成本與筆記；不連券商）、優先補抓財報的申請（補完自動刪除）、通知規則、通知內容與已讀時間、AI 問答每日題數與花費。</li>
       <li><b>存放位置</b>：Supabase（新加坡機房）。每個資料表都開了 Row Level Security，每個人只能讀到自己的資料；網站只用公開金鑰。</li>
       <li><b>誰能寫入</b>：你的設定由你自己修改；正式通知與處理進度只由網站後端（每次盤後更新時執行）寫入。</li>
       <li><b>保留期間</b>：直到你刪除帳號為止；通知每人最多保留 500 則，超過自動刪除最舊的。</li>
@@ -2595,7 +2627,7 @@ function pageAccount() {
       <p style="margin:0">在其他手機、電腦用同一個 Email 登入，就會看到一樣的自選股和設定。</p>${meta("pf_col") === false ? `<p class="small" style="margin:8px 0 0;color:var(--warn)">投資組合的交易紀錄目前只存在這台裝置：雲端資料表還沒有投資組合欄位。請管理員在 Supabase 的 SQL Editor 重新執行一次 supabase/schema.sql（重複執行不會出錯），之後按「立即同步」。</p>` : ""}
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" id="syncNow">立即同步</button><button class="btn ghost" id="logout">登出</button></div>${what}
       <details style="margin-top:12px"><summary class="small muted">刪除帳號</summary>
-        <p class="small" style="margin:6px 0">會永久刪除這個帳號，以及雲端上的自選股、策略、偏好、通知、通知規則和 AI 問答用量紀錄，<b>無法復原</b>。這台裝置上這個帳號的資料也會一起清除。</p>
+        <p class="small" style="margin:6px 0">會永久刪除這個帳號，以及雲端上的自選股、策略、偏好、投資組合交易紀錄、優先補抓申請、通知、通知規則和 AI 問答用量紀錄，<b>無法復原</b>。這台裝置上這個帳號的資料也會一起清除。</p>
         <button class="btn ghost sm" id="delAcct" style="color:var(--down);border-color:var(--down)">永久刪除我的帳號</button></details>
       <p class="faint small" style="margin:6px 0 0">每個帳號的資料分開存放；登出後會回到未登入時的資料，不會把這個帳號的清單留給下一個人用。</p></section>`;
     $("#syncNow").onclick = async () => { if (meta("dirty")) await pushState(); else await pullState(); pageAccount(); };
@@ -3036,6 +3068,7 @@ function decisionCard(s, d) {
     ${chips}
     <h3 style="margin:16px 0 6px">策略歷史績效</h3>
     ${hz === "long" ? `<p class="small muted" style="margin:8px 0 0">長期規則用的估值歷史還不夠長，沒有單獨回測。最接近的驗證是 <a href="#/performance">AI 多因子歷史回測</a>（每月依均衡型排名換股，規則不完全相同）。</p>` : btLine}
+    ${MD.fundamental && MD.fundamental.status === "missing_source" ? `<div class="banner small" id="finQ" data-sid="${esc(s.stock_id)}" style="margin-top:10px">財報補齊狀態載入中…</div>` : ""}
     ${modStrip(MD)}${partScores(s, D)}
     <p class="faint small" style="margin:12px 0 0">以上價位都是規則計算的研究參考，不是投資建議；停損不保證能以該價格成交，跳空或流動性不足時可能損失更多。外資券商目標價需要授權資料，目前沒有提供。</p></section>`;
 }
@@ -3147,9 +3180,9 @@ async function pageStock(id) {
   $$(".actbar [data-j]").forEach((b) => b.onclick = () => { const el = $("#" + b.dataset.j); if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - hdr - $(".actbar").offsetHeight - 8, behavior: "smooth" }); });
   const toRc = $("#toRc"); if (toRc) toRc.onclick = () => { const k = Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank && m === store.get("aipage", {}).mode) || Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank);
     store.set("aipage", { ...store.get("aipage", {}), mode: k, sel: id, cmp: null }); location.hash = "#/ai"; };
-  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; facHint(s, d.decision); };
+  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; facHint(s, d.decision); fillFinQ(); };
   if ($("#hzSeg")) $("#hzSeg").onclick = onHz;
-  facHint(s, d.decision);
+  facHint(s, d.decision); fillFinQ();
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
   bindRows($("#app"), [], () => {});
@@ -3249,6 +3282,26 @@ function pfHeld(sid) {
     out.push(`${BOOKS[b]}：持有 ${lotTxt(p.shares)}、均價 <b class="num">${fmtNum(p.cost / p.shares)}</b>${u == null ? "" : `、未實現 <b class="num ${signCls(u)}">${u > 0 ? "+" : ""}${fmtNum(u, 0)}</b>（${pctTxt((px * p.shares / p.cost - 1) * 100)}）`}`);
   }
   return out.length ? `<div class="banner info small">${out.join("；")}。<a href="#/portfolio">看我的投資組合</a></div>` : "";
+}
+// 財報補齊：顯示這檔在補抓佇列的位置（來自上一次補抓的實際紀錄），登入會員可以申請優先補抓
+let COVP = null;
+const loadCov = () => (COVP = COVP || (SITE ? fetch("data/coverage.json" + verQ("coverage.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null)));
+async function fillFinQ() {
+  const el = $("#finQ"); if (!el) return;
+  const sid = el.dataset.sid, C = await loadCov(), Q = C?.fundamental_queue || {};
+  const pos = (Q.pending || []).indexOf(sid), when = (Q.finished_at || Q.run_at || "").slice(0, 16).replace("T", " ");
+  let mine = false;
+  if (sb && user) { const { data } = await sb.from("fin_requests").select("stock_id").eq("stock_id", sid).maybeSingle(); mine = !!data; }
+  el.innerHTML = `<b>這檔還沒有季報資料。</b>${(Q.no_data || []).includes(sid) ? "資料來源查得到這檔，但沒有季報（多半是新上市或特殊類股）。"
+      : pos >= 0 ? `目前在財報補齊佇列第 <b>${pos + 1}</b> 位（共 ${Q.pending.length} 檔，${esc(when)} 的紀錄）。夜間每小時補抓一次，每次大約可補 100～200 檔。`
+      : "已排入財報補齊佇列，夜間補抓時處理。"}
+    ${!SUPA ? "" : !user ? `<a href="#/account">登入</a>後可以申請優先補抓。` : mine ? `<b>你已申請優先補抓</b>，下一次夜間補抓會最先處理。` : `<button class="btn sm" id="finReq">申請優先補抓</button>`}`;
+  const b = $("#finReq"); if (b) b.onclick = async () => {
+    b.disabled = true;
+    const { error } = await sb.from("fin_requests").insert({ stock_id: sid, user_id: user.id });
+    if (error && error.code !== "23505") { b.disabled = false; return toast(/row-level|policy/i.test(error.message) ? "優先補抓最多同時申請 20 檔，請等之前申請的補完。" : /fin_requests|relation|schema cache/i.test(error.message) ? "網站管理員還沒建立優先補抓資料表（重新執行 supabase/schema.sql）。" : `申請失敗：${error.message}`); }
+    toast("已申請，下一次夜間補抓會最先處理這檔。"); fillFinQ();
+  };
 }
 function pagePortfolio() {
   const parts = location.hash.replace(/^#\/?/, "").split("/"), tab = ["trades", "perf"].includes(parts[1]) ? parts[1] : "hold";

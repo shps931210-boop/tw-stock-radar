@@ -407,9 +407,9 @@ def _valuation_fill(r: dict, vb: dict | None) -> dict:
 def _queue_txt(q: dict | None) -> str:
     """財報補齊佇列的實際狀態（來自上一次完整更新的紀錄，不是前端推測）。"""
     if not q or "done" not in q:
-        return "（已排入補齊佇列，每晚完整更新時依成交金額優先補抓）"
+        return "（已排入補齊佇列，夜間依成交金額優先補抓）"
     when = (q.get("finished_at") or q.get("run_at") or "")[:16].replace("T", " ")
-    tail = "免費額度用完，下一次完整更新（每晚 21:00）接著補" if q.get("quota_hit") else "下一次完整更新（每晚 21:00）繼續"
+    tail = "這一小時的免費額度用完，夜間下一次補抓（22:30～06:30 每小時）接著補" if q.get("quota_hit") else "夜間補抓（22:30～06:30 每小時）會繼續"
     left = f"，還有 {q['never_fin']} 檔沒有財報" if q.get("never_fin") is not None else ""
     return f"（財報補齊中：{when} 補了 {q['done']} 筆{left}；{tail}）"
 
@@ -443,14 +443,16 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
     M["long"] = {"status": lg.get("status", "ready"), "why": lg.get("note") or ("；".join(lg.get("miss") or []) if lg.get("state") == "na" else None)}
     have = [f for f in SCORE_FACTORS if r.get(f"score_{f}") is not None] if r.get("base_ok") else list((r.get("ref_scores") or {}))
     if r.get("base_ok") and r.get("complete"):
-        M["ai"] = {"status": "ready"}
+        M["ai"] = {"status": "ready", "label": "正式排名"}
     else:
         miss = [FACTOR_LABEL[f] for f in SCORE_FACTORS if f not in have]
         ex = r.get("exclude_reasons") or []
         why = (f"未通過排行榜基本門檻（{'、'.join(ex)}），只提供參考分項分數" if ex else "五個因子沒有全部算得出來，不列入排行榜")
         M["ai"] = {"status": "partial" if have else "missing_source", "why": why + (f"；缺：{'、'.join(miss)}" if miss else "")}
+        if have:
+            M["ai"]["label"] = "參考分項，不排名"  # 和正式 AI 排名分開：沒有綜合分數、不進排行榜
     for m in M.values():
-        m["label"] = STATUS_TXT.get(m["status"], m["status"])
+        m.setdefault("label", STATUS_TXT.get(m["status"], m["status"]))
     return M
 
 

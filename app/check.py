@@ -14,11 +14,13 @@ def main() -> int:
     s = json.loads(p.read_text("utf-8"))
     problems = []
     price = s["data_dates"]["prices"]
+    # 夜間財報補齊不抓行情：行情是否最新由盤後更新負責（那邊失敗會寄信），這裡只提醒，避免整晚重複寄信
+    backfill = os.environ.get("MODE") == "backfill"
     if s.get("expected_date") and price and price < s["expected_date"]:
         basis = "證交所已公布" if s.get("expected_basis") == "official" else "推估應有"
-        problems.append(f"股價只到 {price}，{basis} {s['expected_date']}")
+        (print if backfill else problems.append)(f"股價只到 {price}，{basis} {s['expected_date']}")
     # 14:10、14:40 的快速更新時，櫃買中心常常還沒公布：16:00 前只提醒、不算失敗（不寄失敗通知信）
-    early = os.environ.get("MODE") == "fast" and config.now().hour < 16
+    early = os.environ.get("MODE") == "fast" and config.now().hour < 16 or backfill
     for h in s.get("health", []):
         if h["source"] in ("twse_quotes", "tpex_quotes") and (not h["last_ok"] or h["last_ok"] < (price or "")):
             msg = f"{h['label']}最後成功：{h['last_ok'] or '從未成功'}"
