@@ -24,7 +24,8 @@ class GlobalMarkets(unittest.TestCase):
             raise RuntimeError("boom")
         r = global_mkt.build(get, date(2026, 10, 13))
         self.assertEqual([m["symbol"] for m in r["markets"]], ["^SOX"])
-        self.assertEqual(len(r["warnings"]), len(global_mkt.SYMBOLS) - 1)
+        self.assertEqual(len(r["warnings"]), len(global_mkt.SYMBOLS) - 1 + 1)  # 另外一則是原油
+        self.assertIsNone(r["oil"])
         self.assertEqual(r["fx_usd"]["chg"], 0.2)
 
 

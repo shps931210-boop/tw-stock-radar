@@ -69,8 +69,17 @@ def build(get, today) -> dict:
     except Exception as e:
         f = None
         warn.append(f"美元匯率：{str(e)[:120]}")
-    return {"schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds") + "+08:00",
-            "source": "FinMind（USStockPrice、TaiwanExchangeRate）",
+    try:  # 原油（FinMind CrudeOilPrices，WTI）：資料集名稱與欄位沒有在這裡驗證過，失敗只記警告
+        rows = sorted((r for r in get("CrudeOilPrices", "WTI", start) if (r.get("price") or 0) > 0), key=lambda r: r["date"])
+        oil = {"name": "WTI 原油", "date": rows[-1]["date"][:10], "price": _r(rows[-1]["price"]),
+               "chg_pct": _r((rows[-1]["price"] / rows[-2]["price"] - 1) * 100)} if len(rows) >= 2 else None
+        if not oil:
+            warn.append("WTI 原油：資料不足")
+    except Exception as e:
+        oil = None
+        warn.append(f"WTI 原油：{str(e)[:120]}")
+    return {"schema_version": 1, "oil": oil, "generated_at": config.now().isoformat(timespec="seconds") + "+08:00",
+            "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
             "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
             "markets": out, "fx_usd": f, "warnings": warn}
 

@@ -150,6 +150,13 @@ try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與�
             shutil.copy(ml_predict.PRED_DIR / "scorecard.json", out / "data" / "predictions" / "scorecard.json")
 except Exception as e:
     print("影子預測資料失敗：", e)
+try:  # V26 AI 盤前情報（app/premarket.py）：隔夜市場、收盤後事件、盤前版風險標示
+    from app import premarket
+    pmd = premarket.site_data()
+    if pmd:
+        (out / "data" / "premarket.json").write_text(json.dumps(pmd, ensure_ascii=False, separators=(",", ":")), "utf-8")
+except Exception as e:
+    print("盤前情報失敗：", e)
 try:  # V25 AI 持續學習報告（app/learning.py）：版本、比賽、漂移、錯誤分析
     from app import learning, ml_predict
     sc_path = ml_predict.PRED_DIR / "scorecard.json"

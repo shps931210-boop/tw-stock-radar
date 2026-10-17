@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import date, timedelta
 
 from . import config, db
@@ -229,7 +230,7 @@ ANN_RULES = [
     (3, "減資／私募", ["減資", "私募"]),
     (3, "經營層異動", ["董事長", "總經理", "執行長"], ["異動", "辭", "退休", "解任", "新任", "變更", "代理"]),
     (2, "籌資", ["現金增資", "可轉換公司債", "轉換公司債", "公司債", "發行新股"]),
-    (2, "營運數字", ["財務報告", "財報", "自結損益", "自結營收", "營運成績", "營運績效", "營收", "每股淨值", "損益"]),
+    (2, "營運數字", ["財務報告", "財報", "自結損益", "盈餘", "自結營收", "營運成績", "營運績效", "營收", "每股淨值", "損益"]),
     (2, "股利", ["股利", "配息", "除權", "除息", "股息"]),
     (2, "庫藏股", ["庫藏股"]),
     (2, "訴訟與調查", ["訴訟", "調查", "起訴", "仲裁", "判決", "337"]),
@@ -243,7 +244,7 @@ ANN_RULES = [
 
 def classify(title: str) -> tuple[int, str]:
     """公告主旨 → (重要性, 類別)。更正、補充公告維持原類別。"""
-    t = title or ""
+    t = re.sub(r"合併(?=營收|盈餘|財務|報表|損益|綜合|財報)", "", title or "")  # 「合併營收／合併盈餘」是財報用語，不是合併收購
     for lv, cat, words, *need in ANN_RULES:
         if any(w in t for w in words) and (not need or any(n in t for n in need[0])):
             return lv, cat

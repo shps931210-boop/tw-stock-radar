@@ -867,6 +867,37 @@ function statusCard() {
       ${cell("財報與營收", `<span class="num">${esc(d.financials || "—")}</span>`, `月營收 ${esc(d.revenue || "—")}・財報與股利在每晚完整更新`)}</div>
     <p class="faint small" style="margin:8px 0 0">${nextRun() ? `下次排程啟動 ${twTime(nextRun())}（GitHub 排程常會晚幾分鐘到幾十分鐘，跑完約 5 分鐘才會出現在網站）。` : ""}只有盤後資料，沒有盤中即時行情。</p></section>`;
 }
+// V26 AI 盤前情報（data/premarket.json，app/premarket.py）：隔夜市場、收盤後事件、盤前版風險標示。不是即時行情。
+async function loadPremarket() {
+  const el = $("#hpm"); if (!el || !SITE) return;
+  let P; try { const r = await fetch("data/premarket.json?t=" + Date.now()); P = r.ok ? await r.json() : null; } catch (e) { P = null; }
+  if (!P?.latest) return;
+  const L = P.latest, S = P.sealed, R = L.risk || {}, now = new Date(Date.now() + 8 * 3600e3).toISOString(), today = now.slice(0, 10), hm = now.slice(11, 16);
+  const sealedToday = S && S.target_date === today;
+  const age = (Date.parse(now.slice(0, 19)) - Date.parse(L.generated_at)) / 3600e3;
+  let st, cls;
+  if (sealedToday) { st = S.status === "on_time" ? `盤前版 ${S.created_at.slice(11, 16)} 完成` : `盤前版較晚完成（${S.created_at.slice(11, 16)}）`; cls = S.status === "on_time" ? "s-ok" : "warn"; }
+  else if (L.today_trading && hm >= "08:40" && hm < "13:30") { st = "盤前資料尚未完成更新"; cls = "warn"; }
+  else if (!L.today_trading) { st = `休市・事件累積到 ${L.target_date.slice(5)}`; cls = ""; }
+  else { st = `下一次盤前分析：${L.target_date.slice(5)} 08:15`; cls = ""; }
+  const G = L.global || {}, mk = (G.markets || []).filter((m) => ["^SOX", "^IXIC", "TSM", "^GSPC"].includes(m.symbol));
+  const evs = (L.events || []).filter((e) => e.importance >= 2).slice(0, 5);
+  const fl = (sealedToday ? S.flags : L.flags) || [];
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>AI 盤前情報</h2><span class="pill ${cls}">${esc(st)}</span></div>
+    <div class="kpis">
+      <div class="kpi"><span>隔夜風險（規則判讀）</span><b style="font-size:18px"><span class="pill ${R.level === "高" || R.level === "偏高" ? "warn" : ""}">${esc(R.level || "—")}</span></b><small class="faint">${esc((R.reasons || []).slice(0, 2).join("；"))}</small></div>
+      <div class="kpi"><span>收盤後新事件</span><b class="num" style="font-size:18px">${L.event_count || 0} 則</b><small class="faint">高重要性 ${L.status?.high || 0} 則・${esc((L.status?.since || "").slice(5, 16).replace("T", " "))} 收盤後起算</small></div>
+      <div class="kpi"><span>AI 預測是否更新</span><b style="font-size:15px">分數沒有改變</b><small class="faint">盤前只更新風險標示：盤後名單有 ${fl.length} 檔出現新事件或產業風險</small></div>
+      <div class="kpi"><span>最新分析時間</span><b class="num" style="font-size:15px">${esc(L.generated_at.slice(5, 16).replace("T", " "))}</b><small class="${age > 18 ? "" : "faint"}" ${age > 18 ? 'style="color:var(--warn)"' : ""}>${age > 18 ? "已超過 18 小時，資料可能過期" : `目標交易日 ${esc(L.target_date)}`}</small></div></div>
+    ${mk.length ? `<h3 style="margin:12px 0 4px">隔夜國際市場</h3><div class="small">${mk.map((m) => `${esc(m.name.replace("（美股）", ""))} <span class="num ${signCls(m.chg_pct)}">${pctTxt(m.chg_pct)}</span><span class="faint">（${esc(m.date.slice(5))}）</span>`).join("　")}
+      ${G.fx_usd ? `　美元兌台幣 <span class="num">${fmtNum(G.fx_usd.rate, 3)}</span><span class="faint">（${G.fx_usd.chg > 0 ? "+" : ""}${fmtNum(G.fx_usd.chg, 3)}）</span>` : ""}${G.oil ? `　WTI 原油 <span class="num ${signCls(G.oil.chg_pct)}">${pctTxt(G.oil.chg_pct)}</span>` : ""}</div>` : ""}
+    ${(R.stale || []).length ? `<p class="small" style="color:var(--warn);margin:6px 0 0">資料可能過期，沒有採用：${esc(R.stale.join("、"))}（應該要有 ${esc(R.us_session_expected)} 的美股收盤）</p>` : ""}
+    ${evs.length ? `<h3 style="margin:12px 0 4px">重大事件</h3><div class="scan">${evs.map((e) => `<a class="li" href="#/stock/${esc(e.affected_tickers[0] || "")}" style="color:inherit"><span class="small">${esc(e.title.slice(0, 46))}<span class="faint">・${esc(e.affected_tickers.join(","))}・${esc(e.event_type)}・${esc(e.confidence)}・${esc(e.published_at.slice(5, 16).replace("T", " "))}</span></span><span class="small faint" style="white-space:nowrap">${esc(e.direction)}</span></a>`).join("")}</div>` : ""}
+    ${fl.length ? `<h3 style="margin:12px 0 4px">盤後名單的風險標示</h3><div class="scan">${fl.slice(0, 6).map((f) => `<a class="li" href="#/stock/${esc(f.id)}" style="color:inherit"><span class="small"><b>${esc(f.id)} ${esc(f.name || "")}</b> <span class="faint">${esc((f.lists || []).join("、"))}</span><br>${esc(f.reasons[0] || "")}</span><span class="pill ${f.flag === "風險上升" ? "warn" : ""}">${esc(f.flag)}</span></a>`).join("")}</div>` : ""}
+    ${(P.alerts || []).length ? `<div class="banner warn small" style="margin-top:10px">盤前版封存後又出現 ${P.alerts.length} 則重大事件，原盤前研究可能需要重新評估：${esc(P.alerts.slice(-2).map((a) => a.title.slice(0, 30)).join("；"))}</div>` : ""}
+    <p class="faint small" style="margin:8px 0 0">交易日 06:20、08:15 收集隔夜美股、匯率、油價與收盤後公告，08:15 封存盤前版（目標 08:40 前發布，GitHub 排程可能延遲）；週末也會收集，週一早上一次整合。風險等級是固定規則，不是預測；AI 分數沿用盤後版，還沒有經過驗證的事件模型之前不會用新聞改分數。</p>`;
+}
 // 首頁「AI 今日市場研究」：全部是固定規則對收盤資料的判讀（均線、波動、廣度、產業、事件），不是預測，也沒有用語言模型。
 function marketBrief() {
   const S = (SNAP.index_series || []).map((x) => x.value).filter((v) => v > 0), n = S.length, c = S[n - 1];
@@ -951,6 +982,7 @@ function pageHome() {
       <div class="kpis">${IX.slice(0, 3).map(ixCard).join("")}
         <div class="kpi"><span>上漲／下跌家數</span><b><span class="up">${A ? A.up : SNAP.breadth.up}</span> / <span class="down">${A ? A.down : SNAP.breadth.down}</span></b><small class="faint">${A ? `上市櫃普通股・上漲比例 ${fmtNum(A.up_ratio, 0)}%` : "普通股"}</small></div>
         ${A ? `<div class="kpi"><span>漲停／跌停家數</span><b><span class="up">${A.limit_up}</span> / <span class="down">${A.limit_down}</span></b><small class="faint">收盤鎖在漲跌停價，和上漲家數不同</small></div>` : ""}</div></section>
+    <section class="card" id="hpm" hidden></section>
     ${briefCard()}
     ${homePicks()}
     ${changesCard()}
@@ -973,6 +1005,7 @@ function pageHome() {
   draw();
   $("#hrng").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hrng", +b.dataset.k); $$("#hrng button").forEach((x) => x.classList.toggle("on", x === b)); draw(); };
   if (WEEKLY === null) loadWeekly().then(() => { const w = $("#hperfw"); if (w) w.innerHTML = homePerf(); });
+  loadPremarket();
   loadNews().then((N) => {
     const el = $("#hnews"); if (!el) return;
     if (!N) { el.innerHTML = '<p class="muted">還沒有新聞資料。</p>'; return; }

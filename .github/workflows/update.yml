@@ -17,13 +17,18 @@ on:
     - cron: "30 8 * * 1-5"     # 16:30 快速：補跑（萬一前一次延遲或失敗）
     - cron: "0 13 * * 1-5"     # 21:00 完整：融資等最晚公布的資料＋歷史回補、財報、股利
     - cron: "30 14-22 * * *"   # 22:30～06:30 每小時：夜間財報補齊
+    - cron: "20 22 * * 0-4"    # 交易日 06:20 盤前：隔夜美股、匯率、收盤後公告
+    - cron: "15 0 * * 1-5"     # 交易日 08:15 盤前：再收集一次並封存「盤前版」（08:40 前發布）
+    - cron: "30 3 * * 1-5"     # 交易日 11:30：盤前版封存後的新重大事件警示
+    - cron: "0 2 * * 6"        # 週六 10:00：週末事件收集（美股週五結果、週五盤後公告）
+    - cron: "0 12 * * 0"       # 週日 20:00：週末事件收集
   workflow_dispatch:
     inputs:
       mode:
         description: "fast＝快速收盤更新；full＝完整更新（含歷史回補、財報）；backfill＝夜間補齊（長期歷史股價＋財報）"
         default: fast
         type: choice
-        options: [fast, full, backfill]
+        options: [fast, full, backfill, premarket]
 
 permissions:
   contents: write              # 把每日選股紀錄 commit 回 repository
@@ -37,7 +42,8 @@ concurrency:
 env:
   TZ: Asia/Taipei
   # 21:00 的排程與手動選 full 跑完整更新，其他都是快速更新
-  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || inputs.mode == 'full') && 'full' || (github.event.schedule == '30 14-22 * * *' || inputs.mode == 'backfill') && 'backfill' || 'fast' }}
+  # 盤前（premarket）：不抓行情，只收集隔夜市場與事件、產生盤前情報（app/premarket.py）
+  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || inputs.mode == 'full') && 'full' || (github.event.schedule == '30 14-22 * * *' || inputs.mode == 'backfill') && 'backfill' || (contains(fromJSON('["20 22 * * 0-4","15 0 * * 1-5","30 3 * * 1-5","0 2 * * 6","0 12 * * 0"]'), github.event.schedule) || inputs.mode == 'premarket') && 'premarket' || 'fast' }}
   SUPABASE_URL: ${{ vars.SUPABASE_URL }}   # 會員登入（公開值，放在 repository variables）
   SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
 
@@ -99,14 +105,20 @@ jobs:
 
       - name: 更新資料（快速：最近幾天；完整：再回補歷史、財報）
         id: update
+        if: env.MODE != 'premarket'
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}   # 只用來讀「優先補抓財報」的申請，不會進網站
         run: python -m app.update $([ "$MODE" = fast ] && echo --fast) $([ "$MODE" = backfill ] && echo --backfill)
 
+      # 盤前模式不抓行情：用資料庫重建選股快照（盤前情報要知道盤後名單），網站照常發布
+      - name: 重建選股快照（盤前模式）
+        if: env.MODE == 'premarket'
+        run: python -c "from app import snapshot; snapshot.build()"
+
       # 每日影子預測（V23）：套用每週訓練好的模型，封存到 history/predictions/；失敗不影響網站
       - name: 每日影子預測
-        if: env.MODE != 'fast'
+        if: env.MODE == 'full' || env.MODE == 'backfill'
         continue-on-error: true
         run: |
           pip install -q lightgbm==4.5.0
@@ -127,8 +139,22 @@ jobs:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: python -m app.global_mkt
 
+      - name: AI 盤前情報（隔夜市場、收盤後事件、盤前版風險標示）
+        if: env.MODE == 'premarket'
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python -m app.premarket
+
+      - name: 盤前情報對帳（盤後版／盤前版的實際結果）
+        if: env.MODE == 'full'
+        continue-on-error: true
+        run: python -m app.premarket --score
+
       - name: 備份資料庫到 GitHub Release
         id: backup
+        if: env.MODE != 'premarket'
         continue-on-error: true      # 備份失敗不影響網站更新，但會記錄下來，最後一步讓這次執行標成失敗並寄信
         env:
           GH_TOKEN: ${{ github.token }}
@@ -151,12 +177,12 @@ jobs:
           python -m app.backup verify "$RUNNER_TEMP/rt/stocks.db.gz"
 
       - name: 記錄備份狀態（網站可信度頁會顯示）
-        if: always()
+        if: always() && env.MODE != 'premarket'
         run: python -m app.backup status "${{ steps.backup.outcome }}" "${{ steps.restore.outcome }}"
 
       # 只有資料更新成功才存快取，避免把失敗或不完整的資料庫存成下一次的起點
       - uses: actions/cache/save@v4
-        if: always() && steps.update.outcome == 'success'
+        if: always() && (steps.update.outcome == 'success' || env.MODE == 'premarket')
         with:
           path: data/stocks.db
           key: stocks-db-${{ github.run_id }}
@@ -190,6 +216,7 @@ jobs:
 
       # 資料過期、來源失敗或備份失敗時讓這次執行標成失敗，GitHub 會寄通知信；網站仍會發布並在頂端顯示警告
       - name: 檢查資料是否最新、備份是否成功
+        if: env.MODE != 'premarket'
         run: python -m app.check
 
   deploy:
