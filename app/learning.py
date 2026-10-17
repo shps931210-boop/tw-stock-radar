@@ -373,6 +373,29 @@ def error_analysis(preds: pd.DataFrame, panel: pd.DataFrame, h: int, idx: pd.Ser
 
 
 # ---------------- 每日：學習報告 ----------------
+def acceptance(active: dict | None, research: dict | None, g: dict) -> dict:
+    """升級要過三關：技術驗收（模型能載入、預測有效、只用到期標籤）→ 研究樣本外（沒參與訓練的期間勝過 V21）→ 真實封存預測比賽。
+    技術驗收只能證明模型「能用」，不能證明「比較準」；三關都過也只是「可以考慮升級」，要人工確認。"""
+    h = GATE["horizon"]
+    cid = g.get("challenger") or "lgbm"
+    tech_ok = bool(active) and not active.get("problems")
+    H = ((research or {}).get("horizons") or {}).get(h) or {}
+    vs, ho = (H.get("vs_v21") or {}).get(cid) or {}, H.get("holdout") or {}
+    ho_c, ho_v = (ho.get(cid) or {}).get("ic"), (ho.get("v21") or {}).get("ic")
+    oos_ok = bool(vs and (vs.get("t") or 0) >= GATE["ic_t"] and ho_c is not None and ho_v is not None and ho_c > ho_v)
+    live_ok = g.get("status") == "passed"
+    stages = [
+        {"stage": "技術驗收", "ok": tech_ok, "what": "模型檔案能載入、預測數值有效、訓練只用已到期的標籤",
+         "value": ("通過（" + active["version"] + "）") if tech_ok else ("有問題：" + "；".join(active.get("problems") or [])) if active else "還沒有上線的候選版本"},
+        {"stage": "研究樣本外", "ok": oos_ok, "what": f"walk-forward 測試期 IC 勝過 V21 且 t ≥ {GATE['ic_t']}，保留期（最後一段沒參與挑選）也勝過 V21",
+         "value": (f"{CHALLENGERS.get(cid, cid)}：IC 差 {vs['diff']:+.4f}、t {vs['t']}；保留期 {ho_c} vs V21 {ho_v}" if vs and ho_c is not None else "還沒有研究結果")},
+        {"stage": "真實封存比賽", "ok": live_ok, "what": f"每天開盤前封存的預測到期滿 {GATE['min_days']} 天，五項條件全過", "value": g.get("label")},
+    ]
+    ok = all(x["ok"] for x in stages)
+    return {"stages": stages, "ok": ok, "challenger": cid,
+            "label": "三關都通過，可以考慮升級（需要人工確認）" if ok else "未全部通過：正式排行榜維持 V21，候選模型繼續影子追蹤"}
+
+
 def status(scorecard: dict, cfg: dict | None = None, reg_path: Path = REGISTRY, research_path: Path = ml.OUT) -> dict:
     cfg = cfg or config.load()
     reg = load_registry(reg_path)
@@ -389,7 +412,7 @@ def status(scorecard: dict, cfg: dict | None = None, reg_path: Path = REGISTRY, 
             "events": reg["events"][-10:][::-1],
             "live": {"days": scorecard.get("days", 0), "first": scorecard.get("first"), "last": scorecard.get("last"),
                      "matured": {h: v.get("matured", 0) for h, v in scorecard.get("horizons", {}).items()}, "horizons": scorecard.get("horizons", {})},
-            "gate": gate(daily, cost), "drift": drift(daily, research), "lessons": lessons(reg),
+            "gate": (g := gate(daily, cost)), "acceptance": acceptance(act, research, g), "drift": drift(daily, research), "lessons": lessons(reg),
             "errors": (research or {}).get("errors"), "research": {"generated_at": (research or {}).get("generated_at"), "verdict": (research or {}).get("verdict")},
             "schedule": [{"when": "每天盤後（完整更新）", "what": "用上線版本產生 5／20／60 日預測並封存；對帳已到期的預測；更新比賽與漂移監控"},
                          {"when": "每週六", "what": "用已到期的資料重新訓練候選模型，檢查通過才上線（沒通過就沿用上一版）"},

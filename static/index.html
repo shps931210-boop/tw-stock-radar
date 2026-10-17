@@ -875,16 +875,22 @@ async function loadPremarket() {
   const L = P.latest, S = P.sealed, R = L.risk || {}, now = new Date(Date.now() + 8 * 3600e3).toISOString(), today = now.slice(0, 10), hm = now.slice(11, 16);
   const sealedToday = S && S.target_date === today;
   const age = (Date.parse(now.slice(0, 19)) - Date.parse(L.generated_at)) / 3600e3;
+  // 今天是不是交易日：用網站讀到的休市日曆判斷（不是用盤前資料產生當天的判斷，避免隔天打開還沿用舊結果）
+  const wd = new Date(today + "T00:00:00Z").getUTCDay(), tradingToday = wd > 0 && wd < 6 && !(L.upcoming_holidays || []).includes(today);
+  const missed = tradingToday && hm >= "08:40" && hm < "13:30" && !sealedToday;   // 08:40 前沒有完成今天的盤前版
+  const Q = L.quality, bad = Q ? Object.values(Q.sources || {}).filter((x) => !x.ok) : [];
   let st, cls;
   if (sealedToday) { st = S.status === "on_time" ? `盤前版 ${S.created_at.slice(11, 16)} 完成` : `盤前版較晚完成（${S.created_at.slice(11, 16)}）`; cls = S.status === "on_time" ? "s-ok" : "warn"; }
-  else if (L.today_trading && hm >= "08:40" && hm < "13:30") { st = "盤前資料尚未完成更新"; cls = "warn"; }
-  else if (!L.today_trading) { st = `休市・事件累積到 ${L.target_date.slice(5)}`; cls = ""; }
+  else if (missed) { st = "今日盤前分析尚未完成"; cls = "warn"; }
+  else if (!tradingToday) { st = `休市・事件累積到 ${L.target_date.slice(5)}`; cls = ""; }
   else { st = `下一次盤前分析：${L.target_date.slice(5)} 08:15`; cls = ""; }
   const G = L.global || {}, mk = (G.markets || []).filter((m) => ["^SOX", "^IXIC", "TSM", "^GSPC"].includes(m.symbol));
   const evs = (L.events || []).filter((e) => e.importance >= 2).slice(0, 5);
   const fl = (sealedToday ? S.flags : L.flags) || [];
   el.hidden = false;
-  el.innerHTML = `<div class="card-h"><h2>AI 盤前情報</h2><span class="pill ${cls}">${esc(st)}</span></div>
+  el.innerHTML = `<div class="card-h"><h2>${missed || age > 26 ? "前次 AI 盤前情報" : "AI 盤前情報"}</h2><span class="pill ${cls}">${esc(st)}</span></div>
+    ${missed ? `<div class="banner warn small">今日盤前分析尚未完成，以下為前次有效資料（${esc(L.generated_at.slice(5, 16).replace("T", " "))} 產生）。</div>` : age > 26 ? `<div class="banner warn small">盤前資料已超過一天沒有更新，以下為前次有效資料（${esc(L.generated_at.slice(5, 16).replace("T", " "))}）。</div>` : ""}
+    ${bad.length ? `<p class="small" style="color:var(--warn);margin:4px 0 8px">資料品質：來源成功 ${esc(Q.source_ok)}，${esc(bad.map((x) => x.label + (x.detail ? `（${x.detail}）` : "未成功")).join("、"))}</p>` : Q ? `<p class="small faint" style="margin:4px 0 8px">資料品質：來源成功 ${esc(Q.source_ok)}${Q.duplicates_removed ? `・重複消息已合併 ${Q.duplicates_removed} 則` : ""}</p>` : ""}
     <div class="kpis">
       <div class="kpi"><span>隔夜風險（規則判讀）</span><b style="font-size:18px"><span class="pill ${R.level === "高" || R.level === "偏高" ? "warn" : ""}">${esc(R.level || "—")}</span></b><small class="faint">${esc((R.reasons || []).slice(0, 2).join("；"))}</small></div>
       <div class="kpi"><span>收盤後新事件</span><b class="num" style="font-size:18px">${L.event_count || 0} 則</b><small class="faint">高重要性 ${L.status?.high || 0} 則・${esc((L.status?.since || "").slice(5, 16).replace("T", " "))} 收盤後起算</small></div>
@@ -939,17 +945,27 @@ function briefCard() {
     <div class="br-modes">${["stable", "balanced", "aggressive"].map((k) => `<div><b>${esc(SNAP.ai_modes[k]?.name || k)}</b><p>${esc(B.imp[k])}</p></div>`).join("")}</div>
     <p class="faint small" style="margin:8px 0 0">依 ${esc(SNAP.data_dates?.prices || "")} 收盤資料，用固定規則（均線、波動百分位、漲跌家數、產業平均漲跌）整理，沒有使用語言模型，也不預測明天漲跌。</p></section>`;
 }
+// V27 流動性與推薦資格：原始 AI 分數不動，另外顯示流動性等級與推薦適合度（流動性不用紅綠色）
+const REC_TXT = { normal: "可列入優先研究", capped: "限制推薦（不進前 10 名）", excluded: "不列入預設 AI 精選", not_ranked: "未進原始排名" };
+const recOf = (s, k) => s.ai?.rec?.[k] || null;
+const liqTxt = (s) => s.liquidity_grade ? `${s.liquidity_grade}（${s.liq?.level || ""}）` : "—";
+const liqPill = (s) => s.liquidity_grade ? `<span class="pill ${["D", "E", "F", "?"].includes(s.liquidity_grade) ? "warn" : ""}" title="${esc((s.liq?.notes || []).join("\n") || "依近 20 日平均成交金額分級")}">流動性 ${esc(liqTxt(s))}</span>` : "";
+const recRows = (k) => { const hasRec = SNAP.stocks.some((s) => recOf(s, k));
+  return hasRec ? SNAP.stocks.filter((s) => recOf(s, k)?.rank).sort((a, b) => recOf(a, k).rank - recOf(b, k).rank)
+    : SNAP.stocks.filter((s) => s.ai?.modes?.[k]?.rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank); };
+const mainRisk = (s, k) => { const r = recOf(s, k); return r?.recommendation_cap_reason || r?.crowded || s.ai?.alerts?.[0]?.text || s.ai?.risks?.[0] || ""; };
 function homePicks() {
   const M = SNAP.ai_modes, ks = ["stable", "balanced", "aggressive"].filter((k) => M[k]);
   const col = (k) => {
-    const xs = SNAP.stocks.filter((s) => s.ai?.modes?.[k]?.rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank).slice(0, 3);
+    const xs = recRows(k).slice(0, 3);
     return `<div class="hp-col"><div class="card-h" style="margin-bottom:6px"><h3 style="margin:0">${esc(M[k].name)}</h3><a class="small" href="#/ai" onclick="store.set('aipage',{...store.get('aipage',{}),mode:'${k}'})">前 20 名 →</a></div>
-      ${xs.map((s) => { const a = s.ai.modes[k]; return `<a class="hp-it" href="#/stock/${esc(s.stock_id)}">
-        <div class="hp-top"><span><b class="num">${a.rank}.</b> ${esc(s.name)} <span class="faint small num">${esc(s.stock_id)}</span></span><span class="num"><b>${fmtNum(a.score, 0)}</b><span class="faint small"> 分</span></span></div>
+      ${xs.map((s, i) => { const a = s.ai.modes[k], R = recOf(s, k), risk = mainRisk(s, k); return `<a class="hp-it" href="#/stock/${esc(s.stock_id)}">
+        <div class="hp-top"><span><b class="num">${R?.rank || a.rank}.</b> ${esc(s.name)} <span class="faint small num">${esc(s.stock_id)}</span></span><span class="num"><b>${fmtNum(a.score, 0)}</b><span class="faint small"> 分</span></span></div>
         <div class="small">${s.close != null ? `<span class="num">${fmtNum(s.close, s.close < 50 ? 2 : 1)}</span> <span class="num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span>・` : ""}${esc(s.ai.strengths[0] || s.ai.tag || "")}</div>
-        <div class="small" style="color:var(--warn)">${s.ai.risks.length ? "留意：" + esc(s.ai.risks[0]) : '<span class="faint">沒有偵測到明顯風險訊號</span>'}</div></a>`; }).join("") || `<p class="faint small">${SNAP.rankings_blocked ? "資料不完整，暫停排名" : "目前沒有可排名的股票"}</p>`}</div>`;
+        <div class="small faint">原始分數 ${fmtNum(a.score, 0)}（原始第 ${a.rank} 名）・流動性 ${esc(liqTxt(s))}${R ? `・${esc(REC_TXT[R.recommendation_eligibility] || "")}` : ""}</div>
+        <div class="small" style="color:var(--warn)">${risk ? "留意：" + esc(risk) : '<span class="faint">沒有偵測到明顯風險訊號</span>'}</div></a>`; }).join("") || `<p class="faint small">${SNAP.rankings_blocked ? "資料不完整，暫停排名" : "目前沒有可排名的股票"}</p>`}</div>`;
   };
-  return `<section class="card"><div class="card-h"><h2>AI 精選股票</h2><span class="faint small">三種模式各前 3 名・分數是全市場相對排名，不是上漲機率</span></div>
+  return `<section class="card"><div class="card-h"><h2>AI 精選股票</h2><span class="faint small">三種模式各前 3 名・已排除流動性不足的股票・分數是全市場相對排名，不是上漲機率・資料 ${esc(SNAP.data_dates?.prices || "—")} 收盤</span></div>
     <div class="hp">${ks.map(col).join("")}</div></section>`;
 }
 function homePerf() {
@@ -1140,6 +1156,36 @@ function renderRisk() {
   $("#rkM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkM", b.dataset.k); renderRisk(); } };
   $("#rkN").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkN", b.dataset.k); renderRisk(); } };
 }
+// V27 推薦組合風險研究（app/portfolio_research.py → data/backtest/portfolio.json，每週重算）
+let PORT = null;
+async function loadPort() {
+  if (!SITE) return;
+  if (PORT === null) { try { const r = await fetch("data/backtest/portfolio.json" + (verQ("backtest/portfolio.json") || "?t=" + Date.now())); PORT = r.ok ? await r.json() : false; } catch (e) { PORT = false; } }
+  const el = $("#port"); if (!el || !PORT) return;
+  el.hidden = false; renderPort();
+}
+function renderPort() {
+  const el = $("#port"), R = PORT, md = store.get("ptM", "balanced") in R.results ? store.get("ptM", "balanced") : "balanced", n = store.get("ptN", "10"), B = R.results[md][n];
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, v]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${v}</button>`).join("")}</div>`;
+  const pc = (v) => v == null ? "—" : `<span class="${signCls(v)}">${pctTxt(v)}</span>`, f = (v) => v == null ? "—" : fmtNum(v, 1) + "%";
+  const tag = { pass: "acc", consistent: "", no: "warn" };
+  const G = R.by_grade || {}, IC = R.liquidity_ic || {};
+  el.innerHTML = `<div class="card-h"><h2>推薦組合風險研究（流動性、產業、波動）</h2><span class="muted small">${esc(R.start)}～${esc(R.data_end)}・${R.months.length} 個月・每月換股・扣成本 ${R.cost_pct}%</span></div>
+    <p class="small" style="margin:0 0 8px">問題：高分但成交量很小的冷門股、同產業集中、高波動，會不會讓前 10 名看起來很好、實際上買不到或風險太集中？六種名單用同一套資料截止時間、進場規則、成本與期間比較。網站目前採用 <b>${esc(R.live_variant)}</b>（${esc(R.variants[R.live_variant])}），但它只決定「預設精選」，原始排名與績效紀錄照舊。門檻 ${esc(R.thresholds_fixed_at)} 事先寫下。</p>
+    <div class="toolbar" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">${seg("ptM", Object.fromEntries(Object.entries(R.results).map(([k, v]) => [k, v.name])), md)}${seg("ptN", { 10: "前 10 名", 20: "前 20 名" }, n)}</div>
+    <div class="tbl"><table class="wrap"><thead><tr><th>名單</th><th class="r">成本後總報酬</th><th class="r">0050</th><th class="r">加權指數</th><th class="r">最大回撤</th><th class="r">贏 0050 月數</th><th class="r">滑價 +0.5%</th><th class="r">依流動性滑價</th><th class="r">買不到</th><th class="r">產業最多</th><th class="r">平均相關</th><th>流動性組成</th><th>和原始比</th></tr></thead><tbody>
+      ${Object.entries(B).map(([k, x]) => `<tr><td><b>${k}</b> ${esc(x.variant)}${k === R.live_variant ? ' <span class="pill acc">網站採用</span>' : ""}</td><td class="r num">${pc(x.total)}</td><td class="r num">${pc(x.bench_total)}</td><td class="r num">${pc(x.taiex_total)}</td><td class="r num">${f(x.mdd)}</td><td class="r num">${f(x.win_vs_bench)}</td>
+        <td class="r num">${pc(x.slippage?.["+0.5%"])}</td><td class="r num">${pc(x.slippage?.["依流動性"])}</td><td class="r num">${f(x.untradable)}</td><td class="r num">${f(x.ind_max)}</td><td class="r num">${x.corr == null ? "—" : fmtNum(x.corr, 2)}</td>
+        <td class="small">${esc(Object.entries(x.grade_mix || {}).map(([g, v]) => `${g} ${v}%`).join("、"))}</td>
+        <td class="small">${x.vs_A ? `<span class="pill ${tag[x.vs_A.verdict]}">${esc(x.vs_A.label)}</span><br><span class="faint">每月差 ${pctTxt(x.vs_A.avg_diff)}（t ${x.vs_A.t ?? "—"}）；依流動性滑價後 ${pctTxt(x.vs_A_spread?.avg_diff)}</span>` : "基準"}</td></tr>`).join("")}</tbody></table></div>
+    ${Object.keys(G).length ? `<h3 style="margin:14px 0 6px">各流動性等級的下個月表現（通過基本門檻的全部股票）</h3>
+      <div class="tbl"><table><thead><tr><th>等級</th><th class="r">股票×月</th><th class="r">平均超額（對 0050）</th><th class="r">t 值</th><th class="r">買不到的比例</th><th class="r">高波動時平均超額</th></tr></thead><tbody>
+      ${"ABCDEF?".split("").filter((g) => G[g]).map((g) => `<tr><td>${g}</td><td class="r num">${fmtNum(G[g].stock_months, 0)}</td><td class="r num">${pc(G[g].avg_excess)}</td><td class="r num">${G[g].t ?? "—"}</td><td class="r num">${f(G[g].untradable_pct)}</td><td class="r num">${pc(G[g + "|hv"]?.avg_excess)}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${Object.keys(IC).length ? `<p class="small" style="margin:8px 0 0">流動性細項與下月報酬的等級相關（IC）：${Object.values(IC).map((x) => `${esc(x.label)} ${x.ic == null ? "—" : fmtNum(x.ic, 3)}（t ${x.t ?? "—"}）`).join("；")}</p>` : ""}
+    <p class="faint small" style="margin:8px 0 0">判定：前後兩半段都比原始名單好、而且 t ≥ 2 才算「通過」。「依流動性滑價」是假設的買賣價差（A 0.1%～F 1.5%，不是實測），用來看冷門股的回測報酬在真實交易中可能被吃掉多少。${esc(R.taiex_note || "")}。過去報酬不代表未來。</p>`;
+  $("#ptM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("ptM", b.dataset.k); renderPort(); } };
+  $("#ptN").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("ptN", b.dataset.k); renderPort(); } };
+}
 // ---------- AI 量化選股＋進出場聯合回測（history/backtest/joint.json，每週重算） ----------
 let JOINT = null;
 // V22 預測模型研究（app/ml_research.py，影子模式）：V21 固定權重 vs Ridge／Logistic／LightGBM，時序滾動、purge
@@ -1193,9 +1239,13 @@ async function loadLearn() {
     <p class="small muted" style="margin:0 0 10px">流程：每天封存預測 → 到期自動對帳 → 每週用已到期資料重新訓練 → 新版先檢查才上線 → 和正式模型比賽，通過門檻也要人工確認才升級。重新訓練不等於變準，下面只列實際數字。</p>
     <div class="kpis">
       <div class="kpi"><span>正式模型（排行榜）</span><b style="font-size:16px">${esc(S.champion?.name || "V21 固定權重")}</b><small class="faint">固定權重，不會自動改</small></div>
-      <div class="kpi"><span>候選模型</span><b style="font-size:16px">LightGBM、V21＋LightGBM 平均</b><small class="faint">每週重新訓練・${A ? `版本 ${esc(A.version)}` : "第一個版本會在下次每週訓練後登記"}</small></div>
+      <div class="kpi"><span>候選模型</span><b style="font-size:16px">LightGBM／兩者平均</b><small class="faint">每週重新訓練・${A ? `版本 ${esc(A.version)}` : "第一個版本會在下次每週訓練後登記"}</small></div>
       <div class="kpi"><span>已到期的真實預測（5／20／60 日）</span><b class="num" style="font-size:16px">${mt["5"] || 0}／${mt["20"] || 0}／${mt["60"] || 0} 天</b><small class="faint">${live.days ? `已封存 ${live.days} 天（${esc(live.first)} 起）` : "還沒有封存的預測"}</small></div>
       <div class="kpi"><span>升級判定</span><b style="font-size:16px"><span class="pill ${GC[G.status] || ""}">${esc(G.label || "累積中")}</span></b><small class="faint">門檻 ${esc(G.gate_version || "")} 事先固定</small></div></div>
+    ${S.acceptance ? `<h3 style="margin:14px 0 6px">升級要過三關（${esc(S.acceptance.label)}）</h3>
+      <div class="tbl"><table class="wrap"><thead><tr><th>關卡</th><th>要求</th><th>目前</th><th></th></tr></thead><tbody>
+      ${S.acceptance.stages.map((x) => `<tr><td>${esc(x.stage)}</td><td class="small">${esc(x.what)}</td><td class="small">${esc(x.value || "—")}</td><td>${x.ok ? '<span class="pill s-ok">通過</span>' : '<span class="pill">未通過</span>'}</td></tr>`).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">技術驗收只證明模型能正常運作，不代表比較準；三關都過也要人工確認才會換掉正式排行榜。</p>` : ""}
     ${G.criteria?.length ? `<h3 style="margin:14px 0 6px">新舊模型比賽：${esc(G.challenger_name || "LightGBM")} 對 V21（${esc(G.horizon)} 日，只用封存後到期的真實預測）</h3>
       ${G.challengers ? `<p class="faint small" style="margin:0 0 6px">${Object.values(G.challengers).map((c) => `${esc(c.challenger_name)}：${esc(c.label)}`).join("；")}</p>` : ""}
       <div class="tbl"><table class="wrap"><thead><tr><th>條件</th><th>門檻</th><th>目前</th><th></th></tr></thead><tbody>
@@ -1533,6 +1583,7 @@ function pagePerformance() {
     <section class="card" id="pit" hidden></section>
     <section class="card" id="joint" hidden></section>
     <section class="card" id="fac" hidden></section>
+    <section class="card" id="port" hidden></section>
     <section class="card" id="risk" hidden></section>
     <section class="card" id="ml" hidden></section>
     <section class="card" id="learn" hidden></section>
@@ -1553,7 +1604,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadLearn(); loadPredSc();
   loadFac();
 }
 
@@ -1738,10 +1789,13 @@ function aiTable(rows, mode) {
       <td>${s.ai.risks.length ? `<span class="pill warn" title="${esc(s.ai.risks.join("\n"))}">${s.ai.risks.length} 項</span>` : '<span class="faint small">無明顯</span>'}</td></tr>`; }).join("")}</tbody></table></div>`;
 }
 function pageAI() {
-  const M = SNAP.ai_modes, o = { mode: "balanced", sel: null, cmp: null, ...store.get("aipage", {}) };
+  const M = SNAP.ai_modes, o = { mode: "balanced", sel: null, cmp: null, view: "rec", ...store.get("aipage", {}) };
   if (!M[o.mode]) o.mode = "balanced";
   const k = o.mode, m = M[k];
-  const rows = SNAP.stocks.filter((s) => s.ai.modes[k].rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank);
+  const hasRec = SNAP.stocks.some((s) => recOf(s, k)), raw = !hasRec || o.view === "raw";
+  const rows = raw ? SNAP.stocks.filter((s) => s.ai.modes[k].rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank) : recRows(k);
+  const nExc = SNAP.stocks.filter((s) => recOf(s, k)?.recommendation_eligibility === "excluded").length;
+  const rk = (s) => raw ? s.ai.modes[k].rank : recOf(s, k).rank;
   const top = rows.slice(0, 30);
   const sel = BYID[o.sel] && BYID[o.sel].ai.modes[k].rank ? BYID[o.sel] : top[0];
   const save = () => { store.set("aipage", o); pageAI(); };
@@ -1757,18 +1811,20 @@ function pageAI() {
     <section><div class="eyebrow">系統主動排名・資料日 ${esc(SNAP.data_dates.prices || "—")}</div><h1>AI 量化選股</h1>
       <p class="lead">全市場股票依五類因子評分排名。分數是全市場百分位（50 是中位數），不是上漲機率。點任何一檔，看它為什麼排在這裡。</p></section>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px"><div class="seg" id="aim">${Object.entries(M).map(([key, x]) => `<button data-k="${key}" class="${key === k ? "on" : ""}">${esc(x.name)}</button>`).join("")}</div>
-      <span class="muted small">${esc(m.tagline)}・${rows.length} 檔通過條件</span></div>
+      ${hasRec ? `<div class="seg" id="aiv"><button data-v="rec" class="${raw ? "" : "on"}">預設精選</button><button data-v="raw" class="${raw ? "on" : ""}">原始排名（全部）</button></div>` : ""}
+      <span class="muted small">${esc(m.tagline)}・${rows.length} 檔${raw ? "通過條件" : `可推薦（另有 ${nExc} 檔因流動性不足不列入，切到原始排名可看到）`}</span></div>
     ${SNAP.rankings_blocked ? `<div class="card" style="color:var(--warn)">${esc(SNAP.rankings_blocked)}</div>` : ""}
     ${sel ? `<section class="card" id="rc">${pickCard(sel, k, o.cmp)}</section>` : ""}
-    <section class="card"><div class="card-h"><h2>${esc(m.name)}排行榜</h2><span class="muted small">前 ${top.length} 名・點一列看研究卡${P.date ? `・名次變化和 ${esc(P.date)} 比` : ""}</span></div>
-      ${top.length ? `<div class="tbl"><table class="wrap"><thead><tr><th>名次</th><th>變化</th><th>股票</th><th class="r">分數</th><th class="r">漲跌</th><th>主要理由</th><th>需要留意</th></tr></thead><tbody>
-        ${top.map((s) => `<tr class="pick ${sel && s.stock_id === sel.stock_id ? "on" : ""}" data-pick="${s.stock_id}" style="cursor:pointer"><td><span class="medal ${s.ai.modes[k].rank <= 3 ? "m" + s.ai.modes[k].rank : ""}">${s.ai.modes[k].rank}</span></td><td>${chg(s)}</td>
-          <td>${stockCell(s)}</td><td class="r num"><b>${fmtNum(s.ai.modes[k].score, 1)}</b></td><td class="r num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</td>
-          <td class="small">${esc(s.ai.strengths[0] || "—")}</td><td class="small">${s.ai.risks.length ? esc(s.ai.risks[0]) + (s.ai.risks.length > 1 ? `<span class="faint">（另 ${s.ai.risks.length - 1} 項）</span>` : "") : '<span class="faint">沒有明顯風險訊號</span>'}</td></tr>`).join("")}</tbody></table></div>`
+    <section class="card"><div class="card-h"><h2>${esc(m.name)}排行榜</h2><span class="muted small">${raw ? "原始排名" : "流動性 D 級不進前 10 名、E／F 級不列入"}・前 ${top.length} 名・點一列看研究卡${P.date ? `・名次變化和 ${esc(P.date)} 比` : ""}</span></div>
+      ${top.length ? `<div class="tbl"><table class="wrap"><thead><tr><th>名次</th><th>變化</th><th>股票</th><th class="r">原始分數</th><th>流動性</th><th class="r">漲跌</th><th>主要理由</th><th>需要留意</th></tr></thead><tbody>
+        ${top.map((s) => { const R = recOf(s, k), risk = mainRisk(s, k); return `<tr class="pick ${sel && s.stock_id === sel.stock_id ? "on" : ""}" data-pick="${s.stock_id}" style="cursor:pointer"><td><span class="medal ${rk(s) <= 3 ? "m" + rk(s) : ""}">${rk(s)}</span>${!raw && s.ai.modes[k].rank !== rk(s) ? `<span class="faint small"> 原 ${s.ai.modes[k].rank}</span>` : ""}</td><td>${chg(s)}</td>
+          <td>${stockCell(s)}</td><td class="r num"><b>${fmtNum(s.ai.modes[k].score, 1)}</b></td><td class="small">${esc(liqTxt(s))}${R && R.recommendation_eligibility !== "normal" ? `<br><span class="pill warn">${esc(R.recommendation_eligibility === "capped" ? "限制推薦" : "不列入精選")}</span>` : ""}</td><td class="r num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</td>
+          <td class="small">${esc(s.ai.strengths[0] || "—")}</td><td class="small">${risk ? esc(risk) : '<span class="faint">沒有明顯風險訊號</span>'}</td></tr>`; }).join("")}</tbody></table></div>`
         : `<div class="empty">${SNAP.rankings_blocked ? "暫停排名" : "沒有股票通過這個模式的條件"}</div>`}</section>
     <section class="card"><details><summary><b>模型怎麼算</b>：五個因子的權重、硬性條件與計算步驟</summary><div id="spec" style="margin-top:12px">${specHtml(k)}</div>
       <ol class="small muted" style="margin:10px 0 0;padding-left:18px">${STEPS.map((x) => `<li>${x}</li>`).join("")}</ol></details></section>`;
   $("#aim").onclick = (e) => { const b = e.target.closest("button"); if (b) { o.mode = b.dataset.k; o.cmp = null; save(); } };
+  const av = $("#aiv"); if (av) av.onclick = (e) => { const b = e.target.closest("button"); if (b) { o.view = b.dataset.v; save(); } };
   $$("tr.pick").forEach((tr) => tr.onclick = (e) => { if (e.target.closest("a,button")) return; o.sel = tr.dataset.pick; o.cmp = null; store.set("aipage", o); pageAI(); $("#rc")?.scrollIntoView({ block: "nearest" }); });
   const ts = $("#toScreener"); if (ts) ts.onclick = () => { store.set("draft", { name: `AI ${m.name}條件`, logic: "AND", conds: m.hard.concat(m.reference).map(stripLabel), fromAI: k }); location.hash = "#/screener"; };
   pageAIbind();
@@ -1785,6 +1841,18 @@ const FACTOR_ITEMS = {
   momentum: [["ret_12m", "近一年報酬", "%"], ["ret_3m", "近三月報酬", "%"]],
   trend: [["dist_ma60", "距季線", "%"], ["ma60_slope_20", "季線斜率", ""]],
 };
+// AI 推薦卡：原始 AI 分數／流動性等級／最終推薦／限制原因／推薦風險狀態／預測資料時間
+function recCard(s, k) {
+  const R = recOf(s, k), a = s.ai.modes[k]; if (!R && !s.liquidity_grade) return "";
+  const al = s.ai.alerts || [], L = s.liq || {};
+  return `<div class="banner ${R && R.recommendation_eligibility !== "normal" ? "warn" : "info"} small" style="margin-top:10px">
+    <b>AI 原始分數：${fmtNum(a.score, 0)}</b>（原始第 ${a.rank ?? "—"} 名）／<b>流動性：${esc(liqTxt(s))}</b>${L.avg_value_20 != null ? `，20 日平均成交 ${fmtNum(L.avg_value_20 / 1e8, 2)} 億、中位數 ${fmtNum((L.value_med_20 || 0) / 1e8, 2)} 億` : ""}
+    ／<b>最終狀態：${esc(REC_TXT[R?.recommendation_eligibility] || "—")}</b>${R?.rank ? `（預設精選第 ${R.rank} 名）` : ""}
+    ${R?.recommendation_cap_reason ? `<br>限制原因：${esc(R.recommendation_cap_reason)}` : ""}${(L.notes || []).length ? `<br>流動性說明：${esc(L.notes.join("；"))}` : ""}
+    ${R?.crowded ? `<br>組合風險：${esc(R.crowded)}` : ""}
+    ${al.length ? `<br>推薦風險狀態：${esc(al.map((x) => x.text).join("；"))}` : "<br>推薦風險狀態：沒有偵測到異常"}
+    <br><span class="faint">預測資料時間：${esc(s.date || "—")} 收盤（排名產生於 ${esc((SNAP.generated_at || "").slice(0, 16).replace("T", " "))}）。流動性限制只影響是否列入預設精選，不改原始分數。</span></div>`;
+}
 function pickCard(s, k, cmpId) {
   const a = s.ai.modes[k], m = SNAP.ai_modes[k], w = m.weights, tw = Object.values(w).reduce((x, y) => x + y, 0);
   const P = SNAP.prev_scores || {}, p = P.stocks?.[s.stock_id];
@@ -1811,6 +1879,7 @@ function pickCard(s, k, cmpId) {
       ${s.industry_rank && k === "balanced" ? `<span class="faint small">產業內第 ${s.industry_rank}／${s.industry_n}</span>` : peers.length ? `<span class="faint small">同產業另有 ${peers.length} 檔上榜</span>` : ""}</div>
       <div class="rcbars">${bars}</div></div>
     ${change ? `<p style="margin:10px 0 0">${change}</p>` : ""}
+    ${recCard(s, k)}
     <div class="two" style="margin-top:12px"><div><h3 style="margin-bottom:4px">主要優勢</h3><ul class="small" style="margin:0;padding-left:18px">${s.ai.strengths.map((x) => `<li>${esc(x)}</li>`).join("") || '<li class="faint">沒有特別突出的因子</li>'}</ul></div>
       <div><h3 style="margin-bottom:4px">需要留意</h3><ul class="small" style="margin:0;padding-left:18px">${s.ai.risks.map((x) => `<li>${esc(x)}</li>`).join("") || '<li class="faint">模型沒有偵測到明顯風險訊號，但這不代表沒有風險</li>'}</ul></div></div>
     <p class="faint small" style="margin:10px 0 0">資料日期：股價 ${esc(s.date || "—")}・財報 ${esc(s.fin_period || "—")}・月營收 ${esc(s.rev_ym || "—")}${s.val_date ? `・本益比 ${esc(s.val_date)}` : ""}</p>
@@ -3409,7 +3478,7 @@ async function pageStock(id) {
       .map(([l, v]) => `<span>${l} <b class="num">${v || "—"}</b></span>`).join("")}<span>資料完整度 <b class="num">${s.data_completeness ?? "—"}%</b></span>
       ${s.industry_rank ? `<span>產業內 <b class="num">${s.industry_rank} / ${s.industry_n}</b>（${esc(s.industry)}）</span>` : ""}</div>
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
-    <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}</span></section>
+    <section class="verdict ${s.timing?.status === "buy" ? "buy" : ""}">${stPill(s)}<span>${esc(s.ai.summary)}${s.liquidity_grade ? `　${liqPill(s)}` : ""}</span></section>
     ${decisionCard(s, d)}
     ${researchCard(s, d)}
     ${profileCard(d.profile)}

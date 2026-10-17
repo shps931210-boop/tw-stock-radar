@@ -184,6 +184,7 @@ def update(cfg: dict, errors: list, snap: dict | None = None, extra_ids: list[st
         cut = (today - timedelta(days=365 * ARCHIVE_YEARS)).isoformat()
         con.execute("DELETE FROM news_items WHERE date < ?", (cut,))
         db.log_fetch(con, "news_center", today.isoformat(), True)
+        stat["at"] = config.now().isoformat(timespec="seconds")
         db.set_meta(con, "news_status", json.dumps(stat, ensure_ascii=False))
     return stat
 

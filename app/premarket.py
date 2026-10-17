@@ -131,6 +131,38 @@ def collect_events(con, since: str, until: str, known: dict) -> list[dict]:
     return out
 
 
+def dedupe(evs: list[dict]) -> int:
+    """同一檔股票、標題前 40 字相同的消息視為同一則：保留最早看到的，其他標記 duplicate_of。回傳重複則數。"""
+    first, n = {}, 0
+    for e in sorted(evs, key=lambda e: (e["first_seen_at"] or "", e["published_at"])):
+        k = (tuple(e.get("affected_tickers") or []), N.clean_title(e["title"])[:40])
+        if k in first and first[k] != e["id"]:
+            e["duplicate_of"] = first[k]
+            n += 1
+        else:
+            first[k] = e["id"]
+            e.pop("duplicate_of", None)
+    return n
+
+
+def check_quality(now: datetime, G: dict, H: dict, news_st: dict | None, risk: dict, dups: int, evs: list[dict]) -> dict:
+    """盤前情報品質檢查：各來源是否成功、資料日期、去重結果。任何一項失敗，網站就標示「資料不完整」。"""
+    ann = (news_st or {}).get("announcements") or {}
+    src = {
+        "calendar": {"label": "休市日曆", "ok": bool(H.get("ok"))},
+        "announcements": {"label": "公司公告", "ok": bool(ann.get("twse") is not None or ann.get("tpex") is not None),
+                          "detail": f"上市 {ann.get('twse', '—')} 則、上櫃 {ann.get('tpex', '—')} 則"},
+        "news_at": {"label": "公告／新聞最後更新", "ok": bool((news_st or {}).get("at")) and (news_st or {}).get("at", "") >= (now - timedelta(hours=26)).isoformat(),
+                    "detail": (news_st or {}).get("at")},
+        "global": {"label": "國際市場", "ok": bool(G.get("markets")) and not risk.get("stale"),
+                   "detail": "、".join(risk.get("stale") or []) + ("已過期" if risk.get("stale") else "") if G.get("markets") else "沒有資料"},
+    }
+    ok = sum(x["ok"] for x in src.values())
+    return {"checked_at": now.isoformat(timespec="seconds"), "sources": src, "source_ok": f"{ok}/{len(src)}",
+            "state": "ok" if ok == len(src) else "degraded", "duplicates_removed": dups,
+            "latest_event_at": max((e["published_at"] for e in evs), default=None)}
+
+
 def _novel(ev: list[dict], earlier_titles: set[str]) -> None:
     for e in ev:
         e["novel"] = N.clean_title(e["title"])[:40] not in earlier_titles
@@ -243,13 +275,20 @@ def run(now: datetime | None = None, dbname: str = "stocks.db", snap: dict | Non
         events = collect_events(con, since, until, known)
         old = con.execute("SELECT title FROM news_items WHERE date < ? AND date >= ?",
                           (last, (date.fromisoformat(last) - timedelta(days=7)).isoformat())).fetchall() if last else []
+        try:
+            news_st = json.loads(db.get_meta(con, "news_status") or "null")
+        except ValueError:
+            news_st = None
     _novel(events, {N.clean_title(t)[:40] for (t,) in old})
     merged = {**known, **{e["id"]: e for e in events}}   # 只增不減：之前看到的事件保留
-    evs = sorted(merged.values(), key=lambda e: (-e["importance"], e["published_at"]))
+    allev = sorted(merged.values(), key=lambda e: (-e["importance"], e["published_at"]))
+    dups = dedupe(allev)
+    evs = [e for e in allev if not e.get("duplicate_of")]   # 同一則消息只算一次（週末重複報導、多個來源）
     evp.parent.mkdir(parents=True, exist_ok=True)
-    evp.write_text(json.dumps({"target_date": str(tgt), "since": since, "updated_at": until, "events": evs}, ensure_ascii=False, indent=1), "utf-8")
+    evp.write_text(json.dumps({"target_date": str(tgt), "since": since, "updated_at": until, "events": allev}, ensure_ascii=False, indent=1), "utf-8")
     risk = market_risk(G, now, evs)
     flags = stock_flags(_watchlist(snap), evs, risk, G)
+    quality = check_quality(now, G, H, news_st, risk, dups, evs)
     hm = now.strftime("%H:%M")
     today_trading = is_trading_day(now.date(), H)
     status = {"mode": "collect", "target_date": str(tgt), "since": since, "events": len(evs), "high": sum(e["importance"] >= 3 for e in evs)}
@@ -259,7 +298,7 @@ def run(now: datetime | None = None, dbname: str = "stocks.db", snap: dict | Non
             status["mode"] = "already_sealed"
         else:
             status["mode"] = "sealed"
-            seal(rec_path, now, tgt, last, evs, risk, flags, G, snap, sorted(_watchlist(snap)))
+            seal(rec_path, now, tgt, last, evs, risk, flags, G, snap, sorted(_watchlist(snap)), quality)
     cur_path = pre_dir / f"{now.date()}.json"   # 今天的盤前版（盤中檢查時，目標日已經是下一個交易日）
     if cur_path.exists():  # 封存後才出現的高重要性事件：追加警示（不改盤前版）
         sealed = json.loads(cur_path.read_text("utf-8"))
@@ -274,14 +313,15 @@ def run(now: datetime | None = None, dbname: str = "stocks.db", snap: dict | Non
                                "direction": e["direction"], "note": "盤前研究封存後才出現的重大事件，原盤前研究可能需要重新評估"} for e in new if e["id"] not in have]
             ap.write_text(json.dumps(cur, ensure_ascii=False, indent=1), "utf-8")
             status["alerts"] = len(cur["alerts"])
-    out = {"schema_version": 1, "generated_at": until, "target_date": str(tgt), "today": now.date().isoformat(), "today_trading": today_trading,
+    out = {"schema_version": 1, "generated_at": until, "quality": quality,
+           "upcoming_holidays": [d for d in H.get("dates", []) if now.date().isoformat() <= d <= (now.date() + timedelta(days=40)).isoformat()], "target_date": str(tgt), "today": now.date().isoformat(), "today_trading": today_trading,
            "calendar_ok": bool(H.get("ok")), "last_close": last, "status": status, "risk": risk, "flags": flags,
            "events": evs[:40], "event_count": len(evs), "global": G}
     return out
 
 
 def seal(path: Path, now: datetime, tgt: date, last: str, evs: list[dict], risk: dict, flags: list[dict], G: dict, snap: dict,
-         watch: list[str] | None = None) -> dict:
+         watch: list[str] | None = None, quality: dict | None = None) -> dict:
     """封存盤前版（不可覆寫）。分數沿用盤後版，只加風險標示。"""
     base_p = path.parent.parent / f"{last}.json"
     base = json.loads(base_p.read_text("utf-8")) if base_p.exists() else {}
@@ -295,7 +335,7 @@ def seal(path: Path, now: datetime, tgt: date, last: str, evs: list[dict], risk:
            "data_version": {"prices": last, "us_session": max((m["date"] for m in G.get("markets", [])), default=None),
                             "fx_date": (G.get("fx_usd") or {}).get("date"), "events_until": ts},
            "scores_changed": False, "adjustment": "只更新風險標示，AI 分數沿用盤後版（還沒有經過樣本外驗證的事件模型）",
-           "risk": risk, "flags": flags, "watchlist": watch or [], "events": evs[:80]}
+           "risk": risk, "flags": flags, "watchlist": watch or [], "events": evs[:80], "quality": quality}
     if any(e["published_at"] > ts for e in evs):
         raise ValueError("盤前版含有封存時間之後才發布的事件")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -366,7 +406,7 @@ def site_data() -> dict | None:
     files = sorted(PRE_DIR.glob("????-??-??.json")) if PRE_DIR.exists() else []
     if files:
         r = json.loads(files[-1].read_text("utf-8"))
-        out["sealed"] = {k: r.get(k) for k in ("target_date", "signal_date", "created_at", "status", "scores_changed", "adjustment", "risk", "flags", "base")}
+        out["sealed"] = {k: r.get(k) for k in ("target_date", "signal_date", "created_at", "status", "scores_changed", "adjustment", "risk", "flags", "base", "quality")}
         out["sealed"]["events"] = len(r.get("events", []))
         ap = PRE_DIR / f"{r['target_date']}.alerts.json"
         out["alerts"] = json.loads(ap.read_text("utf-8"))["alerts"] if ap.exists() else []

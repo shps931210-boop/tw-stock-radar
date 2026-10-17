@@ -106,9 +106,28 @@ def _snapshot_picks(snap: dict) -> tuple[dict, list]:
         picks[mode] = [{"stock_id": s["stock_id"], "name": s["name"], "rank": s["ai"]["modes"][mode]["rank"],
                         "score": s["ai"]["modes"][mode]["score"], "close": s.get("close"), "industry": s.get("industry"),
                         "factors": {f: s.get(f"score_{f}") for f in FACTORS}} for s in ranked]
+    for mode in picks:   # V27：附上流動性等級與推薦資格，方便日後比較原始名單和預設精選名單
+        for p in picks[mode]:
+            s = next(x for x in st if x["stock_id"] == p["stock_id"])
+            rec = ((s["ai"].get("rec") or {}).get(mode) or {})
+            p["liq"] = s.get("liquidity_grade")
+            p["rec"] = rec.get("recommendation_eligibility")
     sigs = [{"stock_id": s["stock_id"], "name": s["name"], "close": s.get("close"), "triggers": s["timing"]["triggers"],
              "score": s["ai"]["modes"]["balanced"]["score"]} for s in st if s.get("timing", {}).get("status") == "buy"]
     return picks, sigs
+
+
+def _rec_picks(snap: dict) -> dict:
+    """V27 預設 AI 精選名單（流動性限制後）。和原始名單分開記錄，原始名單與績效計算不受影響。"""
+    st = [s for s in snap["stocks"] if s.get("is_common")]
+    rec_picks = {}
+    for mode in snap.get("ai_modes", {}):
+        ranked = sorted((s for s in st if ((s["ai"].get("rec") or {}).get(mode) or {}).get("rank")),
+                        key=lambda s: s["ai"]["rec"][mode]["rank"])[:TOP_N]
+        rec_picks[mode] = [{"stock_id": s["stock_id"], "rank": s["ai"]["rec"][mode]["rank"], "raw_rank": s["ai"]["modes"][mode]["rank"],
+                            "score": s["ai"]["modes"][mode]["score"], "liq": s.get("liquidity_grade"),
+                            "rec": s["ai"]["rec"][mode]["recommendation_eligibility"]} for s in ranked]
+    return rec_picks
 
 
 def _versions(day: str) -> list:
@@ -128,6 +147,8 @@ def record(snap: dict) -> str | None:
     out = {"date": day, "model_version": MODEL_VERSION, "model_hash": model_hash(), "generated_at": snap.get("generated_at"),
            "data_dates": snap.get("data_dates"), "taiex": (snap.get("market") or {}).get("taiex"),
            "universe": snap.get("universe"), "picks": picks, "signals": sigs, "universe_ids": universe}
+    if any(s.get("liquidity_grade") for s in snap["stocks"]):
+        out["rec_picks"] = _rec_picks(snap)
     old = _versions(day)
     if old:
         reasons = diff_reasons(json.loads(old[-1].read_text("utf-8")), out)

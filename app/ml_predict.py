@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import math
 import sys
 from pathlib import Path
@@ -132,6 +133,21 @@ def predict(X: pd.DataFrame, M: dict) -> dict:
     return res
 
 
+COMPLETE = 0.95   # 當天上市、上櫃各自的股價筆數至少要有前一個交易日的 95%
+
+
+def completeness(con, day: str) -> dict:
+    """當天的正式行情是否已經齊全（上市、上櫃都要有）。不齊全就不封存，避免用一半的舊價格產生「今日」預測。"""
+    prev = con.execute("SELECT MAX(date) FROM prices WHERE date < ?", (day,)).fetchone()[0]
+    cnt = lambda d: dict(con.execute("SELECT s.market, COUNT(*) FROM prices p JOIN stocks s USING(stock_id) WHERE p.date = ? GROUP BY s.market", (d,)).fetchall())
+    now, before = cnt(day), cnt(prev) if prev else {}
+    out = {"date": day, "counts": now, "prev_date": prev, "prev_counts": before}
+    for m in ("twse", "tpex"):
+        if before.get(m) and now.get(m, 0) < before[m] * COMPLETE:
+            return {**out, "ok": False, "why": f"{'上市' if m == 'twse' else '上櫃'}只有 {now.get(m, 0)} 檔（前一交易日 {before[m]} 檔）"}
+    return {**out, "ok": True}
+
+
 def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_DIR) -> dict | None:
     """產生並封存當天的影子預測。同一天已經封存過就不重寫（回傳 None）。"""
     M = load_models(models)
@@ -148,6 +164,10 @@ def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_D
         last = con.execute("SELECT MAX(date) FROM prices").fetchone()[0]
         data_version = {"prices": last, "revenue_ym": con.execute("SELECT MAX(ym) FROM revenue").fetchone()[0],
                         "fin_period": con.execute("SELECT MAX(period) FROM financials").fetchone()[0]}
+        comp = completeness(con, last) if last else {"ok": False, "why": "資料庫沒有股價"}
+    if not comp["ok"]:  # 快速更新可能只拿到上市、櫃買還沒公布：等資料齊了再封存（14:40、16:30、21:00 會再試）
+        print(f"{last} 的行情還不完整，暫不封存：{comp['why']}")
+        return None
     if last and (out / f"{last}.json").exists():
         print(f"{last} 已經封存過，不覆寫")
         return None
@@ -178,7 +198,7 @@ def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_D
     rec = {"schema_version": 1, "signal_date": sig, "generated_at": config.now().isoformat(timespec="seconds"),
            "feature_cutoff": f"{sig} 收盤；季報依法定期限、月營收依次月 10 日後才使用", "model_hash": M["model_hash"],
            "model_version": M.get("version") or M["model_hash"], "model_method": M["method"], "trained_through": {h: H["through"] for h, H in M["horizons"].items()},
-           "data_version": data_version,
+           "data_version": data_version, "data_complete": comp, "sealed_in": os.environ.get("MODE") or "manual",
            "time_check": {"trained_before_signal": all((H["through"] or "") < sig for H in M["horizons"].values())},
            "status": "experimental", "universe": "當天均衡型可排名的股票", "n": len(stocks), "stocks": stocks}
     path.write_text(json.dumps(rec, ensure_ascii=False, separators=(",", ":")), "utf-8")

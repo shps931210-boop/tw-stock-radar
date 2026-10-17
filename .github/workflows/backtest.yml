@@ -46,6 +46,10 @@ jobs:
       - name: 風險規則逐項檢驗
         continue-on-error: true
         run: python -m app.risk_research
+      # V27 推薦組合風險研究（原始／流動性限制／產業限制／聯合限制 Top10）：只做研究，原始排名不變
+      - name: 推薦組合風險研究
+        continue-on-error: true
+        run: python -m app.portfolio_research
       # V22 預測模型研究（影子模式，不影響正式排行榜）：V21 固定權重 vs Ridge／Logistic／LightGBM
       - name: 預測模型研究
         continue-on-error: true

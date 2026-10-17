@@ -117,8 +117,9 @@ jobs:
         run: python -c "from app import snapshot; snapshot.build()"
 
       # 每日影子預測（V23）：套用每週訓練好的模型，封存到 history/predictions/；失敗不影響網站
+      # V27：快速盤後更新也會跑；當天上市、上櫃行情都齊全才封存（不齊就等下一次），同一天只封存一次
       - name: 每日影子預測
-        if: env.MODE == 'full' || env.MODE == 'backfill'
+        if: env.MODE != 'premarket'
         continue-on-error: true
         run: |
           pip install -q lightgbm==4.5.0

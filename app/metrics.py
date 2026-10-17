@@ -53,6 +53,9 @@ def _streak(arr) -> int:
     return n
 
 
+LOW_VALUE_DAY = 5e6  # 單日成交金額低於 500 萬算「低量日」
+
+
 def price_metrics(px: pd.DataFrame, idx: pd.Series | None) -> dict:
     m: dict = {}
     n = len(px)
@@ -68,6 +71,13 @@ def price_metrics(px: pd.DataFrame, idx: pd.Series | None) -> dict:
         return m
     m["chg_pct"] = _pct(c[-1], c[-2])
     m["avg_value_20"] = float(np.nanmean(val[-20:]))
+    # 流動性細項（V27）：中位數不受單日爆量影響；低量日、零成交日、成交金額變異係數
+    w = val[-20:]
+    m["value_med_20"] = _f(np.nanmedian(w))
+    m["low_value_days_20"] = int(np.sum(np.nan_to_num(w) < LOW_VALUE_DAY))
+    m["zero_vol_days_60"] = int(np.sum(np.nan_to_num(v[-60:]) <= 0))
+    m["value_cv_20"] = _f(np.nanstd(w) / np.nanmean(w)) if np.nanmean(w) > 0 else None
+    m["value_days_20"] = int(min(n, 20))
     m["volume_lots"] = v[-1] / 1000
     m["value_1d"] = _f(val[-1])
     for k, d in (("ret_5d", 5), ("ret_20d", 20), ("ret_1m", 21), ("ret_3m", 63), ("ret_6m", 126), ("ret_12m", 252)):

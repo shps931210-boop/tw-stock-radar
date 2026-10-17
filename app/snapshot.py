@@ -9,7 +9,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from . import ai_model, backtest, config, db, events, market_board, metrics, sectors, track
+from . import ai_model, backtest, config, db, events, liquidity, market_board, metrics, sectors, track
 from .catalog import C as CATALOG
 from .strategies import STRATEGIES, passes
 
@@ -291,6 +291,7 @@ def build(demo: bool = False) -> dict:
         rows.append(rec)
     ai_model.annotate(rows)
     ai_model.timing(rows, cfg.get("buy_point", {}))
+    liquidity.annotate(rows, ai_model.MODES)  # 推薦資格另外存；原始分數與名次不動
     with db.connect(dbname) as con:
         fm_done = {k for (k,) in con.execute("SELECT key FROM fetch_log WHERE source='fm_financials' AND ok=1")} if not demo else None
         try:
@@ -312,7 +313,7 @@ def build(demo: bool = False) -> dict:
         if (official and behind >= 1) or behind >= 2:
             blocked = f"股價資料停在 {price_day}，{'官方已公布到' if official else '推估應有'} {exp}，暫停產生 AI 排名與技術訊號"
             for r in rows:
-                for v in r["ai"]["modes"].values():
+                for v in list(r["ai"]["modes"].values()) + list(r["ai"]["rec"].values()):
                     v["rank"] = None
                 r["timing"].update(status="none", blocked=True)
                 r["composite_blocked"] = True
@@ -360,6 +361,8 @@ def build(demo: bool = False) -> dict:
         "industries": industries,
         "index_series": [{"time": d, "value": _clean(v)} for d, v in zip(idx["date"][::-1], idx["close"][::-1])],
         "ai_modes": ai_model.MODES,
+        "liquidity_rule": {"grades": [[g, v] for g, v in liquidity.GRADES], "variant": liquidity.LIVE, "desc": liquidity.VARIANTS[liquidity.LIVE],
+                           "top": liquidity.TOP, "level": liquidity.LEVEL},
         "triggers": ai_model.TRIGGERS, "buy_point": ai_model.buy_rule(cfg.get("buy_point", {})),
         "universe": {"total": len(common), "base_ok": int(sum(r["base_ok"] for r in common))},
         "weights": w, "factor_label": FACTOR_LABEL, "base_filter": bf,
