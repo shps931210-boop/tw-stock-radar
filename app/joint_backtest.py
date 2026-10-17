@@ -33,6 +33,7 @@ from . import pit_backtest as pb
 
 METHOD = 1
 OUT = Path(__file__).resolve().parent.parent / "history" / "backtest" / "joint.json"
+TRADES = OUT.with_name("joint_trades.json")
 PIT = pb.OUT
 TOPS = (10, 20)
 STOP_ATR = 2.0
@@ -236,6 +237,11 @@ def _summary(sim: dict, lists: list[dict], D: dict) -> dict:
     why = {}
     for t in sim["trades"]:
         why[t["why"]] = why.get(t["why"], 0) + 1
+    # 逐筆對帳：所有部位期末都已平倉，資產變化 = Σ 每筆投入金額 × 報酬（報酬已含成本），兩者必須相等
+    gain = [t["alloc"] * t["ret"] for t in sim["trades"]]
+    ledger = float(sum(gain))
+    top = sorted(sim["trades"], key=lambda t: -t["alloc"] * t["ret"])[:5]
+    pos_gain = sum(g for g in gain if g > 0)
     return {"total": round(float(c.iloc[-1] - 1) * 100, 2), "cagr": round(float(c.iloc[-1] ** (1 / years) - 1) * 100, 2) if years > 0.5 else None,
             "mdd": round(float((c / peak - 1).min()) * 100, 2),
             "calmar": round(float(c.iloc[-1] ** (1 / years) - 1) / abs(float((c / peak - 1).min())), 2) if years > 0.5 and (c / peak - 1).min() < 0 else None,
@@ -250,8 +256,16 @@ def _summary(sim: dict, lists: list[dict], D: dict) -> dict:
             "avg_excess": round(float(np.mean(ex)), 2) if ex else None,
             "worst_excess": min(ex) if ex else None,
             "lagging": [m for m in months if m["excess"] is not None and m["excess"] < 0],
+            "ledger": {"total_from_trades": round(ledger * 100, 2), "matches": abs(ledger - float(c.iloc[-1] - 1)) < 1e-4,  # 每筆報酬存到小數 5 位，容許 0.01% 誤差
+                       "top5": [{"sid": t["sid"], "entry": t["entry"], "exit": t["exit"], "ret": round(t["ret"] * 100, 2), "why": t["why"],
+                                 "contrib": round(t["alloc"] * t["ret"] * 100, 2)} for t in top],
+                       "top5_share_of_gains": round(sum(t["alloc"] * t["ret"] for t in top) / pos_gain * 100, 1) if pos_gain > 0 else None,
+                       "without_top5": round((ledger - sum(t["alloc"] * t["ret"] for t in top)) * 100, 2)},
             "skips": sim["skips"], "exits": why, "open_at_end": sim["open_at_end"], "monthly": months,
             "curve": [[d, round(e, 4)] for d, e, _ in sim["curve"][::5]]}
+
+
+LEDGER: dict = {}  # 每一種做法的逐筆交易（寫到 joint_trades.json，供逐筆稽核）
 
 
 def run(dbname: str = "stocks.db", log=print) -> dict:
@@ -271,7 +285,11 @@ def run(dbname: str = "stocks.db", log=print) -> dict:
         F = _frames(D, {sid for L in lists for sid in L["ids"]})
         out_modes[m] = {"name": M["name"], "top": {}}
         for n in TOPS:
-            out_modes[m]["top"][str(n)] = {v: _summary(simulate(D, F, lists, n, v), lists, D) for v in VARIANTS}
+            out_modes[m]["top"][str(n)] = {}
+            for v in VARIANTS:
+                sim = simulate(D, F, lists, n, v)
+                out_modes[m]["top"][str(n)][v] = _summary(sim, lists, D)
+                LEDGER[f"{m}|{n}|{v}"] = [{k: (round(x, 4) if isinstance(x, float) else x) for k, x in t.items()} for t in sim["trades"]]
             log(f"{M['name']} 前 {n} 名完成（{time.time() - t0:.0f} 秒）")
     bench = pd.Series({d: float(D["adj"][pb.BENCH].loc[d, "close"]) for d in D["dates"]
                        if tl[0]["entry"] <= d <= tl[-1]["exit"] and d in D["adj"][pb.BENCH].index})
@@ -292,12 +310,15 @@ def main(argv: list[str]) -> int:
     res = run()
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, ensure_ascii=False, separators=(",", ":")), "utf-8")
+    TRADES.write_text(json.dumps({"note": "每筆：sid 股票、entry/exit 日期、entry_px/exit_px 還原後價格、alloc 投入比例（期初資產=1）、ret 含成本報酬、why 出場原因",
+                                  "cost_pct": res["cost_pct"], "trades": LEDGER}, ensure_ascii=False, separators=(",", ":")), "utf-8")
     print(f"0050：{res['bench_stats']['total']}%，最大回撤 {res['bench_stats']['mdd']}%")
     for m, x in res["modes"].items():
         for n, V in x["top"].items():
             for v, s in V.items():
                 print(f"{x['name']} 前 {n} 名 {VARIANTS[v]}：累積 {s['total']}%，回撤 {s['mdd']}%，交易 {s['trades']} 筆，勝率 {s['win']}%，"
-                      f"現金 {s['cash']}%，換手 {s['turnover']} 倍，每月超額 {s['avg_excess']}%，贏 0050 月份 {s['beat']}%")
+                      f"現金 {s['cash']}%，換手 {s['turnover']} 倍，每月超額 {s['avg_excess']}%，贏 0050 月份 {s['beat']}%；"
+                      f"逐筆對帳 {'相符' if s['ledger']['matches'] else '不符'}，前 5 筆貢獻 {s['ledger']['top5_share_of_gains']}% 的獲利，扣掉後 {s['ledger']['without_top5']}%")
     return 0
 
 

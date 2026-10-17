@@ -137,6 +137,8 @@ def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_D
     with db.connect(dbname) as con:
         official = db.get_meta(con, "official_latest_twse")
         last = con.execute("SELECT MAX(date) FROM prices").fetchone()[0]
+        data_version = {"prices": last, "revenue_ym": con.execute("SELECT MAX(ym) FROM revenue").fetchone()[0],
+                        "fin_period": con.execute("SELECT MAX(period) FROM financials").fetchone()[0]}
     if last and (out / f"{last}.json").exists():
         print(f"{last} 已經封存過，不覆寫")
         return None
@@ -167,6 +169,8 @@ def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_D
     rec = {"schema_version": 1, "signal_date": sig, "generated_at": config.now().isoformat(timespec="seconds"),
            "feature_cutoff": f"{sig} 收盤；季報依法定期限、月營收依次月 10 日後才使用", "model_hash": M["model_hash"],
            "model_method": M["method"], "trained_through": {h: H["through"] for h, H in M["horizons"].items()},
+           "data_version": data_version,
+           "time_check": {"trained_before_signal": all((H["through"] or "") < sig for H in M["horizons"].values())},
            "status": "experimental", "universe": "當天均衡型可排名的股票", "n": len(stocks), "stocks": stocks}
     path.write_text(json.dumps(rec, ensure_ascii=False, separators=(",", ":")), "utf-8")
     print(f"已封存 {sig} 的影子預測：{len(stocks)} 檔，模型 {M['model_hash']}")

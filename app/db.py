@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS stocks (stock_id TEXT PRIMARY KEY, name TEXT, market 
 CREATE TABLE IF NOT EXISTS prices (stock_id TEXT, date TEXT, open REAL, high REAL, low REAL, close REAL,
   volume REAL, value REAL, PRIMARY KEY (stock_id, date));
 CREATE TABLE IF NOT EXISTS index_prices (date TEXT PRIMARY KEY, close REAL);
+CREATE TABLE IF NOT EXISTS sector_index (date TEXT, name TEXT, close REAL, PRIMARY KEY (date, name));
 CREATE TABLE IF NOT EXISTS institutional (stock_id TEXT, date TEXT, foreign_net REAL, trust_net REAL,
   dealer_net REAL, PRIMARY KEY (stock_id, date));
 CREATE TABLE IF NOT EXISTS margin (stock_id TEXT, date TEXT, margin_bal REAL, short_bal REAL,

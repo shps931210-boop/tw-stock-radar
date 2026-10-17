@@ -446,6 +446,35 @@ details.strat summary::-webkit-details-marker { display: none; }
 footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block: 0 32px; font-size: 12px; color: var(--muted); }
 @media (max-width: 640px) { .search { margin-left: 0; width: 100%; } .search input { width: 100%; } .chart { height: 300px; } h1 { font-size: 24px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+/* 首頁 V24：大盤主卡、市場研究、三模式精選、手機底部導覽 */
+.hero-mkt .hm-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.hm-px { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 2px 0; }
+.hm-px b { font-size: 34px; font-weight: 600; letter-spacing: -.01em; }
+.hm-px span { font-size: 16px; font-weight: 500; }
+.hm-st { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.seg.sm button { padding: 3px 10px; font-size: 12px; }
+.hero-mkt .chart.xs { height: 180px; }
+.br-row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.br-row > b { font-weight: 500; color: var(--muted); font-size: 13px; }
+.br-modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.br-modes > div { background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.br-modes p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.hp { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.hp-it { display: block; color: inherit; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.hp-it:hover { text-decoration: none; background: var(--bg); }
+.hp-top { display: flex; justify-content: space-between; gap: 6px; }
+.bnav { display: none; }
+@media (max-width: 760px) { .hm-st { flex-direction: row; align-items: center; } }
+@media (max-width: 760px) {
+  .br-row { grid-template-columns: 1fr; gap: 2px; }
+  .br-modes, .hp { grid-template-columns: 1fr; }
+  .hm-px b { font-size: 30px; }
+  body { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
+  .bnav { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--panel); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
+  .bnav a, .bnav button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0 7px; font-size: 12px; color: var(--muted); background: none; border: 0; font: inherit; font-size: 12px; cursor: pointer; }
+  .bnav svg { width: 22px; height: 22px; }
+  .bnav .on { color: var(--accent); font-weight: 500; }
+}
 </style>
 </head>
 <body>
@@ -485,6 +514,12 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
   </div>
   <div class="fresh" id="fresh"></div>
 </header>
+<div class="bnav" id="bnav" role="navigation" aria-label="手機快捷導覽">
+  <a href="#/" data-r=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>首頁</a>
+  <a href="#/ai" data-r="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg>AI 預測</a>
+  <a href="#/watch" data-r="watch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>自選股</a>
+  <button type="button" id="bmore" aria-controls="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>更多</button>
+</div>
 <main id="app"><div class="empty">載入中…</div></main>
 <footer><a href="#/catalog">指標資料庫</a>：所有指標的公式、資料來源與限制。・<a href="#/privacy">隱私說明</a><br>本網站依公開資料與事先定義的規則篩選與評分。「AI 量化評分」與「AI 解讀」是固定的多因子規則計算，不是大型語言模型預測；只有「AI 研究助理」（含個股頁的「問問這檔股票」）使用大型語言模型。驗證狀態：門檻與權重是事先設定的規則，沒有用回測結果調整；技術訊號已有歷史回測、AI 名單每天做事後追蹤，AI 多因子歷史回測尚未完成（見<a href="#/performance">績效與回測</a>），但目前的結果都還不能證明能勝過大盤。分數是全市場相對排名，不是上漲機率，也不構成投資建議。</footer>
 <script src="portfolio.js"></script>
@@ -832,51 +867,117 @@ function statusCard() {
       ${cell("財報與營收", `<span class="num">${esc(d.financials || "—")}</span>`, `月營收 ${esc(d.revenue || "—")}・財報與股利在每晚完整更新`)}</div>
     <p class="faint small" style="margin:8px 0 0">${nextRun() ? `下次排程啟動 ${twTime(nextRun())}（GitHub 排程常會晚幾分鐘到幾十分鐘，跑完約 5 分鐘才會出現在網站）。` : ""}只有盤後資料，沒有盤中即時行情。</p></section>`;
 }
+// 首頁「AI 今日市場研究」：全部是固定規則對收盤資料的判讀（均線、波動、廣度、產業、事件），不是預測，也沒有用語言模型。
+function marketBrief() {
+  const S = (SNAP.index_series || []).map((x) => x.value).filter((v) => v > 0), n = S.length, c = S[n - 1];
+  const ma = (k) => n >= k ? S.slice(-k).reduce((a, b) => a + b, 0) / k : null;
+  const m20 = ma(20), m60 = ma(60), m120 = ma(120);
+  const r = S.slice(1).map((v, i) => Math.log(v / S[i]));
+  const vol = (i) => { const w = r.slice(i - 20, i); if (w.length < 20) return null; const mu = w.reduce((a, b) => a + b, 0) / 20; return Math.sqrt(w.reduce((a, b) => a + (b - mu) ** 2, 0) / 19 * 252) * 100; };
+  const vs = []; for (let i = 20; i <= r.length; i++) { const v = vol(i); if (v != null) vs.push(v); }
+  const v20 = vs[vs.length - 1], vp = vs.length > 40 ? vs.filter((x) => x <= v20).length / vs.length * 100 : null;
+  const trend = !m60 ? null : c > m20 && m20 > m60 ? "up" : c < m20 && m20 < m60 ? "down" : "side";
+  const volLv = vp == null ? null : vp >= 80 ? "high" : vp <= 20 ? "low" : "mid";
+  const A = SNAP.market_board?.markets?.all, upr = A?.up_ratio;
+  const inds = (SNAP.industries || []).filter((x) => x.n >= 5 && x.chg != null);
+  const byD = [...inds].sort((a, b) => b.chg - a.chg);
+  const day = SNAP.data_dates?.prices || "", end = day ? new Date(Date.parse(day) + 7 * 864e5).toISOString().slice(0, 10) : "";
+  const evs = (SNAP.calendar?.events || []).filter((e) => e.event_date > day && e.event_date <= end && e.status !== "completed");
+  const cnt = (t) => evs.filter((e) => e.event_type === t).length;
+  const TT = { up: "多頭排列：指數在月線之上、月線在季線之上", down: "空頭排列：指數在月線之下、月線在季線之下", side: "盤整：指數與月線、季線交錯" };
+  const VT = { high: "偏高（近一年前 20% 高）", mid: "中等", low: "偏低（近一年最低的 20%）" };
+  const imp = {
+    aggressive: trend === "down" || volLv === "high" ? "趨勢轉弱或波動偏高時，強勢股回檔的幅度通常也大；名單上近期漲多的股票要特別留意追高風險。" : "趨勢延續時動能因子比較有利，但仍要看個股是否已經過熱。",
+    balanced: "看品質、成長與估值的綜合分數，受大盤方向的影響介於另外兩種之間。",
+    stable: volLv === "high" || trend === "down" ? "低波動、高殖利率的條件在震盪時比較派得上用場，但不代表不會跌。" : "多頭行情裡，低波動股票常常漲得比大盤慢，落後大盤是正常現象。",
+  };
+  return { c, m20, m60, m120, v20, vp, trend, volLv, upr, A, top: byD.slice(0, 2), bot: byD.slice(-2).reverse(), evs, ev: { div: cnt("dividend"), rev: cnt("revenue"), fin: cnt("financials") }, TT, VT, imp };
+}
+function briefCard() {
+  const B = marketBrief(); if (!B.c) return "";
+  const pos = (x, nm) => x ? `${nm} ${fmtNum(x, 0)}（指數${B.c >= x ? "在上方" : "在下方"} ${pctTxt((B.c / x - 1) * 100)}）` : "";
+  const ind = (x) => `${esc(x.industry)} <span class="num ${signCls(x.chg)}">${pctTxt(x.chg)}</span>`;
+  const evTxt = [B.ev.div && `除權息 ${B.ev.div} 檔`, B.ev.rev && `月營收公布期限 ${B.ev.rev} 項`, B.ev.fin && `財報公布期限 ${B.ev.fin} 項`].filter(Boolean).join("、");
+  const row = (h, body) => `<div class="br-row"><b>${h}</b><div>${body}</div></div>`;
+  return `<section class="card" id="hbrief"><div class="card-h"><h2>AI 今日市場研究</h2><span class="pill">規則判讀，不是預測</span></div>
+    ${row("大盤趨勢", `${B.trend ? esc(B.TT[B.trend]) : "歷史不足，無法判斷"}<br><span class="faint small">${[pos(B.m20, "月線"), pos(B.m60, "季線"), pos(B.m120, "半年線")].filter(Boolean).join("・")}</span>`)}
+    ${row("波動風險", B.v20 == null ? "歷史不足" : `近 20 日年化波動 ${fmtNum(B.v20, 1)}%，${B.volLv ? esc(B.VT[B.volLv]) : "一年歷史不足，先不分級"}`)}
+    ${row("市場廣度", B.upr == null ? "—" : `上市櫃普通股上漲比例 ${fmtNum(B.upr, 0)}%（上漲 ${B.A.up}、下跌 ${B.A.down} 家）${B.upr >= 60 ? "，多數股票上漲" : B.upr <= 40 ? "，多數股票下跌" : ""}`)}
+    ${row("強勢／弱勢產業", B.top.length ? `當日最強 ${B.top.map(ind).join("、")}；最弱 ${B.bot.map(ind).join("、")}` : "—")}
+    ${row("未來 7 天事件", evTxt ? `${evTxt} <a href="#/calendar" class="small">看日曆 →</a>` : "沒有已排定的事件")}
+    <div class="br-modes">${["stable", "balanced", "aggressive"].map((k) => `<div><b>${esc(SNAP.ai_modes[k]?.name || k)}</b><p>${esc(B.imp[k])}</p></div>`).join("")}</div>
+    <p class="faint small" style="margin:8px 0 0">依 ${esc(SNAP.data_dates?.prices || "")} 收盤資料，用固定規則（均線、波動百分位、漲跌家數、產業平均漲跌）整理，沒有使用語言模型，也不預測明天漲跌。</p></section>`;
+}
+function homePicks() {
+  const M = SNAP.ai_modes, ks = ["stable", "balanced", "aggressive"].filter((k) => M[k]);
+  const col = (k) => {
+    const xs = SNAP.stocks.filter((s) => s.ai?.modes?.[k]?.rank).sort((a, b) => a.ai.modes[k].rank - b.ai.modes[k].rank).slice(0, 3);
+    return `<div class="hp-col"><div class="card-h" style="margin-bottom:6px"><h3 style="margin:0">${esc(M[k].name)}</h3><a class="small" href="#/ai" onclick="store.set('aipage',{...store.get('aipage',{}),mode:'${k}'})">前 20 名 →</a></div>
+      ${xs.map((s) => { const a = s.ai.modes[k]; return `<a class="hp-it" href="#/stock/${esc(s.stock_id)}">
+        <div class="hp-top"><span><b class="num">${a.rank}.</b> ${esc(s.name)} <span class="faint small num">${esc(s.stock_id)}</span></span><span class="num"><b>${fmtNum(a.score, 0)}</b><span class="faint small"> 分</span></span></div>
+        <div class="small">${s.close != null ? `<span class="num">${fmtNum(s.close, s.close < 50 ? 2 : 1)}</span> <span class="num ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span>・` : ""}${esc(s.ai.strengths[0] || s.ai.tag || "")}</div>
+        <div class="small" style="color:var(--warn)">${s.ai.risks.length ? "留意：" + esc(s.ai.risks[0]) : '<span class="faint">沒有偵測到明顯風險訊號</span>'}</div></a>`; }).join("") || `<p class="faint small">${SNAP.rankings_blocked ? "資料不完整，暫停排名" : "目前沒有可排名的股票"}</p>`}</div>`;
+  };
+  return `<section class="card"><div class="card-h"><h2>AI 精選股票</h2><span class="faint small">三種模式各前 3 名・分數是全市場相對排名，不是上漲機率</span></div>
+    <div class="hp">${ks.map(col).join("")}</div></section>`;
+}
+function homePerf() {
+  const W = WEEKLY && WEEKLY.summary, M = SNAP.ai_modes;
+  const cell = (k) => { const x = W?.[k]?.["10"]; return `<div class="kpi"><span>${esc(M[k]?.name || k)}</span>${x && x.weeks ? `<b class="num ${signCls(x.avg_excess)}">${pctTxt(x.avg_excess)}</b><small class="faint">${x.weeks} 週，贏 0050 ${x.beat} 週</small>` : '<b class="faint" style="font-size:15px">累積中</b><small class="faint">還沒有完整的一週</small>'}</div>`; };
+  return `<section class="card" id="hperf"><div class="card-h"><h2>AI 真實績效</h2><a href="#/performance">績效與回測 →</a></div>
+    <p class="small" style="margin:0 0 8px"><span class="pill s-ok">實際封存</span> 每週第一個交易日封存的前 10 名，隔天開盤買、週五收盤賣、扣成本，平均每週超額報酬（對 0050）：</p>
+    <div class="kpis">${["stable", "balanced", "aggressive"].map(cell).join("")}</div>
+    <p class="small" style="margin:10px 0 0"><span class="pill">歷史模擬</span> 回測是用過去資料重算的模擬結果，不是真實績效，和上面分開列在<a href="#/performance">績效頁</a>。目前回測裡沒有一種模式穩定勝過 0050。</p></section>`;
+}
 function pageHome() {
-  const m = SNAP.market, b = SNAP.breadth, MB = SNAP.market_board?.markets;
-  const ranked = SNAP.stocks.filter((s) => s.ai.modes.balanced.rank).sort((a, b) => a.ai.modes.balanced.rank - b.ai.modes.balanced.rank);
+  const m = SNAP.market, MB = SNAP.market_board?.markets, A = MB?.all, day = SNAP.data_dates?.prices || "";
+  const stale = SNAP.expected_date && day && day < SNAP.expected_date;
   const inds = (SNAP.industries || []).filter((x) => x.ret_1m != null && x.n >= 3).sort((a, b) => b.ret_1m - a.ret_1m);
   const indRow = (x) => `<a class="li" href="#/sectors" style="color:inherit"><span>${esc(x.industry)} <span class="faint small">${x.n} 檔</span></span><span class="num ${signCls(x.ret_1m)}">${pctTxt(x.ret_1m)}</span></a>`;
-  const A = MB?.all, up = A ? A.up : b.up, dn = A ? A.down : b.down;
-  const strat = [...(SNAP.strategies || [])].filter((x) => x.count > 0).sort((x, y) => y.count - x.count).slice(0, 4);
+  const IX = m.indices || [{ name: "上櫃指數" }, { name: "電子類股指數" }, { name: "金融類股指數" }];
+  const ixCard = (x) => `<div class="kpi"><span>${esc(x.name)}</span>${x.close != null ? `<b class="num">${fmtNum(x.close, 2)}</b><small class="num ${signCls(x.chg_pct)}">${x.chg != null ? `${x.chg > 0 ? "+" : ""}${fmtNum(x.chg, 2)}（${pctTxt(x.chg_pct)}）` : '<span class="faint">漲跌待下一筆資料</span>'}${x.date && x.date !== day ? `<span class="faint">・${esc(x.date.slice(5))}</span>` : ""}</small>` : '<b class="faint" style="font-size:15px">資料源確認中</b><small class="faint">還沒有穩定的免費官方來源</small>'}</div>`;
+  const rng = store.get("hrng", 120);
   $("#app").innerHTML = `
-    <section><div class="eyebrow">${SNAP.source === "demo" ? "模擬資料示範" : `台灣時間・${esc(SNAP.data_dates.prices || "")} 收盤後`}</div>
-      <h1>今日台股研究總覽</h1>
-      <p class="lead">讓 AI 先排名，或用你自己的條件篩選。</p></section>
-    <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看個股研究</button></form>
-    <section class="card"><div class="card-h"><h2>市場概況</h2><a href="#/market">今日市場詳細數據 →</a></div>
-      <div class="kpis">
-        <div class="kpi"><span>加權指數</span><b>${fmtNum(m.taiex, 2)}</b><small class="num ${signCls(m.taiex_chg)}">${pctTxt(m.taiex_chg)}</small></div>
-        <div class="kpi"><span>上漲／下跌家數</span><b><span class="up">${up}</span> / <span class="down">${dn}</span></b><small class="faint">${A ? `上市櫃普通股・上漲 ${fmtNum(A.up_ratio, 0)}%` : "普通股"}</small></div>
-        ${A ? `<div class="kpi"><span>漲停／跌停家數</span><b><span class="up">${A.limit_up}</span> / <span class="down">${A.limit_down}</span></b><small class="faint">依實際漲跌停價判定</small></div>
-        <div class="kpi"><span>成交金額</span><b>${money(A.value)}</b><small class="faint">上市 ${money(MB.twse.value)}・上櫃 ${money(MB.tpex.value)}</small></div>` : ""}</div>
-</section>
-    ${statusCard()}
-    <section class="core">
-      <a class="corecard" href="#/ai"><span class="eyebrow">系統主動排名</span><h2>AI 量化選股</h2>
-        <p>五個因子替全市場評分排名，每檔附理由。</p>
-        <div class="corelist">${ranked.slice(0, 3).map((s) => `<span class="pill acc">${s.ai.modes.balanced.rank}. ${esc(s.name)}</span>`).join("") || `<span class="faint small">${SNAP.rankings_blocked ? "暫停排名" : "目前沒有可排名的股票"}</span>`}</div>
-        <span class="btn">查看 AI 排行 →</span></a>
-      <a class="corecard" href="#/screener"><span class="eyebrow">你自己決定條件</span><h2>自訂條件選股</h2>
-        <p>自己設門檻篩選全市場，即時看符合幾檔。</p>
-        <div class="corelist">${strat.map((x) => `<span class="pill">${esc(x.name)}・${x.count} 檔</span>`).join("")}</div>
-        <span class="btn">開始選股 →</span></a></section>
-    <h2 style="margin:26px 0 10px">今日量化研究重點</h2>
+    <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看個股</button></form>
+    <section class="card hero-mkt"><div class="hm-h"><div><span class="muted small">加權指數</span>
+        <div class="hm-px"><b class="num">${fmtNum(m.taiex, 2)}</b><span class="num ${signCls(m.taiex_chg)}">${m.taiex_pts != null ? fmtNum(Math.abs(m.taiex_pts), 2) : ""}　${pctTxt(m.taiex_chg).replace(/^[+-]/, "")}</span></div>
+        <div class="small muted">${A ? `上市成交金額 ${money(MB.twse.value)}・上市櫃合計 ${money(A.value)}` : ""}</div></div>
+      <div class="hm-st"><span class="pill ${stale ? "warn" : "s-ok"}">${SNAP.source === "demo" ? "模擬資料" : stale ? "資料待更新" : "盤後"}</span><span class="faint small">${esc(day)} 收盤</span></div></div>
+      <div class="seg sm" id="hrng" style="margin:8px 0 4px">${[[60, "3 個月"], [120, "6 個月"], [250, "1 年"]].map(([k, t]) => `<button data-k="${k}" class="${+rng === k ? "on" : ""}">${t}</button>`).join("")}</div>
+      <div class="chart xs" id="hix"></div>
+      <p class="faint small" style="margin:4px 0 0">只有每日收盤資料，沒有盤中即時走勢。<a href="#/market">今日市場詳細數據 →</a></p></section>
+    <section class="card"><div class="card-h"><h2>主要市場指標</h2><a href="#/market">漲跌停名單與排行 →</a></div>
+      <div class="kpis">${IX.slice(0, 3).map(ixCard).join("")}
+        <div class="kpi"><span>上漲／下跌家數</span><b><span class="up">${A ? A.up : SNAP.breadth.up}</span> / <span class="down">${A ? A.down : SNAP.breadth.down}</span></b><small class="faint">${A ? `上市櫃普通股・上漲比例 ${fmtNum(A.up_ratio, 0)}%` : "普通股"}</small></div>
+        ${A ? `<div class="kpi"><span>漲停／跌停家數</span><b><span class="up">${A.limit_up}</span> / <span class="down">${A.limit_down}</span></b><small class="faint">收盤鎖在漲跌停價，和上漲家數不同</small></div>` : ""}</div></section>
+    ${briefCard()}
+    ${homePicks()}
     ${changesCard()}
+    <div id="hperfw">${homePerf()}</div>
     <section class="two">
-      <div class="card"><div class="card-h"><h2>值得關注的產業</h2><a href="#/sectors">產業熱力圖 →</a></div>
+      <div class="card"><div class="card-h"><h2>產業強弱</h2><a href="#/sectors">產業熱力圖 →</a></div>
         <p class="faint small" style="margin:0 0 6px">近一個月產業平均報酬，最強與最弱</p>
         <div class="scan">${inds.slice(0, 3).map(indRow).join("")}${inds.length > 5 ? '<span class="faint small">⋯</span>' + inds.slice(-2).map(indRow).join("") : ""}</div></div>
       <div class="card"><div class="card-h"><h2>最新公告與新聞</h2><a href="#/news">新聞中心 →</a></div><div id="hnews"><p class="muted small">載入中…</p></div></div></section>
-    <p class="small muted" style="margin:22px 0 0">想知道這些方法過去有沒有用？看 <a href="#/performance">績效與回測</a>。分數是全市場相對排名，不是上漲機率。</p>`;
-  $$(".scan").forEach((el) => el.onclick = (e) => { const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
+    ${statusCard()}`;
   $("#hs").onsubmit = (e) => { e.preventDefault(); const q = $("#hq").value.trim(), hit = BYID[q.split(/\s+/)[0]] || SNAP.stocks.find((s) => q && s.name.includes(q)); if (hit) location.hash = `#/stock/${hit.stock_id}`; else ($("#hq").value = "", $("#hq").placeholder = `找不到「${q}」，請換個代號或名稱`); };
+  const draw = () => {
+    const el = $("#hix"); if (!el || !hasLWC() || !SNAP.index_series?.length) return;
+    charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; el.innerHTML = "";
+    const d = SNAP.index_series.slice(-store.get("hrng", 120)), up = d.length > 1 && d[d.length - 1].value >= d[0].value;
+    const c = mkChart(el, { handleScroll: false, handleScale: false });
+    c.addAreaSeries({ lineColor: css(up ? "--up" : "--down"), topColor: "transparent", bottomColor: "transparent", lineWidth: 2, priceLineVisible: false }).setData(d);
+    c.timeScale().fitContent();
+  };
+  draw();
+  $("#hrng").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hrng", +b.dataset.k); $$("#hrng button").forEach((x) => x.classList.toggle("on", x === b)); draw(); };
+  if (WEEKLY === null) loadWeekly().then(() => { const w = $("#hperfw"); if (w) w.innerHTML = homePerf(); });
   loadNews().then((N) => {
     const el = $("#hnews"); if (!el) return;
     if (!N) { el.innerHTML = '<p class="muted">還沒有新聞資料。</p>'; return; }
-    const w = watch(), top = new Set(ranked.slice(0, 50).map((s) => s.stock_id));
+    const w = watch(), top = new Set(SNAP.stocks.filter((s) => s.ai?.modes?.balanced?.rank <= 50).map((s) => s.stock_id));
     const pri = (x) => (w[x.stock_id] ? 2 : 0) + (top.has(x.stock_id) ? 1 : 0);
-    const items = [...(N.items || [])].sort((a, b) => b.date.localeCompare(a.date) || pri(b) - pri(a)).slice(0, 4);
+    const items = [...(N.items || [])].sort((a, b) => b.date.localeCompare(a.date) || pri(b) - pri(a)).slice(0, 3);
     el.innerHTML = items.map((x) => newsItem(x)).join("") || '<p class="muted">最近沒有公告或新聞。</p>';
   });
 }
@@ -1083,6 +1184,7 @@ function renderJoint() {
       ${R("交易成本合計", (x) => n0(x.cost_total, 1, "%"))}${R("平均現金比例", (x) => n0(x.cash, 0, "%"))}
       ${R("平均每月比 0050", (x) => pc(x.avg_excess))}${R("贏 0050 的月份", (x) => n0(x.beat, 0, "%"))}${R("最差單月比 0050", (x) => pc(x.worst_excess))}
       ${R("跑輸 0050 的月份數", (x) => `${n0(x.lagging.length)} / ${x.months}`)}
+      ${V.hold.ledger ? R("前 5 筆交易占獲利", (x) => n0(x.ledger?.top5_share_of_gains, 0, "%")) + R("扣掉前 5 筆後累積", (x) => pc(x.ledger?.without_top5)) + R("逐筆對帳", (x) => x.ledger ? (x.ledger.matches ? "相符" : `<span style="color:var(--warn)">不符</span>`) : "—") : ""}
       <tr class="faint"><td>0050 同期</td><td class="r">${pc(B.total)}</td><td colspan="${ks.length - 1}" class="small">最大回撤 ${pctTxt(B.mdd)}</td></tr></tbody></table></div>
     ${hasLWC() ? '<div class="chart sm" id="jc" style="margin-top:12px"></div>' : ""}
     <p class="faint small" style="margin:4px 0 10px">${hasLWC() ? ks.map((k, i) => `<span style="color:${["var(--accent)", "var(--warn)", "var(--accent-2)", "var(--muted)"][i]}">■</span> ${esc(J.variants[k])}`).join("　") + '　<span style="color:var(--faint)">■</span> 0050（起點 = 1）' : "（圖表元件沒有載入）"}</p>
@@ -3678,7 +3780,7 @@ function route() {
   charts.forEach((c) => { try { c.remove(); } catch (e) {} }); charts = []; priceChart = null;
   const [p, arg] = location.hash.replace(/^#\/?/, "").split("/");
   const cur = p === "stock" ? "__" : p === "s" || p === "radar" ? "screener" : p || "";
-  $$("#nav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
+  $$("#nav a, #bnav a").forEach((a) => a.classList.toggle("on", a.dataset.r === cur));
   $$("#nav .grp").forEach((g) => { g.classList.toggle("on", !!$(`a[data-r="${cur}"]`, g)); g.open = SIDE(); });
   $("#nav").classList.remove("open"); $("#navtog").setAttribute("aria-expanded", "false");
   if (RF.cls !== "new") rfSay("");  // 上一頁的「已是最新」等訊息不帶到下一頁；「有新版」的提示保留
@@ -3705,6 +3807,7 @@ function SIDE() { return matchMedia("(min-width: 1100px)").matches; }
 matchMedia("(min-width: 1100px)").addEventListener("change", () => $$("#nav .grp").forEach((g) => (g.open = SIDE())));
 new ResizeObserver(() => document.documentElement.style.setProperty("--toph", $(".top").offsetHeight + "px")).observe($(".top"));
 $$("#nav a").forEach((a) => { const d = a.querySelector("small"); if (d) a.title = d.textContent; });
+$("#bmore").onclick = () => { $("#nav").classList.add("open"); $("#navtog").setAttribute("aria-expanded", "true"); window.scrollTo({ top: 0, behavior: "smooth" }); };
 $("#navtog").onclick = () => { const o = $("#nav").classList.toggle("open"); $("#navtog").setAttribute("aria-expanded", String(o)); };
 document.addEventListener("click", (e) => { if (window.innerWidth > 760 && !SIDE()) $$("#nav .grp[open]").forEach((g) => { if (!g.contains(e.target)) g.open = false; }); });
 $$("#nav .grp").forEach((g) => g.addEventListener("toggle", () => { if (g.open && window.innerWidth > 760 && !SIDE()) $$("#nav .grp[open]").forEach((x) => { if (x !== g) x.open = false; }); }));

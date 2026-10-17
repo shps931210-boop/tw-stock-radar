@@ -254,6 +254,25 @@ def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]
     return df, w
 
 
+
+INDEX_NAMES = {"櫃買指數": "上櫃指數", "電子類指數": "電子類股指數", "金融保險類指數": "金融類股指數", "半導體類指數": "半導體類股指數"}
+
+
+def _sector_indices(con) -> list[dict]:
+    """首頁「主要市場指標」：每個指數最近兩筆收盤算漲跌。沒有資料的指數照樣列出、值為 None，網站顯示「資料源確認中」。"""
+    out = []
+    for name, label in INDEX_NAMES.items():
+        try:
+            r = con.execute("SELECT date, close FROM sector_index WHERE name=? ORDER BY date DESC LIMIT 2", (name,)).fetchall()
+        except Exception:
+            r = []
+        it = {"name": label, "date": r[0][0] if r else None, "close": _clean(r[0][1]) if r else None, "chg": None, "chg_pct": None}
+        if len(r) > 1 and r[1][1]:
+            it["chg"] = _clean(r[0][1] - r[1][1])
+            it["chg_pct"] = _clean((r[0][1] / r[1][1] - 1) * 100)
+        out.append(it)
+    return out
+
 def build(demo: bool = False) -> dict:
     cfg = config.load()
     dbname = "demo.db" if demo else "stocks.db"
@@ -303,6 +322,7 @@ def build(demo: bool = False) -> dict:
                                                  "updated_revenue", "updated_financials", "update_state", "official_latest_twse", "update_mode")}
         hist_days = con.execute("SELECT COUNT(DISTINCT date) FROM prices").fetchone()[0]
         idx = db.read(con, "SELECT * FROM index_prices ORDER BY date DESC LIMIT 260")
+        indices = _sector_indices(con)
         health = [] if demo else _health(con)
     common = [r for r in rows if r["is_common"]]
     chg = [r.get("chg_pct") for r in common if r.get("chg_pct") is not None]
@@ -332,7 +352,10 @@ def build(demo: bool = False) -> dict:
             "financials": _mode([r.get("fin_period") for r in common]),
         },
         "market": {"taiex": _clean(idx["close"].iloc[0]) if len(idx) else None,
-                   "taiex_chg": _clean((idx["close"].iloc[0] / idx["close"].iloc[1] - 1) * 100) if len(idx) > 1 else None},
+                   "taiex_chg": _clean((idx["close"].iloc[0] / idx["close"].iloc[1] - 1) * 100) if len(idx) > 1 else None,
+                   "taiex_pts": _clean(idx["close"].iloc[0] - idx["close"].iloc[1]) if len(idx) > 1 else None,
+                   "taiex_date": idx["date"].iloc[0] if len(idx) else None,
+                   "indices": indices},
         "breadth": {"up": sum(c > 0 for c in chg), "down": sum(c < 0 for c in chg), "flat": sum(c == 0 for c in chg)},
         "industries": industries,
         "index_series": [{"time": d, "value": _clean(v)} for d, v in zip(idx["date"][::-1], idx["close"][::-1])],

@@ -208,3 +208,25 @@ def openapi_quotes(session: requests.Session | None = None) -> tuple[str | None,
                      "volume": num(_pick(x, "TradingShares", "TradeVolume")),
                      "value": num(_pick(x, "TransactionAmount", "TradeValue"))})
     return day, rows
+
+
+def openapi_otc_index(session: requests.Session | None = None) -> tuple[str | None, float | None, list[str]]:
+    """櫃買指數（最近一日收盤）。官方 OpenAPI 的欄位名稱尚未在這裡驗證過，所以寬鬆比對：
+    找名稱含 Index／指數、且不是漲跌的欄位。找不到就回傳 None，網站顯示「資料源確認中」，絕不填假數字。
+    第三個回傳值是實際欄位清單，存進 meta 方便下次對欄位。"""
+    from .twse import roc_date
+    s = session or requests.Session()
+    r = http.get(s, f"{OPENAPI}/tpex_mainboard_highlight", headers=HEADERS, timeout=60)
+    js = r.json()
+    rows = js if isinstance(js, list) else [js]
+    if not rows or not isinstance(rows[-1], dict):
+        return None, None, []
+    x = rows[-1]
+    keys = list(x)
+    for k in keys:
+        lk = k.lower()
+        if ("index" in lk or "指數" in k) and not any(w in lk for w in ("change", "漲跌", "chg", "ratio", "%")):
+            v = num(x[k])
+            if v and v > 10:
+                return roc_date(x.get("Date") or x.get("日期")), v, keys
+    return None, None, keys

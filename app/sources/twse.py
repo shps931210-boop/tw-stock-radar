@@ -33,6 +33,10 @@ def num(x):
         return None
 
 
+# 首頁「主要市場指標」用的類股指數（證交所 MI_INDEX「價格指數」表裡的名稱）
+SECTOR_INDICES = ("電子類指數", "金融保險類指數", "半導體類指數")
+
+
 class TwseSource:
     market = "twse"
 
@@ -56,7 +60,9 @@ class TwseSource:
         return js.get("stat") == "OK"
 
     def daily_quotes(self, d: date) -> tuple[list[dict], float | None]:
-        """回傳 (個股行情, 加權指數收盤)。休市日回傳 ([], None)。"""
+        """回傳 (個股行情, 加權指數收盤)。休市日回傳 ([], None)。
+        同一份回應裡的類股指數（電子、金融、半導體）收盤放在 self.indices，由呼叫端存進 sector_index。"""
+        self.indices = {}
         js = self._get("/rwd/zh/afterTrading/MI_INDEX",
                        {"date": d.strftime("%Y%m%d"), "type": "ALLBUT0999", "response": "json"})
         if not self._ok(js):
@@ -75,8 +81,11 @@ class TwseSource:
                                  "close": close, "volume": num(r[i["成交股數"]]), "value": num(r[i["成交金額"]])})
             elif "價格指數(臺灣證券交易所)" in (t.get("title") or ""):
                 for r in t.get("data", []):
-                    if r and str(r[0]).strip() == "發行量加權股價指數":
+                    name = str(r[0]).strip() if r else ""
+                    if name == "發行量加權股價指數":
                         taiex = num(r[1])
+                    if name in SECTOR_INDICES and len(r) > 1 and num(r[1]):
+                        self.indices[name] = num(r[1])
         return rows, taiex
 
     def institutional(self, d: date) -> list[dict]:

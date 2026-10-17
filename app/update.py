@@ -193,6 +193,8 @@ def _fetch(con, todo: list, progress, errors: list, label: str = "每日行情�
             rows = [r for r in rows if is_tracked(r["stock_id"])]
             if taiex:
                 db.upsert(con, "index_prices", [{"date": ds, "close": taiex}])
+            if getattr(s, "indices", None):
+                db.upsert(con, "sector_index", [{"date": ds, "name": k, "close": v} for k, v in s.indices.items()])
             for r in rows:
                 con.execute("INSERT OR IGNORE INTO stocks (stock_id, name, market, industry) VALUES (?,?,?,'')",
                             (r["stock_id"], r.pop("name"), s.market))
@@ -229,6 +231,14 @@ def _openapi_fallback(con, cfg: dict, errors: list) -> None:
         rows = [r for r in rows if is_tracked(r["stock_id"])]
         if day and rows:
             _sync_quotes(con, mkt, day, rows, errors)
+        if mkt == "tpex":
+            try:  # 櫃買指數：只有最近一日，欄位未驗證；失敗只記在 meta，不算更新錯誤
+                iday, val, keys = P.openapi_otc_index()
+                db.set_meta(con, "otc_index_probe", f"{iday or '-'} {val or '-'} 欄位：{','.join(keys)[:300]}")
+                if iday and val:
+                    db.upsert(con, "sector_index", [{"date": iday, "name": "櫃買指數", "close": val}])
+            except Exception as e:
+                db.set_meta(con, "otc_index_probe", f"失敗：{http.describe(e)}"[:300])
         if valuation:
             try:
                 vday, vrows = valuation()
