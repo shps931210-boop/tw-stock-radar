@@ -955,6 +955,56 @@ function renderMovers() {
   el.querySelector("tbody")?.addEventListener("click", (e) => { if (e.target.closest("a")) return; const r = e.target.closest("[data-id]"); if (r) location.hash = `#/stock/${r.dataset.id}`; });
 }
 
+// 每週固定名單績效（app/weekly.py → data/weekly.json）：每週第一份封存名單、隔天開盤進場、週末收盤出場、扣成本
+let WEEKLY = null;
+async function loadWeekly() {
+  if (!SITE) return;
+  if (WEEKLY === null) { try { const r = await fetch("data/weekly.json" + (verQ("weekly.json") || "?t=" + Date.now())); WEEKLY = r.ok ? await r.json() : false; } catch (e) { WEEKLY = false; } }
+  const el = $("#weekly"); if (!el || !WEEKLY || !WEEKLY.weeks?.length) return;
+  el.hidden = false; renderWeekly();
+}
+function renderWeekly() {
+  const el = $("#weekly"), W = WEEKLY, wk = W.weeks.filter((w) => w.modes), i = Math.min(+store.get("wkI", 0) || 0, wk.length - 1), w = wk[i];
+  if (!w) { el.hidden = true; return; }
+  const md = store.get("wkM", "aggressive") in w.modes ? store.get("wkM", "aggressive") : Object.keys(w.modes)[0], M = w.modes[md];
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${String(k) === String(cur) ? "on" : ""}">${n}</button>`).join("")}</div>`;
+  const pc = (v) => v == null ? "—" : `<span class="${signCls(v)}">${pctTxt(v)}</span>`;
+  const sm = W.summary?.[md] || {};
+  const why = { not_traded: "進場日沒有成交", limit_up: "漲停鎖死買不到", thin: "成交太少" };
+  el.innerHTML = `<div class="card-h"><h2>每週固定名單績效</h2><span class="muted small">名單 ${esc(w.list_date)}・進場 ${esc(w.entry)} 開盤・出場 ${esc(w.exit)} 收盤${w.final ? "" : "（本週尚未結束，算到最新收盤）"}</span></div>
+    <div class="toolbar" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">${seg("wkM", Object.fromEntries(Object.keys(w.modes).map((k) => [k, SNAP.ai_modes[k]?.name || k])), md)}${wk.length > 1 ? seg("wkI", Object.fromEntries(wk.map((x, j) => [j, x.list_date.slice(5)])), i) : ""}</div>
+    <div class="tbl"><table><thead><tr><th>組合</th><th class="r">成本後報酬</th><th class="r">比 0050（${pctTxt(w.bench)}）</th><th class="r">比加權指數（${pctTxt(w.taiex)}）</th><th class="r">上漲檔數</th><th class="r">名單日收盤口徑</th></tr></thead><tbody>
+      ${Object.entries(M.top).map(([n, t]) => `<tr><td>前 ${n} 名</td><td class="r num">${pc(t.net)}</td><td class="r num">${pc(t.excess)}</td><td class="r num">${pc(t.vs_taiex)}</td><td class="r num">${t.up}/${t.n}${t.tradable < t.n ? `<br><span class="faint small">${t.n - t.tradable} 檔買不到</span>` : ""}</td><td class="r num faint">${t.close_basis == null ? "—" : pctTxt(t.close_basis)}</td></tr>`).join("")}</tbody></table></div>
+    ${Object.keys(sm).length ? `<p class="small" style="margin:6px 0 0">已結束的 ${sm["10"]?.weeks ?? 0} 週裡，前 10 名有 <b>${sm["10"]?.beat ?? 0}</b> 週跑贏 0050，平均每週超額 ${pctTxt(sm["10"]?.avg_excess)}。週數很少時，這只是紀錄，不能證明模型好壞。</p>` : ""}
+    <details style="margin-top:8px"><summary class="small">前 10 名逐檔明細</summary><div class="tbl"><table><thead><tr><th>排名</th><th>股票</th><th class="r">進場開盤</th><th class="r">出場收盤</th><th class="r">報酬</th></tr></thead><tbody>
+      ${M.stocks.slice(0, 10).map((x) => `<tr data-id="${x.stock_id}"><td class="num">${x.rank}</td><td><a href="#/stock/${x.stock_id}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td class="r num">${x.entry_open == null ? "—" : fmtNum(x.entry_open, 2)}</td><td class="r num">${x.exit_close == null ? "—" : fmtNum(x.exit_close, 2)}</td><td class="r num">${x.untradable ? `<span class="faint small">${why[x.untradable] || "買不到"}</span>` : pc(x.ret)}</td></tr>`).join("")}</tbody></table></div></details>
+    <p class="faint small" style="margin:8px 0 0">規則每週相同：每週第一個交易日收盤後首次封存的名單（不用補正版）、隔天開盤等權重買進、中途不換股、該週最後一個交易日收盤結算，扣一次來回成本 ${W.cost_pct}%；買不到的那一份留現金。0050 用同一段開盤到收盤（還原除權息）；加權指數只有收盤價，所以從名單日收盤算起。「名單日收盤口徑」用名單當天收盤價當成本，方便和其他報告對帳，但那個價格在名單公布時已經買不到。</p>`;
+  $("#wkM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("wkM", b.dataset.k); renderWeekly(); } };
+  $("#wkI") && ($("#wkI").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("wkI", b.dataset.k); renderWeekly(); } });
+}
+// 風險規則逐項檢驗（app/risk_research.py → data/backtest/risk.json，每週重算）：一次只加一條規則，和原始模型逐月比較
+let RISK = null;
+async function loadRisk() {
+  if (!SITE) return;
+  if (RISK === null) { try { const r = await fetch("data/backtest/risk.json" + (verQ("backtest/risk.json") || "?t=" + Date.now())); RISK = r.ok ? await r.json() : false; } catch (e) { RISK = false; } }
+  const el = $("#risk"); if (!el || !RISK) return;
+  el.hidden = false; renderRisk();
+}
+function renderRisk() {
+  const el = $("#risk"), R = RISK, md = store.get("rkM", "aggressive") in R.results ? store.get("rkM", "aggressive") : "aggressive", n = store.get("rkN", "10"), B = R.results[md][n];
+  const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, v]) => `<button data-k="${k}" class="${k === cur ? "on" : ""}">${v}</button>`).join("")}</div>`;
+  const pc = (v) => v == null ? "—" : `<span class="${signCls(v)}">${pctTxt(v)}</span>`, f = (v) => v == null ? "—" : fmtNum(v, 2) + "%";
+  const tag = { pass: "acc", consistent: "", no: "warn" };
+  el.innerHTML = `<div class="card-h"><h2>風險規則逐項檢驗</h2><span class="muted small">${esc(R.start)}～${esc(R.data_end)}・${R.months.length} 個月・每月換股・扣成本 ${R.cost_pct}%・基準 0050（同期 ${pctTxt(R.bench_stats?.total)}）</span></div>
+    <p class="small" style="margin:0 0 8px">問題：AI 量化選股是不是太追高、波動太大或太集中？每次只加一條規則，看成本後超額報酬和回撤有沒有改善。門檻在 ${esc(R.thresholds_fixed_at)} 事先寫死，沒有依結果挑參數，也沒有用 10/12 那一週的結果。</p>
+    <div class="toolbar" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">${seg("rkM", Object.fromEntries(Object.entries(R.results).map(([k, v]) => [k, v.name])), md)}${seg("rkN", { 10: "前 10 名", 20: "前 20 名" }, n)}</div>
+    <div class="tbl"><table class="wrap"><thead><tr><th>版本</th><th class="r">總報酬</th><th class="r">每月平均超額</th><th class="r">最大回撤</th><th class="r">相對 0050 最大落後</th><th class="r">追蹤誤差</th><th class="r">進場後 5 日超額</th><th>和原始模型比</th></tr></thead><tbody>
+      ${Object.entries(B).map(([k, s]) => `<tr><td><b>${k}</b> ${esc(s.rule)}${R.rule_desc?.[k] ? `<br><span class="faint small">${esc(R.rule_desc[k])}</span>` : ""}</td><td class="r num">${pc(s.total)}</td><td class="r num">${pc(s.avg_excess)}</td><td class="r num">${f(s.mdd)}</td><td class="r num">${f(s.rel_mdd)}</td><td class="r num">${f(s.te)}</td><td class="r num">${pc(s.excess_5d)}</td>
+        <td class="small">${s.vs_A ? `<span class="pill ${tag[s.vs_A.verdict]}">${esc(s.vs_A.label)}</span><br><span class="faint">每月差 ${pctTxt(s.vs_A.avg_diff)}（前半 ${pctTxt(s.vs_A.first_half)}、後半 ${pctTxt(s.vs_A.second_half)}，t ${s.vs_A.t ?? "—"}）</span>` : "基準"}</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">判定：前後兩半段都比原始模型好、而且 t ≥ 2 才算「通過」；通過的規則也只會先以影子模式每天追蹤，不會直接改正式排行榜。只有方向一致代表值得繼續觀察。期間只有 ${R.months.length} 個月、空頭月份很少，結論可信度有限；歷史股價與財報往前補到 2018 年後，每週六會自動用更長的資料重算。</p>`;
+  $("#rkM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkM", b.dataset.k); renderRisk(); } };
+  $("#rkN").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkN", b.dataset.k); renderRisk(); } };
+}
 // ---------- AI 量化選股＋進出場聯合回測（history/backtest/joint.json，每週重算） ----------
 let JOINT = null;
 // V22 預測模型研究（app/ml_research.py，影子模式）：V21 固定權重 vs Ridge／Logistic／LightGBM，時序滾動、purge
@@ -1201,7 +1251,7 @@ function btTable(h) {
 }
 const BENCH_TXT = () => "0050（還原除權息、含股利），和個股同樣從隔天開盤算到出場日收盤。基準固定是 0050，缺 0050 價格的紀錄標示「無法比較」，不會改用別的指數";
 function trackNames() {
-  return Object.assign({}, Object.fromEntries(Object.entries(SNAP.ai_modes).map(([k, m]) => [k, "AI " + m.name + "前 20 名"])), { signals: "技術訊號股", universe: "對照：當天所有可排名股票" });
+  return Object.assign({}, Object.fromEntries(Object.entries(SNAP.ai_modes).map(([k, m]) => [k, "AI " + m.name + "前 20 名"])), { signals: "技術訊號股", universe: "對照：當天均衡型可排名的所有股票" });
 }
 function scorecard(tr) {
   const sc = tr.scorecard || {}, H = tr.horizons || [5, 20, 60], names = trackNames(), sl = tr.slips || [];
@@ -1228,7 +1278,7 @@ function scorecard(tr) {
     「第 5 個交易日收盤出場」是選股日隔天開盤買進（算第 1 天），第 5 個交易日收盤賣出。
     正式樣本外：只計入在進場日開盤前就已經公開存檔的名單（看「名單產生時間」），每筆紀錄也存了模型設定指紋，事後改模型或補跑舊日期都不會混進來。
     報酬一律同時列出「全部股票（含估價）」和「只算有實際出場價」兩種，以及估價的檔數和比例。
-    「比全市場」= 名單平均報酬 − 當天所有可排名股票的平均報酬，用來看前 20 名是不是真的比整體好。進場日沒有成交、漲停鎖死、成交金額低於 ${fmtNum((tr.thin_value || 3e6) / 1e4, 0)} 萬元的股票實際上買不到，不計入；
+    「比全市場」= 名單平均報酬 − 當天均衡型可排名的所有股票平均報酬（三種模型共用這個對照組；積極型的資格條件不同，少數入選股不在其中），用來看前 20 名是不是真的比整體好。進場日沒有成交、漲停鎖死、成交金額低於 ${fmtNum((tr.thin_value || 3e6) / 1e4, 0)} 萬元的股票實際上買不到，不計入；
     已買進但出場日停牌或下市的股票仍然計入，用最後成交價估算，但這個價格不一定賣得到，所以另外列出「只算有實際出場價的股票」的結果和估算的比例。紀錄天數少時結果容易受單一事件影響。</p>`;
 }
 function modelCompare(tr) {
@@ -1265,7 +1315,7 @@ function attrCard(tr) {
     ${keys.length ? `<div class="tbl"><table><thead><tr><th>名單</th>${H.map((h) => `<th class="r">第 ${h} 個交易日收盤出場<br><span class="faint">比全市場多・拆成兩部分</span></th>`).join("")}</tr></thead><tbody>
       ${keys.map((k) => `<tr><td>${esc(names[k])}</td>${H.map((h) => cell(sc[k][h]?.attr)).join("")}</tr>`).join("")}</tbody></table></div>`
       : '<p class="muted" style="margin:0">還沒有可以拆解的紀錄。需要當天「所有可排名股票」的存檔（10/12 起的名單才有），而且要等第一個期間到期。</p>'}
-    <p class="faint small" style="margin:8px 0 0">比全市場多 = 名單平均報酬 − 當天所有可排名股票的平均報酬（等權重，都扣交易成本）。再拆成：
+    <p class="faint small" style="margin:8px 0 0">比全市場多 = 名單平均報酬 − 當天均衡型可排名的所有股票平均報酬（三種模型共用這個對照組；積極型的資格條件不同，少數入選股不在其中）（等權重，都扣交易成本）。再拆成：
       <b>產業</b>＝名單裡每檔股票「所屬產業的平均報酬」比全市場多多少（選到強勢產業的貢獻）；<b>選股</b>＝每檔股票比自己產業平均多多少（在同產業裡挑得好不好）。兩項相加剛好等於總差異。
       這是簡化的等權拆解，不是正式的 Brinson 投資組合歸因；產業用目前的分類，股票數少於 5 檔的產業結果不穩定。</p>
     ${anyB ? `<p class="faint small" style="margin:6px 0 0">0050 的兩種報酬：績效與回測用的是「總報酬」（還原除權息、含配息）；「價格報酬」只看股價、不含配息。期間內沒有除息時兩者相同。最近一筆：總報酬 ${pctTxt(anyB.bench)}、價格報酬 ${pctTxt(anyB.bench_price)}。</p>` : ""}</section>`;
@@ -1277,18 +1327,21 @@ function pagePerformance() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 量化選股績效與回測</h1>
       <p class="lead">每天收盤後的 AI 名單在開盤前就公開存檔，之後用固定規則計算：隔天開盤買進、第 N 個交易日收盤賣出、扣交易成本，和 0050、全市場、同產業比較。這是真實的事後紀錄，不是回測，也不代表未來報酬。</p></section>
-    <section class="card"><div class="card-h"><h2>四種驗證，狀態不同</h2></div>
+    <section class="card" id="weekly" hidden></section>
+    <section class="card"><div class="card-h"><h2>各種驗證，狀態不同</h2></div>
       <div class="tbl"><table class="wrap"><thead><tr><th>驗證方式</th><th>回答的問題</th><th>狀態</th></tr></thead><tbody>
         <tr><td><b>AI 名單上線後追蹤</b><br><span class="faint small">樣本外、事後紀錄</span></td><td>每天公開存檔的 AI 名單，之後真的表現如何？</td><td><span class="pill acc">進行中</span> 已累積 ${tr.days || 0} 個選股日（本頁下方）</td></tr>
         <tr><td><b>AI 多因子歷史回測</b><br><span class="faint small">用過去資料重建當時的 AI 排名</span></td><td>如果過去每個月都照模型選前 N 名，結果如何？</td><td id="pitst"><span class="pill warn">尚未完成</span> 正在建立「只用當時已公布資料」的評分引擎；完成前，網站不宣稱 AI 模型已通過歷史回測</td></tr>
         <tr><td><b>因子有效性檢驗</b><br><span class="faint small">研究：每個因子到底有沒有預測力</span></td><td>分數高的股票之後真的比較好嗎？扣掉產業、分多空之後呢？</td><td>${'<span class="pill">研究中</span> 見下方；結果還沒有用來修改模型'}</td></tr>
         <tr><td><b>預測模型研究（V22）</b><br><span class="faint small">影子模式：不影響正式排行榜</span></td><td>用機器學習預測 20 日超額報酬，會比固定權重準嗎？資料夠不夠證明？</td><td><span class="pill">研究中</span> 見下方「預測模型研究」</td></tr>
+        <tr><td><b>風險規則逐項檢驗</b><br><span class="faint small">研究：過熱、高波動、產業集中、市場狀態</span></td><td>加一條風險規則，能不能減少落後大盤又不犧牲報酬？</td><td><span class="pill">研究中</span> 見下方「風險規則逐項檢驗」</td></tr>
         <tr><td><b>技術訊號歷史回測</b><br><span class="faint small">只檢驗技術訊號，不是 AI 綜合分數</span></td><td>出現某個技術訊號後 5、20 天的表現？</td><td><span class="pill">已有結果</span> 見 <a href="#/trust">資料來源與方法</a>；目前結果沒有勝過大盤</td></tr>
       </tbody></table></div>
       <p class="faint small" style="margin:8px 0 0">技術訊號的回測結果不能當成「AI 量化選股的歷史獲利能力」。</p></section>
     <section class="card" id="pit" hidden></section>
     <section class="card" id="joint" hidden></section>
     <section class="card" id="fac" hidden></section>
+    <section class="card" id="risk" hidden></section>
     <section class="card" id="ml" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
@@ -1306,7 +1359,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML();
+  loadJoint(); loadML(); loadWeekly(); loadRisk();
   loadFac();
 }
 

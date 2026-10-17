@@ -42,6 +42,10 @@ jobs:
         run: python -m app.joint_backtest
       - name: 因子有效性檢驗
         run: python -m app.factor_research
+      # 風險規則逐項檢驗（過熱、高波動、產業集中、市場狀態、0050 基準部位）：只做研究，不改正式模型
+      - name: 風險規則逐項檢驗
+        continue-on-error: true
+        run: python -m app.risk_research
       # V22 預測模型研究（影子模式，不影響正式排行榜）：V21 固定權重 vs Ridge／Logistic／LightGBM
       - name: 預測模型研究
         continue-on-error: true

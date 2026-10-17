@@ -110,7 +110,7 @@ pit = root / "history" / "backtest" / "ai_pit.json"
 if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
-for extra in ("joint.json", "ml.json"):  # 聯合回測（app.joint_backtest）、V22 預測模型研究（app.ml_research，影子模式）
+for extra in ("joint.json", "ml.json", "risk.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
     if (root / "history" / "backtest" / extra).exists():
         (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
         shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)
@@ -140,6 +140,12 @@ except Exception as e:
     print("投資組合輔助資料失敗：", e)
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
+try:  # 每週固定名單績效（app/weekly.py）：每次發布都用最新收盤重算
+    if (config.DATA_DIR / "stocks.db").exists():
+        from app import weekly
+        (out / "data" / "weekly.json").write_text(json.dumps(weekly.build(), ensure_ascii=False), "utf-8")
+except Exception as e:
+    print("每週成績單失敗：", e)
 try:  # AI 訓練資料盤點（app/data_inventory.py）：每次發布都從資料庫重新查
     if (config.DATA_DIR / "stocks.db").exists():
         from app import data_inventory
