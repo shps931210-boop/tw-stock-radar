@@ -46,6 +46,10 @@ jobs:
       - name: 風險規則逐項檢驗
         continue-on-error: true
         run: python -m app.risk_research
+      # V28 資料與回測稽核（有沒有偷看到未來資料）：只報告，不擋後面的研究
+      - name: 資料與回測稽核
+        continue-on-error: true
+        run: python -m app.leak_audit
       # V27 推薦組合風險研究（原始／流動性限制／產業限制／聯合限制 Top10）：只做研究，原始排名不變
       - name: 推薦組合風險研究
         continue-on-error: true

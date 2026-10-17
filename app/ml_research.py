@@ -305,6 +305,12 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
             "features": FEATS, "feature_missing_pct": miss, "label_status": lab, "models": NAMES, "params": {"ridge_alpha": RIDGE_ALPHA, "lgbm": LGB_PARAMS},
             "lgbm": "lgbm" in (H.get(str(MAIN), {}).get("all") or {}), "horizons": H, "main": MAIN, "verdict": verdict,
             "seconds": round(time.time() - t0), "errors": errors}
+    try:  # V28 20 日模型比賽（事先固定的驗收規則，app/model_race.py）
+        from . import model_race
+        res["race"] = model_race.run(panel, sigs, D, use_lgbm, log)
+    except Exception as e:
+        res["race"] = {"ready": False, "reason": f"模型比賽失敗：{e}"}
+        log(res["race"]["reason"])
     try:  # V25 持續學習：用全部已到期的資料訓練新版本，暫存檢查通過才上線（app/learning.py）
         from . import learning
         res["registered"] = learning.train_and_register(panel, res, D["dates"], use_lgbm, log)["version"]
@@ -316,6 +322,10 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
 def main(argv: list[str]) -> int:
     res = run(log=lambda s: print(s, flush=True))
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    race = res.pop("race", None)
+    if race is not None:
+        (OUT.parent / "race.json").write_text(json.dumps({**race, "generated_at": res["generated_at"], "data_start": res["start"], "data_end": res["end"]},
+                                                          ensure_ascii=False, indent=1, default=str), "utf-8")
     OUT.write_text(json.dumps(res, ensure_ascii=False, indent=1), "utf-8")
     m = res["horizons"].get(str(MAIN), {})
     print(json.dumps({"verdict": res["verdict"], "sufficiency": m.get("sufficiency"), "all": m.get("all"), "vs_v21": m.get("vs_v21")}, ensure_ascii=False, indent=1))

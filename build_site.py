@@ -110,7 +110,7 @@ pit = root / "history" / "backtest" / "ai_pit.json"
 if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
-for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
+for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
     if (root / "history" / "backtest" / extra).exists():
         (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
         shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)

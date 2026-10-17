@@ -1156,6 +1156,45 @@ function renderRisk() {
   $("#rkM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkM", b.dataset.k); renderRisk(); } };
   $("#rkN").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkN", b.dataset.k); renderRisk(); } };
 }
+// V28 選股準確度：20 日模型比賽（race.json）與資料稽核（audit.json），每週六重算
+let RACE = null, LAUD = null;
+async function loadRace() {
+  if (!SITE) return;
+  const get = async (f) => { try { const r = await fetch("data/backtest/" + f + (verQ("backtest/" + f) || "?t=" + Date.now())); return r.ok ? await r.json() : false; } catch (e) { return false; } };
+  if (RACE === null) RACE = await get("race.json");
+  if (LAUD === null) LAUD = await get("audit.json");
+  if (RACE && RACE.results && $("#race")) { $("#race").hidden = false; renderRace(); }
+  if (LAUD && LAUD.checks && $("#laudit")) { $("#laudit").hidden = false; renderAudit(); }
+}
+function renderRace() {
+  const R = RACE, el = $("#race"), pc = (v) => v == null ? "—" : `<span class="${signCls(v)}">${pctTxt(v)}</span>`, f = (v) => v == null ? "—" : fmtNum(v, 2) + "%";
+  const ms = Object.keys(R.results), P = (m) => R.results[m].portfolio || {}, Hd = (m) => R.results[m].holdout || {};
+  const C = R.combo || {}, CN = { none: "四項都沒有", hot: "近期漲多", rich: "估值偏高", volatile: "高波動", illiquid: "低流動性", "hot+volatile": "漲多＋高波動", three_plus: "三項以上", all_four: "四項全中" };
+  el.innerHTML = `<div class="card-h"><h2>AI 量化選股準確度：20 日模型比賽</h2><span class="muted small">規則 ${esc(R.race_version)} 事先固定・${esc(R.first_test)}～${esc(R.last_test)}・保留測試期從 ${esc(R.holdout_from)}</span></div>
+    <div class="banner ${R.summary?.passed?.length ? "info" : ""} small" style="margin-bottom:10px"><b>結論：${esc(R.summary?.label || "")}</b>。主要指標是前 ${R.top} 名扣成本（${R.cost_pct}%）後相對 0050 的超額報酬，每 20 個交易日換一次股（不重疊期間 ${R.effective_samples?.independent_periods ?? "—"} 期）；挑戰者要比 V21 好而且 t ≥ ${R.t_need}（三個挑戰者的多重比較修正）、保留測試期也要比較好。</div>
+    <div class="tbl"><table class="wrap"><thead><tr><th>模型</th><th class="r">每期扣成本超額</th><th class="r">t 值</th><th class="r">期間總報酬</th><th class="r">0050</th><th class="r">加權指數</th><th class="r">最大回撤</th><th class="r">個股跑贏 0050 比例</th><th class="r">Rank IC</th><th class="r">保留期超額</th><th class="r">交易次數</th><th>驗收</th></tr></thead><tbody>
+      ${ms.map((m) => { const x = R.results[m], p = P(m); return `<tr><td><b>${esc(x.name)}</b></td><td class="r num">${pc(p.net_excess)}</td><td class="r num">${p.t ?? "—"}</td><td class="r num">${pc(p.total)}</td><td class="r num">${pc(p.bench_total)}</td><td class="r num">${pc(p.taiex_total)}</td><td class="r num">${f(p.mdd)}</td><td class="r num">${p.hit == null ? "—" : fmtNum(p.hit, 1) + "%"}</td><td class="r num">${x.ic?.ic == null ? "—" : fmtNum(x.ic.ic, 3)}<span class="faint small">（t ${x.ic?.t ?? "—"}）</span></td><td class="r num">${pc(Hd(m).net_excess)}</td><td class="r num">${p.trades ?? "—"}</td>
+        <td class="small">${x.verdict ? `<span class="pill ${x.verdict.passed ? "s-ok" : ""}">${x.verdict.passed ? "通過" : "未通過"}</span><br><span class="faint">比 V21 每期 ${x.vs_v21?.diff == null ? "—" : (x.vs_v21.diff > 0 ? "+" : "") + fmtNum(x.vs_v21.diff, 2) + "%"}（t ${x.vs_v21?.t ?? "—"}）</span>` : "正式模型"}</td></tr>`; }).join("")}</tbody></table></div>
+    <h3 style="margin:14px 0 6px">不同市場環境（加權指數在半年線之上＝多頭）</h3>
+    <div class="tbl"><table><thead><tr><th>模型</th><th class="r">多頭 IC</th><th class="r">多頭前 10 名超額</th><th class="r">空頭 IC</th><th class="r">空頭前 10 名超額</th></tr></thead><tbody>
+      ${ms.map((m) => { const g = R.results[m].regimes || {}; return `<tr><td>${esc(R.results[m].name)}</td><td class="r num">${g.bull ? fmtNum(g.bull.ic, 3) : "—"}</td><td class="r num">${pc(g.bull?.top_net_excess)}</td><td class="r num">${g.bear ? fmtNum(g.bear.ic, 3) + `<span class="faint small">（${g.bear.dates} 期）</span>` : "—"}</td><td class="r num">${pc(g.bear?.top_net_excess)}</td></tr>`; }).join("")}</tbody></table></div>
+    ${Object.keys(C).length ? `<h3 style="margin:14px 0 6px">積極型風險研究：哪些特徵和「下一個 20 日大幅落後」有關？</h3>
+      <div class="tbl"><table><thead><tr><th>特徵</th><th class="r">股票×期</th><th class="r">平均超額</th><th class="r">和其他股票比</th><th class="r">t 值</th><th class="r">落後 0050 超過 10% 的機率</th></tr></thead><tbody>
+      ${Object.keys(CN).filter((k) => C[k]).map((k) => `<tr><td>${CN[k]}</td><td class="r num">${fmtNum(C[k].stock_dates, 0)}</td><td class="r num">${pc(C[k].avg_excess)}</td><td class="r num">${pc(C[k].vs_rest)}</td><td class="r num">${C[k].t ?? "—"}</td><td class="r num">${C[k].big_loss_pct == null ? "—" : fmtNum(C[k].big_loss_pct, 1) + "%"}</td></tr>`).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">全部股票落後超過 10% 的機率是 ${C._base_big_loss_pct}%。門檻事先固定：${esc(Object.values(R.combo_rules || {}).join("；"))}。</p>` : ""}
+    <p class="faint small" style="margin:8px 0 0">訓練目標是「當天每檔股票的超額報酬名次」，所以模型學的是哪些股票比較會跑贏大盤，不是猜大盤漲跌；用 0050 或加權指數當基準，名次完全相同。加權指數是價格指數（不含股利）、以收盤價近似。過去的結果不代表未來，有效樣本仍少，結論要隨資料累積重算。</p>`;
+}
+function renderAudit() {
+  const A = LAUD, el = $("#laudit");
+  el.innerHTML = `<div class="card-h"><h2>資料與回測稽核：AI 有沒有偷看到未來？</h2><span class="pill ${A.passed === A.total ? "s-ok" : "warn"}">${A.passed}／${A.total} 項通過</span></div>
+    <div class="tbl"><table class="wrap"><thead><tr><th>檢查</th><th>結果</th><th>說明</th></tr></thead><tbody>
+      ${A.checks.map((c) => { const d = c.detail; const txt = c.id === "future_invariance" ? d.map((x) => `${x.signal}：${fmtNum(x.values, 0)} 個數值改變 ${x.changed} 個`).join("；")
+        : c.id === "purge" ? d.map((x) => `${x.horizon} 日 ${x.tests} 個測試日、違規 ${x.violations.length}`).join("；")
+        : c.id === "universe" ? d.note : c.id === "sealed" ? `${d.files} 份封存預測，遲交或用到未來資料 ${d.late_or_leaky.length} 份` : c.id === "availability" ? d.map((x) => `${x.item} 從 ${x.used_from} 起使用`).join("；") : "";
+        return `<tr><td>${esc(c.name)}</td><td>${c.ok ? '<span class="pill s-ok">通過</span>' : '<span class="pill warn">未通過</span>'}</td><td class="small">${esc(txt)}</td></tr>`; }).join("")}</tbody></table></div>
+    ${A.defects?.length ? `<h3 style="margin:14px 0 6px">尚未解決的資料缺陷</h3><ul class="small" style="margin:0;padding-left:18px">${A.defects.map((x) => `<li><b>${esc(x.item)}</b>（${esc(x.status)}）：${esc(x.impact)}</li>`).join("")}</ul>` : ""}
+    <p class="faint small" style="margin:8px 0 0">「未來資料不變性」是直接把訊號日之後的股價、指數、月營收、季報、股利全部亂改，再重算當天的特徵和 AI 分數；只要有一個數字變了，就代表模型偷看到未來。資料到 ${esc(A.data_end || "—")}，產生於 ${esc((A.generated_at || "").slice(0, 16).replace("T", " "))}。</p>`;
+}
 // V27 推薦組合風險研究（app/portfolio_research.py → data/backtest/portfolio.json，每週重算）
 let PORT = null;
 async function loadPort() {
@@ -1569,6 +1608,8 @@ function pagePerformance() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 量化選股績效與回測</h1>
       <p class="lead">每天收盤後的 AI 名單在開盤前就公開存檔，之後用固定規則計算：隔天開盤買進、第 N 個交易日收盤賣出、扣交易成本，和 0050、全市場、同產業比較。這是真實的事後紀錄，不是回測，也不代表未來報酬。</p></section>
+    <section class="card" id="race" hidden></section>
+    <section class="card" id="laudit" hidden></section>
     <section class="card" id="weekly" hidden></section>
     <section class="card"><div class="card-h"><h2>各種驗證，狀態不同</h2></div>
       <div class="tbl"><table class="wrap"><thead><tr><th>驗證方式</th><th>回答的問題</th><th>狀態</th></tr></thead><tbody>
@@ -1604,7 +1645,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadRace(); loadLearn(); loadPredSc();
   loadFac();
 }
 
