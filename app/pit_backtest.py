@@ -34,7 +34,9 @@ import pandas as pd
 from . import ai_model, config, db, metrics, snapshot, track
 
 METHOD = 1
-START = "2025-03-01"  # 動能因子要一年股價：股價從 2024-01 開始，2025-03 起大多數股票才算得出來
+START = "2025-03-01"  # 舊的固定起點；現在改由 auto_start 依資料長度決定，這個值只當作沒有資料時的預設
+WARMUP_DAYS = 260      # 動能因子要一年股價：股價第一天往後約 260 個交易日，大多數股票才算得出來
+FIN_COVER = 0.6        # 季報覆蓋率：某一季有季報的股票達到最多那一季的六成，才算「那時候的財報可用」
 TOP_NS = (5, 10, 20)
 COST = track.COST
 THIN_VALUE = track.THIN_VALUE
@@ -102,6 +104,24 @@ def fix_gaps(px: pd.DataFrame) -> pd.DataFrame:
         for c in ("open", "high", "low", "close"):
             px[c] = px[c] * factor
     return px
+
+
+def auto_start(D: dict) -> str:
+    """回測起點：股價累積滿一年（動能因子算得出來）且季報已大致補齊的下一個月 1 日。
+    夜間長期歷史回補把股價、財報往前補之後，起點會自動跟著往前，不必改程式。"""
+    dates = D["dates"]
+    if not dates:
+        return START
+    px = dates[min(WARMUP_DAYS, len(dates) - 1)]
+    cnt: dict = {}
+    for g in D["fin"].values():
+        for p in g["period"].dropna().unique():
+            cnt[p] = cnt.get(p, 0) + 1
+    ok = sorted(p for p, n in cnt.items() if n >= FIN_COVER * max(cnt.values())) if cnt else []
+    fin = fin_available(ok[0]) if ok else px
+    d = max(px, fin)
+    y, m = int(d[:4]), int(d[5:7]) + 1
+    return f"{y + (m > 12)}-{(m - 1) % 12 + 1:02d}-01"
 
 
 def rebalance_dates(dates: list[str], start: str = START) -> list[tuple[str, str]]:
@@ -244,10 +264,11 @@ def model_hash() -> str:
     return hashlib.sha1(src.encode()).hexdigest()[:10]
 
 
-def run(dbname: str = "stocks.db", start: str = START, log=print) -> dict:
+def run(dbname: str = "stocks.db", start: str | None = None, log=print) -> dict:
     t0 = time.time()
     cfg = config.load()
     D = load(dbname)
+    start = start or auto_start(D)
     rb = rebalance_dates(D["dates"], start)
     periods = list(zip(rb, rb[1:]))  # 只算已經走完的月份
     log(f"資料讀取 {time.time() - t0:.0f} 秒；{len(periods)} 個完整月份")

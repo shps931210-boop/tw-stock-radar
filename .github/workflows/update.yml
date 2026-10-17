@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "fast＝快速收盤更新；full＝完整更新（含歷史回補、財報）；backfill＝只補財報"
+        description: "fast＝快速收盤更新；full＝完整更新（含歷史回補、財報）；backfill＝夜間補齊（長期歷史股價＋財報）"
         default: fast
         type: choice
         options: [fast, full, backfill]
@@ -102,7 +102,7 @@ jobs:
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}   # 只用來讀「優先補抓財報」的申請，不會進網站
-        run: python -m app.update $([ "$MODE" = fast ] && echo --fast) $([ "$MODE" = backfill ] && echo --fundamentals-only)
+        run: python -m app.update $([ "$MODE" = fast ] && echo --fast) $([ "$MODE" = backfill ] && echo --backfill)
 
       # 新聞與公告失敗不影響股價更新；網站新聞中心會顯示最後成功時間與警告
       - name: 新聞與公司公告

@@ -28,6 +28,20 @@ def _years(a: str | None, b: str | None) -> float | None:
     return round((date.fromisoformat(b[:10]) - date.fromisoformat(a[:10])).days / 365.25, 1)
 
 
+def _backfill_txt(con) -> str:
+    """夜間長期歷史回補的進度（app.update.update_history 寫入）。"""
+    try:
+        h = json.loads(db.get_meta(con, "history_backfill") or "null")
+    except Exception:
+        h = None
+    if not h or not h.get("target"):
+        return ""
+    left = max((h.get("left_days") or {}).values(), default=0)
+    fin = (_one(con, "SELECT COUNT(*) FROM fetch_log WHERE source='fm_financials_hist'") or [0])[0]
+    return (f"夜間正在把股價往前補到 {h['target']}，還有約 {left} 個平日要抓；" if left else f"股價已補到目標起點 {h['target']}；") + \
+        f"財報往前補齊的股票 {fin} 檔。"
+
+
 def build(con) -> dict:
     q = []
     # 1. 每日行情
@@ -38,7 +52,8 @@ def build(con) -> dict:
               "level": "ok" if (yrs or 0) >= 5 else "partial" if (yrs or 0) >= 2 else "gap",
               "facts": {"起": p0, "迄": p1, "年數": yrs, "交易日": nd, "股票數": ns},
               "why": f"資料庫有 {p0}～{p1}（約 {yrs} 年、{nd} 個交易日）的上市櫃收盤行情。"
-                     + ("機器學習模型通常希望至少涵蓋一次完整多空循環（5 年以上），目前的長度只夠做初步研究，樣本外期間會很短。" if (yrs or 0) < 5 else "")})
+                     + ("機器學習模型通常希望至少涵蓋一次完整多空循環（5 年以上），目前的長度只夠做初步研究，樣本外期間會很短。" if (yrs or 0) < 5 else "")
+                     + _backfill_txt(con)})
     # 2. 公告時間
     r0 = (_one(con, "SELECT MIN(ym) FROM revenue") or [None])[0]
     f0, nf = _one(con, "SELECT MIN(period), COUNT(DISTINCT stock_id) FROM financials") or (None, 0)

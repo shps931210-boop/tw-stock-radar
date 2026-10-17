@@ -152,10 +152,11 @@ def _regime(D: dict, sig: str) -> str | None:
     return "bull" if s.iloc[-1] >= s.iloc[-REGIME_MA:].mean() else "bear"
 
 
-def run(dbname: str = "stocks.db", start: str = pb.START, limit: int | None = None, log=print) -> dict:
+def run(dbname: str = "stocks.db", start: str | None = None, limit: int | None = None, log=print) -> dict:
     t0 = time.time()
     cfg = config.load()
     D = pb.load(dbname)
+    start = start or pb.auto_start(D)
     dates = D["dates"]
     pos = {d: i for i, d in enumerate(dates)}
     rb = pb.rebalance_dates(dates, start)

@@ -1,7 +1,7 @@
 """V22 預測模型研究（影子模式，不影響正式排行榜）：現有資料夠不夠訓練 5／20／60 日超額報酬預測模型？
 
 資料集（V22.1）
-- 訊號日：2025-03 起每 10 個交易日一次。每個訊號日用 pit_backtest.scored_rows 重算「當時看得到的資料」：
+- 訊號日：從 pit_backtest.auto_start（股價滿一年且季報大致齊全）起每 10 個交易日一次。每個訊號日用 pit_backtest.scored_rows 重算「當時看得到的資料」：
   股價只到訊號日、季報在法定期限後才可用、月營收次月 10 日後才可用（和歷史回測同一套程式）。
 - 股票母體：當天 V21 均衡型可以排名的股票（通過基本門檻、五因子齊全），新舊模型在同一批股票上比較。
 - 特徵：V21 五個因子分數＋事先選定的 27 個原始指標（動能、波動、估值、成長、獲利、規模），
@@ -244,10 +244,11 @@ def sufficiency(res_main: dict, n_dates: int, h: int) -> dict:
             "enough": bool(mde is not None and mde <= 0.03)}
 
 
-def run(dbname: str = "stocks.db", start: str = pb.START, log=print, use_lgbm: bool = True) -> dict:
+def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm: bool = True) -> dict:
     t0 = time.time()
     cfg = config.load()
     D = pb.load(dbname)
+    start = start or pb.auto_start(D)
     sigs = signal_dates(D["dates"], start)
     log(f"資料讀取 {time.time() - t0:.0f} 秒；{len(sigs)} 個訊號日（{sigs[0]}～{sigs[-1]}）")
     cache = config.DATA_DIR / "ml_panel.pkl"  # 只在本機重跑時沿用（Actions 每次重建）

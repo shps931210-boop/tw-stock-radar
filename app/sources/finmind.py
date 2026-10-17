@@ -87,13 +87,13 @@ class FinMindSource:
                  "close": r["close"], "volume": r["Trading_Volume"], "value": r["Trading_money"]}
                 for r in rows if r.get("Trading_Volume")]
 
-    def month_revenue(self, sid: str, days: int = 1200) -> list[dict]:
-        rows = self._get("TaiwanStockMonthRevenue", sid, self._since(days))
+    def month_revenue(self, sid: str, days: int = 1200, start: str | None = None) -> list[dict]:
+        rows = self._get("TaiwanStockMonthRevenue", sid, start or self._since(days))
         return [{"stock_id": sid, "ym": f"{int(r['revenue_year'])}-{int(r['revenue_month']):02d}", "revenue": r["revenue"]}
                 for r in rows]
 
-    def _statement(self, dataset: str, sid: str, mapping: dict, days: int) -> pd.DataFrame:
-        df = pd.DataFrame(self._get(dataset, sid, self._since(days)))
+    def _statement(self, dataset: str, sid: str, mapping: dict, days: int, start: str | None = None) -> pd.DataFrame:
+        df = pd.DataFrame(self._get(dataset, sid, start or self._since(days)))
         if df.empty:
             return pd.DataFrame()
         df = df[~df["type"].str.endswith("_per")]
@@ -105,10 +105,10 @@ class FinMindSource:
         out.index = pd.to_datetime(out.index)
         return out
 
-    def financials(self, sid: str, days: int = 1500) -> list[dict]:
-        inc = self._statement("TaiwanStockFinancialStatements", sid, INCOME, days)
-        bal = self._statement("TaiwanStockBalanceSheet", sid, BALANCE, days)
-        cf = self._statement("TaiwanStockCashFlowsStatement", sid, CASHFLOW, days)
+    def financials(self, sid: str, days: int = 1500, start: str | None = None) -> list[dict]:
+        inc = self._statement("TaiwanStockFinancialStatements", sid, INCOME, days, start)
+        bal = self._statement("TaiwanStockBalanceSheet", sid, BALANCE, days, start)
+        cf = self._statement("TaiwanStockCashFlowsStatement", sid, CASHFLOW, days, start)
         if not cf.empty:
             # 現金流量表是「年初至今累計」，換算成單季
             cf = cf.sort_index()

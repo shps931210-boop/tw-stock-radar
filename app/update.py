@@ -3,7 +3,7 @@
 用法：
     python -m app.update            # 增量更新（第一次會回補約一年半股價，約需 40~60 分鐘）
     python -m app.update --demo     # 重建示範資料庫
-    python -m app.update --daily-only / --fundamentals-only
+    python -m app.update --daily-only / --fundamentals-only / --backfill
 """
 from __future__ import annotations
 
@@ -49,6 +49,75 @@ def _need(con, source: str, d: date) -> bool:
     return row[0] == 0 and (config.today() - d).days <= 3
 
 
+def _span(cfg: dict, last: date) -> int:
+    """要回補幾個日曆天：price_backfill_days 與 history_start（研究用的長期歷史起點）取較長者。"""
+    n = cfg["price_backfill_days"]
+    if cfg.get("history_start") and n > FAST_DAYS:  # 快速更新只看最近幾天
+        n = max(n, (last - date.fromisoformat(cfg["history_start"])).days + 1)
+    return n
+
+
+def update_history(cfg: dict, progress=None, errors: list | None = None) -> None:
+    """夜間補齊：只補較舊的歷史收盤行情（不含法人、融資等籌碼，那些只保留最近幾十天），
+    每次最多 history_dates_backfill 個交易日，分幾個晚上把股價往前補到 history_start。"""
+    errors = errors if errors is not None else []
+    last = config.today() - timedelta(days=cfg.get("recent_backfill_days", 420))
+    days = [d for d in (last - timedelta(days=i) for i in range(_span(cfg, last))) if d.weekday() < 5]
+    srcs = [TwseSource(cfg["twse_interval_sec"])] + ([TpexSource(cfg["twse_interval_sec"])] if "tpex" in cfg["markets"] else [])
+    cap = cfg.get("history_dates_backfill", 120)
+    with db.connect() as con:
+        todo = [(s, d, ("quotes", "daily_quotes", None)) for s in srcs
+                for d in [d for d in days if _need(con, f"{s.market}_quotes", d)][:cap]]
+        _fetch(con, todo, progress, errors, "歷史股價回補")
+        _unmark_false_holidays(con, [d.isoformat() for _, d, _ in todo], errors)
+        db.set_meta(con, "history_backfill", json.dumps(_history_state(con, cfg), ensure_ascii=False))
+        con.commit()
+
+
+def _unmark_false_holidays(con, dates: list[str], errors: list) -> None:
+    """抓到空資料的平日會被記成「休市」以後不再重抓。回補很舊的日期時要防止端點其實不支援而誤判：
+    ① 上市那天有行情、上櫃卻是空的 → 上櫃不算休市，下次再試；
+    ② 上市連續 12 個平日以上都是空的（農曆年最多約 7 個）→ 視為端點不支援，全部取消標記。"""
+    dates = sorted(set(dates))
+    if not dates:
+        return
+    q = ",".join("?" * len(dates))
+    have = {r[0] for r in con.execute(f"SELECT DISTINCT date FROM prices WHERE date IN ({q})", dates)}
+    empty = {r[0] for r in con.execute(f"SELECT key FROM fetch_log WHERE source='twse_quotes' AND ok=0 AND key IN ({q})", dates)}
+    bad = []
+    run, longest = [], []
+    for d in dates:
+        if d in empty:
+            run.append(d)
+            longest = run if len(run) > len(longest) else longest
+        elif d in have:
+            run = []
+    if len(longest) >= 12:
+        bad = [d for d in dates if d in empty]
+        errors.append(f"twse_quotes 歷史回補：{longest[0]}～{longest[-1]} 連續 {len(longest)} 個平日沒有資料，可能端點不支援這麼舊的日期，下次再試")
+    tp = [r[0] for r in con.execute(f"SELECT key FROM fetch_log WHERE source='tpex_quotes' AND ok=0 AND key IN ({q})", dates)]
+    tp = [d for d in tp if d in have]
+    if tp:
+        errors.append(f"tpex_quotes 歷史回補：{len(tp)} 天上市有行情但上櫃沒有資料（{tp[0]}～{tp[-1]}），下次再試")
+    for src, ks in (("twse_quotes", bad), ("tpex_quotes", tp)):
+        for k in ks:
+            con.execute("DELETE FROM fetch_log WHERE source=? AND key=?", (src, k))
+    con.commit()
+
+
+def _history_state(con, cfg: dict) -> dict:
+    """歷史股價補到哪裡：網站「資料盤點」會顯示。"""
+    first = con.execute("SELECT MIN(date) FROM prices").fetchone()[0]
+    left = {}
+    last = config.today() - timedelta(days=cfg.get("recent_backfill_days", 420))
+    days = [d for d in (last - timedelta(days=i) for i in range(_span(cfg, last))) if d.weekday() < 5]
+    for m in cfg["markets"]:
+        done = {r[0] for r in con.execute("SELECT key FROM fetch_log WHERE source=?", (f"{m}_quotes",))}
+        left[m] = sum(1 for d in days if d.isoformat() not in done)
+    return {"target": cfg.get("history_start"), "first_date": first, "left_days": left,
+            "at": config.now().isoformat(timespec="seconds")}
+
+
 def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
     errors = errors if errors is not None else []
     srcs = []
@@ -58,7 +127,7 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
         srcs.append(TpexSource(cfg["twse_interval_sec"]))
     now = config.now()
     last = config.today() if now.hour >= 14 else config.today() - timedelta(days=1)
-    days = [last - timedelta(days=i) for i in range(cfg["price_backfill_days"])]
+    days = [last - timedelta(days=i) for i in range(_span(cfg, last))]
     days = [d for d in days if d.weekday() < 5]
     flow_cut = config.today() - timedelta(days=cfg["flow_backfill_days"])
     jobs = [("quotes", "daily_quotes", None), ("inst", "institutional", "institutional"),
@@ -86,42 +155,7 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
                 left[t[0].market] -= 1
             keep.append(t)
         todo = keep
-        dead = set()  # 解析失敗的 (市場, 資料) 本次不再重試
-        for n, (s, d, (key, fn, table)) in enumerate(todo, 1):
-            tag = f"{s.market}_{key}"
-            if tag in dead:
-                continue
-            _say(progress, "每日行情與籌碼", n, len(todo), f"{s.market} {key} {d}")
-            try:
-                res = getattr(s, fn)(d)
-            except KeyError as e:  # 欄位對不上：整個來源本次停用，避免每天都重複同樣錯誤
-                errors.append(f"{tag}: {http.describe(e)}")
-                dead.add(tag)
-                continue
-            except ValueError as e:  # 單日回應不是 JSON（偶發、被限流）：只略過這一天，下次再補
-                errors.append(f"{tag} {d}: {http.describe(e)}")
-                continue
-            except requests.RequestException as e:
-                errors.append(f"{tag} {d}: {http.describe(e)}")
-                continue
-            ds = d.isoformat()
-            if key == "quotes":
-                rows, taiex = res
-                rows = [r for r in rows if is_tracked(r["stock_id"])]
-                if taiex:
-                    db.upsert(con, "index_prices", [{"date": ds, "close": taiex}])
-                for r in rows:
-                    con.execute("INSERT OR IGNORE INTO stocks (stock_id, name, market, industry) VALUES (?,?,?,'')",
-                                (r["stock_id"], r.pop("name"), s.market))
-                    r["date"] = ds
-                db.upsert(con, "prices", rows)
-            else:
-                rows = res
-                for r in rows:
-                    r["date"] = ds
-                db.upsert(con, table, rows)
-            db.log_fetch(con, tag, ds, bool(rows))
-            con.commit()
+        _fetch(con, todo, progress, errors)
         _openapi_fallback(con, cfg, errors)
         db.set_meta(con, "updated_prices", config.now().isoformat(timespec="seconds"))
         # 處置股票
@@ -132,6 +166,45 @@ def update_daily(cfg: dict, progress=None, errors: list | None = None) -> None:
                 db.upsert(con, "disposition", [{**r, "updated": config.today().isoformat()} for r in rows])
             except Exception as e:
                 errors.append(f"處置股票: {http.describe(e)}")
+
+
+def _fetch(con, todo: list, progress, errors: list, label: str = "每日行情與籌碼") -> None:
+    dead = set()  # 解析失敗的 (市場, 資料) 本次不再重試
+    for n, (s, d, (key, fn, table)) in enumerate(todo, 1):
+        tag = f"{s.market}_{key}"
+        if tag in dead:
+            continue
+        _say(progress, label, n, len(todo), f"{s.market} {key} {d}")
+        try:
+            res = getattr(s, fn)(d)
+        except KeyError as e:  # 欄位對不上：整個來源本次停用，避免每天都重複同樣錯誤
+            errors.append(f"{tag}: {http.describe(e)}")
+            dead.add(tag)
+            continue
+        except ValueError as e:  # 單日回應不是 JSON（偶發、被限流）：只略過這一天，下次再補
+            errors.append(f"{tag} {d}: {http.describe(e)}")
+            continue
+        except requests.RequestException as e:
+            errors.append(f"{tag} {d}: {http.describe(e)}")
+            continue
+        ds = d.isoformat()
+        if key == "quotes":
+            rows, taiex = res
+            rows = [r for r in rows if is_tracked(r["stock_id"])]
+            if taiex:
+                db.upsert(con, "index_prices", [{"date": ds, "close": taiex}])
+            for r in rows:
+                con.execute("INSERT OR IGNORE INTO stocks (stock_id, name, market, industry) VALUES (?,?,?,'')",
+                            (r["stock_id"], r.pop("name"), s.market))
+                r["date"] = ds
+            db.upsert(con, "prices", rows)
+        else:
+            rows = res
+            for r in rows:
+                r["date"] = ds
+            db.upsert(con, table, rows)
+        db.log_fetch(con, tag, ds, bool(rows))
+        con.commit()
 
 
 def _openapi_fallback(con, cfg: dict, errors: list) -> None:
@@ -209,7 +282,7 @@ def update_exrights(cfg: dict, errors: list) -> None:
     每個月抓一次；本月與上個月每次都重抓（可能有新公告）。"""
     srcs = [TwseSource(cfg["twse_interval_sec"])] + ([TpexSource(cfg["twse_interval_sec"])] if "tpex" in cfg["markets"] else [])
     today = config.today()
-    first = (today - timedelta(days=cfg["price_backfill_days"] + 31)).replace(day=1)
+    first = (today - timedelta(days=_span(cfg, today) + 31)).replace(day=1)
     months = []
     m = first
     while m <= today:
@@ -312,22 +385,33 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
         req, supa = _fin_requests()
         req = [s for s in req if s in common]  # 只接受普通股代號；會員請求的股票排最前面
         ids = list(dict.fromkeys(req + cfg.get("watchlist", []) + ids))
+        # 財報一律從 fin_history_start 抓起（現金流量表要靠前一季換算單季，窗口短會把最早一季覆蓋成空值）；
+        # 月營收定期重抓只抓近幾年，第一次抓或長期歷史補齊時才從 fin_history_start 抓起
+        fs = cfg.get("fin_history_start")
+        rev_long = (lambda sid: fm.month_revenue(sid, start=fs)) if fs else fm.month_revenue
+        fin = (lambda sid: fm.financials(sid, start=fs)) if fs else fm.financials
         plan = [("fm_revenue", 1 if config.today().day <= 12 else 7, fm.month_revenue, "revenue"),
-                ("fm_financials", 20, fm.financials, "financials"),
+                ("fm_financials", 20, fin, "financials"),
                 ("fm_dividends", 45, fm.dividends, "dividends")]
+        deep = {"fm_revenue": ("fm_revenue_hist", rev_long), "fm_financials": ("fm_financials_hist", fin)} if fs else {}
         # 補齊佇列：從來沒抓過的股票優先（依成交金額排序），再來才是定期重抓；額度用完就停，下次從還沒補到的繼續
-        new, due = [], []
+        # 第三優先：以前只抓了近幾年的股票，把財報與月營收往前補到 fin_history_start（長期回測與模型研究用），每檔只補一次
+        new, due, hist = [], [], []
         for sid in ids:
             for src, age, fn, table in plan:
                 t = db.fetched_at(con, src, sid)
                 if not t:
-                    new.append((sid, src, fn, table))
+                    new.append((sid, src, deep[src][1] if src in deep else fn, table))
                 elif config.now() - t > timedelta(days=age):
                     due.append((sid, src, fn, table))
+                    if fn is deep.get(src, (0, None))[1]:
+                        continue  # 定期重抓本來就從長期起點抓起
+                if t and src in deep and not db.fetched_at(con, deep[src][0], sid):
+                    hist.append((sid, deep[src][0], deep[src][1], table))
         new.sort(key=lambda x: x[1] == "fm_dividends")  # 先補財報與營收（研究卡需要），股利最後；同類依原順序（會員申請→成交金額）
-        todo = new + due
+        todo = new + due + hist
         # 補齊進度（網站「資料來源與方法」和個股研究卡會顯示）：這次要補多少、補了多少、失敗原因、是否因額度用完而停下
-        Q = {"run_at": config.now().isoformat(timespec="seconds"), "stocks": len(ids), "new": len(new), "due": len(due),
+        Q = {"run_at": config.now().isoformat(timespec="seconds"), "stocks": len(ids), "new": len(new), "due": len(due), "hist": len(hist),
              "done": 0, "failed": 0, "quota_hit": False, "errors": [], "requested": len(req)}
         db.set_meta(con, "fundamental_queue", json.dumps(Q, ensure_ascii=False))
         for n, (sid, src, fn, table) in enumerate(todo, 1):
@@ -335,6 +419,8 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
             try:
                 db.upsert(con, table, fn(sid))
                 db.log_fetch(con, src, sid)
+                if src in deep and fn is deep[src][1]:  # 第一次就從長期起點抓起，不必再補
+                    db.log_fetch(con, deep[src][0], sid)
                 con.commit()
                 Q["done"] += 1
             except FinMindError as e:
@@ -351,6 +437,7 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
         # 補完這次之後，還有幾檔普通股從來沒有財報（下一次完整更新優先補）
         pending = [sid for sid in ids if not db.fetched_at(con, "fm_financials", sid)]
         Q["never_fin"] = len(pending)
+        Q["hist_left"] = sum(1 for sid in ids if deep and not db.fetched_at(con, "fm_financials_hist", sid))  # 財報還沒往前補到長期起點的股票
         Q["pending"] = pending  # 還沒補到財報的股票，依補抓順序（個股頁顯示「第幾位」）
         has_fin = {r[0] for r in con.execute("SELECT DISTINCT stock_id FROM financials")}
         Q["no_data"] = [sid for sid in ids if db.fetched_at(con, "fm_financials", sid) and sid not in has_fin][:500]  # 抓過但資料來源沒有財報
@@ -368,11 +455,12 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
 FAST_DAYS = 10
 
 
-def run(daily: bool = True, fundamentals: bool = True, progress=None, fast: bool = False) -> list[str]:
+def run(daily: bool = True, fundamentals: bool = True, progress=None, fast: bool = False, history: bool = False) -> list[str]:
     """分三階段，每階段結束都重算快照，讓網站盡早顯示真實資料：
     ① 最新一個交易日收盤價（OpenAPI，幾秒鐘）→ ② 回補歷史股價與籌碼 → ③ 月營收、財報、股利。
     fast=True（盤後快速更新）：只抓最近 FAST_DAYS 天的行情與籌碼、除權息、月營收，重算一次就發布；
-    較舊的歷史股價、財報與股利留給晚上的完整更新。"""
+    較舊的歷史股價、財報與股利留給晚上的完整更新。
+    history=True（夜間補齊）：先把更舊的歷史收盤行情往前補一段，再補財報。"""
     cfg = config.load()
     errors: list[str] = []
     stages = []
@@ -384,6 +472,8 @@ def run(daily: bool = True, fundamentals: bool = True, progress=None, fast: bool
         stages.append(("最新收盤價", lambda: _latest_only(cfg, errors)))
         stages.append(("回補歷史股價與籌碼", lambda: (update_daily(cfg, progress, errors), update_exrights(cfg, errors),
                                                           update_revenue_bulk(cfg, errors), events.update(cfg, errors))))
+    if history:
+        stages.append(("回補長期歷史股價", lambda: (update_history(cfg, progress, errors), update_exrights(cfg, errors))))
     if fundamentals:
         stages.append(("財報與營收", lambda: update_fundamentals(cfg, progress, errors)))
     for i, (name, fn) in enumerate(stages, 1):
@@ -438,7 +528,10 @@ def main():
     ap.add_argument("--daily-only", action="store_true")
     ap.add_argument("--fundamentals-only", action="store_true")
     ap.add_argument("--fast", action="store_true", help="盤後快速更新：只抓最近幾天，不回補歷史、不抓財報")
+    ap.add_argument("--backfill", action="store_true", help="夜間補齊：往前回補長期歷史股價，再補財報")
     a = ap.parse_args()
+    if a.backfill:
+        a.fundamentals_only = True
     if a.demo:
         from .sources import demo
         from . import snapshot
@@ -448,7 +541,7 @@ def main():
         return
     with db.connect() as con:
         db.set_meta(con, "update_mode", "fast" if a.fast else "backfill" if a.fundamentals_only else "full")
-    errs = run(daily=not a.fundamentals_only, fundamentals=not a.daily_only and not a.fast, fast=a.fast)
+    errs = run(daily=not a.fundamentals_only, fundamentals=not a.daily_only and not a.fast, fast=a.fast, history=a.backfill)
     print(f"\n完成，{len(errs)} 個警告")
     for e in errs[:30]:
         print(" -", e)
