@@ -1,0 +1,189 @@
+{
+ "schema_version": 1,
+ "generated_at": "2026-10-17T17:14:04",
+ "data_end": "2026-10-16",
+ "checks": [
+  {
+   "id": "future_invariance",
+   "name": "改掉訊號日之後的所有資料，特徵與分數不變",
+   "ok": true,
+   "detail": [
+    {
+     "signal": "2023-04-06",
+     "values": 233098,
+     "changed": 0,
+     "examples": [],
+     "ok": true
+    },
+    {
+     "signal": "2024-12-23",
+     "values": 244136,
+     "changed": 0,
+     "examples": [],
+     "ok": true
+    },
+    {
+     "signal": "2026-10-02",
+     "values": 258313,
+     "changed": 0,
+     "examples": [],
+     "ok": true
+    }
+   ]
+  },
+  {
+   "id": "availability",
+   "name": "月營收、季報只在法定公告期限後使用",
+   "ok": true,
+   "detail": [
+    {
+     "item": "月營收 2025-07",
+     "used_from": "2025-08-11",
+     "rule_from": "2025-08-11",
+     "rule": "每月 10 日前公告",
+     "ok": true
+    },
+    {
+     "item": "一般公司 Q1",
+     "used_from": "2025-05-16",
+     "rule_from": "2025-05-16",
+     "rule": "5/15 前公告",
+     "ok": true
+    },
+    {
+     "item": "一般公司 Q2",
+     "used_from": "2025-08-15",
+     "rule_from": "2025-08-15",
+     "rule": "8/14 前公告",
+     "ok": true
+    },
+    {
+     "item": "一般公司 Q3",
+     "used_from": "2025-11-15",
+     "rule_from": "2025-11-15",
+     "rule": "11/14 前公告",
+     "ok": true
+    },
+    {
+     "item": "一般公司年報",
+     "used_from": "2025-04-01",
+     "rule_from": "2025-04-01",
+     "rule": "3/31 前公告",
+     "ok": true
+    },
+    {
+     "item": "金融業 Q2",
+     "used_from": "2025-09-01",
+     "rule_from": "2025-09-01",
+     "rule": "8/31 前公告",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "id": "purge",
+   "name": "walk-forward 訓練標籤都在測試日之前到期",
+   "ok": true,
+   "detail": [
+    {
+     "horizon": 5,
+     "tests": 78,
+     "violations": [],
+     "ok": true
+    },
+    {
+     "horizon": 20,
+     "tests": 76,
+     "violations": [],
+     "ok": true
+    },
+    {
+     "horizon": 60,
+     "tests": 72,
+     "violations": [],
+     "ok": true
+    }
+   ]
+  },
+  {
+   "id": "selection",
+   "name": "特徵百分位用標籤篩選前的當日母體（METHOD ≥ 2）",
+   "ok": true,
+   "detail": {
+    "method": 2
+   }
+  },
+  {
+   "id": "universe",
+   "name": "母體包含期間內下市或停止交易的股票",
+   "ok": true,
+   "detail": {
+    "stocks_with_prices": 2030,
+    "stopped_trading_in_period": 48,
+    "examples": [
+     "1258",
+     "1507",
+     "1589",
+     "1701",
+     "2358",
+     "2443",
+     "2809",
+     "2841",
+     "2867",
+     "2888"
+    ],
+    "ok": true,
+    "note": "資料庫有 48 檔期間內停止交易的普通股，回測會把它們算進當時的母體；但無法確認是否包含所有下市股票（下市股票的歷史若沒補到，仍有部分存活者偏誤）"
+   }
+  },
+  {
+   "id": "sealed",
+   "name": "每日封存預測都在進場日開盤前產生、訓練資料早於訊號日",
+   "ok": true,
+   "detail": {
+    "files": 1,
+    "late_or_leaky": [],
+    "ok": true,
+    "rows": [
+     {
+      "signal": "2026-10-16",
+      "generated_at": "2026-10-17T12:23:26",
+      "entry": "2026-10-19",
+      "on_time": true,
+      "trained_before_signal": true
+     }
+    ]
+   }
+  }
+ ],
+ "passed": 6,
+ "total": 6,
+ "defects": [
+  {
+   "item": "下市股票可能沒有全部收錄",
+   "impact": "存活者偏誤：回測報酬可能被高估（台股每年約有數十檔下市）",
+   "status": "部分解決"
+  },
+  {
+   "item": "產業分類用目前的資料",
+   "impact": "公司若在期間內換產業，歷史上會被放在現在的產業；影響產業內比較與產業特徵，對排序影響推估很小",
+   "status": "未解決"
+  },
+  {
+   "item": "普通股、ETF 判斷用目前的代號規則",
+   "impact": "影響很小",
+   "status": "未解決"
+  },
+  {
+   "item": "金融業 Q1、Q3 公告期限用一般公司的規則",
+   "impact": "若金融業實際期限較晚，可能提早使用最多約半個月；金融業佔母體約 2%",
+   "status": "待確認法規"
+  },
+  {
+   "item": "回測的處置股票、全額交割狀態沒有歷史資料（一律當成正常）",
+   "impact": "可能把當時不易交易的股票算進名單",
+   "status": "未解決"
+  }
+ ],
+ "seconds": 274
+}

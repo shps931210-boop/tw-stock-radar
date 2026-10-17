@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "method": 2,
- "generated_at": "2026-10-17T15:59:58",
+ "generated_at": "2026-10-17T17:47:40",
  "shadow": true,
  "start": "2023-04-06",
  "end": "2026-10-02",
@@ -109,7 +109,8 @@
   "v21": "V21 均衡型（固定權重）",
   "ridge": "Ridge 線性迴歸",
   "logit": "Logistic 迴歸",
-  "lgbm": "LightGBM"
+  "lgbm": "LightGBM",
+  "ens": "V21＋LightGBM 平均"
  },
  "params": {
   "ridge_alpha": 10.0,
@@ -172,6 +173,16 @@
      "top_excess": -0.16,
      "top_vs_all": 0.28,
      "top_hit": 46.8,
+     "dates": 77
+    },
+    "ens": {
+     "ic": 0.0465,
+     "ic_t": 3.29,
+     "ic_pos": 67.5,
+     "ic_sd": 0.1261,
+     "top_excess": 0.27,
+     "top_vs_all": 0.71,
+     "top_hit": 57.1,
      "dates": 77
     },
     "prob": {
@@ -262,6 +273,16 @@
      "top_hit": 50.9,
      "dates": 53
     },
+    "ens": {
+     "ic": 0.046,
+     "ic_t": 2.43,
+     "ic_pos": 69.8,
+     "ic_sd": 0.133,
+     "top_excess": 0.33,
+     "top_vs_all": 0.71,
+     "top_hit": 56.6,
+     "dates": 53
+    },
     "prob": {
      "hit": 56.5,
      "base_hit": 59.2,
@@ -350,6 +371,16 @@
      "top_hit": 37.5,
      "dates": 24
     },
+    "ens": {
+     "ic": 0.0474,
+     "ic_t": 2.73,
+     "ic_pos": 62.5,
+     "ic_sd": 0.1119,
+     "top_excess": 0.14,
+     "top_vs_all": 0.72,
+     "top_hit": 58.3,
+     "dates": 24
+    },
     "prob": {
      "hit": 61.2,
      "base_hit": 61.3,
@@ -397,6 +428,10 @@
     "lgbm": {
      "diff": 0.0404,
      "t": 1.84
+    },
+    "ens": {
+     "diff": 0.0312,
+     "t": 2.46
     }
    },
    "sufficiency": {
@@ -454,6 +489,16 @@
      "ic_sd": 0.0941,
      "top_excess": -0.08,
      "top_vs_all": 1.79,
+     "top_hit": 47.2,
+     "dates": 72
+    },
+    "ens": {
+     "ic": 0.0611,
+     "ic_t": 4.45,
+     "ic_pos": 73.6,
+     "ic_sd": 0.097,
+     "top_excess": -0.42,
+     "top_vs_all": 1.45,
      "top_hit": 47.2,
      "dates": 72
     },
@@ -545,6 +590,16 @@
      "top_hit": 46.0,
      "dates": 50
     },
+    "ens": {
+     "ic": 0.0517,
+     "ic_t": 3.41,
+     "ic_pos": 70.0,
+     "ic_sd": 0.0988,
+     "top_excess": -0.67,
+     "top_vs_all": 0.85,
+     "top_hit": 48.0,
+     "dates": 50
+    },
     "prob": {
      "hit": 61.2,
      "base_hit": 63.6,
@@ -633,6 +688,16 @@
      "top_hit": 50.0,
      "dates": 22
     },
+    "ens": {
+     "ic": 0.0826,
+     "ic_t": 3.11,
+     "ic_pos": 81.8,
+     "ic_sd": 0.0914,
+     "top_excess": 0.15,
+     "top_vs_all": 2.82,
+     "top_hit": 45.5,
+     "dates": 22
+    },
     "prob": {
      "hit": 66.3,
      "base_hit": 66.3,
@@ -680,6 +745,10 @@
     "lgbm": {
      "diff": 0.0027,
      "t": 0.14
+    },
+    "ens": {
+     "diff": 0.0121,
+     "t": 1.23
     }
    },
    "sufficiency": {
@@ -738,6 +807,16 @@
      "top_excess": -1.53,
      "top_vs_all": 5.17,
      "top_hit": 39.1,
+     "dates": 64
+    },
+    "ens": {
+     "ic": 0.0965,
+     "ic_t": 5.51,
+     "ic_pos": 90.6,
+     "ic_sd": 0.0826,
+     "top_excess": -2.99,
+     "top_vs_all": 3.71,
+     "top_hit": 45.3,
      "dates": 64
     },
     "prob": {
@@ -828,6 +907,16 @@
      "top_hit": 36.4,
      "dates": 44
     },
+    "ens": {
+     "ic": 0.0922,
+     "ic_t": 3.9,
+     "ic_pos": 88.6,
+     "ic_sd": 0.0879,
+     "top_excess": -4.01,
+     "top_vs_all": 1.6,
+     "top_hit": 40.9,
+     "dates": 44
+    },
     "prob": {
      "hit": 63.7,
      "base_hit": 69.2,
@@ -916,6 +1005,16 @@
      "top_hit": 45.0,
      "dates": 20
     },
+    "ens": {
+     "ic": 0.106,
+     "ic_t": 5.19,
+     "ic_pos": 95.0,
+     "ic_sd": 0.0708,
+     "top_excess": -0.75,
+     "top_vs_all": 8.33,
+     "top_hit": 55.0,
+     "dates": 20
+    },
     "prob": {
      "hit": 74.3,
      "base_hit": 74.5,
@@ -963,6 +1062,10 @@
     "lgbm": {
      "diff": -0.0004,
      "t": -0.02
+    },
+    "ens": {
+     "diff": 0.0146,
+     "t": 1.14
     }
    },
    "sufficiency": {
@@ -980,7 +1083,7 @@
  },
  "main": 20,
  "verdict": "不足",
- "seconds": 1714,
+ "seconds": 1370,
  "errors": {
   "horizon": 20,
   "method": "分組內的 Rank IC（各測試日分別計算再平均，Newey-West t）與模型前 20% 相對同組平均的超額報酬",
