@@ -1,0 +1,37 @@
+{
+ "generated_at": "2026-10-17T16:11:46",
+ "files": 0,
+ "used": 0,
+ "skipped": 0,
+ "by_risk_level": {},
+ "groups": {
+  "A": {
+   "label": "A：盤後名單全部",
+   "n": 0,
+   "gap": null,
+   "open_to_close": null,
+   "excess_5d_from_open": null,
+   "excess_20d_from_open": null,
+   "n_20d": 0
+  },
+  "C": {
+   "label": "C：排除盤前「風險上升」",
+   "n": 0,
+   "gap": null,
+   "open_to_close": null,
+   "excess_5d_from_open": null,
+   "excess_20d_from_open": null,
+   "n_20d": 0
+  },
+  "flagged": {
+   "label": "被標「風險上升」的股票",
+   "n": 0,
+   "gap": null,
+   "open_to_close": null,
+   "excess_5d_from_open": null,
+   "excess_20d_from_open": null,
+   "n_20d": 0
+  }
+ },
+ "note": "跳空只是研究數字，不算策略報酬；可交易報酬都從目標日開盤（盤前版發布後）開始算，減同期間 0050，未扣成本。到期天數少於 60 天前，差異多半只是運氣。"
+}
