@@ -200,10 +200,15 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
     for f in files:
         rec = json.loads(f.read_text("utf-8"))
         sig = rec["signal_date"]
+        if sig in pos and pos[sig] + 1 < len(dates):
+            entry = dates[pos[sig] + 1]
+        else:  # 進場日還沒到：用休市日曆推下一個交易日，「是否在開盤前封存」現在就判斷得出來
+            from datetime import date as _d
+            from . import premarket
+            entry = premarket.next_trading_day(_d.fromisoformat(sig), premarket.holidays(refresh=False)).isoformat()
+        on_time += bool(track.on_time(rec, entry))
         if sig not in pos or pos[sig] + 1 >= len(dates):
             continue
-        entry = dates[pos[sig] + 1]
-        on_time += bool(track.on_time(rec, entry))
         for h in acc:
             e = pos[sig] + 1 + int(h)
             if e >= len(dates):
