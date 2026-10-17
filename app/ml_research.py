@@ -267,6 +267,7 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
     log(f"資料集 {len(panel)} 列（股票 × 訊號日），{time.time() - t0:.0f} 秒")
     models = ["v21", "ridge", "logit", "lgbm"]
     H = {}
+    errors = None
     for h in HORIZONS:
         wf = walk_forward(panel, h, sigs, D["dates"], use_lgbm)
         P, tests = wf["preds"], wf["tests"]
@@ -275,27 +276,33 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
             continue
         cut = tests[int(len(tests) * (1 - HOLDOUT))] if len(tests) >= 4 else tests[-1]
         main = evaluate(P, h, models)
+        if h == MAIN:
+            try:
+                from . import learning
+                errors = learning.error_analysis(P, panel, h, D.get("idx_s"))
+            except Exception as e:
+                errors = {"error": str(e)}
         H[str(h)] = {"tests": len(tests), "first_test": tests[0], "last_test": tests[-1], "holdout_from": cut,
                      "all": main, "rolling": evaluate(P[P["date"] < cut], h, models), "holdout": evaluate(P[P["date"] >= cut], h, models),
                      "vs_v21": {m: _diff(P, h, m, "v21") for m in ("ridge", "logit", "lgbm")},
                      "sufficiency": sufficiency(main.get("v21") or {}, len(tests), h),
                      "rows": int(len(P))}
         log(f"{h} 日：{len(tests)} 個測試日，{time.time() - t0:.0f} 秒")
-    try:  # 用全部已確定標籤的資料訓練最終模型，給每日影子預測（app/ml_predict.py）使用
-        from . import ml_predict
-        mm = ml_predict.export_models(panel, use_lgbm)
-        log(f"已存最終模型 {mm['model_hash']}")
-    except Exception as e:
-        log(f"最終模型存檔失敗：{e}")
     lab = {str(h): {k: int(v) for k, v in panel[f"st{h}"].value_counts().items()} for h in HORIZONS}
     miss = {f: round(float(panel[f].isna().mean()) * 100, 1) for f in FEATS}
     S = H.get(str(MAIN), {}).get("sufficiency") or {}
     verdict = ("不足" if not S.get("enough") else "勉強足夠")
-    return {"schema_version": 1, "method": METHOD, "generated_at": config.now().isoformat(timespec="seconds"), "shadow": True,
+    res = {"schema_version": 1, "method": METHOD, "generated_at": config.now().isoformat(timespec="seconds"), "shadow": True,
             "start": sigs[0], "end": sigs[-1], "step": STEP, "signals": len(sigs), "rows": int(len(panel)), "stocks_avg": round(len(panel) / len(sigs)),
             "features": FEATS, "feature_missing_pct": miss, "label_status": lab, "models": NAMES, "params": {"ridge_alpha": RIDGE_ALPHA, "lgbm": LGB_PARAMS},
             "lgbm": "lgbm" in (H.get(str(MAIN), {}).get("all") or {}), "horizons": H, "main": MAIN, "verdict": verdict,
-            "seconds": round(time.time() - t0)}
+            "seconds": round(time.time() - t0), "errors": errors}
+    try:  # V25 持續學習：用全部已到期的資料訓練新版本，暫存檢查通過才上線（app/learning.py）
+        from . import learning
+        res["registered"] = learning.train_and_register(panel, res, D["dates"], use_lgbm, log)["version"]
+    except Exception as e:
+        log(f"新版本訓練或登記失敗，沿用上一版：{e}")
+    return res
 
 
 def main(argv: list[str]) -> int:

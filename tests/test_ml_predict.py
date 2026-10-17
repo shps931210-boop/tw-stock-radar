@@ -37,7 +37,8 @@ class Predict(unittest.TestCase):
             fake = mock.MagicMock()
             fake.__enter__.return_value.execute.return_value.fetchone.return_value = ["2026-10-16"]
             with mock.patch.object(mp, "load_models", return_value={"horizons": {}}), mock.patch.object(mp.db, "connect", return_value=fake), \
-                 mock.patch.object(mp.db, "get_meta", return_value=None), mock.patch.object(mp.pb, "load") as load:
+                 mock.patch.object(mp.db, "get_meta", return_value=None), mock.patch.object(mp.pb, "load") as load, \
+                 mock.patch("app.learning.validate", return_value=[]):
                 self.assertIsNone(mp.seal(out=out))
                 load.assert_not_called()  # 已封存：連資料都不讀
             self.assertEqual((out / "2026-10-16.json").read_text("utf-8"), "{}")

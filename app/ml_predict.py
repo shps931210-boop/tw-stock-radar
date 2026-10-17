@@ -59,10 +59,13 @@ def export_models(panel: pd.DataFrame, use_lgbm: bool = True, out: Path = MODEL_
         if lgb is not None:
             prm = {k: v for k, v in ml.LGB_PARAMS.items() if k != "n_estimators"}
             prm.update(objective="regression", bagging_fraction=prm.pop("subsample"), bagging_freq=prm.pop("subsample_freq"),
-                       feature_fraction=prm.pop("colsample_bytree"), seed=prm.pop("random_state"), min_data_in_leaf=prm.pop("min_child_samples"))
+                       feature_fraction=prm.pop("colsample_bytree"), seed=prm.pop("random_state"), min_data_in_leaf=prm.pop("min_child_samples"),
+                       deterministic=True, force_row_wise=True, num_threads=1)  # 同樣的資料一定訓練出同一個模型（雜湊才比得出「有沒有變」）
             m = lgb.train(prm, lgb.Dataset(P[rf].to_numpy(), P["y_rank"].to_numpy()), num_boost_round=ml.LGB_PARAMS["n_estimators"])
             (out / f"lgbm_{h}.txt").write_text(m.model_to_string(), "utf-8")
             H["lgbm"] = f"lgbm_{h}.txt"
+            g = m.feature_importance("gain")
+            H["importance"] = {f: round(float(v) / float(g.sum()) * 100, 2) for f, v in zip(ml.FEATS, g)} if g.sum() > 0 else {}
         meta["horizons"][str(h)] = H
     blob = json.dumps({k: v for k, v in meta.items() if k != "trained_at"}, sort_keys=True)
     for h in meta["horizons"].values():
@@ -131,6 +134,11 @@ def predict(X: pd.DataFrame, M: dict) -> dict:
 def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_DIR) -> dict | None:
     """產生並封存當天的影子預測。同一天已經封存過就不重寫（回傳 None）。"""
     M = load_models(models)
+    if M is not None and models == MODEL_DIR:
+        from . import learning
+        bad = learning.validate(models)
+        if bad:  # 上線版本壞掉：自動退回上一個檢查過的版本
+            M = load_models(models) if learning.rollback("；".join(bad)) else None
     if not M:
         print("沒有可用的已訓練模型（等每週「AI 歷史回測」產生 history/models/ml.json）")
         return None
@@ -168,7 +176,7 @@ def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_D
         stocks.append(row)
     rec = {"schema_version": 1, "signal_date": sig, "generated_at": config.now().isoformat(timespec="seconds"),
            "feature_cutoff": f"{sig} 收盤；季報依法定期限、月營收依次月 10 日後才使用", "model_hash": M["model_hash"],
-           "model_method": M["method"], "trained_through": {h: H["through"] for h, H in M["horizons"].items()},
+           "model_version": M.get("version") or M["model_hash"], "model_method": M["method"], "trained_through": {h: H["through"] for h, H in M["horizons"].items()},
            "data_version": data_version,
            "time_check": {"trained_before_signal": all((H["through"] or "") < sig for H in M["horizons"].values())},
            "status": "experimental", "universe": "當天均衡型可排名的股票", "n": len(stocks), "stocks": stocks}
@@ -187,6 +195,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
     pos = {d: i for i, d in enumerate(dates)}
     acc = {h: {m: {"ic": [], "top": [], "hit": [], "brier": [], "brier_base": []} for m in MODELS} for h in map(str, ml.HORIZONS)}
     counts = {h: 0 for h in acc}
+    daily = []
     on_time = 0
     for f in files:
         rec = json.loads(f.read_text("utf-8"))
@@ -211,6 +220,8 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
                 continue
             counts[h] += 1
             Y = pd.Series(y)
+            day = {"sig": sig, "h": h, "ver": rec.get("model_version") or rec.get("model_hash"), "ic": {}, "top": {}}
+            daily.append(day)
             for m in MODELS:
                 p = pd.Series({s["id"]: (s.get(h) or {}).get(m) for s in rec["stocks"]}, dtype=float).reindex(Y.index)
                 if p.notna().sum() < 30:
@@ -218,6 +229,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
                 A = acc[h][m]
                 A["ic"].append(float(p.rank().corr(Y.rank())))
                 A["top"].append(float(Y[p.nlargest(ml.TOP).index].mean()))
+                day["ic"][m], day["top"][m] = round(A["ic"][-1], 4), round(A["top"][-1], 5)
                 if m == "logit":
                     w = (Y > 0).astype(float)
                     A["hit"].append(float(((p > 0.5) == (w > 0.5)).mean()))
@@ -235,7 +247,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
                 out[h][m].update(hit=round(float(np.mean(A["hit"])) * 100, 1), brier=round(float(np.mean(A["brier"])), 4),
                                  brier_base=round(float(np.mean(A["brier_base"])), 4))
     return {"generated_at": config.now().isoformat(timespec="seconds"), "days": len(files), "on_time": on_time,
-            "first": files[0].stem, "last": files[-1].stem, "horizons": out}
+            "first": files[0].stem, "last": files[-1].stem, "horizons": out, "daily": daily}
 
 
 def latest(src: Path = PRED_DIR) -> dict | None:
@@ -257,6 +269,9 @@ def main(argv: list[str]) -> int:
     PRED_DIR.mkdir(parents=True, exist_ok=True)
     (PRED_DIR / "scorecard.json").write_text(json.dumps(sc, ensure_ascii=False, indent=1), "utf-8")
     print(json.dumps({h: v.get("matured") for h, v in sc.get("horizons", {}).items()}, ensure_ascii=False))
+    from . import learning
+    st = learning.status(sc)  # 網站用的學習報告在 build_site 每次發布時重算
+    print(f"持續學習：候選 {st['active'] and st['active']['version']}，比賽 {st['gate']['label']}，漂移 {st['drift']['label']}")
     return 0
 
 

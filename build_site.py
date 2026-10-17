@@ -150,6 +150,14 @@ try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與�
             shutil.copy(ml_predict.PRED_DIR / "scorecard.json", out / "data" / "predictions" / "scorecard.json")
 except Exception as e:
     print("影子預測資料失敗：", e)
+try:  # V25 AI 持續學習報告（app/learning.py）：版本、比賽、漂移、錯誤分析
+    from app import learning, ml_predict
+    sc_path = ml_predict.PRED_DIR / "scorecard.json"
+    sc = json.loads(sc_path.read_text("utf-8")) if sc_path.exists() else {}
+    (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
+    (out / "data" / "predictions" / "learning.json").write_text(json.dumps(learning.status(sc), ensure_ascii=False, separators=(",", ":")), "utf-8")
+except Exception as e:
+    print("持續學習報告失敗：", e)
 try:  # 每週固定名單績效（app/weekly.py）：每次發布都用最新收盤重算
     if (config.DATA_DIR / "stocks.db").exists():
         from app import weekly
