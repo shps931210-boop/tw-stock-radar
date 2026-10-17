@@ -104,6 +104,14 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}   # 只用來讀「優先補抓財報」的申請，不會進網站
         run: python -m app.update $([ "$MODE" = fast ] && echo --fast) $([ "$MODE" = backfill ] && echo --backfill)
 
+      # 每日影子預測（V23）：套用每週訓練好的模型，封存到 history/predictions/；失敗不影響網站
+      - name: 每日影子預測
+        if: env.MODE != 'fast'
+        continue-on-error: true
+        run: |
+          pip install -q lightgbm==4.5.0
+          python -m app.ml_predict
+
       # 新聞與公告失敗不影響股價更新；網站新聞中心會顯示最後成功時間與警告
       - name: 新聞與公司公告
         if: env.MODE != 'backfill'

@@ -50,6 +50,16 @@ class WalkForward(unittest.TestCase):
                 rows.append(r)
         return pd.DataFrame(rows), sigs, dates
 
+    def test_feature_ranks_use_signal_day_universe(self):
+        P, sigs, dates = self.panel(n_dates=2, n=10)
+        d0 = P[P["date"] == sigs[0]].sort_values("score_growth")
+        top = d0.index[-3:]
+        P.loc[top, "y20"] = np.nan  # 分數最高的三檔之後沒有出場價（停牌、下市）
+        R = ml.prepare(P, 20)
+        self.assertEqual(len(R[R["date"] == sigs[0]]), 7)
+        # 剩下的股票，百分位仍是和當天全部 10 檔比較（最高只到 0.7），不是和 7 檔比（會到 1.0）
+        self.assertAlmostEqual(R[R["date"] == sigs[0]]["r_score_growth"].max(), 0.7)
+
     def test_purge_never_trains_on_unfinished_labels(self):
         P, sigs, dates = self.panel()
         wf = ml.walk_forward(P, 20, sigs, dates, use_lgbm=False)

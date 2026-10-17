@@ -33,7 +33,7 @@ from . import config
 from . import factor_research as fr
 from . import pit_backtest as pb
 
-METHOD = 1
+METHOD = 2  # 2：特徵百分位改用標籤篩選前的當日母體
 OUT = Path(__file__).resolve().parent.parent / "history" / "backtest" / "ml.json"
 STEP = 10                     # 每 10 個交易日一個訊號日
 HORIZONS = (5, 20, 60)
@@ -142,14 +142,20 @@ def _pred_lin(w: np.ndarray, X: np.ndarray) -> np.ndarray:
     return w[0] + X @ w[1:]
 
 
+def prepare(panel: pd.DataFrame, h: int) -> pd.DataFrame:
+    """先用訊號日當天的完整可排名母體算特徵百分位，再接上未來標籤、只留有標籤的列。
+    不能先丟掉「之後停牌、買不到、沒有出場價」的股票再排名，否則當天的母體就被未來資訊改變了（選樣偏誤）。"""
+    P = panel.copy()
+    P[[f"r_{f}" for f in FEATS]] = _ranks(P, FEATS).values
+    return P[P[f"y{h}"].notna()].copy()
+
+
 def walk_forward(panel: pd.DataFrame, h: int, sigs: list[str], dates: list[str], use_lgbm: bool = True) -> dict:
     """依時間滾動預測；回傳每個測試日每檔股票的各模型預測。"""
     y = f"y{h}"
-    P = panel[panel[y].notna()].copy()
+    P = prepare(panel, h)
     if not len(P):
         return {"preds": pd.DataFrame(), "tests": []}
-    R = _ranks(P, FEATS)
-    P[[f"r_{f}" for f in FEATS]] = R.values
     P["y_rank"] = P.groupby("date")[y].rank(pct=True)
     P["y_win"] = (P[y] > 0).astype(float)
     pos = {d: i for i, d in enumerate(dates)}
@@ -275,6 +281,12 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
                      "sufficiency": sufficiency(main.get("v21") or {}, len(tests), h),
                      "rows": int(len(P))}
         log(f"{h} 日：{len(tests)} 個測試日，{time.time() - t0:.0f} 秒")
+    try:  # 用全部已確定標籤的資料訓練最終模型，給每日影子預測（app/ml_predict.py）使用
+        from . import ml_predict
+        mm = ml_predict.export_models(panel, use_lgbm)
+        log(f"已存最終模型 {mm['model_hash']}")
+    except Exception as e:
+        log(f"最終模型存檔失敗：{e}")
     lab = {str(h): {k: int(v) for k, v in panel[f"st{h}"].value_counts().items()} for h in HORIZONS}
     miss = {f: round(float(panel[f].isna().mean()) * 100, 1) for f in FEATS}
     S = H.get(str(MAIN), {}).get("sufficiency") or {}

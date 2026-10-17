@@ -1039,6 +1039,20 @@ function renderML() {
   $("#mlH").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("mlh", b.dataset.k); renderML(); } };
   $("#mlP").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("mlp", b.dataset.k); renderML(); } };
 }
+// 每日影子預測成績（history/predictions/scorecard.json）：事前封存、到期對帳
+async function loadPredSc() {
+  const el = $("#predsc"); if (!el || !SITE) return;
+  let S; try { const r = await fetch("data/predictions/scorecard.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
+  el.hidden = false;
+  const names = { v21: "V21 均衡型（固定權重）", ridge: "Ridge", lgbm: "LightGBM", logit: "Logistic" };
+  if (!S || !S.days) { el.innerHTML = `<div class="card-h"><h2>每日 AI 預測對帳（影子模式）</h2></div><p class="muted small" style="margin:0">每天完整更新後，最新訓練的模型會對全部可排名股票產生 5／20／60 日相對 0050 的預測，並在隔天開盤前封存。第一份預測產生後，這裡會顯示到期後的實際對帳結果。</p>`; return; }
+  el.innerHTML = `<div class="card-h"><h2>每日 AI 預測對帳（影子模式）</h2><span class="muted small">${esc(S.first)}～${esc(S.last)}・已封存 ${S.days} 天（${S.on_time} 天在開盤前封存）</span></div>
+    ${["5", "20", "60"].map((h) => { const H = S.horizons?.[h] || {}; return `<h3 style="margin:10px 0 6px">${h} 個交易日<span class="faint small">・已到期 ${H.matured || 0} 天</span></h3>
+      ${H.matured ? `<div class="tbl"><table><thead><tr><th>模型</th><th class="r">平均 Rank IC</th><th class="r">IC 為正</th><th class="r">前 20 名平均超額</th><th class="r">方向命中／Brier</th></tr></thead><tbody>
+        ${Object.entries(names).filter(([k]) => H[k]).map(([k, n]) => `<tr><td>${n}</td><td class="r num">${fmtNum(H[k].ic, 3)}</td><td class="r num">${fmtNum(H[k].ic_pos, 0)}%</td><td class="r num ${signCls(H[k].top_excess)}">${pctTxt(H[k].top_excess)}</td>
+          <td class="r num">${H[k].brier != null ? `${fmtNum(H[k].hit, 1)}%／${fmtNum(H[k].brier, 3)}<br><span class="faint small">只猜平均 ${fmtNum(H[k].brier_base, 3)}</span>` : "—"}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted small" style="margin:0">還沒有到期的預測。</p>`}`; }).join("")}
+    <p class="faint small" style="margin:8px 0 0">規則和歷史研究完全相同：訊號日隔天開盤進場、第 h 個交易日後開盤出場、減去同期間 0050，未扣成本。每天的預測檔在 <a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/predictions" target="_blank" rel="noopener">GitHub</a> 公開，不會事後修改。到期天數少於 20 天前，差異多半只是運氣；新模型沒有在這裡持續勝過 V21 之前，不會取代正式排行榜。</p>`;
+}
 async function loadJoint() {
   if (!SITE) return;
   if (!JOINT) { try { const r = await fetch("data/backtest/joint.json?v=" + (VER?.datasets?.["backtest/joint.json"] || Date.now())); JOINT = r.ok ? await r.json() : false; } catch (e) { JOINT = false; } }
@@ -1343,6 +1357,7 @@ function pagePerformance() {
     <section class="card" id="fac" hidden></section>
     <section class="card" id="risk" hidden></section>
     <section class="card" id="ml" hidden></section>
+    <section class="card" id="predsc" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
     ${modelCompare(tr)}
@@ -1359,7 +1374,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadWeekly(); loadRisk();
+  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPredSc();
   loadFac();
 }
 
@@ -3138,6 +3153,7 @@ function decisionCard(s, d) {
           return tile("量化品質", n ? `${n} / 5 項分數` : "還不能評分", n ? Object.entries(sc).slice(0, 3).map(([f, v]) => `${FNAME[f].slice(0, 2)} ${fmtNum(v, 0)}`).join("・") + "（不排名）" : esc((MD.ai?.why || "").slice(0, 34))); })()}
     </div>
     <h3 style="margin:14px 0 6px">估值區間</h3>${band}
+    <div id="mlPred" data-sid="${esc(s.stock_id)}"></div>
     <p class="small" id="facHint" style="margin:10px 0 0" hidden></p>
     <h3 style="margin:16px 0 6px">短線／波段／長期研究狀態</h3>
     ${D.blocked ? `<div class="banner warn small">${esc(D.blocked)}</div>` : ""}
@@ -3146,8 +3162,8 @@ function decisionCard(s, d) {
     ${R ? `<div class="tbl"><table class="wrap dplan"><tbody>
       <tr><th>觀察條件</th><td>${esc(R.setup)}</td></tr>
       <tr><th>進場條件</th><td>${esc(R.entry)}<div style="margin-top:4px"><span class="pill ${stTxt[1]}">${stTxt[0]}</span> ${(plan?.miss || []).map((m) => `<span class="small muted">・${esc(m)}</span>`).join(" ")}</div></td></tr>
-      ${lv ? `<tr><th>參考價位</th><td>以今天收盤 <b class="num">${fmtNum(lv.entry)}</b> 當參考進場價：停損 <b class="num">${fmtNum(lv.stop)}</b>（−${fmtNum(lv.risk_pct, 1)}%）、${hz === "short" ? "停利" : "第一參考目標"} <b class="num">${fmtNum(lv.target)}</b>（+${fmtNum(lv.reward_pct, 1)}%）、風險報酬比 <b class="num">${fmtNum(lv.rr, 1)} : 1</b>
-        <div class="faint small">實際進場價是訊號隔天開盤價，價位會跟著調整。ATR ${fmtNum(st.atr)}（股價的 ${fmtNum(st.atr_pct, 1)}%）。</div></td></tr>` : ""}
+      ${lv ? `<tr><th>規則試算價位</th><td>${plan?.state === "triggered" ? "進場條件已成立。" : "<b>目前不符合進場條件</b>，以下只是試算，不代表現在可以買。"}假設以今天收盤 <b class="num">${fmtNum(lv.entry)}</b> 進場：停損 <b class="num">${fmtNum(lv.stop)}</b>（−${fmtNum(lv.risk_pct, 1)}%）、規則停利價 <b class="num">${fmtNum(lv.target)}</b>（+${fmtNum(lv.reward_pct, 1)}%）、風險報酬比 <b class="num">${fmtNum(lv.rr, 1)} : 1</b>
+        <div class="faint small">停損、停利是 ATR 公式（波動幅度 ${fmtNum(st.atr)}，股價的 ${fmtNum(st.atr_pct, 1)}%）算出的交易規則價位，<b>不是 AI 預測股價會漲到哪裡</b>。今天收盤價只是試算基準，不是建議買價；規則的實際進場價是訊號隔天開盤價。</div></td></tr>` : ""}
       <tr><th>停損／失效</th><td>${esc(R.stop)}<br><span class="muted small">論點失效：${esc(R.invalid)}</span></td></tr>
       <tr><th>停利／出場</th><td>${esc(hz === "long" ? R.exit : R.target)}${hz === "long" ? "" : `<br><span class="muted small">${esc(R.exit)}</span>`}</td></tr>
       ${plan?.note ? `<tr><th>判斷範圍</th><td class="small">${esc(plan.note)}</td></tr>` : ""}
@@ -3267,9 +3283,9 @@ async function pageStock(id) {
   $$(".actbar [data-j]").forEach((b) => b.onclick = () => { const el = $("#" + b.dataset.j); if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - hdr - $(".actbar").offsetHeight - 8, behavior: "smooth" }); });
   const toRc = $("#toRc"); if (toRc) toRc.onclick = () => { const k = Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank && m === store.get("aipage", {}).mode) || Object.keys(s.ai.modes).find((m) => s.ai.modes[m].rank);
     store.set("aipage", { ...store.get("aipage", {}), mode: k, sel: id, cmp: null }); location.hash = "#/ai"; };
-  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; facHint(s, d.decision); fillFinQ(); };
+  const onHz = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY; $(".dcard").outerHTML = decisionCard(s, d); scrollTo(0, y); $("#hzSeg").onclick = onHz; facHint(s, d.decision); fillFinQ(); fillPred(); };
   if ($("#hzSeg")) $("#hzSeg").onclick = onHz;
-  facHint(s, d.decision); fillFinQ();
+  facHint(s, d.decision); fillFinQ(); fillPred();
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
   bindRows($("#app"), [], () => {});
@@ -3373,6 +3389,23 @@ function pfHeld(sid) {
 // 財報補齊：顯示這檔在補抓佇列的位置（來自上一次補抓的實際紀錄），登入會員可以申請優先補抓
 let COVP = null;
 const loadCov = () => (COVP = COVP || (SITE ? fetch("data/coverage.json" + verQ("coverage.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null)));
+// 每日影子預測（app/ml_predict.py）：實驗中，只顯示模型在同一天可排名股票中的百分位，不顯示機率或預測價
+let PRED = null, PREDSC = null;
+async function fillPred() {
+  const el = $("#mlPred"); if (!el || !SITE) return;
+  if (PRED === null) {
+    try { const [a, b] = await Promise.all([fetch("data/predictions/latest.json" + (verQ("predictions/latest.json") || "?t=" + Date.now())), fetch("data/predictions/scorecard.json?t=" + Date.now())]);
+      PRED = a.ok ? await a.json() : false; PREDSC = b.ok ? await b.json() : false; } catch (e) { PRED = false; }
+  }
+  if (!PRED) return;
+  const x = PRED.stocks?.[el.dataset.sid], H = PREDSC?.horizons?.["20"] || {};
+  const names = { v21: "V21 均衡型", ridge: "Ridge", lgbm: "LightGBM" };
+  const pctl = (v) => v == null ? "—" : `前 ${Math.max(1, Math.round((1 - v) * 100))}%`;
+  el.innerHTML = `<h3 style="margin:16px 0 6px">AI 20 日相對表現預測 <span class="pill warn">實驗中・影子模式</span></h3>
+    ${x ? `<div class="kpis">${Object.entries(names).filter(([k]) => x["20"]?.[k + "_pct"] != null).map(([k, n]) => `<div class="kpi"><span>${n}</span><b style="font-size:16px">${pctl(x["20"][k + "_pct"])}</b><small class="muted">${H[k] ? `已對帳 ${H[k].n} 天・IC ${fmtNum(H[k].ic, 3)}` : "還沒有到期的對帳"}</small></div>`).join("")}</div>
+      <p class="faint small" style="margin:4px 0 0">意思是：在 ${esc(PRED.signal_date)} 當天 ${fmtNum(PRED.n, 0)} 檔可排名股票裡，模型認為這檔未來 20 個交易日相對 0050 表現的排名位置（前 1% 最看好）。這不是上漲機率，也不是預測價格；模型（${esc(PRED.model_hash)}，訓練資料到 ${esc(PRED.trained_through?.["20"] || "—")}）還沒有足夠的樣本外紀錄證明比 V21 準，所以不影響正式排行榜。每天的預測在隔天開盤前就封存，到期後自動對帳，結果在 <a href="#/performance">績效與回測</a>。</p>`
+      : `<p class="muted small" style="margin:0">這檔沒有通過均衡型的可排名條件，今天沒有模型預測（${esc(PRED.signal_date)}）。</p>`}`;
+}
 async function fillFinQ() {
   const el = $("#finQ"); if (!el) return;
   const sid = el.dataset.sid, C = await loadCov(), Q = C?.fundamental_queue || {};

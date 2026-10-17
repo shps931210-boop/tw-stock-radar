@@ -140,6 +140,16 @@ except Exception as e:
     print("投資組合輔助資料失敗：", e)
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
+try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與到期對帳成績
+    from app import ml_predict
+    lp = ml_predict.latest()
+    if lp:
+        (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
+        (out / "data" / "predictions" / "latest.json").write_text(json.dumps(lp, ensure_ascii=False, separators=(",", ":")), "utf-8")
+        if (ml_predict.PRED_DIR / "scorecard.json").exists():
+            shutil.copy(ml_predict.PRED_DIR / "scorecard.json", out / "data" / "predictions" / "scorecard.json")
+except Exception as e:
+    print("影子預測資料失敗：", e)
 try:  # 每週固定名單績效（app/weekly.py）：每次發布都用最新收盤重算
     if (config.DATA_DIR / "stocks.db").exists():
         from app import weekly

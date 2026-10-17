@@ -56,7 +56,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/backtest/
+          git add history/backtest/ history/models/
           if git diff --cached --quiet; then echo "結果沒有變化"; exit 0; fi
           git commit -q -m "AI 歷史回測 $(date +%F)"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
