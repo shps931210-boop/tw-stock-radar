@@ -37,9 +37,11 @@ FILES = ("ml.json", "lgbm_5.txt", "lgbm_20.txt", "lgbm_60.txt")
 
 CHAMPION = {"id": "v21", "name": "V21 固定權重", "role": "正式排行榜"}
 CHALLENGER = {"id": "lgbm", "name": "LightGBM（每週重新訓練）", "role": "影子模式，不影響排行榜"}
-# 升級門檻：2026-10-17 事先定好，之後不依結果調整（要改就換 GATE_VERSION，並在網站註明）
-GATE_VERSION = "2026-10-17"
-GATE = {"horizon": "20", "min_days": 60, "ic_t": 2.0, "min_beat": 50.0, "max_mdd_gap": 5.0}
+CHALLENGERS = {"lgbm": "LightGBM", "ens": "V21＋LightGBM 平均"}
+# 升級門檻：事先定好，之後不依結果調整（要改就換 GATE_VERSION，並在網站註明）。
+# 2026-10-17b：還沒有任何到期資料時加入第二個候選（組合模型）；兩個候選同時比，IC 的 t 門檻依 Bonferroni 從 2.0 提高到 2.24
+GATE_VERSION = "2026-10-17b"
+GATE = {"horizon": "20", "min_days": 60, "ic_t": 2.24, "min_beat": 50.0, "max_mdd_gap": 5.0}
 
 
 def feature_version() -> str:
@@ -142,9 +144,9 @@ def register(staging: Path, research: dict | None = None, sample: pd.DataFrame |
              "validation": {"method": "walk-forward（每個測試日只用標籤已到期的資料訓練）", "from": R.get("first_test"), "to": R.get("last_test"),
                             "holdout_from": R.get("holdout_from"),
                             "metrics": {m: {k: (R.get("all", {}).get(m) or {}).get(k) for k in ("ic", "ic_t", "top_excess", "top_vs_all")}
-                                        for m in ("v21", "ridge", "lgbm")} if R else None,
-                            "holdout": {m: (R.get("holdout", {}).get(m) or {}).get("ic") for m in ("v21", "ridge", "lgbm")} if R else None,
-                            "vs_v21": R.get("vs_v21", {}).get("lgbm") if R else None},
+                                        for m in ("v21", "ridge", "lgbm", "ens")} if R else None,
+                            "holdout": {m: (R.get("holdout", {}).get(m) or {}).get("ic") for m in ("v21", "ridge", "lgbm", "ens")} if R else None,
+                            "vs_v21": R.get("vs_v21", {}).get("lgbm") if R else None, "vs_v21_ens": R.get("vs_v21", {}).get("ens") if R else None},
              "importance": {h: H.get("importance") for h, H in meta.get("horizons", {}).items() if H.get("importance")}}
     problems = validate(staging, sample, dates)
     if problems:
@@ -226,32 +228,38 @@ def _mdd(x: list[float]) -> float:
     return worst * 100
 
 
-def gate(daily: list[dict], cost_pct: float) -> dict:
-    """Champion（V21）vs Challenger（LightGBM）在同一批到期日上的比較。"""
+def gate(daily: list[dict], cost_pct: float, cid: str | None = None) -> dict:
+    """Champion（V21）vs 一個 Challenger 在同一批到期日上的比較。cid=None：每個候選都比，回傳最接近通過的那個為主。"""
+    if cid is None:
+        res = {k: gate(daily, cost_pct, k) for k in CHALLENGERS}
+        rank = {"passed": 0, "kept": 1, "accumulating": 2}
+        best = min(res.values(), key=lambda g: (rank[g["status"]], -sum(c["ok"] for c in g["criteria"])))
+        return {**best, "challengers": res}
     h = GATE["horizon"]
-    rows = sorted([d for d in daily if d["h"] == h and d["ic"].get("lgbm") is not None and d["ic"].get("v21") is not None],
+    rows = sorted([d for d in daily if d["h"] == h and d["ic"].get(cid) is not None and d["ic"].get("v21") is not None],
                   key=lambda d: d["sig"])
     n = len(rows)
-    out = {"gate_version": GATE_VERSION, "rule": GATE, "horizon": h, "days": n, "need": GATE["min_days"], "cost_pct": cost_pct}
+    out = {"gate_version": GATE_VERSION, "rule": GATE, "horizon": h, "challenger": cid, "challenger_name": CHALLENGERS[cid],
+           "days": n, "need": GATE["min_days"], "cost_pct": cost_pct}
     if not n:
         out.update(status="accumulating", label="累積中", criteria=[])
         return out
     c = cost_pct / 100
-    ic = {m: np.array([d["ic"][m] for d in rows], float) for m in ("v21", "lgbm")}
-    top = {m: np.array([d["top"][m] for d in rows], float) - c for m in ("v21", "lgbm")}
-    diff = ic["lgbm"] - ic["v21"]
+    ic = {m: np.array([d["ic"][m] for d in rows], float) for m in ("v21", cid)}
+    top = {m: np.array([d["top"][m] for d in rows], float) - c for m in ("v21", cid)}
+    diff = ic[cid] - ic["v21"]
     t = float(diff.mean() / fr._nw_se(diff, int(h))) if n >= 4 else None
     step = int(h)  # 不重疊的持有期才能算回撤
     mdd = {m: _mdd(list(top[m][::step])) for m in top}
-    beat = float((top["lgbm"] > 0).mean() * 100)
+    beat = float((top[cid] > 0).mean() * 100)
     crit = [
         {"name": "到期的真實預測天數", "need": f"≥ {GATE['min_days']} 天", "value": f"{n} 天", "ok": n >= GATE["min_days"]},
         {"name": "Rank IC 勝過 V21（Newey-West t）", "need": f"t ≥ {GATE['ic_t']}", "value": f"差 {diff.mean():+.3f}，t {t:.2f}" if t is not None else "樣本太少", "ok": bool(t is not None and t >= GATE["ic_t"])},
-        {"name": "前 20 名扣成本超額報酬", "need": "> 0 且高於 V21", "value": f"{top['lgbm'].mean() * 100:+.2f}%（V21 {top['v21'].mean() * 100:+.2f}%）",
-         "ok": bool(top["lgbm"].mean() > 0 and top["lgbm"].mean() > top["v21"].mean())},
+        {"name": "前 20 名扣成本超額報酬", "need": "> 0 且高於 V21", "value": f"{top[cid].mean() * 100:+.2f}%（V21 {top['v21'].mean() * 100:+.2f}%）",
+         "ok": bool(top[cid].mean() > 0 and top[cid].mean() > top["v21"].mean())},
         {"name": "跑贏 0050 的天數比例（扣成本）", "need": f"≥ {GATE['min_beat']:.0f}%", "value": f"{beat:.0f}%", "ok": beat >= GATE["min_beat"]},
-        {"name": "最大回撤不比 V21 差太多", "need": f"差距 ≤ {GATE['max_mdd_gap']:.0f} 個百分點", "value": f"{mdd['lgbm']:.1f}%（V21 {mdd['v21']:.1f}%）",
-         "ok": mdd["lgbm"] >= mdd["v21"] - GATE["max_mdd_gap"]},
+        {"name": "最大回撤不比 V21 差太多", "need": f"差距 ≤ {GATE['max_mdd_gap']:.0f} 個百分點", "value": f"{mdd[cid]:.1f}%（V21 {mdd['v21']:.1f}%）",
+         "ok": mdd[cid] >= mdd["v21"] - GATE["max_mdd_gap"]},
     ]
     if n < GATE["min_days"]:
         st, lab = "accumulating", f"累積中（{n}／{GATE['min_days']} 天）"

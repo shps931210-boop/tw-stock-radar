@@ -49,7 +49,7 @@ FEATS = SCORES + RAW
 RIDGE_ALPHA = 10.0
 LGB_PARAMS = dict(n_estimators=200, learning_rate=0.05, num_leaves=15, min_child_samples=200, subsample=0.8, subsample_freq=1,
                   colsample_bytree=0.8, reg_lambda=1.0, random_state=7, verbose=-1)
-NAMES = {"v21": "V21 均衡型（固定權重）", "ridge": "Ridge 線性迴歸", "logit": "Logistic 迴歸", "lgbm": "LightGBM"}
+NAMES = {"v21": "V21 均衡型（固定權重）", "ridge": "Ridge 線性迴歸", "logit": "Logistic 迴歸", "lgbm": "LightGBM", "ens": "V21＋LightGBM 平均"}
 
 _D, _CFG = None, None
 
@@ -185,9 +185,17 @@ def walk_forward(panel: pd.DataFrame, h: int, sigs: list[str], dates: list[str],
                        feature_fraction=prm.pop("colsample_bytree"), seed=prm.pop("random_state"), min_data_in_leaf=prm.pop("min_child_samples"))
             m = lgb.train(prm, lgb.Dataset(tr[rf].to_numpy(), tr["y_rank"].to_numpy()), num_boost_round=LGB_PARAMS["n_estimators"])
             out["lgbm"] = m.predict(te[rf].to_numpy())
+            out["ens"] = ensemble(out["v21"], out["lgbm"])
         preds.append(out)
         tests.append(t)
     return {"preds": pd.concat(preds, ignore_index=True) if preds else pd.DataFrame(), "tests": tests}
+
+
+def ensemble(v21, lgbm) -> np.ndarray:
+    """V25.1 組合模型：同一天裡 V21 分數與 LightGBM 預測的百分位平均（事先固定各半，不依結果調整）。
+    兩個模型的錯誤不完全相同，平均通常比單一模型穩定；是否真的比較準，交給樣本外驗證與實盤比賽。"""
+    a, b = pd.Series(np.asarray(v21, float)).rank(pct=True), pd.Series(np.asarray(lgbm, float)).rank(pct=True)
+    return ((a.fillna(0.5) + b.fillna(0.5)) / 2).to_numpy()
 
 
 def _nw_t(x: np.ndarray, lag: int) -> tuple[float | None, float | None]:
@@ -265,7 +273,7 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
         if os.environ.get("ML_PANEL_CACHE"):
             panel.to_pickle(cache)
     log(f"資料集 {len(panel)} 列（股票 × 訊號日），{time.time() - t0:.0f} 秒")
-    models = ["v21", "ridge", "logit", "lgbm"]
+    models = ["v21", "ridge", "logit", "lgbm", "ens"]
     H = {}
     errors = None
     for h in HORIZONS:
@@ -284,7 +292,7 @@ def run(dbname: str = "stocks.db", start: str | None = None, log=print, use_lgbm
                 errors = {"error": str(e)}
         H[str(h)] = {"tests": len(tests), "first_test": tests[0], "last_test": tests[-1], "holdout_from": cut,
                      "all": main, "rolling": evaluate(P[P["date"] < cut], h, models), "holdout": evaluate(P[P["date"] >= cut], h, models),
-                     "vs_v21": {m: _diff(P, h, m, "v21") for m in ("ridge", "logit", "lgbm")},
+                     "vs_v21": {m: _diff(P, h, m, "v21") for m in ("ridge", "logit", "lgbm", "ens")},
                      "sufficiency": sufficiency(main.get("v21") or {}, len(tests), h),
                      "rows": int(len(P))}
         log(f"{h} 日：{len(tests)} 個測試日，{time.time() - t0:.0f} 秒")

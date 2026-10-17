@@ -1193,17 +1193,18 @@ async function loadLearn() {
     <p class="small muted" style="margin:0 0 10px">流程：每天封存預測 → 到期自動對帳 → 每週用已到期資料重新訓練 → 新版先檢查才上線 → 和正式模型比賽，通過門檻也要人工確認才升級。重新訓練不等於變準，下面只列實際數字。</p>
     <div class="kpis">
       <div class="kpi"><span>正式模型（排行榜）</span><b style="font-size:16px">${esc(S.champion?.name || "V21 固定權重")}</b><small class="faint">固定權重，不會自動改</small></div>
-      <div class="kpi"><span>候選模型</span><b style="font-size:16px">LightGBM</b><small class="faint">每週重新訓練・${A ? `版本 ${esc(A.version)}` : "第一個版本會在下次每週訓練後登記"}</small></div>
+      <div class="kpi"><span>候選模型</span><b style="font-size:16px">LightGBM、V21＋LightGBM 平均</b><small class="faint">每週重新訓練・${A ? `版本 ${esc(A.version)}` : "第一個版本會在下次每週訓練後登記"}</small></div>
       <div class="kpi"><span>已到期的真實預測（5／20／60 日）</span><b class="num" style="font-size:16px">${mt["5"] || 0}／${mt["20"] || 0}／${mt["60"] || 0} 天</b><small class="faint">${live.days ? `已封存 ${live.days} 天（${esc(live.first)} 起）` : "還沒有封存的預測"}</small></div>
       <div class="kpi"><span>升級判定</span><b style="font-size:16px"><span class="pill ${GC[G.status] || ""}">${esc(G.label || "累積中")}</span></b><small class="faint">門檻 ${esc(G.gate_version || "")} 事先固定</small></div></div>
-    ${G.criteria?.length ? `<h3 style="margin:14px 0 6px">新舊模型比賽（${esc(G.horizon)} 日，只用封存後到期的真實預測）</h3>
+    ${G.criteria?.length ? `<h3 style="margin:14px 0 6px">新舊模型比賽：${esc(G.challenger_name || "LightGBM")} 對 V21（${esc(G.horizon)} 日，只用封存後到期的真實預測）</h3>
+      ${G.challengers ? `<p class="faint small" style="margin:0 0 6px">${Object.values(G.challengers).map((c) => `${esc(c.challenger_name)}：${esc(c.label)}`).join("；")}</p>` : ""}
       <div class="tbl"><table class="wrap"><thead><tr><th>條件</th><th>門檻</th><th>目前</th><th></th></tr></thead><tbody>
       ${G.criteria.map((c) => `<tr><td>${esc(c.name)}</td><td class="small">${esc(c.need)}</td><td class="num small">${esc(c.value)}</td><td>${c.ok ? '<span class="pill s-ok">達到</span>' : '<span class="pill">未達</span>'}</td></tr>`).join("")}</tbody></table></div>`
       : `<p class="small muted" style="margin:12px 0 0">新舊模型比賽：20 日預測要等 20 個交易日才會到期，滿 ${G.need || 60} 天後才開始判定。</p>`}
     ${A?.validation?.metrics ? `<h3 style="margin:14px 0 6px">這一版的歷史驗證（walk-forward 樣本外，不是真實績效）</h3>
       <div class="tbl"><table><thead><tr><th>模型</th><th class="r">20 日 Rank IC</th><th class="r">t 值</th><th class="r">最終保留期 IC</th><th class="r">前 20 名超額</th></tr></thead><tbody>
-      ${[["v21", "V21 固定權重"], ["lgbm", "LightGBM"], ["ridge", "Ridge"]].filter(([k]) => vm[k]?.ic != null).map(([k, n]) => `<tr><td>${n}</td><td class="r num">${ic(vm[k].ic)}</td><td class="r num">${fmtNum(vm[k].ic_t, 2)}</td><td class="r num">${ic(A.validation.holdout?.[k])}</td><td class="r num ${signCls(vm[k].top_excess)}">${pctTxt(vm[k].top_excess)}</td></tr>`).join("")}</tbody></table></div>
-      <p class="faint small" style="margin:4px 0 0">驗證期 ${esc(A.validation.from || "")}～${esc(A.validation.to || "")}；LightGBM 減 V21 的 IC 差 ${ic(A.validation.vs_v21?.diff)}（t ${fmtNum(A.validation.vs_v21?.t, 2)}），t 小於 2 代表還不能說新模型比較好。</p>` : ""}
+      ${[["v21", "V21 固定權重"], ["lgbm", "LightGBM"], ["ens", "V21＋LightGBM 平均"], ["ridge", "Ridge"]].filter(([k]) => vm[k]?.ic != null).map(([k, n]) => `<tr><td>${n}</td><td class="r num">${ic(vm[k].ic)}</td><td class="r num">${fmtNum(vm[k].ic_t, 2)}</td><td class="r num">${ic(A.validation.holdout?.[k])}</td><td class="r num ${signCls(vm[k].top_excess)}">${pctTxt(vm[k].top_excess)}</td></tr>`).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">驗證期 ${esc(A.validation.from || "")}～${esc(A.validation.to || "")}；LightGBM 減 V21 的 IC 差 ${ic(A.validation.vs_v21?.diff)}（t ${fmtNum(A.validation.vs_v21?.t, 2)}）${A.validation.vs_v21_ens ? `；組合模型減 V21 ${ic(A.validation.vs_v21_ens.diff)}（t ${fmtNum(A.validation.vs_v21_ens.t, 2)}）` : ""}。t 小於 2 代表還不能說新模型比較好。</p>` : ""}
     ${(S.lessons || []).length ? `<h3 style="margin:14px 0 6px">AI 最近學到了什麼</h3><ul class="small" style="margin:0;padding-left:18px">${S.lessons.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
     ${worst.length ? `<h3 style="margin:14px 0 6px">最容易判斷錯的情況（20 日，歷史樣本外）</h3>
       <div class="tbl"><table class="wrap"><thead><tr><th>情況</th><th class="r">LightGBM IC</th><th class="r">V21 IC</th><th class="r">模型前 20% 相對同組</th><th>證據</th></tr></thead><tbody>
@@ -1220,7 +1221,7 @@ async function loadPredSc() {
   const el = $("#predsc"); if (!el || !SITE) return;
   let S; try { const r = await fetch("data/predictions/scorecard.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
   el.hidden = false;
-  const names = { v21: "V21 均衡型（固定權重）", ridge: "Ridge", lgbm: "LightGBM", logit: "Logistic" };
+  const names = { v21: "V21 均衡型（固定權重）", ridge: "Ridge", lgbm: "LightGBM", ens: "V21＋LightGBM 平均", logit: "Logistic" };
   if (!S || !S.days) { el.innerHTML = `<div class="card-h"><h2>每日 AI 預測對帳（影子模式）</h2></div><p class="muted small" style="margin:0">每天完整更新後，最新訓練的模型會對全部可排名股票產生 5／20／60 日相對 0050 的預測，並在隔天開盤前封存。第一份預測產生後，這裡會顯示到期後的實際對帳結果。</p>`; return; }
   el.innerHTML = `<div class="card-h"><h2>每日 AI 預測對帳（影子模式）</h2><span class="muted small">${esc(S.first)}～${esc(S.last)}・已封存 ${S.days} 天（${S.on_time} 天在開盤前封存）</span></div>
     ${["5", "20", "60"].map((h) => { const H = S.horizons?.[h] || {}; return `<h3 style="margin:10px 0 6px">${h} 個交易日<span class="faint small">・已到期 ${H.matured || 0} 天</span></h3>

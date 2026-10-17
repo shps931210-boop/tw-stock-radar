@@ -83,8 +83,8 @@ class Gate(unittest.TestCase):
     def daily(self, n, lgbm_ic, lgbm_top, seed=3):
         rng = np.random.default_rng(seed)
         return [{"sig": f"2026-{1 + i // 28:02d}-{1 + i % 28:02d}", "h": "20", "ver": "x",
-                 "ic": {"v21": 0.02 + rng.normal() * 0.03, "lgbm": lgbm_ic + rng.normal() * 0.03},
-                 "top": {"v21": 0.005 + rng.normal() * 0.02, "lgbm": lgbm_top + rng.normal() * 0.02}} for i in range(n)]
+                 "ic": {"v21": 0.02 + rng.normal() * 0.03, "lgbm": lgbm_ic + rng.normal() * 0.03, "ens": 0.02 + rng.normal() * 0.03},
+                 "top": {"v21": 0.005 + rng.normal() * 0.02, "lgbm": lgbm_top + rng.normal() * 0.02, "ens": 0.005 + rng.normal() * 0.02}} for i in range(n)]
 
     def test_accumulating_until_enough_days(self):
         g = L.gate(self.daily(30, 0.2, 0.05), 0.585)
@@ -93,6 +93,8 @@ class Gate(unittest.TestCase):
     def test_clearly_better_challenger_passes_but_needs_manual_ok(self):
         g = L.gate(self.daily(80, 0.12, 0.04), 0.585)
         self.assertEqual(g["status"], "passed")
+        self.assertEqual(g["challenger"], "lgbm")
+        self.assertEqual(g["challengers"]["ens"]["status"], "kept")   # 組合模型沒有比較好：分開判定
         self.assertIn("人工確認", g["label"])
 
     def test_same_quality_challenger_is_kept_out(self):

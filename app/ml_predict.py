@@ -30,7 +30,7 @@ from . import track
 ROOT = Path(__file__).resolve().parent.parent
 MODEL_DIR = ROOT / "history" / "models"
 PRED_DIR = ROOT / "history" / "predictions"
-MODELS = ("v21", "ridge", "lgbm", "logit")
+MODELS = ("v21", "ridge", "lgbm", "ens", "logit")
 
 
 # ---------------- 訓練並存檔（每週） ----------------
@@ -127,6 +127,7 @@ def predict(X: pd.DataFrame, M: dict) -> dict:
         p["logit"] = 1 / (1 + np.exp(-np.clip(lg, -30, 30)))
         if h in M.get("_lgbm", {}):
             p["lgbm"] = M["_lgbm"][h].predict(X[rf].to_numpy())
+            p["ens"] = ml.ensemble(p["v21"], p["lgbm"])
         res[h] = {k: pd.Series(v, index=X["sid"]) for k, v in p.items()}
     return res
 
