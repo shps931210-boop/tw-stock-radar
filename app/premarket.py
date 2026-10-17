@@ -172,7 +172,9 @@ def market_risk(G: dict, now: datetime, events: list[dict]) -> dict:
     if fx and fx.get("chg") is not None and fx["chg"] >= 0.15:
         score += 1; why.append(f"新台幣貶值 {fx['chg']:+.3f} 元（{fx['date']}）")
     oil = G.get("oil")
-    if oil and oil.get("chg_pct") is not None and abs(oil["chg_pct"]) >= 4:
+    if oil and oil.get("date") and oil["date"] < exp:
+        stale.append(f"WTI 原油只到 {oil['date']}")
+    elif oil and oil.get("chg_pct") is not None and abs(oil["chg_pct"]) >= 4:
         score += 1; why.append(f"油價{'大漲' if oil['chg_pct'] > 0 else '大跌'} {oil['chg_pct']:+.2f}%（{oil['date']}）")
     bad = [e for e in events if e["importance"] >= 3 and e["direction"] == "負面"]
     if len(bad) >= 3:
