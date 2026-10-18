@@ -1,8 +1,40 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-17T14:38:45",
+ "generated_at": "2026-10-18T20:20:13",
+ "quality": {
+  "checked_at": "2026-10-18T20:20:13",
+  "sources": {
+   "calendar": {
+    "label": "休市日曆",
+    "ok": true
+   },
+   "announcements": {
+    "label": "公司公告",
+    "ok": true,
+    "detail": "上市 5 則、上櫃 1 則"
+   },
+   "news_at": {
+    "label": "公告／新聞最後更新",
+    "ok": true,
+    "detail": "2026-10-18T20:20:07"
+   },
+   "global": {
+    "label": "國際市場",
+    "ok": false,
+    "detail": "WTI 原油只到 2026-10-14已過期"
+   }
+  },
+  "source_ok": "3/4",
+  "state": "degraded",
+  "duplicates_removed": 15,
+  "latest_event_at": "2026-10-18T10:00:00"
+ },
+ "upcoming_holidays": [
+  "2026-10-25",
+  "2026-10-26"
+ ],
  "target_date": "2026-10-19",
- "today": "2026-10-17",
+ "today": "2026-10-18",
  "today_trading": false,
  "calendar_ok": true,
  "last_close": "2026-10-16",
@@ -10,7 +42,7 @@
   "mode": "collect",
   "target_date": "2026-10-19",
   "since": "2026-10-16T13:30:00",
-  "events": 159,
+  "events": 209,
   "high": 17
  },
  "risk": {
@@ -21,7 +53,9 @@
    "台積電 ADR -2.28%（2026-10-16）下跌",
    "那斯達克 -2.15%（2026-10-16）大跌"
   ],
-  "stale": [],
+  "stale": [
+   "WTI 原油只到 2026-10-14"
+  ],
   "us_session_expected": "2026-10-16",
   "method": "規則判讀：費半、台積電 ADR、那斯達克漲跌幅門檻＋匯率、油價、高重要性負面公告數；不是預測"
  },
@@ -47,7 +81,7 @@
    "name": "川湖",
    "industry": "電子零組件業",
    "lists": [
-    "均衡型第 5 名"
+    "均衡型第 6 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -86,7 +120,7 @@
    "name": "聯亞",
    "industry": "通信網路業",
    "lists": [
-    "均衡型第 8 名"
+    "均衡型第 9 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -105,7 +139,9 @@
    "reasons": [
     "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
    ],
-   "event_ids": []
+   "event_ids": [
+    "bbab27bf80c1666f"
+   ]
   },
   {
    "id": "3693",
@@ -125,7 +161,7 @@
    "name": "十銓",
    "industry": "半導體業",
    "lists": [
-    "均衡型第 6 名"
+    "均衡型第 7 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -138,7 +174,7 @@
    "name": "廣穎",
    "industry": "半導體業",
    "lists": [
-    "均衡型第 11 名"
+    "均衡型第 12 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -151,7 +187,7 @@
    "name": "信驊",
    "industry": "半導體業",
    "lists": [
-    "均衡型第 18 名"
+    "均衡型第 19 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -160,24 +196,11 @@
    "event_ids": []
   },
   {
-   "id": "5289",
-   "name": "宜鼎",
-   "industry": "電腦及週邊設備業",
-   "lists": [
-    "均衡型第 20 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電腦及週邊設備業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
    "id": "5386",
    "name": "青雲",
    "industry": "電腦及週邊設備業",
    "lists": [
-    "均衡型第 9 名"
+    "均衡型第 10 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -196,20 +219,10 @@
    "reasons": [
     "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
    ],
-   "event_ids": []
-  },
-  {
-   "id": "6263",
-   "name": "普萊德",
-   "industry": "通信網路業",
-   "lists": [
-    "穩健型第 20 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（通信網路業）受影響機率較高"
-   ],
-   "event_ids": []
+   "event_ids": [
+    "b5b34815835fdd01",
+    "375aefd215a266c5"
+   ]
   },
   {
    "id": "6274",
@@ -229,7 +242,7 @@
    "name": "京晨科",
    "industry": "光電業",
    "lists": [
-    "均衡型第 19 名",
+    "均衡型第 20 名",
     "積極型第 8 名"
    ],
    "flag": "產業風險",
@@ -243,7 +256,7 @@
    "name": "愛普*",
    "industry": "半導體業",
    "lists": [
-    "均衡型第 13 名"
+    "均衡型第 14 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -258,8 +271,8 @@
    "name": "瑞耘",
    "industry": "半導體業",
    "lists": [
-    "穩健型第 8 名",
-    "均衡型第 14 名"
+    "穩健型第 9 名",
+    "均衡型第 15 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -272,8 +285,8 @@
    "name": "全宇昕",
    "industry": "半導體業",
    "lists": [
-    "穩健型第 4 名",
-    "均衡型第 7 名"
+    "穩健型第 5 名",
+    "均衡型第 8 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -312,7 +325,7 @@
    "name": "應廣",
    "industry": "半導體業",
    "lists": [
-    "均衡型第 16 名"
+    "均衡型第 17 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -344,20 +357,39 @@
    "reasons": [
     "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
    ],
-   "event_ids": []
+   "event_ids": [
+    "9d31ad30024c2365"
+   ]
   },
   {
    "id": "8109",
    "name": "博大",
    "industry": "電子零組件業",
    "lists": [
-    "穩健型第 16 名"
+    "穩健型第 17 名"
    ],
    "flag": "產業風險",
    "reasons": [
     "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
    ],
    "event_ids": []
+  },
+  {
+   "id": "2330",
+   "name": "台積電",
+   "industry": "電子工業",
+   "lists": [
+    "穩健型第 14 名"
+   ],
+   "flag": "有新消息",
+   "reasons": [
+    "收盤後正面消息：半導體先進製程擴廠潮！台積電上修全年營收至44%，供應鏈這2檔逆勢創高-財經焦點（不調整分數）"
+   ],
+   "event_ids": [
+    "edffcbb5763cb00f",
+    "7e5b94e5dbb38916",
+    "05603cf62ceda557"
+   ]
   }
  ],
  "events": [
@@ -369,7 +401,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T13:41:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T13:41:00",
    "affected_tickers": [
     "8291"
@@ -391,7 +423,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:33:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:33:00",
    "affected_tickers": [
     "2338"
@@ -413,7 +445,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:01:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:01:00",
    "affected_tickers": [
     "2424"
@@ -435,7 +467,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:36:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:36:00",
    "affected_tickers": [
     "5205"
@@ -457,7 +489,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:39:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:39:00",
    "affected_tickers": [
     "2424"
@@ -479,7 +511,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:55:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:55:00",
    "affected_tickers": [
     "4754"
@@ -501,7 +533,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:30:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:30:00",
    "affected_tickers": [
     "2885"
@@ -523,7 +555,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:31:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:31:00",
    "affected_tickers": [
     "8121"
@@ -545,7 +577,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:37:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:37:00",
    "affected_tickers": [
     "2374"
@@ -567,7 +599,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:01:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:01:00",
    "affected_tickers": [
     "3211"
@@ -589,7 +621,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:02:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:02:00",
    "affected_tickers": [
     "6695"
@@ -611,7 +643,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:03:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:03:00",
    "affected_tickers": [
     "5269"
@@ -633,7 +665,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:03:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:03:00",
    "affected_tickers": [
     "6695"
@@ -655,7 +687,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:16:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:16:00",
    "affected_tickers": [
     "5245"
@@ -677,7 +709,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:32:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:32:00",
    "affected_tickers": [
     "1558"
@@ -699,7 +731,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T20:58:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T20:58:00",
    "affected_tickers": [
     "6558"
@@ -721,7 +753,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T20:58:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T20:58:00",
    "affected_tickers": [
     "6558"
@@ -743,7 +775,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T13:40:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T13:40:00",
    "affected_tickers": [
     "6796"
@@ -765,7 +797,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T13:40:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T13:40:00",
    "affected_tickers": [
     "7750"
@@ -787,7 +819,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T13:53:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T13:53:00",
    "affected_tickers": [
     "4768"
@@ -809,7 +841,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:00:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:00:00",
    "affected_tickers": [
     "3529"
@@ -831,7 +863,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:12:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:12:00",
    "affected_tickers": [
     "3052"
@@ -853,7 +885,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:26:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:26:00",
    "affected_tickers": [
     "6785"
@@ -875,7 +907,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:37:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:37:00",
    "affected_tickers": [
     "4919"
@@ -897,7 +929,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:44:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:44:00",
    "affected_tickers": [
     "8424"
@@ -919,7 +951,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:44:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:44:00",
    "affected_tickers": [
     "8299"
@@ -941,7 +973,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T14:50:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T14:50:00",
    "affected_tickers": [
     "2537"
@@ -963,7 +995,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:07:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:07:00",
    "affected_tickers": [
     "8021"
@@ -985,7 +1017,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:37:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:37:00",
    "affected_tickers": [
     "6213"
@@ -1007,7 +1039,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:37:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:37:00",
    "affected_tickers": [
     "6213"
@@ -1029,7 +1061,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:38:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:38:00",
    "affected_tickers": [
     "6213"
@@ -1051,7 +1083,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T15:38:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T15:38:00",
    "affected_tickers": [
     "6213"
@@ -1073,7 +1105,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:04:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:04:00",
    "affected_tickers": [
     "1727"
@@ -1095,7 +1127,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:04:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:04:00",
    "affected_tickers": [
     "8215"
@@ -1117,7 +1149,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:47:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:47:00",
    "affected_tickers": [
     "2530"
@@ -1139,7 +1171,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:56:00",
    "first_seen_at": "2026-10-17T14:36:25",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:56:00",
    "affected_tickers": [
     "6016"
@@ -1161,7 +1193,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:57:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:57:00",
    "affected_tickers": [
     "2454"
@@ -1183,7 +1215,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T16:59:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T16:59:00",
    "affected_tickers": [
     "2615"
@@ -1205,7 +1237,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:00:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:00:00",
    "affected_tickers": [
     "2615"
@@ -1227,7 +1259,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-16T17:34:00",
    "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-17T14:38:47",
+   "fetched_at": "2026-10-18T20:20:14",
    "data_asof": "2026-10-16T17:34:00",
    "affected_tickers": [
     "1558"
@@ -1242,7 +1274,7 @@
    "novel": true
   }
  ],
- "event_count": 159,
+ "event_count": 209,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -1251,7 +1283,7 @@
    "price": 101.91,
    "chg_pct": 1.04
   },
-  "generated_at": "2026-10-17T14:38:45+08:00",
+  "generated_at": "2026-10-18T20:20:13+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
