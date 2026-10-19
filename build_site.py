@@ -93,6 +93,8 @@ chat_provider = chat_cfg.get("provider") if chat_cfg.get("provider") in ("claude
 html = html.replace("<script>\nconst STATIC", f"<script>window.STATIC_SITE = true; window.CHAT_URL = {json.dumps(chat)}; window.CHAT_PROVIDER = {json.dumps(chat_provider)}; window.SUPA = {json.dumps(supabase_config())};</script>\n<script>\nconst STATIC", 1)
 (out / "index.html").write_text(html, "utf-8")
 shutil.copy(root / "static" / "portfolio.js", out / "portfolio.js")  # 我的投資組合：計算模組（網站與測試共用）
+if (root / "static" / "insurance-lab").exists():  # 另一個作品「保險生活實驗室」：單一靜態頁，原樣發布在 /insurance-lab/
+    shutil.copytree(root / "static" / "insurance-lab", out / "insurance-lab")
 
 errors, last = [], None
 if (config.DATA_DIR / "stocks.db").exists():
