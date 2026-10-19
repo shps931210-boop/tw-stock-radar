@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-19T12:05:21",
+ "generated_at": "2026-10-20T06:51:08",
  "quality": {
-  "checked_at": "2026-10-19T12:05:21",
+  "checked_at": "2026-10-20T06:51:08",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,375 +11,62 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 4 則、上櫃 1 則"
+    "detail": "上市 53 則、上櫃 2 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-10-19T12:05:09"
+    "detail": "2026-10-20T06:51:01"
    },
    "global": {
     "label": "國際市場",
     "ok": false,
-    "detail": "WTI 原油只到 2026-10-14已過期"
+    "detail": "費城半導體只到 2026-10-16、台積電 ADR只到 2026-10-16、那斯達克只到 2026-10-16、WTI 原油只到 2026-10-14已過期"
    }
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 17,
-  "latest_event_at": "2026-10-18T21:07:00"
+  "duplicates_removed": 23,
+  "latest_event_at": "2026-10-19T19:04:00"
  },
  "upcoming_holidays": [
   "2026-10-25",
   "2026-10-26"
  ],
  "target_date": "2026-10-20",
- "today": "2026-10-19",
+ "today": "2026-10-20",
  "today_trading": true,
  "calendar_ok": true,
- "last_close": "2026-10-16",
+ "last_close": "2026-10-19",
  "status": {
   "mode": "collect",
   "target_date": "2026-10-20",
-  "since": "2026-10-16T13:30:00",
-  "events": 211,
-  "high": 17
+  "since": "2026-10-19T13:30:00",
+  "events": 253,
+  "high": 18
  },
  "risk": {
-  "level": "高",
-  "score": 5,
+  "level": "中性",
+  "score": 0,
   "reasons": [
-   "費城半導體 -3.83%（2026-10-16）大跌",
-   "台積電 ADR -2.28%（2026-10-16）下跌",
-   "那斯達克 -2.15%（2026-10-16）大跌"
+   "隔夜市場沒有明顯異常"
   ],
   "stale": [
+   "費城半導體只到 2026-10-16",
+   "台積電 ADR只到 2026-10-16",
+   "那斯達克只到 2026-10-16",
    "WTI 原油只到 2026-10-14"
   ],
-  "us_session_expected": "2026-10-16",
+  "us_session_expected": "2026-10-19",
   "method": "規則判讀：費半、台積電 ADR、那斯達克漲跌幅門檻＋匯率、油價、高重要性負面公告數；不是預測"
  },
  "flags": [
-  {
-   "id": "1815",
-   "name": "富喬",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 15 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": [
-    "259ed4a16c4e85a0",
-    "e8e6c6636d26f010"
-   ]
-  },
-  {
-   "id": "2059",
-   "name": "川湖",
-   "industry": "電子零組件業",
-   "lists": [
-    "均衡型第 6 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "2305",
-   "name": "全友",
-   "industry": "電腦及週邊設備業",
-   "lists": [
-    "積極型第 3 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電腦及週邊設備業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "3037",
-   "name": "欣興",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 13 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "3081",
-   "name": "聯亞",
-   "industry": "通信網路業",
-   "lists": [
-    "均衡型第 9 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（通信網路業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "3624",
-   "name": "光頡",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 16 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": [
-    "bbab27bf80c1666f"
-   ]
-  },
-  {
-   "id": "3693",
-   "name": "營邦",
-   "industry": "電腦及週邊設備業",
-   "lists": [
-    "積極型第 17 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電腦及週邊設備業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "4967",
-   "name": "十銓",
-   "industry": "半導體業",
-   "lists": [
-    "均衡型第 7 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "4973",
-   "name": "廣穎",
-   "industry": "半導體業",
-   "lists": [
-    "均衡型第 12 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "5274",
-   "name": "信驊",
-   "industry": "半導體業",
-   "lists": [
-    "均衡型第 19 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "5386",
-   "name": "青雲",
-   "industry": "電腦及週邊設備業",
-   "lists": [
-    "均衡型第 10 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電腦及週邊設備業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6187",
-   "name": "萬潤",
-   "industry": "半導體業",
-   "lists": [
-    "積極型第 6 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": [
-    "b5b34815835fdd01",
-    "375aefd215a266c5"
-   ]
-  },
-  {
-   "id": "6274",
-   "name": "台燿",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 11 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6419",
-   "name": "京晨科",
-   "industry": "光電業",
-   "lists": [
-    "均衡型第 20 名",
-    "積極型第 8 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（光電業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6531",
-   "name": "愛普*",
-   "industry": "半導體業",
-   "lists": [
-    "均衡型第 14 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": [
-    "51ca3b68882384f0"
-   ]
-  },
-  {
-   "id": "6532",
-   "name": "瑞耘",
-   "industry": "半導體業",
-   "lists": [
-    "穩健型第 9 名",
-    "均衡型第 15 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6651",
-   "name": "全宇昕",
-   "industry": "半導體業",
-   "lists": [
-    "穩健型第 5 名",
-    "均衡型第 8 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6672",
-   "name": "騰輝電子-KY",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 9 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6693",
-   "name": "廣閎科",
-   "industry": "半導體業",
-   "lists": [
-    "積極型第 18 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6716",
-   "name": "應廣",
-   "industry": "半導體業",
-   "lists": [
-    "均衡型第 17 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（半導體業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "6834",
-   "name": "天二科技",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 5 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
-  {
-   "id": "8046",
-   "name": "南電",
-   "industry": "電子零組件業",
-   "lists": [
-    "積極型第 4 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": [
-    "9d31ad30024c2365"
-   ]
-  },
-  {
-   "id": "8109",
-   "name": "博大",
-   "industry": "電子零組件業",
-   "lists": [
-    "穩健型第 17 名"
-   ],
-   "flag": "產業風險",
-   "reasons": [
-    "費半 -3.83%，所屬產業（電子零組件業）受影響機率較高"
-   ],
-   "event_ids": []
-  },
   {
    "id": "2330",
    "name": "台積電",
    "industry": "電子工業",
    "lists": [
-    "穩健型第 14 名"
+    "穩健型第 12 名"
    ],
    "flag": "有新消息",
    "reasons": [
@@ -762,6 +449,28 @@
     "電子工業"
    ],
    "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "a28ff31a40db2f0f",
+   "kind": "announcement",
+   "title": "代子公司CyberLink International Technology Corp.公告 投票支持Perfect Corp.下市及私有化提案，該提案業經 Perfect Corp.股東臨時會通過",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-19T19:00:00",
+   "first_seen_at": "2026-10-20T06:48:52",
+   "fetched_at": "2026-10-20T06:51:08",
+   "data_asof": "2026-10-19T19:00:00",
+   "affected_tickers": [
+    "5203"
+   ],
+   "affected_industries": [
+    "資訊服務業"
+   ],
+   "event_type": "交易限制",
    "importance": 3,
    "direction": "不確定",
    "confidence": "官方公告",
@@ -1250,31 +959,9 @@
    "direction": "不確定",
    "confidence": "官方公告",
    "novel": true
-  },
-  {
-   "id": "94a5e07e76213dec",
-   "kind": "announcement",
-   "title": "公告本公司董事會通過更換股務代理機構事宜",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-16T17:34:00",
-   "first_seen_at": "2026-10-17T12:23:48",
-   "fetched_at": "2026-10-19T12:05:21",
-   "data_asof": "2026-10-16T17:34:00",
-   "affected_tickers": [
-    "1558"
-   ],
-   "affected_industries": [
-    "電機機械"
-   ],
-   "event_type": "主管與董事異動",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
   }
  ],
- "event_count": 211,
+ "event_count": 253,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -1283,7 +970,7 @@
    "price": 101.91,
    "chg_pct": 1.04
   },
-  "generated_at": "2026-10-19T12:05:21+08:00",
+  "generated_at": "2026-10-20T06:51:07+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
@@ -1470,10 +1157,10 @@
   ],
   "fx_usd": {
    "name": "美元兌新台幣（台灣銀行即期中價）",
-   "date": "2026-10-16",
-   "rate": 32.34,
-   "prev": 32.265,
-   "chg": 0.075,
+   "date": "2026-10-19",
+   "rate": 32.445,
+   "prev": 32.34,
+   "chg": 0.105,
    "note": "數字變大代表新台幣貶值"
   },
   "warnings": []
