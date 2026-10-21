@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-21T12:03:32",
+ "generated_at": "2026-10-22T06:52:21",
  "quality": {
-  "checked_at": "2026-10-21T12:03:32",
+  "checked_at": "2026-10-22T06:52:21",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,12 +11,12 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 112 則、上櫃 59 則"
+    "detail": "上市 79 則、上櫃 30 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-10-21T12:03:26"
+    "detail": "2026-10-22T06:52:14"
    },
    "global": {
     "label": "國際市場",
@@ -26,35 +26,37 @@
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 2,
-  "latest_event_at": "2026-10-20T23:30:00"
+  "duplicates_removed": 10,
+  "latest_event_at": "2026-10-21T22:01:00"
  },
  "upcoming_holidays": [
   "2026-10-25",
   "2026-10-26"
  ],
  "target_date": "2026-10-22",
- "today": "2026-10-21",
+ "today": "2026-10-22",
  "today_trading": true,
  "calendar_ok": true,
- "last_close": "2026-10-20",
+ "last_close": "2026-10-21",
  "status": {
   "mode": "collect",
   "target_date": "2026-10-22",
-  "since": "2026-10-20T13:30:00",
-  "events": 106,
-  "high": 8
+  "since": "2026-10-21T13:30:00",
+  "events": 174,
+  "high": 15
  },
  "risk": {
-  "level": "中性",
-  "score": 1,
+  "level": "偏低",
+  "score": -3,
   "reasons": [
-   "新台幣貶值 +0.185 元（2026-10-20）"
+   "費城半導體 +1.97%（2026-10-21）上漲",
+   "台積電 ADR +1.60%（2026-10-21）上漲",
+   "那斯達克 +1.05%（2026-10-21）上漲"
   ],
   "stale": [
    "WTI 原油只到 2026-10-14"
   ],
-  "us_session_expected": "2026-10-20",
+  "us_session_expected": "2026-10-21",
   "method": "規則判讀：費半、台積電 ADR、那斯達克漲跌幅門檻＋匯率、油價、高重要性負面公告數；不是預測"
  },
  "flags": [],
@@ -232,6 +234,160 @@
    "event_type": "減資／私募",
    "importance": 3,
    "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "dd5eb1a63e8f041c",
+   "kind": "announcement",
+   "title": "公告本公司取得私募Andra Capital Fund LP",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T14:26:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T14:26:00",
+   "affected_tickers": [
+    "2906"
+   ],
+   "affected_industries": [
+    "貿易百貨"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "a0f67ca768ed747a",
+   "kind": "announcement",
+   "title": "公告本公司115年9月份合併自結損益",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T15:09:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T15:09:00",
+   "affected_tickers": [
+    "2015"
+   ],
+   "affected_industries": [
+    "鋼鐵工業"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "f99072b386d02c00",
+   "kind": "announcement",
+   "title": "公告本公司2026年第3季合併自結損益",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T15:33:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T15:33:00",
+   "affected_tickers": [
+    "6768"
+   ],
+   "affected_industries": [
+    "運動休閒"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "81c27a8514feb124",
+   "kind": "announcement",
+   "title": "代子公司華南永昌證券公告董事會決議辦理私募現金增資 發行普通股",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T17:03:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T17:03:00",
+   "affected_tickers": [
+    "2880"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "cc2297b18868dcd9",
+   "kind": "announcement",
+   "title": "代子公司華南永昌證券公告董事會代行股東會決議辦理私募 現金增資發行普通股",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T17:08:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T17:08:00",
+   "affected_tickers": [
+    "2880"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "8090c611cee3a8c8",
+   "kind": "announcement",
+   "title": "公告本公司董事會決議註銷限制員工權利新股56,000股 之減資基準日",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T17:22:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T17:22:00",
+   "affected_tickers": [
+    "3588"
+   ],
+   "affected_industries": [
+    "電子工業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "f52b496f23f785de",
+   "kind": "announcement",
+   "title": "富邦金控代富邦華一銀行有限公司公告受監理機關 裁罰之說明",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-21T18:38:00",
+   "first_seen_at": "2026-10-22T06:50:05",
+   "fetched_at": "2026-10-22T06:52:21",
+   "data_asof": "2026-10-21T18:38:00",
+   "affected_tickers": [
+    "2881"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "財務危機",
+   "importance": 3,
+   "direction": "負面",
    "confidence": "官方公告",
    "novel": true
   },
@@ -784,163 +940,9 @@
    "direction": "不確定",
    "confidence": "官方公告",
    "novel": true
-  },
-  {
-   "id": "6f0afa009fc8e33d",
-   "kind": "announcement",
-   "title": "代重要子公司江蘇金桐表面活性劑有限公司公告董事會決議 盈餘分配案",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T18:27:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T18:27:00",
-   "affected_tickers": [
-    "1714"
-   ],
-   "affected_industries": [
-    "化學生技醫療"
-   ],
-   "event_type": "營運數字",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "963e96e1e4b6867d",
-   "kind": "announcement",
-   "title": "本公司董事會決議辦理現金增資發行普通股參與發行海外存託 憑證",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T19:16:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T19:16:00",
-   "affected_tickers": [
-    "2360"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "籌資",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "47d19675d2662e04",
-   "kind": "announcement",
-   "title": "代重要子公司Broadway Industrial Group Limited 公告發放股利決議",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T21:49:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T21:49:00",
-   "affected_tickers": [
-    "2236"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "股利",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "5c11098c04e5da03",
-   "kind": "announcement",
-   "title": "代重要子公司 BIGL ASIA PTE. LTD. 公告發放股利決議",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T21:50:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T21:50:00",
-   "affected_tickers": [
-    "2236"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "股利",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "a9d6d11aaf8e3db7",
-   "kind": "announcement",
-   "title": "代子公司Winking Studios Limited公告庫藏股執行情形",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T23:30:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T23:30:00",
-   "affected_tickers": [
-    "6908"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "庫藏股",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "cf2e0ed93b870afa",
-   "kind": "announcement",
-   "title": "澄清媒體有關本公司相關報導",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T14:02:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T14:02:00",
-   "affected_tickers": [
-    "2489"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "f8f6375dbd2a4677",
-   "kind": "announcement",
-   "title": "公告本公司董事會通過公司遷址案 X",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-20T14:05:00",
-   "first_seen_at": "2026-10-21T06:50:11",
-   "fetched_at": "2026-10-21T12:03:33",
-   "data_asof": "2026-10-20T14:05:00",
-   "affected_tickers": [
-    "1808"
-   ],
-   "affected_industries": [
-    "建材營造"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
   }
  ],
- "event_count": 106,
+ "event_count": 174,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -949,24 +951,20 @@
    "price": 101.91,
    "chg_pct": 1.04
   },
-  "generated_at": "2026-10-21T12:03:32+08:00",
+  "generated_at": "2026-10-22T06:52:20+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
    {
     "symbol": "^SOX",
     "name": "費城半導體指數",
-    "date": "2026-10-20",
-    "close": 11283.81,
-    "prev_close": 11316.34,
-    "chg_pct": -0.29,
-    "streak": -1,
-    "ret_5d": -7.58,
+    "date": "2026-10-21",
+    "close": 11505.56,
+    "prev_close": 11283.81,
+    "chg_pct": 1.97,
+    "streak": 1,
+    "ret_5d": -1.53,
     "recent": [
-     [
-      "2026-10-13",
-      12208.79
-     ],
      [
       "2026-10-14",
       11684.38
@@ -986,23 +984,23 @@
      [
       "2026-10-20",
       11283.81
+     ],
+     [
+      "2026-10-21",
+      11505.56
      ]
     ]
    },
    {
     "symbol": "^IXIC",
     "name": "那斯達克綜合指數",
-    "date": "2026-10-20",
-    "close": 26424.82,
-    "prev_close": 26430.89,
-    "chg_pct": -0.02,
-    "streak": -1,
-    "ret_5d": -2.87,
+    "date": "2026-10-21",
+    "close": 26702.86,
+    "prev_close": 26424.82,
+    "chg_pct": 1.05,
+    "streak": 1,
+    "ret_5d": 0.04,
     "recent": [
-     [
-      "2026-10-13",
-      27204.38
-     ],
      [
       "2026-10-14",
       26692.87
@@ -1022,23 +1020,23 @@
      [
       "2026-10-20",
       26424.82
+     ],
+     [
+      "2026-10-21",
+      26702.86
      ]
     ]
    },
    {
     "symbol": "^GSPC",
     "name": "S&P 500 指數",
-    "date": "2026-10-20",
-    "close": 7712.57,
-    "prev_close": 7690.73,
-    "chg_pct": 0.28,
-    "streak": 2,
-    "ret_5d": -1.19,
+    "date": "2026-10-21",
+    "close": 7757.17,
+    "prev_close": 7712.57,
+    "chg_pct": 0.58,
+    "streak": 3,
+    "ret_5d": 0.5,
     "recent": [
-     [
-      "2026-10-13",
-      7805.45
-     ],
      [
       "2026-10-14",
       7718.94
@@ -1058,23 +1056,23 @@
      [
       "2026-10-20",
       7712.57
+     ],
+     [
+      "2026-10-21",
+      7757.17
      ]
     ]
    },
    {
     "symbol": "^DJI",
     "name": "道瓊工業指數",
-    "date": "2026-10-20",
-    "close": 52495.88,
-    "prev_close": 51966.03,
-    "chg_pct": 1.02,
-    "streak": 1,
-    "ret_5d": 1.6,
+    "date": "2026-10-21",
+    "close": 52856.09,
+    "prev_close": 52495.88,
+    "chg_pct": 0.69,
+    "streak": 2,
+    "ret_5d": 2.39,
     "recent": [
-     [
-      "2026-10-13",
-      51670.1
-     ],
      [
       "2026-10-14",
       51621.48
@@ -1094,23 +1092,23 @@
      [
       "2026-10-20",
       52495.88
+     ],
+     [
+      "2026-10-21",
+      52856.09
      ]
     ]
    },
    {
     "symbol": "TSM",
     "name": "台積電 ADR（美股）",
-    "date": "2026-10-20",
-    "close": 425.08,
-    "prev_close": 420.22,
-    "chg_pct": 1.16,
-    "streak": 2,
-    "ret_5d": -4.5,
+    "date": "2026-10-21",
+    "close": 431.89,
+    "prev_close": 425.08,
+    "chg_pct": 1.6,
+    "streak": 3,
+    "ret_5d": 0.44,
     "recent": [
-     [
-      "2026-10-13",
-      445.12
-     ],
      [
       "2026-10-14",
       430.0
@@ -1130,16 +1128,20 @@
      [
       "2026-10-20",
       425.08
+     ],
+     [
+      "2026-10-21",
+      431.89
      ]
     ]
    }
   ],
   "fx_usd": {
    "name": "美元兌新台幣（台灣銀行即期中價）",
-   "date": "2026-10-20",
-   "rate": 32.63,
-   "prev": 32.445,
-   "chg": 0.185,
+   "date": "2026-10-21",
+   "rate": 32.485,
+   "prev": 32.63,
+   "chg": -0.145,
    "note": "數字變大代表新台幣貶值"
   },
   "warnings": []
