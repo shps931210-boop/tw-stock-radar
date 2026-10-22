@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-22T12:05:43",
+ "generated_at": "2026-10-23T06:50:22",
  "quality": {
-  "checked_at": "2026-10-22T12:05:43",
+  "checked_at": "2026-10-23T06:50:22",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,52 +11,53 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 79 則、上櫃 30 則"
+    "detail": "上市 120 則、上櫃 30 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-10-22T12:05:37"
+    "detail": "2026-10-23T06:50:16"
    },
    "global": {
     "label": "國際市場",
     "ok": false,
-    "detail": "WTI 原油只到 2026-10-14已過期"
+    "detail": "費城半導體只到 2026-10-21、台積電 ADR只到 2026-10-21、那斯達克只到 2026-10-21、WTI 原油只到 2026-10-20已過期"
    }
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 3,
-  "latest_event_at": "2026-10-21T23:30:00"
+  "duplicates_removed": 10,
+  "latest_event_at": "2026-10-22T22:40:00"
  },
  "upcoming_holidays": [
   "2026-10-25",
   "2026-10-26"
  ],
  "target_date": "2026-10-23",
- "today": "2026-10-22",
+ "today": "2026-10-23",
  "today_trading": true,
  "calendar_ok": true,
- "last_close": "2026-10-21",
+ "last_close": "2026-10-22",
  "status": {
   "mode": "collect",
   "target_date": "2026-10-23",
-  "since": "2026-10-21T13:30:00",
-  "events": 73,
-  "high": 7
+  "since": "2026-10-22T13:30:00",
+  "events": 180,
+  "high": 21
  },
  "risk": {
-  "level": "偏低",
-  "score": -3,
+  "level": "中性",
+  "score": 0,
   "reasons": [
-   "費城半導體 +1.97%（2026-10-21）上漲",
-   "台積電 ADR +1.60%（2026-10-21）上漲",
-   "那斯達克 +1.05%（2026-10-21）上漲"
+   "隔夜市場沒有明顯異常"
   ],
   "stale": [
-   "WTI 原油只到 2026-10-14"
+   "費城半導體只到 2026-10-21",
+   "台積電 ADR只到 2026-10-21",
+   "那斯達克只到 2026-10-21",
+   "WTI 原油只到 2026-10-20"
   ],
-  "us_session_expected": "2026-10-21",
+  "us_session_expected": "2026-10-22",
   "method": "規則判讀：費半、台積電 ADR、那斯達克漲跌幅門檻＋匯率、油價、高重要性負面公告數；不是預測"
  },
  "flags": [],
@@ -212,6 +213,314 @@
    "event_type": "財務危機",
    "importance": 3,
    "direction": "負面",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "099cc3770d005f09",
+   "kind": "announcement",
+   "title": "公告本公司115年第一次私募普通股收足股款 暨增資基準日",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T14:16:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T14:16:00",
+   "affected_tickers": [
+    "3494"
+   ],
+   "affected_industries": [
+    "電腦及週邊設備業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "450979d8ab8f702d",
+   "kind": "announcement",
+   "title": "公告本公司115年私募普通股收足股款暨增資基準日",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T15:02:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T15:02:00",
+   "affected_tickers": [
+    "3406"
+   ],
+   "affected_industries": [
+    "電子工業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "03664ff16efa35d4",
+   "kind": "announcement",
+   "title": "代重要子公司Multiwin De Mexico S.A. de C.V. 公告董事會決議減資事宜",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T15:37:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T15:37:00",
+   "affected_tickers": [
+    "5243"
+   ],
+   "affected_industries": [
+    "光電業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "10e865f16cd2f076",
+   "kind": "announcement",
+   "title": "代子公司第一金投信公告董事會決議與兆豐投信、 合庫投信、華南永昌投信辦理合併相關事宜",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:27:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:27:00",
+   "affected_tickers": [
+    "2892"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "df8fefdec425c67b",
+   "kind": "announcement",
+   "title": "代本公司之子公司兆豐投信公告董事會決議與第一金投信、 合庫投信、華南永昌投信辦理合併相關事宜",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:41:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:41:00",
+   "affected_tickers": [
+    "2886"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "2cb09dded3a1d6ea",
+   "kind": "announcement",
+   "title": "代子公司華南永昌證券投資信託股份有限公司公告董事會 決議與第一金投信、兆豐投信及合庫投信進行吸收合併， 並由第一金投信為存續公司。",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:42:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:42:00",
+   "affected_tickers": [
+    "2880"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "02522dff81337fde",
+   "kind": "announcement",
+   "title": "本公司之子公司華南永昌投信擬與第一金投信、兆豐投信及 合庫投信進行吸收合併，並由第一金投信為存續公司。",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:43:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:43:00",
+   "affected_tickers": [
+    "2880"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "4d641fab5fbc2fc5",
+   "kind": "announcement",
+   "title": "公告本公司原訂於115年10月23日發放現金減資退還股款； 如受颱風影響，部分地區現金減資退還股款發放日將順延至次 一營業日",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:50:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:50:00",
+   "affected_tickers": [
+    "4155"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "565ca3039b3cc53e",
+   "kind": "announcement",
+   "title": "公告本公司董事長辭任",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:53:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:53:00",
+   "affected_tickers": [
+    "8045"
+   ],
+   "affected_industries": [
+    "電子工業"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
+   "id": "b416d8210d6e4194",
+   "kind": "announcement",
+   "title": "富邦金控代子公司富邦證券公告 董事會代行股東會決議辦理私募 現金增資發行普通股",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:56:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:56:00",
+   "affected_tickers": [
+    "2881"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "9d86e7931d83a9ce",
+   "kind": "announcement",
+   "title": "公告本公司子公司合庫投信擬與第一金投信、兆豐投信及 華南永昌投信合併，並以第一金投信為存續公司。",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T17:57:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T17:57:00",
+   "affected_tickers": [
+    "5880"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "f57665450c545191",
+   "kind": "announcement",
+   "title": "公告本公司董事會推選新任董事長",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T18:55:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T18:55:00",
+   "affected_tickers": [
+    "6558"
+   ],
+   "affected_industries": [
+    "電子工業"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "4d03f087a1e9f178",
+   "kind": "announcement",
+   "title": "代重要子公司昆山興能能源科技有限公司公告董事會推選 新任董事長",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T18:56:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T18:56:00",
+   "affected_tickers": [
+    "6558"
+   ],
+   "affected_industries": [
+    "電子工業"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "19cc646bc3734127",
+   "kind": "announcement",
+   "title": "本公司代子公司合作金庫證券投資信託股份有限公司 公告董事會決議與第一金投信、兆豐投信、華南永昌投信 辦理合併相關事宜。",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-10-22T19:10:00",
+   "first_seen_at": "2026-10-23T06:48:11",
+   "fetched_at": "2026-10-23T06:50:22",
+   "data_asof": "2026-10-22T19:10:00",
+   "affected_tickers": [
+    "5880"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
    "confidence": "官方公告",
    "novel": true
   },
@@ -632,326 +941,18 @@
    "direction": "不確定",
    "confidence": "官方公告",
    "novel": true
-  },
-  {
-   "id": "6ae52ad7de6cb91f",
-   "kind": "announcement",
-   "title": "本公司配合檢調單位進行調查",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T22:01:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T22:01:00",
-   "affected_tickers": [
-    "6873"
-   ],
-   "affected_industries": [
-    "綠能環保"
-   ],
-   "event_type": "訴訟與調查",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "f9951b65c456082b",
-   "kind": "announcement",
-   "title": "代子公司Winking Studios Limited公告庫藏股執行情形",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T23:30:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T23:30:00",
-   "affected_tickers": [
-    "6908"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "庫藏股",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": false
-  },
-  {
-   "id": "01d4a44ef7b23fa6",
-   "kind": "announcement",
-   "title": "玉山金控代子公司玉山銀行公告捐贈予玉山志工基金會",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T13:39:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T13:39:00",
-   "affected_tickers": [
-    "2884"
-   ],
-   "affected_industries": [
-    "金融保險"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "d52bbf3ba76b5565",
-   "kind": "announcement",
-   "title": "公告本公司總經理資格經金管會核准",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T13:59:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T13:59:00",
-   "affected_tickers": [
-    "5876"
-   ],
-   "affected_industries": [
-    "金融保險"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "5e9e29fa728c52ef",
-   "kind": "announcement",
-   "title": "代重要子公司金駿營造(股)公司公告全面改派董事",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:20:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:20:00",
-   "affected_tickers": [
-    "1808"
-   ],
-   "affected_industries": [
-    "建材營造"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "acd8d07442dd3eb9",
-   "kind": "announcement",
-   "title": "代重要子公司金駿營造(股)公司公告董事會推選董事長",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:20:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:20:00",
-   "affected_tickers": [
-    "1808"
-   ],
-   "affected_industries": [
-    "建材營造"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "7e0aac07b18b91a8",
-   "kind": "announcement",
-   "title": "更正子公司115年9月衍生性商品交易資訊",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:21:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:21:00",
-   "affected_tickers": [
-    "3305"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "9c4947c42e9d0805",
-   "kind": "announcement",
-   "title": "公告本公司法人代表人異動",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:37:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:37:00",
-   "affected_tickers": [
-    "2816"
-   ],
-   "affected_industries": [
-    "金融保險"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "d1084ec5b304d958",
-   "kind": "announcement",
-   "title": "代重要子公司台信電訊(股)公司公告公平交易委員會 不禁止台灣大哥大(股)公司透過台信電訊(股)公司取得 精誠資訊(股)公司結合案",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:54:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:54:00",
-   "affected_tickers": [
-    "3045"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "資產交易",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "dcbd454039989d59",
-   "kind": "announcement",
-   "title": "代子公司美食達人股份有限公司公告 部分資訊系統遭受駭客網路攻擊。",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:57:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:57:00",
-   "affected_tickers": [
-    "2723"
-   ],
-   "affected_industries": [
-    "觀光餐旅"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "59dfbf4f39397eda",
-   "kind": "announcement",
-   "title": "更正115年9月資金貸與他人明細表資訊",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T14:58:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T14:58:00",
-   "affected_tickers": [
-    "2250"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "背書保證與資金貸與",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "918372938d2394ac",
-   "kind": "announcement",
-   "title": "係因本公司有價證券於集中交易市場達公布注意交易資訊標準， 故公布相關財務業務等重大訊息，以利投資人區別瞭解",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T15:09:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T15:09:00",
-   "affected_tickers": [
-    "6269"
-   ],
-   "affected_industries": [
-    "電子零組件業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "9f76cab39422b0d0",
-   "kind": "announcement",
-   "title": "本公司公告取得或處分機器設備",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T15:15:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T15:15:00",
-   "affected_tickers": [
-    "8150"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "資產交易",
-   "importance": 1,
-   "direction": "負面",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "9ee9b92ae3e45ab1",
-   "kind": "announcement",
-   "title": "代子公司健鼎(湖北)電子有限公司公告廠房配套工程之決標資訊",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-10-21T15:20:00",
-   "first_seen_at": "2026-10-22T06:50:05",
-   "fetched_at": "2026-10-22T12:05:44",
-   "data_asof": "2026-10-21T15:20:00",
-   "affected_tickers": [
-    "3044"
-   ],
-   "affected_industries": [
-    "電子零組件業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
   }
  ],
- "event_count": 73,
+ "event_count": 180,
  "global": {
   "schema_version": 1,
   "oil": {
    "name": "WTI 原油",
-   "date": "2026-10-14",
-   "price": 101.91,
-   "chg_pct": 1.04
+   "date": "2026-10-20",
+   "price": 107.89,
+   "chg_pct": -1.93
   },
-  "generated_at": "2026-10-22T12:05:43+08:00",
+  "generated_at": "2026-10-23T06:50:22+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
@@ -1138,10 +1139,10 @@
   ],
   "fx_usd": {
    "name": "美元兌新台幣（台灣銀行即期中價）",
-   "date": "2026-10-21",
-   "rate": 32.485,
-   "prev": 32.63,
-   "chg": -0.145,
+   "date": "2026-10-22",
+   "rate": 32.54,
+   "prev": 32.485,
+   "chg": 0.055,
    "note": "數字變大代表新台幣貶值"
   },
   "warnings": []
