@@ -114,6 +114,10 @@ for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json
     if (root / "history" / "backtest" / extra).exists():
         (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
         shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)
+exp = root / "history" / "research" / "experiments.json"
+if exp.exists():  # V30 績效退步追蹤（人工整理的研究紀錄）
+    (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
+    shutil.copy(exp, out / "data" / "backtest" / "experiments.json")
 fac = root / "history" / "backtest" / "factors.json"
 if fac.exists():  # 因子有效性檢驗（python -m app.factor_research，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)

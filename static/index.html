@@ -1198,11 +1198,50 @@ function renderRace() {
     <h3 style="margin:14px 0 6px">不同市場環境（加權指數在半年線之上＝多頭）</h3>
     <div class="tbl"><table><thead><tr><th>模型</th><th class="r">多頭 IC</th><th class="r">多頭前 10 名超額</th><th class="r">空頭 IC</th><th class="r">空頭前 10 名超額</th></tr></thead><tbody>
       ${ms.map((m) => { const g = R.results[m].regimes || {}; return `<tr><td>${esc(R.results[m].name)}</td><td class="r num">${g.bull ? fmtNum(g.bull.ic, 3) : "—"}</td><td class="r num">${pc(g.bull?.top_net_excess)}</td><td class="r num">${g.bear ? fmtNum(g.bear.ic, 3) + `<span class="faint small">（${g.bear.dates} 期）</span>` : "—"}</td><td class="r num">${pc(g.bear?.top_net_excess)}</td></tr>`; }).join("")}</tbody></table></div>
+    ${R.robust && R.robust.trim ? robustHtml(R) : ""}
     ${Object.keys(C).length ? `<h3 style="margin:14px 0 6px">積極型風險研究：哪些特徵和「下一個 20 日大幅落後」有關？</h3>
       <div class="tbl"><table><thead><tr><th>特徵</th><th class="r">股票×期</th><th class="r">平均超額</th><th class="r">和其他股票比</th><th class="r">t 值</th><th class="r">落後 0050 超過 10% 的機率</th></tr></thead><tbody>
       ${Object.keys(CN).filter((k) => C[k]).map((k) => `<tr><td>${CN[k]}</td><td class="r num">${fmtNum(C[k].stock_dates, 0)}</td><td class="r num">${pc(C[k].avg_excess)}</td><td class="r num">${pc(C[k].vs_rest)}</td><td class="r num">${C[k].t ?? "—"}</td><td class="r num">${C[k].big_loss_pct == null ? "—" : fmtNum(C[k].big_loss_pct, 1) + "%"}</td></tr>`).join("")}</tbody></table></div>
       <p class="faint small" style="margin:4px 0 0">全部股票落後超過 10% 的機率是 ${C._base_big_loss_pct}%。門檻事先固定：${esc(Object.values(R.combo_rules || {}).join("；"))}。</p>` : ""}
     <p class="faint small" style="margin:8px 0 0">訓練目標是「當天每檔股票的超額報酬名次」，所以模型學的是哪些股票比較會跑贏大盤，不是猜大盤漲跌；用 0050 或加權指數當基準，名次完全相同。加權指數是價格指數（不含股利）、以收盤價近似。過去的結果不代表未來，有效樣本仍少，結論要隨資料累積重算。</p>`;
+}
+function robustHtml(R) {
+  const X = R.robust, pc = (v) => v == null ? "—" : `<span class="${signCls(v)}">${pctTxt(v)}</span>`, nm = (m) => R.results[m]?.name || m, ms = X.models || [];
+  const TR = (k) => ms.map((m) => { const a = X[k][m] || {}; return `<tr><td>${esc(nm(m))}</td><td class="r num">${pc(a.all)}</td><td class="r num">${pc(a.no_top1)}</td><td class="r num">${pc(a.no_top5)}</td><td class="r num">${pc(a.no_best_period)}</td><td class="r num">${a.periods ?? "—"}</td></tr>`; }).join("");
+  const RG = X.regime4 || {}, SZ = X.size || {}, AB = X.ablation || {}, DZ = X.disagreement || {}, IM = X.importance || {}, G = X.groups || {};
+  return `<h3 style="margin:14px 0 6px">可信度檢查：LightGBM 的成績是不是靠少數股票或少數期間？</h3>
+    ${(X.findings || []).length ? `<ul class="small" style="margin:0 0 8px;padding-left:18px">${X.findings.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+    <div class="tbl"><table><thead><tr><th>每期扣成本超額</th><th class="r">原本</th><th class="r">去掉最賺 1%</th><th class="r">去掉最賺 5%</th><th class="r">去掉最好一期</th><th class="r">期數</th></tr></thead><tbody>
+      <tr><td colspan="6" class="faint small">全部期間</td></tr>${TR("trim")}<tr><td colspan="6" class="faint small">保留測試期</td></tr>${TR("trim_holdout")}</tbody></table></div>
+    <div class="tbl" style="margin-top:8px"><table><thead><tr><th>交易成本</th><th class="r">原本（${R.cost_pct}%）</th><th class="r">1.5 倍</th><th class="r">2 倍</th><th class="r">3 倍</th></tr></thead><tbody>
+      ${ms.map((m) => { const c = X.cost[m] || {}; return `<tr><td>${esc(nm(m))}</td><td class="r num">${pc(c.x1)}</td><td class="r num">${pc(c["x1.5"])}</td><td class="r num">${pc(c.x2)}</td><td class="r num">${pc(c.x3)}</td></tr>`; }).join("")}</tbody></table></div>
+    ${Object.keys(SZ).length ? `<div class="tbl" style="margin-top:8px"><table><thead><tr><th>股票大小（當天市值三等分）</th>${ms.map((m) => `<th class="r">${esc(nm(m))} IC</th><th class="r">前 10 名超額</th>`).join("")}</tr></thead><tbody>
+      ${Object.entries({ large: "大型股", mid: "中型股", small: "小型股" }).filter(([k]) => SZ[k]).map(([k, n]) => `<tr><td>${n}</td>${ms.map((m) => { const a = SZ[k][m] || {}; return `<td class="r num">${a.ic == null ? "—" : fmtNum(a.ic, 3)}</td><td class="r num">${pc(a.net_excess)}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div>` : ""}
+    ${Object.keys(RG).length ? `<div class="tbl" style="margin-top:8px"><table><thead><tr><th>市場環境</th>${ms.map((m) => `<th class="r">${esc(nm(m))} IC</th><th class="r">前 10 名超額</th>`).join("")}<th class="r">期數</th></tr></thead><tbody>
+      ${Object.entries(X.regime4_names || {}).filter(([k]) => RG[k]).map(([k, n]) => `<tr><td>${esc(n)}</td>${ms.map((m) => { const a = RG[k][m] || {}; return `<td class="r num">${a.ic == null ? "—" : fmtNum(a.ic, 3)}</td><td class="r num">${pc(a.top_net_excess)}</td>`; }).join("")}<td class="r num">${RG[k][ms[0]]?.dates ?? "—"}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    ${DZ.agree ? `<p class="small" style="margin:8px 0 0"><b>模型意見分歧：</b>LightGBM 前 10 名裡，V21 也看好的股票平均超額 ${pctTxt(DZ.agree.avg_excess)}（大幅落後 ${DZ.agree.big_loss_pct ?? "—"}%），V21 不看好的 ${pctTxt(DZ.disagree?.avg_excess)}（大幅落後 ${DZ.disagree?.big_loss_pct ?? "—"}%）；差 ${pctTxt(DZ.diff)}，t ${DZ.t ?? "—"}。${DZ.ic_low_agreement_days != null ? `兩個模型意見較分歧的日子，LightGBM 的 IC ${fmtNum(DZ.ic_low_agreement_days, 3)}；意見較一致的日子 ${fmtNum(DZ.ic_high_agreement_days, 3)}。` : ""}</p>` : ""}
+    ${AB.lgbm ? `<h3 style="margin:14px 0 6px">特徵消融：LightGBM 拿掉一組特徵重新訓練</h3>
+      <div class="tbl"><table class="wrap"><thead><tr><th>拿掉的特徵組</th><th class="r">每期超額</th><th class="r">保留期超額</th><th class="r">Rank IC</th><th class="r">和完整模型比</th><th>解讀</th></tr></thead><tbody>
+        <tr><td><b>完整 LightGBM</b></td><td class="r num">${pc(AB.lgbm.net_excess)}</td><td class="r num">${pc(AB.lgbm.holdout)}</td><td class="r num">${AB.lgbm.ic == null ? "—" : fmtNum(AB.lgbm.ic, 3)}</td><td class="r">—</td><td></td></tr>
+        ${Object.keys(G).filter((g) => AB[g]).map((g) => { const a = AB[g]; return `<tr><td>${esc(a.name)}<span class="faint small">（${a.features} 項）</span></td><td class="r num">${pc(a.net_excess)}</td><td class="r num">${pc(a.holdout)}</td><td class="r num">${a.ic == null ? "—" : fmtNum(a.ic, 3)}</td><td class="r num">${pc(a.diff_vs_full)}<span class="faint small">（t ${a.t ?? "—"}）</span></td><td class="small">${esc(a.reading)}</td></tr>`; }).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">消融只是診斷：要依結果改特徵，必須先寫下新的比賽規則、再用之後的資料驗證，不會直接改正式模型。資料庫目前沒有法人、融資券等籌碼資料，所以沒有籌碼組。</p>` : ""}
+    ${Object.keys(IM).length ? `<div class="tbl" style="margin-top:8px"><table><thead><tr><th>LightGBM 特徵重要性占比（每年）</th>${Object.keys(G).map((g) => `<th class="r">${esc((G[g].name || g).split("（")[0])}</th>`).join("")}</tr></thead><tbody>
+      ${Object.entries(IM).map(([y, v]) => `<tr><td>${y}</td>${Object.keys(G).map((g) => `<td class="r num">${v[g] == null ? "—" : fmtNum(v[g], 1) + "%"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">重要性只代表模型用了多少，不代表因果；看的是每年穩不穩定。</p>` : ""}`;
+}
+// V30 績效退步追蹤（history/research/experiments.json）
+let EXPL = null;
+async function loadExpl() {
+  if (!SITE) return;
+  if (EXPL === null) { try { const r = await fetch("data/backtest/experiments.json" + (verQ("backtest/experiments.json") || "?t=" + Date.now())); EXPL = r.ok ? await r.json() : false; } catch (e) { EXPL = false; } }
+  const el = $("#expl"); if (!el || !EXPL || !EXPL.items) return;
+  el.hidden = false;
+  const tag = { adopted: "s-ok", shadow: "acc", rejected: "warn", rolled_back: "warn", pending: "" };
+  el.innerHTML = `<div class="card-h"><h2>績效退步追蹤：試過什麼、有沒有變好</h2><span class="muted small">${EXPL.items.length} 項</span></div>
+    <p class="small" style="margin:0 0 8px">${esc(EXPL.note)}</p>
+    <div class="tbl"><table class="wrap"><thead><tr><th>日期</th><th>修改內容</th><th>研究假設</th><th>改善</th><th>退步</th><th>可能原因</th><th>處理</th></tr></thead><tbody>
+      ${EXPL.items.slice().reverse().map((x) => `<tr><td class="small">${esc(x.date)}<br><span class="faint">${esc(x.version)}</span></td><td>${esc(x.change)}</td><td class="small">${esc(x.hypothesis)}</td><td class="small">${esc(x.improved)}</td><td class="small">${esc(x.worse)}</td><td class="small">${esc(x.cause)}</td>
+        <td class="small"><span class="pill ${tag[x.decision] || ""}">${esc(EXPL.decisions[x.decision] || x.decision)}</span><br><span class="faint">${esc(x.evidence)}</span></td></tr>`).join("")}</tbody></table></div>`;
 }
 function renderAudit() {
   const A = LAUD, el = $("#laudit");
@@ -1629,6 +1668,7 @@ function pagePerformance() {
     <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 量化選股績效與回測</h1>
       <p class="lead">每天收盤後的 AI 名單在開盤前就公開存檔，之後用固定規則計算：隔天開盤買進、第 N 個交易日收盤賣出、扣交易成本，和 0050、全市場、同產業比較。這是真實的事後紀錄，不是回測，也不代表未來報酬。</p></section>
     <section class="card" id="race" hidden></section>
+    <section class="card" id="expl" hidden></section>
     <section class="card" id="laudit" hidden></section>
     <section class="card" id="weekly" hidden></section>
     <section class="card"><div class="card-h"><h2>各種驗證，狀態不同</h2></div>
@@ -1665,7 +1705,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadRace(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadRace(); loadExpl(); loadLearn(); loadPredSc();
   loadFac();
 }
 

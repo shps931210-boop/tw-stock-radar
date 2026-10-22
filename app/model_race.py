@@ -75,7 +75,9 @@ def _lgb_params(lgb_cfg: dict) -> dict:
     return prm
 
 
-def walk(panel: pd.DataFrame, sigs: list[str], dates: list[str], idx: pd.Series | None, use_lgbm: bool = True) -> tuple[pd.DataFrame, list[str]]:
+def walk(panel: pd.DataFrame, sigs: list[str], dates: list[str], idx: pd.Series | None, use_lgbm: bool = True,
+         ablate: dict[str, list[str]] | None = None, imp: list | None = None) -> tuple[pd.DataFrame, list[str]]:
+    """ablate：額外訓練「LightGBM 拿掉某一組特徵」（V30 消融測試，只做研究）；imp：收集每個測試日 LightGBM 的特徵重要性。"""
     from . import ml_research as ml
     y = f"y{H}"
     A = add_features(panel, idx)
@@ -102,12 +104,18 @@ def walk(panel: pd.DataFrame, sigs: list[str], dates: list[str], idx: pd.Series 
         if len(tr_d) < ml.MIN_TRAIN:
             continue
         tr, te = P[P["date"].isin(tr_d)], P[P["date"] == t]
-        o = te[["date", "sid", "industry", y, "v21"]].copy()
+        o = te[["date", "sid", "industry", y, "v21"] + [c for c in ("market_cap",) if c in te]].copy()
         o["ridge"] = ml._pred_lin(ml._ridge(tr[rf].fillna(0.5).to_numpy(), tr["y_rank"].to_numpy()), te[rf].fillna(0.5).to_numpy())
         if lgb is not None:
             for name, cols in (("lgbm", rf), ("lgbm_x", xf)):
                 m = lgb.train(prm, lgb.Dataset(tr[cols].to_numpy(), tr["y_rank"].to_numpy()), num_boost_round=ml.LGB_PARAMS["n_estimators"])
                 o[name] = m.predict(te[cols].to_numpy())
+                if name == "lgbm" and imp is not None:
+                    imp.append((t, dict(zip(ml.FEATS, m.feature_importance("gain").tolist()))))
+            for g, drop in (ablate or {}).items():
+                cols = [f"r_{f}" for f in ml.FEATS if f not in drop]
+                m = lgb.train(prm, lgb.Dataset(tr[cols].to_numpy(), tr["y_rank"].to_numpy()), num_boost_round=ml.LGB_PARAMS["n_estimators"])
+                o[f"abl_{g}"] = m.predict(te[cols].to_numpy())
         out.append(o)
         tests.append(t)
     return (pd.concat(out, ignore_index=True) if out else pd.DataFrame()), tests
@@ -263,8 +271,10 @@ def verdict(cur: dict, champ: dict, hold_c: dict, hold_v: dict, ic_c: dict, ic_v
 
 
 def run(panel: pd.DataFrame, sigs: list[str], D: dict, use_lgbm: bool = True, log=print) -> dict:
+    from . import robustness as rb
     dates, idx = D["dates"], D.get("idx_s")
-    preds, tests = walk(panel, sigs, dates, idx, use_lgbm)
+    imp: list = []
+    preds, tests = walk(panel, sigs, dates, idx, use_lgbm, ablate={g: f for g, (_, f) in rb.GROUPS.items()}, imp=imp)
     if not len(preds):
         return {"ready": False, "reason": "測試日不足"}
     cut = tests[int(len(tests) * (1 - HOLDOUT))]
@@ -304,5 +314,9 @@ def run(panel: pd.DataFrame, sigs: list[str], D: dict, use_lgbm: bool = True, lo
                       else "沒有任何挑戰者在樣本外有足夠證據勝過 V21：正式模型維持 V21"}
     res["effective_samples"] = {"test_dates": len(tests), "independent_periods": main["v21"].get("periods"),
                                 "note": "每 10 個交易日一個訊號、持有 20 日，相鄰訊號重疊一半；不重疊的期間數才是有效樣本"}
+    try:  # V30 LightGBM 可信度檢查（診斷，不影響比賽結果）
+        res["robust"] = rb.run(preds, tests, cut, idx, imp, portfolio, ic_stats)
+    except Exception as e:  # noqa: BLE001
+        res["robust"] = {"error": f"可信度檢查失敗：{e}"}
     log(f"模型比賽：{res['summary']['label']}")
     return res
