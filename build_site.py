@@ -169,6 +169,14 @@ try:  # V25 AI 持續學習報告（app/learning.py）：版本、比賽、漂�
     (out / "data" / "predictions" / "learning.json").write_text(json.dumps(learning.status(sc), ensure_ascii=False, separators=(",", ":")), "utf-8")
 except Exception as e:
     print("持續學習報告失敗：", e)
+try:  # V31 每日自主學習報告（app/daily_learning.py → history/learning/）
+    from app import daily_learning
+    dl = daily_learning.site_summary()
+    if dl:
+        (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
+        (out / "data" / "predictions" / "daily_learning.json").write_text(json.dumps(dl, ensure_ascii=False, separators=(",", ":"), default=str), "utf-8")
+except Exception as e:
+    print("每日學習報告失敗：", e)
 try:  # 每週固定名單績效（app/weekly.py）：每次發布都用最新收盤重算
     if (config.DATA_DIR / "stocks.db").exists():
         from app import weekly

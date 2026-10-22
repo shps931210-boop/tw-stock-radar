@@ -138,7 +138,8 @@ def regime_study(preds: pd.DataFrame, models: list[str], reg: dict) -> dict:
             continue
         for m in models:
             o = acc.setdefault(k, {}).setdefault(m, {"ic": [], "top": []})
-            o["ic"].append(fr._ic(g[m], g[y]))
+            v = fr._ic(g[m], g[y])
+            o["ic"].append(np.nan if v is None else v)
             o["top"].append(float(g.nlargest(TOPN, m)[y].mean()) - track.COST)
     out = {}
     for k in REG4:

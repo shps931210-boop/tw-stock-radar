@@ -57,9 +57,20 @@ jobs:
       # V22 預測模型研究（影子模式，不影響正式排行榜）：V21 固定權重 vs Ridge／Logistic／LightGBM
       - name: 預測模型研究
         continue-on-error: true
+        env:
+          ML_PANEL_CACHE: "1"        # V31：研究資料集存成 data/ml_panel.pkl，給每天的自主學習補標籤、重新訓練候選模型
         run: |
           pip install lightgbm==4.5.0
           python -m app.ml_research
+      - name: 上傳研究資料集（每日自主學習用）
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -f data/ml_panel.pkl ] || { echo "沒有研究資料集"; exit 0; }
+          gzip -c data/ml_panel.pkl > ml_panel.pkl.gz
+          gh release view ml-panel >/dev/null 2>&1 || gh release create ml-panel --prerelease --title "AI 研究資料集" --notes "每週 AI 歷史回測產生的特徵與標籤（只有公開市場資料），每天的自主學習會補上新到期的標籤。"
+          gh release upload ml-panel ml_panel.pkl.gz --clobber
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"

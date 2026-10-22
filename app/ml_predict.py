@@ -185,6 +185,11 @@ def seal(dbname: str = "stocks.db", models: Path = MODEL_DIR, out: Path = PRED_D
     if len(X) < 100:
         print(f"可排名股票只有 {len(X)} 檔，不產生預測")
         return None
+    try:  # V31：封存當天的原始特徵（之後算特徵漂移與特徵有效性）；失敗不影響預測封存
+        from . import daily_learning
+        daily_learning.save_features(X, sig)
+    except Exception as e:  # noqa: BLE001
+        print(f"特徵快照沒有存成功：{e}")
     P = predict(X, M)
     stocks = []
     for i, sid in enumerate(X["sid"]):

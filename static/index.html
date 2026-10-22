@@ -1229,6 +1229,41 @@ function robustHtml(R) {
       ${Object.entries(IM).map(([y, v]) => `<tr><td>${y}</td>${Object.keys(G).map((g) => `<td class="r num">${v[g] == null ? "—" : fmtNum(v[g], 1) + "%"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
       <p class="faint small" style="margin:4px 0 0">重要性只代表模型用了多少，不代表因果；看的是每年穩不穩定。</p>` : ""}`;
 }
+// V31 每日自主學習報告（data/predictions/daily_learning.json）
+async function loadDL() {
+  const el = $("#dlearn"); if (!el || !SITE) return;
+  let S; try { const r = await fetch("data/predictions/daily_learning.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
+  if (!S || !S.latest) return;
+  el.hidden = false;
+  const L = S.latest, C = L.candidate || {}, G = L.gate || {}, E = L.errors || {}, M = E.models || {}, FE = L.feature_effect || {}, FD = L.feature_drift || {};
+  const yes = (v, a = "是", b = "否") => v == null ? "—" : v ? `<span class="pill s-ok">${a}</span>` : `<span class="pill warn">${b}</span>`;
+  const mt = L.live?.matured || {}, NM = { v21: "V21 固定權重（正式）", lgbm: "LightGBM（候選）", ens: "V21＋LightGBM 平均" };
+  const ind = (E.by_industry?.lgbm || []).filter((r) => r.enough).slice(0, 3);
+  el.innerHTML = `<div class="card-h"><h2>AI 每日學習報告</h2><span class="muted small">${esc(L.date)}・${esc((L.generated_at || "").slice(11, 16))} 更新${L.runs > 1 ? `（今天第 ${L.runs} 次）` : ""}</span></div>
+    <div class="banner ${L.needs_human ? "warn" : "info"} small" style="margin-bottom:10px"><b>${esc(L.summary)}</b>${L.needs_human ? `<br>需要你注意：${esc(L.human_why.join("；"))}` : "<br>今天不需要人工處理。"}</div>
+    <div class="tbl"><table class="wrap"><tbody>
+      <tr><td>今天的行情</td><td>${yes(L.data?.ok, "齊全", "不齊全")} ${esc(L.data?.why || "")}</td></tr>
+      <tr><td>今天的預測封存</td><td>${yes(L.sealed?.today, "已封存", "沒有封存")} ${L.sealed?.on_time === false ? '<span class="pill warn">晚於開盤</span>' : ""} <span class="faint small">${esc(L.sealed?.model_version || "")}</span></td></tr>
+      <tr><td>已累積的真實預測</td><td>${L.live?.sealed_days ?? 0} 天；已到期：5 日 ${mt["5"] ?? 0}、20 日 ${mt["20"] ?? 0}、60 日 ${mt["60"] ?? 0} 天</td></tr>
+      <tr><td>今天到期對帳</td><td>${(L.matured_today || []).length ? L.matured_today.map((x) => `${esc(x.signal_date)} 的 ${x.horizon} 日預測（${x.stocks} 檔）`).join("、") : "今天沒有預測到期"}</td></tr>
+      <tr><td>候選模型</td><td>${C.retrained ? `<span class="pill acc">今天重新訓練</span> ${esc(C.version || "")}（${C.status === "active" ? "通過上線檢查" : "沒通過檢查，沿用上一版"}）` : `<span class="pill">沒有重新訓練</span> ${esc(C.reason || "")}`}<br><span class="faint small">目前上線的候選版本：${esc(L.challenger || "—")}；正式模型：${esc(L.champion?.name || "V21")}</span></td></tr>
+      <tr><td>新的訓練標籤</td><td>${C.new_labels ? Object.entries(C.new_labels).map(([h, n]) => `${h} 日 ${n} 筆`).join("、") : "—"}${C.labeled_through ? `<span class="faint small">（標籤已到期到：${Object.entries(C.labeled_through).map(([h, d]) => `${h} 日 ${d || "—"}`).join("、")}）</span>` : ""}</td></tr>
+      <tr><td>新舊模型比賽</td><td>${esc(G.label || "—")}<br><span class="faint small">${esc(L.acceptance || "")}</span></td></tr>
+      <tr><td>模型漂移</td><td>${esc(L.model_drift?.label || "—")}</td></tr>
+      <tr><td>特徵漂移</td><td>${esc(FD.label || "—")}${(FD.flagged || []).length ? `：${FD.flagged.map((r) => esc(r.feature)).join("、")}` : ""}</td></tr>
+      <tr><td>特徵有效性</td><td>${esc(FE.label || "—")}${(FE.hypotheses || []).length ? `<ul class="small" style="margin:4px 0 0;padding-left:18px">${FE.hypotheses.map((h) => `<li>${esc(h)}</li>`).join("")}</ul>` : ""}</td></tr>
+    </tbody></table></div>
+    ${Object.keys(M).length ? `<h3 style="margin:14px 0 6px">已到期的 20 日真實預測（${E.dates} 個訊號日）</h3>
+      <div class="tbl"><table><thead><tr><th>模型</th><th class="r">Rank IC</th><th class="r">前 10 名平均超額</th><th class="r">前 10 名跑贏 0050 比例</th></tr></thead><tbody>
+      ${Object.entries(M).map(([m, x]) => `<tr><td>${esc(NM[m] || m)}</td><td class="r num">${x.ic == null ? "—" : fmtNum(x.ic, 3)}</td><td class="r num">${x.top_excess == null ? "—" : `<span class="${signCls(x.top_excess)}">${pctTxt(x.top_excess)}</span>`}</td><td class="r num">${x.beat_0050 == null ? "—" : fmtNum(x.beat_0050, 1) + "%"}</td></tr>`).join("")}</tbody></table></div>
+      ${ind.length ? `<p class="small" style="margin:6px 0 0">LightGBM 前 10 名最常選錯的產業：${ind.map((r) => `${esc(r.group)} ${pctTxt(r.avg_excess)}（${r.n} 筆）`).join("、")}</p>` : ""}
+      ${(E.worst || []).length ? `<p class="small" style="margin:6px 0 0">落後最多的推薦：${E.worst.slice(0, 5).map((r) => `${esc(r.sid)}（${esc(r.sig)}，${pctTxt(r.excess)}）`).join("、")}</p>` : ""}
+      <p class="faint small" style="margin:4px 0 0">${esc(E.note || "")}</p>` : `<p class="small" style="margin:10px 0 0">20 日預測還沒有到期的樣本，第一批要等封存後 20 個交易日。</p>`}
+    ${(S.history || []).length > 1 ? `<h3 style="margin:14px 0 6px">最近每天的學習紀錄</h3>
+      <div class="tbl"><table><thead><tr><th>日期</th><th>行情</th><th>封存</th><th class="r">到期對帳</th><th class="r">新標籤</th><th>重新訓練</th><th class="r">風險</th></tr></thead><tbody>
+      ${S.history.map((h) => `<tr><td>${esc(h.date)}</td><td>${h.data_ok ? "齊全" : "不齊"}</td><td>${h.sealed ? (h.on_time === false ? "晚了" : "準時") : "沒有"}</td><td class="r num">${h.matured}</td><td class="r num">${h.labels}</td><td>${h.retrained ? esc(h.version || "是") : "否"}</td><td class="r num">${h.risks}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    <ul class="faint small" style="margin:8px 0 0;padding-left:18px">${(L.limits || []).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+}
 // V30 績效退步追蹤（history/research/experiments.json）
 let EXPL = null;
 async function loadExpl() {
@@ -1668,6 +1703,7 @@ function pagePerformance() {
     <section><div class="eyebrow">每天存檔、事後檢驗</div><h1>AI 量化選股績效與回測</h1>
       <p class="lead">每天收盤後的 AI 名單在開盤前就公開存檔，之後用固定規則計算：隔天開盤買進、第 N 個交易日收盤賣出、扣交易成本，和 0050、全市場、同產業比較。這是真實的事後紀錄，不是回測，也不代表未來報酬。</p></section>
     <section class="card" id="race" hidden></section>
+    <section class="card" id="dlearn" hidden></section>
     <section class="card" id="expl" hidden></section>
     <section class="card" id="laudit" hidden></section>
     <section class="card" id="weekly" hidden></section>
@@ -1705,7 +1741,7 @@ function pagePerformance() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadRace(); loadExpl(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadWeekly(); loadRisk(); loadPort(); loadRace(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
   loadFac();
 }
 
