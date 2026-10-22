@@ -124,8 +124,9 @@ def _rec_picks(snap: dict) -> dict:
     for mode in snap.get("ai_modes", {}):
         ranked = sorted((s for s in st if ((s["ai"].get("rec") or {}).get(mode) or {}).get("rank")),
                         key=lambda s: s["ai"]["rec"][mode]["rank"])[:TOP_N]
-        rec_picks[mode] = [{"stock_id": s["stock_id"], "rank": s["ai"]["rec"][mode]["rank"], "raw_rank": s["ai"]["modes"][mode]["rank"],
-                            "score": s["ai"]["modes"][mode]["score"], "liq": s.get("liquidity_grade"),
+        rec_picks[mode] = [{"stock_id": s["stock_id"], "name": s["name"], "rank": s["ai"]["rec"][mode]["rank"], "raw_rank": s["ai"]["modes"][mode]["rank"],
+                            "score": s["ai"]["modes"][mode]["score"], "liq": s.get("liquidity_grade"), "close": s.get("close"), "industry": s.get("industry"),
+                            "factors": {f: s.get(f"score_{f}") for f in FACTORS},
                             "rec": s["ai"]["rec"][mode]["recommendation_eligibility"]} for s in ranked]
     return rec_picks
 
@@ -149,6 +150,8 @@ def record(snap: dict) -> str | None:
            "universe": snap.get("universe"), "picks": picks, "signals": sigs, "universe_ids": universe}
     if any(s.get("liquidity_grade") for s in snap["stocks"]):
         out["rec_picks"] = _rec_picks(snap)
+        out["lists_note"] = {"picks": "原始模型排名（研究與績效追蹤用，包含流動性不合格、不列入正式精選的股票，見各股 rec 欄位）",
+                             "rec_picks": "預設 AI 精選＝正式推薦名單（排除流動性 E／F 級與資料不足，D 級不進前 10 名）"}
     old = _versions(day)
     if old:
         reasons = diff_reasons(json.loads(old[-1].read_text("utf-8")), out)

@@ -969,10 +969,10 @@ function homePicks() {
     <div class="hp">${ks.map(col).join("")}</div></section>`;
 }
 function homePerf() {
-  const W = WEEKLY && WEEKLY.summary, M = SNAP.ai_modes;
+  const R = WEEKLY?.summary_rec, useRec = R && Object.values(R).some((m) => m?.["10"]?.weeks), W = useRec ? R : WEEKLY && WEEKLY.summary, M = SNAP.ai_modes;
   const cell = (k) => { const x = W?.[k]?.["10"]; return `<div class="kpi"><span>${esc(M[k]?.name || k)}</span>${x && x.weeks ? `<b class="num ${signCls(x.avg_excess)}">${pctTxt(x.avg_excess)}</b><small class="faint">${x.weeks} 週，贏 0050 ${x.beat} 週</small>` : '<b class="faint" style="font-size:15px">累積中</b><small class="faint">還沒有完整的一週</small>'}</div>`; };
   return `<section class="card" id="hperf"><div class="card-h"><h2>AI 真實績效</h2><a href="#/performance">績效與回測 →</a></div>
-    <p class="small" style="margin:0 0 8px"><span class="pill s-ok">實際封存</span> 每週第一個交易日封存的前 10 名，隔天開盤買、週五收盤賣、扣成本，平均每週超額報酬（對 0050）：</p>
+    <p class="small" style="margin:0 0 8px"><span class="pill s-ok">實際封存</span> 每週第一個交易日封存的${useRec ? "正式精選" : "原始排名"}前 10 名，隔天開盤買、週五收盤賣、扣成本，平均每週超額報酬（對 0050）：</p>
     <div class="kpis">${["stable", "balanced", "aggressive"].map(cell).join("")}</div>
     <p class="small" style="margin:10px 0 0"><span class="pill">歷史模擬</span> 回測是用過去資料重算的模擬結果，不是真實績效，和上面分開列在<a href="#/performance">績效頁</a>。目前回測裡沒有一種模式穩定勝過 0050。</p>
     <p class="small" style="margin:6px 0 0"><span class="pill">持續學習</span> 候選模型每週用新資料重新訓練，和正式模型比賽，通過門檻才考慮升級：<a href="#/performance">看 AI 持續學習報告 →</a></p></section>`;
@@ -1117,20 +1117,40 @@ async function loadWeekly() {
 function renderWeekly() {
   const el = $("#weekly"), W = WEEKLY, wk = W.weeks.filter((w) => w.modes), i = Math.min(+store.get("wkI", 0) || 0, wk.length - 1), w = wk[i];
   if (!w) { el.hidden = true; return; }
-  const md = store.get("wkM", "aggressive") in w.modes ? store.get("wkM", "aggressive") : Object.keys(w.modes)[0], M = w.modes[md];
+  // 正式推薦＝預設 AI 精選（rec_modes）；原始排名是研究用，包含流動性不合格的股票
+  const hasRec = w.rec_modes && Object.keys(w.rec_modes).length, lt = hasRec && store.get("wkL", "rec") === "rec" ? "rec" : "raw";
+  const src = lt === "rec" ? w.rec_modes : w.modes, SM = lt === "rec" ? W.summary_rec : W.summary;
+  const md = store.get("wkM", "aggressive") in src ? store.get("wkM", "aggressive") : Object.keys(src)[0], M = src[md];
   const seg = (id, opts, cur) => `<div class="seg" id="${id}">${Object.entries(opts).map(([k, n]) => `<button data-k="${k}" class="${String(k) === String(cur) ? "on" : ""}">${n}</button>`).join("")}</div>`;
   const pc = (v) => v == null ? "—" : `<span class="${signCls(v)}">${pctTxt(v)}</span>`;
-  const sm = W.summary?.[md] || {};
+  const sm = SM?.[md] || {};
   const why = { not_traded: "進場日沒有成交", limit_up: "漲停鎖死買不到", thin: "成交太少" };
+  const ML = { lgbm: "LightGBM（影子）", ens: "V21＋LightGBM 平均（影子）" };
+  const cmp = [["正式：預設 AI 精選", w.rec_modes?.[md]], ["原始排名（研究用）", w.modes?.[md]], ...Object.entries(w.ml || {}).map(([k, v]) => [ML[k] || k, v])].filter(([, v]) => v?.top?.["10"]);
+  const G = w.rec_modes?.[md]?.diagnosis, FLb = { quality: "品質", growth: "成長", value: "估值", momentum: "動能", trend: "趨勢" };
   el.innerHTML = `<div class="card-h"><h2>每週固定名單績效</h2><span class="muted small">名單 ${esc(w.list_date)}・進場 ${esc(w.entry)} 開盤・出場 ${esc(w.exit)} 收盤${w.final ? "" : "（本週尚未結束，算到最新收盤）"}</span></div>
-    <div class="toolbar" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">${seg("wkM", Object.fromEntries(Object.keys(w.modes).map((k) => [k, SNAP.ai_modes[k]?.name || k])), md)}${wk.length > 1 ? seg("wkI", Object.fromEntries(wk.map((x, j) => [j, x.list_date.slice(5)])), i) : ""}</div>
-    <div class="tbl"><table><thead><tr><th>組合</th><th class="r">成本後報酬</th><th class="r">比 0050（${pctTxt(w.bench)}）</th><th class="r">比加權指數（${pctTxt(w.taiex)}）</th><th class="r">上漲檔數</th><th class="r">名單日收盤口徑</th></tr></thead><tbody>
-      ${Object.entries(M.top).map(([n, t]) => `<tr><td>前 ${n} 名</td><td class="r num">${pc(t.net)}</td><td class="r num">${pc(t.excess)}</td><td class="r num">${pc(t.vs_taiex)}</td><td class="r num">${t.up}/${t.n}${t.tradable < t.n ? `<br><span class="faint small">${t.n - t.tradable} 檔買不到</span>` : ""}</td><td class="r num faint">${t.close_basis == null ? "—" : pctTxt(t.close_basis)}</td></tr>`).join("")}</tbody></table></div>
+    <div class="toolbar" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">${seg("wkM", Object.fromEntries(Object.keys(src).map((k) => [k, SNAP.ai_modes[k]?.name || k])), md)}${hasRec ? seg("wkL", { rec: "預設精選（正式）", raw: "原始排名" }, lt) : ""}${wk.length > 1 ? seg("wkI", Object.fromEntries(wk.map((x, j) => [j, x.list_date.slice(5)])), i) : ""}</div>
+    ${lt === "raw" ? '<div class="banner warn small" style="margin-bottom:8px">原始排名是研究用，包含流動性 E／F 級等不列入正式精選的股票；正式推薦請看「預設精選」。</div>' : ""}
+    <div class="tbl"><table><thead><tr><th>組合</th><th class="r">成本後報酬</th><th class="r">比 0050（${pctTxt(w.bench)}）</th><th class="r">比加權指數（${pctTxt(w.taiex)}）</th><th class="r">上漲檔數</th><th class="r">跑贏 0050 檔數</th><th class="r">名單日收盤口徑</th></tr></thead><tbody>
+      ${Object.entries(M.top).map(([n, t]) => `<tr><td>前 ${n} 名</td><td class="r num">${pc(t.net)}</td><td class="r num">${pc(t.excess)}</td><td class="r num">${pc(t.vs_taiex)}</td><td class="r num">${t.up}/${t.n}${t.tradable < t.n ? `<br><span class="faint small">${t.n - t.tradable} 檔買不到</span>` : ""}</td><td class="r num">${t.beat_bench == null ? "—" : `${t.beat_bench}/${t.n}`}</td><td class="r num faint">${t.close_basis == null ? "—" : pctTxt(t.close_basis)}</td></tr>`).join("")}</tbody></table></div>
     ${Object.keys(sm).length ? `<p class="small" style="margin:6px 0 0">已結束的 ${sm["10"]?.weeks ?? 0} 週裡，前 10 名有 <b>${sm["10"]?.beat ?? 0}</b> 週跑贏 0050，平均每週超額 ${pctTxt(sm["10"]?.avg_excess)}。週數很少時，這只是紀錄，不能證明模型好壞。</p>` : ""}
-    <details style="margin-top:8px"><summary class="small">前 10 名逐檔明細</summary><div class="tbl"><table><thead><tr><th>排名</th><th>股票</th><th class="r">進場開盤</th><th class="r">出場收盤</th><th class="r">報酬</th></tr></thead><tbody>
-      ${M.stocks.slice(0, 10).map((x) => `<tr data-id="${x.stock_id}"><td class="num">${x.rank}</td><td><a href="#/stock/${x.stock_id}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td class="r num">${x.entry_open == null ? "—" : fmtNum(x.entry_open, 2)}</td><td class="r num">${x.exit_close == null ? "—" : fmtNum(x.exit_close, 2)}</td><td class="r num">${x.untradable ? `<span class="faint small">${why[x.untradable] || "買不到"}</span>` : pc(x.ret)}</td></tr>`).join("")}</tbody></table></div></details>
+    ${cmp.length > 1 ? `<h3 style="margin:14px 0 6px">同一週、同一套規則：正式名單、原始排名與影子模型（前 10 名）</h3>
+      <div class="tbl"><table><thead><tr><th>名單</th><th class="r">成本後報酬</th><th class="r">比 0050</th><th class="r">上漲</th><th class="r">跑贏 0050</th></tr></thead><tbody>
+      ${cmp.map(([n, v]) => { const t = v.top["10"]; return `<tr><td>${esc(n)}</td><td class="r num">${pc(t.net)}</td><td class="r num">${pc(t.excess)}</td><td class="r num">${t.up}/${t.n}</td><td class="r num">${t.beat_bench == null ? "—" : `${t.beat_bench}/${t.n}`}</td></tr>`; }).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">${esc(w.ml_note || "")}。一週的差異不能證明哪個模型比較準，要累積很多週再看。</p>` : ""}
+    ${G?.worst ? `<h3 style="margin:14px 0 6px">本週選股品質診斷（${esc(SNAP.ai_modes[md]?.name || md)}・正式名單前 10 名）</h3>
+      <ul class="small" style="margin:0;padding-left:18px">
+        <li>拖累最多：${G.worst.map((x) => `${esc(x.stock_id)} ${esc(x.name || "")}（${esc(x.industry || "")}）<span class="num ${signCls(x.ret)}">${pctTxt(x.ret)}</span>`).join("、")}</li>
+        <li>表現最好：${G.best.map((x) => `${esc(x.stock_id)} ${esc(x.name || "")} <span class="num ${signCls(x.ret)}">${pctTxt(x.ret)}</span>`).join("、")}</li>
+        <li>產業貢獻（佔組合報酬）：${G.industry.map((x) => `${esc(x.industry)} <span class="num ${signCls(x.contrib)}">${pctTxt(x.contrib)}</span>`).join("、")}</li>
+        ${G.liquidity_effect != null ? `<li>流動性限制的差異：正式名單比原始排名 <span class="num ${signCls(G.liquidity_effect)}">${pctTxt(G.liquidity_effect)}</span>（一週的結果，不代表長期效果；長期研究見「推薦組合風險研究」）</li>` : ""}
+        ${Object.keys(G.factor_gap || {}).length ? `<li>上漲較多的一半和較少的一半，因子分數差：${Object.entries(G.factor_gap).map(([f, v]) => `${FLb[f] || f} ${v > 0 ? "+" : ""}${fmtNum(v, 1)}`).join("、")}（${esc(G.note)}）</li>` : ""}
+      </ul>` : ""}
+    <details style="margin-top:8px"><summary class="small">前 10 名逐檔明細</summary><div class="tbl"><table><thead><tr><th>排名</th><th>股票</th><th>流動性</th><th class="r">進場開盤</th><th class="r">出場收盤</th><th class="r">報酬</th></tr></thead><tbody>
+      ${M.stocks.slice(0, 10).map((x) => `<tr data-id="${x.stock_id}"><td class="num">${x.rank}</td><td><a href="#/stock/${x.stock_id}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td class="small">${esc(x.liq || "—")}${x.rec === "excluded" ? '<br><span class="pill warn">不列入正式精選</span>' : x.rec === "capped" ? '<br><span class="pill warn">限制推薦</span>' : ""}</td><td class="r num">${x.entry_open == null ? "—" : fmtNum(x.entry_open, 2)}</td><td class="r num">${x.exit_close == null ? "—" : fmtNum(x.exit_close, 2)}</td><td class="r num">${x.untradable ? `<span class="faint small">${why[x.untradable] || esc(x.untradable)}</span>` : pc(x.ret)}</td></tr>`).join("")}</tbody></table></div></details>
     <p class="faint small" style="margin:8px 0 0">規則每週相同：每週第一個交易日收盤後首次封存的名單（不用補正版）、隔天開盤等權重買進、中途不換股、該週最後一個交易日收盤結算，扣一次來回成本 ${W.cost_pct}%；買不到的那一份留現金。0050 用同一段開盤到收盤（還原除權息）；加權指數只有收盤價，所以從名單日收盤算起。「名單日收盤口徑」用名單當天收盤價當成本，方便和其他報告對帳，但那個價格在名單公布時已經買不到。</p>`;
   $("#wkM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("wkM", b.dataset.k); renderWeekly(); } };
+  $("#wkL") && ($("#wkL").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("wkL", b.dataset.k); renderWeekly(); } });
   $("#wkI") && ($("#wkI").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("wkI", b.dataset.k); renderWeekly(); } });
 }
 // 風險規則逐項檢驗（app/risk_research.py → data/backtest/risk.json，每週重算）：一次只加一條規則，和原始模型逐月比較
