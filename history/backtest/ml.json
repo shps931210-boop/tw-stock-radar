@@ -1,14 +1,14 @@
 {
  "schema_version": 1,
  "method": 2,
- "generated_at": "2026-10-17T17:47:40",
+ "generated_at": "2026-10-22T18:18:05",
  "shadow": true,
- "start": "2023-04-06",
- "end": "2026-10-02",
+ "start": "2019-08-01",
+ "end": "2026-10-14",
  "step": 10,
- "signals": 86,
- "rows": 45856,
- "stocks_avg": 533,
+ "signals": 176,
+ "rows": 127266,
+ "stocks_avg": 723,
  "features": [
   "score_quality",
   "score_growth",
@@ -63,46 +63,44 @@
   "vol_ratio": 0.0,
   "rev_yoy": 0.0,
   "rev_yoy_3m": 0.0,
-  "eps_q_yoy": 3.1,
-  "op_q_yoy": 8.0,
+  "eps_q_yoy": 2.8,
+  "op_q_yoy": 7.4,
   "roe": 0.0,
-  "gross_margin": 4.4,
-  "op_margin": 4.1,
+  "gross_margin": 3.8,
+  "op_margin": 3.6,
   "debt_ratio": 0.0,
   "earnings_yield": 0.0,
   "book_to_price": 0.0,
-  "dy": 0.9,
-  "fcf_yield": 5.1,
-  "fscore": 5.4,
+  "dy": 1.7,
+  "fcf_yield": 4.5,
+  "fscore": 4.8,
   "market_cap": 0.0,
   "avg_value_20": 0.0
  },
  "label_status": {
   "5": {
-   "ok": 44770,
-   "no_bench": 713,
-   "thin": 279,
-   "locked": 50,
-   "stale": 25,
-   "not_traded": 19
+   "ok": 125187,
+   "thin": 1150,
+   "no_bench": 719,
+   "locked": 95,
+   "not_traded": 68,
+   "stale": 47
   },
   "20": {
-   "ok": 42592,
-   "no_exit": 1464,
-   "no_bench": 1436,
-   "thin": 275,
-   "locked": 47,
-   "stale": 24,
-   "not_traded": 18
+   "ok": 124399,
+   "no_exit": 1481,
+   "thin": 1148,
+   "locked": 96,
+   "stale": 75,
+   "not_traded": 67
   },
   "60": {
-   "ok": 39393,
-   "no_exit": 4612,
-   "no_bench": 1531,
-   "thin": 235,
-   "locked": 42,
-   "stale": 25,
-   "not_traded": 18
+   "ok": 121386,
+   "no_exit": 4525,
+   "thin": 1123,
+   "locked": 91,
+   "stale": 78,
+   "not_traded": 63
   }
  },
  "models": {
@@ -130,960 +128,924 @@
  "lgbm": true,
  "horizons": {
   "5": {
-   "tests": 77,
-   "first_test": "2023-08-01",
-   "last_test": "2026-10-02",
-   "holdout_from": "2025-10-21",
+   "tests": 167,
+   "first_test": "2019-11-28",
+   "last_test": "2026-10-14",
+   "holdout_from": "2024-09-04",
    "all": {
     "v21": {
-     "ic": 0.0153,
-     "ic_t": 1.14,
-     "ic_pos": 59.7,
-     "ic_sd": 0.1179,
-     "top_excess": -0.14,
-     "top_vs_all": 0.3,
-     "top_hit": 46.8,
-     "dates": 77
+     "ic": 0.0273,
+     "ic_t": 3.46,
+     "ic_pos": 60.5,
+     "ic_sd": 0.1047,
+     "top_excess": 0.6,
+     "top_vs_all": 0.54,
+     "top_hit": 60.5,
+     "dates": 167
     },
     "ridge": {
-     "ic": 0.0599,
-     "ic_t": 3.05,
-     "ic_pos": 61.0,
-     "ic_sd": 0.1729,
-     "top_excess": -0.24,
-     "top_vs_all": 0.2,
-     "top_hit": 45.5,
-     "dates": 77
+     "ic": 0.0746,
+     "ic_t": 9.22,
+     "ic_pos": 77.8,
+     "ic_sd": 0.116,
+     "top_excess": 0.56,
+     "top_vs_all": 0.5,
+     "top_hit": 61.1,
+     "dates": 167
     },
     "logit": {
-     "ic": 0.0404,
-     "ic_t": 2.28,
-     "ic_pos": 61.0,
-     "ic_sd": 0.1506,
-     "top_excess": -0.18,
-     "top_vs_all": 0.26,
-     "top_hit": 48.1,
-     "dates": 77
+     "ic": 0.0652,
+     "ic_t": 6.83,
+     "ic_pos": 70.1,
+     "ic_sd": 0.1374,
+     "top_excess": 0.76,
+     "top_vs_all": 0.7,
+     "top_hit": 63.5,
+     "dates": 167
     },
     "lgbm": {
-     "ic": 0.0556,
-     "ic_t": 3.27,
-     "ic_pos": 62.3,
-     "ic_sd": 0.1496,
-     "top_excess": -0.16,
-     "top_vs_all": 0.28,
-     "top_hit": 46.8,
-     "dates": 77
+     "ic": 0.0705,
+     "ic_t": 9.13,
+     "ic_pos": 76.6,
+     "ic_sd": 0.1064,
+     "top_excess": 0.67,
+     "top_vs_all": 0.61,
+     "top_hit": 54.5,
+     "dates": 167
     },
     "ens": {
-     "ic": 0.0465,
-     "ic_t": 3.29,
-     "ic_pos": 67.5,
-     "ic_sd": 0.1261,
-     "top_excess": 0.27,
-     "top_vs_all": 0.71,
-     "top_hit": 57.1,
-     "dates": 77
+     "ic": 0.0609,
+     "ic_t": 7.72,
+     "ic_pos": 71.3,
+     "ic_sd": 0.1077,
+     "top_excess": 0.55,
+     "top_vs_all": 0.49,
+     "top_hit": 57.5,
+     "dates": 167
     },
     "prob": {
-     "hit": 58.5,
-     "base_hit": 60.1,
-     "win_rate": 39.9,
-     "brier": 0.2423,
-     "brier_base": 0.2413,
-     "skill": -0.004,
+     "hit": 53.3,
+     "base_hit": 53.8,
+     "win_rate": 46.2,
+     "brier": 0.249,
+     "brier_base": 0.2493,
+     "skill": 0.0013,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 60,
-       "pred": 28.6,
-       "actual": 35.0
+       "n": 34,
+       "pred": 28.9,
+       "actual": 41.2
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 12696,
-       "pred": 37.3,
-       "actual": 39.0
+       "n": 6034,
+       "pred": 37.7,
+       "actual": 44.5
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 25427,
-       "pred": 44.2,
-       "actual": 39.8
+       "n": 81037,
+       "pred": 46.0,
+       "actual": 45.2
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 4572,
-       "pred": 53.0,
-       "actual": 42.6
+       "n": 33641,
+       "pred": 52.5,
+       "actual": 49.1
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 269,
-       "pred": 62.6,
-       "actual": 48.3
-      },
-      {
-       "bin": "(0.7, 1.0]",
-       "n": 1,
-       "pred": 70.8,
-       "actual": 0.0
+       "n": 223,
+       "pred": 61.4,
+       "actual": 49.8
       }
      ]
     }
    },
    "rolling": {
     "v21": {
-     "ic": 0.0146,
-     "ic_t": 0.83,
-     "ic_pos": 58.5,
-     "ic_sd": 0.13,
-     "top_excess": -0.13,
-     "top_vs_all": 0.25,
-     "top_hit": 49.1,
-     "dates": 53
+     "ic": 0.0233,
+     "ic_t": 2.35,
+     "ic_pos": 59.5,
+     "ic_sd": 0.1053,
+     "top_excess": 0.84,
+     "top_vs_all": 0.53,
+     "top_hit": 64.7,
+     "dates": 116
     },
     "ridge": {
-     "ic": 0.0614,
-     "ic_t": 2.5,
-     "ic_pos": 62.3,
-     "ic_sd": 0.1673,
-     "top_excess": -0.01,
-     "top_vs_all": 0.37,
-     "top_hit": 52.8,
-     "dates": 53
+     "ic": 0.0696,
+     "ic_t": 6.69,
+     "ic_pos": 75.9,
+     "ic_sd": 0.1223,
+     "top_excess": 0.78,
+     "top_vs_all": 0.47,
+     "top_hit": 66.4,
+     "dates": 116
     },
     "logit": {
-     "ic": 0.0488,
-     "ic_t": 2.04,
-     "ic_pos": 64.2,
-     "ic_sd": 0.1657,
-     "top_excess": -0.17,
-     "top_vs_all": 0.22,
-     "top_hit": 47.2,
-     "dates": 53
+     "ic": 0.0601,
+     "ic_t": 4.99,
+     "ic_pos": 67.2,
+     "ic_sd": 0.1418,
+     "top_excess": 1.04,
+     "top_vs_all": 0.73,
+     "top_hit": 68.1,
+     "dates": 116
     },
     "lgbm": {
-     "ic": 0.0541,
-     "ic_t": 2.49,
-     "ic_pos": 64.2,
-     "ic_sd": 0.1436,
-     "top_excess": -0.11,
-     "top_vs_all": 0.28,
-     "top_hit": 50.9,
-     "dates": 53
+     "ic": 0.0643,
+     "ic_t": 6.72,
+     "ic_pos": 73.3,
+     "ic_sd": 0.1091,
+     "top_excess": 0.83,
+     "top_vs_all": 0.52,
+     "top_hit": 56.0,
+     "dates": 116
     },
     "ens": {
-     "ic": 0.046,
-     "ic_t": 2.43,
-     "ic_pos": 69.8,
-     "ic_sd": 0.133,
-     "top_excess": 0.33,
-     "top_vs_all": 0.71,
-     "top_hit": 56.6,
-     "dates": 53
+     "ic": 0.054,
+     "ic_t": 5.25,
+     "ic_pos": 67.2,
+     "ic_sd": 0.1117,
+     "top_excess": 0.72,
+     "top_vs_all": 0.42,
+     "top_hit": 62.9,
+     "dates": 116
     },
     "prob": {
-     "hit": 56.5,
-     "base_hit": 59.2,
-     "win_rate": 40.8,
-     "brier": 0.2446,
-     "brier_base": 0.2436,
-     "skill": -0.0041,
+     "hit": 51.6,
+     "base_hit": 51.2,
+     "win_rate": 48.8,
+     "brier": 0.2507,
+     "brier_base": 0.2509,
+     "skill": 0.001,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 43,
-       "pred": 28.6,
-       "actual": 34.9
+       "n": 34,
+       "pred": 28.9,
+       "actual": 41.2
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 4377,
-       "pred": 37.2,
-       "actual": 38.8
+       "n": 5071,
+       "pred": 37.6,
+       "actual": 45.6
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 15390,
-       "pred": 45.0,
-       "actual": 40.7
+       "n": 51292,
+       "pred": 46.0,
+       "actual": 48.1
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 4503,
-       "pred": 53.0,
-       "actual": 42.8
+       "n": 25546,
+       "pred": 52.7,
+       "actual": 50.6
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 269,
-       "pred": 62.6,
-       "actual": 48.3
-      },
-      {
-       "bin": "(0.7, 1.0]",
-       "n": 1,
-       "pred": 70.8,
-       "actual": 0.0
+       "n": 221,
+       "pred": 61.4,
+       "actual": 50.2
       }
      ]
     }
    },
    "holdout": {
     "v21": {
-     "ic": 0.0167,
-     "ic_t": 0.93,
-     "ic_pos": 62.5,
-     "ic_sd": 0.0882,
-     "top_excess": -0.17,
-     "top_vs_all": 0.4,
-     "top_hit": 41.7,
-     "dates": 24
+     "ic": 0.0364,
+     "ic_t": 2.89,
+     "ic_pos": 62.7,
+     "ic_sd": 0.1039,
+     "top_excess": 0.06,
+     "top_vs_all": 0.56,
+     "top_hit": 51.0,
+     "dates": 51
     },
     "ridge": {
-     "ic": 0.0568,
-     "ic_t": 1.78,
-     "ic_pos": 58.3,
-     "ic_sd": 0.1884,
-     "top_excess": -0.74,
-     "top_vs_all": -0.16,
-     "top_hit": 29.2,
-     "dates": 24
+     "ic": 0.0861,
+     "ic_t": 7.4,
+     "ic_pos": 82.4,
+     "ic_sd": 0.1002,
+     "top_excess": 0.07,
+     "top_vs_all": 0.57,
+     "top_hit": 49.0,
+     "dates": 51
     },
     "logit": {
-     "ic": 0.0218,
-     "ic_t": 1.13,
-     "ic_pos": 54.2,
-     "ic_sd": 0.1114,
-     "top_excess": -0.22,
-     "top_vs_all": 0.35,
-     "top_hit": 50.0,
-     "dates": 24
+     "ic": 0.0769,
+     "ic_t": 5.23,
+     "ic_pos": 76.5,
+     "ic_sd": 0.1274,
+     "top_excess": 0.14,
+     "top_vs_all": 0.64,
+     "top_hit": 52.9,
+     "dates": 51
     },
     "lgbm": {
-     "ic": 0.0589,
-     "ic_t": 2.27,
-     "ic_pos": 58.3,
-     "ic_sd": 0.1654,
-     "top_excess": -0.29,
-     "top_vs_all": 0.29,
-     "top_hit": 37.5,
-     "dates": 24
+     "ic": 0.0846,
+     "ic_t": 6.78,
+     "ic_pos": 84.3,
+     "ic_sd": 0.0997,
+     "top_excess": 0.33,
+     "top_vs_all": 0.83,
+     "top_hit": 51.0,
+     "dates": 51
     },
     "ens": {
-     "ic": 0.0474,
-     "ic_t": 2.73,
-     "ic_pos": 62.5,
-     "ic_sd": 0.1119,
-     "top_excess": 0.14,
-     "top_vs_all": 0.72,
-     "top_hit": 58.3,
-     "dates": 24
+     "ic": 0.0766,
+     "ic_t": 7.38,
+     "ic_pos": 80.4,
+     "ic_sd": 0.0971,
+     "top_excess": 0.17,
+     "top_vs_all": 0.67,
+     "top_hit": 45.1,
+     "dates": 51
     },
     "prob": {
-     "hit": 61.2,
-     "base_hit": 61.3,
-     "win_rate": 38.7,
-     "brier": 0.2391,
-     "brier_base": 0.2382,
-     "skill": -0.0038,
+     "hit": 56.7,
+     "base_hit": 59.2,
+     "win_rate": 40.8,
+     "brier": 0.2454,
+     "brier_base": 0.2459,
+     "skill": 0.002,
      "calibration": [
       {
-       "bin": "(-0.001, 0.3]",
-       "n": 17,
-       "pred": 28.8,
-       "actual": 35.3
-      },
-      {
        "bin": "(0.3, 0.4]",
-       "n": 8319,
-       "pred": 37.4,
-       "actual": 39.0
+       "n": 963,
+       "pred": 38.6,
+       "actual": 38.5
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 10037,
-       "pred": 43.1,
-       "actual": 38.4
+       "n": 29745,
+       "pred": 46.1,
+       "actual": 40.0
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 69,
-       "pred": 51.3,
-       "actual": 30.4
+       "n": 8095,
+       "pred": 51.9,
+       "actual": 44.2
+      },
+      {
+       "bin": "(0.6, 0.7]",
+       "n": 2,
+       "pred": 64.1,
+       "actual": 0.0
       }
      ]
     }
    },
    "vs_v21": {
     "ridge": {
-     "diff": 0.0447,
-     "t": 1.87
+     "diff": 0.0473,
+     "t": 4.94
     },
     "logit": {
-     "diff": 0.0251,
-     "t": 1.36
+     "diff": 0.0379,
+     "t": 4.39
     },
     "lgbm": {
-     "diff": 0.0404,
-     "t": 1.84
+     "diff": 0.0432,
+     "t": 4.62
     },
     "ens": {
-     "diff": 0.0312,
-     "t": 2.46
+     "diff": 0.0336,
+     "t": 6.89
     }
    },
    "sufficiency": {
     "horizon": 5,
-    "test_trading_days": 770,
-    "independent_periods": 154.0,
-    "ic_sd": 0.1179,
-    "min_detectable_ic": 0.0266,
-    "periods_needed_for_0.03": 122,
-    "years_needed_for_0.03": 2.5,
+    "test_trading_days": 1670,
+    "independent_periods": 334.0,
+    "ic_sd": 0.1047,
+    "min_detectable_ic": 0.016,
+    "periods_needed_for_0.03": 96,
+    "years_needed_for_0.03": 2.0,
     "enough": true
    },
-   "rows": 43025
+   "rows": 120969
   },
   "20": {
-   "tests": 72,
-   "first_test": "2023-08-30",
-   "last_test": "2026-09-02",
-   "holdout_from": "2025-10-21",
+   "tests": 164,
+   "first_test": "2019-12-26",
+   "last_test": "2026-09-11",
+   "holdout_from": "2024-09-04",
    "all": {
     "v21": {
-     "ic": 0.049,
-     "ic_t": 2.86,
-     "ic_pos": 65.3,
-     "ic_sd": 0.1183,
-     "top_excess": -0.83,
-     "top_vs_all": 1.04,
-     "top_hit": 47.2,
-     "dates": 72
+     "ic": 0.0292,
+     "ic_t": 2.66,
+     "ic_pos": 63.4,
+     "ic_sd": 0.1082,
+     "top_excess": -0.23,
+     "top_vs_all": 0.46,
+     "top_hit": 47.0,
+     "dates": 164
     },
     "ridge": {
-     "ic": 0.0619,
-     "ic_t": 3.94,
-     "ic_pos": 73.6,
-     "ic_sd": 0.1098,
-     "top_excess": -1.02,
-     "top_vs_all": 0.85,
-     "top_hit": 45.8,
-     "dates": 72
+     "ic": 0.0947,
+     "ic_t": 8.43,
+     "ic_pos": 79.3,
+     "ic_sd": 0.1237,
+     "top_excess": 0.43,
+     "top_vs_all": 1.13,
+     "top_hit": 55.5,
+     "dates": 164
     },
     "logit": {
-     "ic": 0.0376,
-     "ic_t": 1.64,
-     "ic_pos": 59.7,
-     "ic_sd": 0.1482,
-     "top_excess": -0.38,
-     "top_vs_all": 1.49,
-     "top_hit": 41.7,
-     "dates": 72
+     "ic": 0.0717,
+     "ic_t": 6.04,
+     "ic_pos": 72.6,
+     "ic_sd": 0.1272,
+     "top_excess": 0.89,
+     "top_vs_all": 1.59,
+     "top_hit": 53.7,
+     "dates": 164
     },
     "lgbm": {
-     "ic": 0.0517,
-     "ic_t": 3.98,
-     "ic_pos": 69.4,
-     "ic_sd": 0.0941,
-     "top_excess": -0.08,
-     "top_vs_all": 1.79,
-     "top_hit": 47.2,
-     "dates": 72
+     "ic": 0.0967,
+     "ic_t": 9.35,
+     "ic_pos": 83.5,
+     "ic_sd": 0.113,
+     "top_excess": 0.03,
+     "top_vs_all": 0.73,
+     "top_hit": 55.5,
+     "dates": 164
     },
     "ens": {
-     "ic": 0.0611,
-     "ic_t": 4.45,
-     "ic_pos": 73.6,
-     "ic_sd": 0.097,
-     "top_excess": -0.42,
-     "top_vs_all": 1.45,
-     "top_hit": 47.2,
-     "dates": 72
+     "ic": 0.0804,
+     "ic_t": 8.1,
+     "ic_pos": 79.9,
+     "ic_sd": 0.1074,
+     "top_excess": 0.1,
+     "top_vs_all": 0.8,
+     "top_hit": 50.0,
+     "dates": 164
     },
     "prob": {
-     "hit": 63.3,
-     "base_hit": 64.8,
-     "win_rate": 35.2,
-     "brier": 0.2326,
-     "brier_base": 0.2317,
-     "skill": -0.0038,
+     "hit": 58.2,
+     "base_hit": 58.6,
+     "win_rate": 41.4,
+     "brier": 0.2452,
+     "brier_base": 0.245,
+     "skill": -0.0007,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 1783,
-       "pred": 28.2,
-       "actual": 34.4
+       "n": 3783,
+       "pred": 25.7,
+       "actual": 48.0
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 20892,
-       "pred": 35.8,
-       "actual": 34.5
+       "n": 33601,
+       "pred": 36.8,
+       "actual": 40.1
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 15402,
-       "pred": 43.8,
-       "actual": 36.0
+       "n": 74885,
+       "pred": 44.3,
+       "actual": 41.3
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 2137,
-       "pred": 53.2,
-       "actual": 36.5
+       "n": 6809,
+       "pred": 52.0,
+       "actual": 46.3
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 181,
-       "pred": 63.0,
-       "actual": 49.2
-      },
-      {
-       "bin": "(0.7, 1.0]",
        "n": 5,
-       "pred": 71.7,
-       "actual": 60.0
+       "pred": 61.0,
+       "actual": 40.0
       }
      ]
     }
    },
    "rolling": {
     "v21": {
-     "ic": 0.0461,
-     "ic_t": 2.22,
-     "ic_pos": 66.0,
-     "ic_sd": 0.1247,
-     "top_excess": -0.43,
-     "top_vs_all": 1.09,
-     "top_hit": 52.0,
-     "dates": 50
+     "ic": 0.0271,
+     "ic_t": 1.91,
+     "ic_pos": 60.5,
+     "ic_sd": 0.1159,
+     "top_excess": 0.29,
+     "top_vs_all": 0.22,
+     "top_hit": 51.8,
+     "dates": 114
     },
     "ridge": {
-     "ic": 0.0562,
-     "ic_t": 3.03,
-     "ic_pos": 72.0,
-     "ic_sd": 0.1158,
-     "top_excess": -0.53,
-     "top_vs_all": 0.99,
-     "top_hit": 46.0,
-     "dates": 50
+     "ic": 0.0949,
+     "ic_t": 7.25,
+     "ic_pos": 78.9,
+     "ic_sd": 0.1266,
+     "top_excess": 1.12,
+     "top_vs_all": 1.04,
+     "top_hit": 62.3,
+     "dates": 114
     },
     "logit": {
-     "ic": 0.0267,
-     "ic_t": 1.46,
-     "ic_pos": 58.0,
-     "ic_sd": 0.119,
-     "top_excess": -0.69,
-     "top_vs_all": 0.83,
-     "top_hit": 42.0,
-     "dates": 50
+     "ic": 0.0653,
+     "ic_t": 4.63,
+     "ic_pos": 71.9,
+     "ic_sd": 0.1321,
+     "top_excess": 1.3,
+     "top_vs_all": 1.22,
+     "top_hit": 61.4,
+     "dates": 114
     },
     "lgbm": {
-     "ic": 0.0389,
-     "ic_t": 2.56,
-     "ic_pos": 64.0,
-     "ic_sd": 0.0985,
-     "top_excess": -0.79,
-     "top_vs_all": 0.73,
-     "top_hit": 46.0,
-     "dates": 50
+     "ic": 0.0923,
+     "ic_t": 8.42,
+     "ic_pos": 84.2,
+     "ic_sd": 0.1091,
+     "top_excess": 0.55,
+     "top_vs_all": 0.47,
+     "top_hit": 64.0,
+     "dates": 114
     },
     "ens": {
-     "ic": 0.0517,
-     "ic_t": 3.41,
-     "ic_pos": 70.0,
-     "ic_sd": 0.0988,
-     "top_excess": -0.67,
-     "top_vs_all": 0.85,
-     "top_hit": 48.0,
-     "dates": 50
+     "ic": 0.0767,
+     "ic_t": 6.21,
+     "ic_pos": 77.2,
+     "ic_sd": 0.1148,
+     "top_excess": 0.65,
+     "top_vs_all": 0.57,
+     "top_hit": 55.3,
+     "dates": 114
     },
     "prob": {
-     "hit": 61.2,
-     "base_hit": 63.6,
-     "win_rate": 36.4,
-     "brier": 0.2395,
-     "brier_base": 0.2369,
-     "skill": -0.0109,
+     "hit": 54.7,
+     "base_hit": 55.1,
+     "win_rate": 44.9,
+     "brier": 0.2515,
+     "brier_base": 0.2512,
+     "skill": -0.0013,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 449,
-       "pred": 28.1,
-       "actual": 48.6
+       "n": 3737,
+       "pred": 25.6,
+       "actual": 48.2
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 9344,
-       "pred": 36.3,
-       "actual": 37.6
+       "n": 23142,
+       "pred": 36.4,
+       "actual": 43.4
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 11324,
-       "pred": 44.1,
-       "actual": 34.7
+       "n": 48112,
+       "pred": 44.5,
+       "actual": 45.1
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 2113,
-       "pred": 53.2,
-       "actual": 36.5
+       "n": 6042,
+       "pred": 52.0,
+       "actual": 47.4
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 181,
-       "pred": 63.0,
-       "actual": 49.2
-      },
-      {
-       "bin": "(0.7, 1.0]",
        "n": 5,
-       "pred": 71.7,
-       "actual": 60.0
+       "pred": 61.0,
+       "actual": 40.0
       }
      ]
     }
    },
    "holdout": {
     "v21": {
-     "ic": 0.0558,
-     "ic_t": 1.85,
-     "ic_pos": 63.6,
-     "ic_sd": 0.1048,
-     "top_excess": -1.74,
-     "top_vs_all": 0.93,
-     "top_hit": 36.4,
-     "dates": 22
+     "ic": 0.034,
+     "ic_t": 2.13,
+     "ic_pos": 70.0,
+     "ic_sd": 0.089,
+     "top_excess": -1.44,
+     "top_vs_all": 1.02,
+     "top_hit": 36.0,
+     "dates": 50
     },
     "ridge": {
-     "ic": 0.0748,
-     "ic_t": 2.68,
-     "ic_pos": 77.3,
-     "ic_sd": 0.096,
-     "top_excess": -2.13,
-     "top_vs_all": 0.54,
-     "top_hit": 45.5,
-     "dates": 22
+     "ic": 0.0942,
+     "ic_t": 4.38,
+     "ic_pos": 80.0,
+     "ic_sd": 0.1179,
+     "top_excess": -1.14,
+     "top_vs_all": 1.32,
+     "top_hit": 40.0,
+     "dates": 50
     },
     "logit": {
-     "ic": 0.0623,
-     "ic_t": 1.01,
-     "ic_pos": 63.6,
-     "ic_sd": 0.2006,
-     "top_excess": 0.33,
-     "top_vs_all": 3.0,
-     "top_hit": 40.9,
-     "dates": 22
+     "ic": 0.0862,
+     "ic_t": 4.04,
+     "ic_pos": 74.0,
+     "ic_sd": 0.1153,
+     "top_excess": -0.03,
+     "top_vs_all": 2.43,
+     "top_hit": 36.0,
+     "dates": 50
     },
     "lgbm": {
-     "ic": 0.0808,
-     "ic_t": 3.87,
-     "ic_pos": 81.8,
-     "ic_sd": 0.0774,
-     "top_excess": 1.53,
-     "top_vs_all": 4.2,
-     "top_hit": 50.0,
-     "dates": 22
+     "ic": 0.1067,
+     "ic_t": 4.71,
+     "ic_pos": 82.0,
+     "ic_sd": 0.1222,
+     "top_excess": -1.14,
+     "top_vs_all": 1.33,
+     "top_hit": 36.0,
+     "dates": 50
     },
     "ens": {
-     "ic": 0.0826,
-     "ic_t": 3.11,
-     "ic_pos": 81.8,
-     "ic_sd": 0.0914,
-     "top_excess": 0.15,
-     "top_vs_all": 2.82,
-     "top_hit": 45.5,
-     "dates": 22
+     "ic": 0.0887,
+     "ic_t": 5.54,
+     "ic_pos": 86.0,
+     "ic_sd": 0.089,
+     "top_excess": -1.16,
+     "top_vs_all": 1.31,
+     "top_hit": 38.0,
+     "dates": 50
     },
     "prob": {
-     "hit": 66.3,
-     "base_hit": 66.3,
-     "win_rate": 33.7,
-     "brier": 0.2231,
-     "brier_base": 0.2245,
-     "skill": 0.0065,
+     "hit": 65.5,
+     "base_hit": 66.0,
+     "win_rate": 34.0,
+     "brier": 0.2317,
+     "brier_base": 0.2318,
+     "skill": 0.0008,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 1334,
-       "pred": 28.2,
-       "actual": 29.6
+       "n": 46,
+       "pred": 28.7,
+       "actual": 32.6
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 11548,
-       "pred": 35.3,
-       "actual": 32.0
+       "n": 10459,
+       "pred": 37.5,
+       "actual": 32.7
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 4078,
-       "pred": 42.9,
-       "actual": 39.7
+       "n": 26773,
+       "pred": 43.9,
+       "actual": 34.4
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 24,
-       "pred": 51.1,
-       "actual": 29.2
+       "n": 767,
+       "pred": 51.4,
+       "actual": 38.2
       }
      ]
     }
    },
    "vs_v21": {
     "ridge": {
-     "diff": 0.0129,
-     "t": 0.82
+     "diff": 0.0654,
+     "t": 4.29
     },
     "logit": {
-     "diff": -0.0114,
-     "t": -0.85
+     "diff": 0.0425,
+     "t": 3.56
     },
     "lgbm": {
-     "diff": 0.0027,
-     "t": 0.14
+     "diff": 0.0675,
+     "t": 4.62
     },
     "ens": {
-     "diff": 0.0121,
-     "t": 1.23
+     "diff": 0.0512,
+     "t": 6.73
     }
    },
    "sufficiency": {
     "horizon": 20,
-    "test_trading_days": 720,
-    "independent_periods": 36.0,
-    "ic_sd": 0.1183,
-    "min_detectable_ic": 0.0552,
-    "periods_needed_for_0.03": 122,
-    "years_needed_for_0.03": 10.0,
+    "test_trading_days": 1640,
+    "independent_periods": 82.0,
+    "ic_sd": 0.1082,
+    "min_detectable_ic": 0.0335,
+    "periods_needed_for_0.03": 102,
+    "years_needed_for_0.03": 8.3,
     "enough": false
    },
-   "rows": 40400
+   "rows": 119083
   },
   "60": {
-   "tests": 64,
-   "first_test": "2023-10-30",
-   "last_test": "2026-07-07",
-   "holdout_from": "2025-09-18",
+   "tests": 156,
+   "first_test": "2020-03-04",
+   "last_test": "2026-07-17",
+   "holdout_from": "2024-08-21",
    "all": {
     "v21": {
-     "ic": 0.0819,
-     "ic_t": 4.0,
-     "ic_pos": 81.2,
-     "ic_sd": 0.0913,
-     "top_excess": -3.12,
-     "top_vs_all": 3.58,
-     "top_hit": 32.8,
-     "dates": 64
+     "ic": 0.0315,
+     "ic_t": 1.78,
+     "ic_pos": 64.7,
+     "ic_sd": 0.1078,
+     "top_excess": -1.3,
+     "top_vs_all": 1.29,
+     "top_hit": 44.9,
+     "dates": 156
     },
     "ridge": {
-     "ic": 0.0817,
-     "ic_t": 3.85,
-     "ic_pos": 82.8,
-     "ic_sd": 0.0958,
-     "top_excess": -5.39,
-     "top_vs_all": 1.31,
-     "top_hit": 26.6,
-     "dates": 64
+     "ic": 0.1134,
+     "ic_t": 6.38,
+     "ic_pos": 85.3,
+     "ic_sd": 0.1266,
+     "top_excess": -0.75,
+     "top_vs_all": 1.84,
+     "top_hit": 51.3,
+     "dates": 156
     },
     "logit": {
-     "ic": 0.0574,
-     "ic_t": 1.59,
-     "ic_pos": 62.5,
-     "ic_sd": 0.1487,
-     "top_excess": -3.29,
-     "top_vs_all": 3.41,
-     "top_hit": 35.9,
-     "dates": 64
+     "ic": 0.0832,
+     "ic_t": 4.36,
+     "ic_pos": 76.9,
+     "ic_sd": 0.1263,
+     "top_excess": 0.28,
+     "top_vs_all": 2.87,
+     "top_hit": 48.1,
+     "dates": 156
     },
     "lgbm": {
-     "ic": 0.0815,
-     "ic_t": 4.23,
-     "ic_pos": 85.9,
-     "ic_sd": 0.0856,
-     "top_excess": -1.53,
-     "top_vs_all": 5.17,
-     "top_hit": 39.1,
-     "dates": 64
+     "ic": 0.1112,
+     "ic_t": 6.67,
+     "ic_pos": 85.3,
+     "ic_sd": 0.1143,
+     "top_excess": -0.87,
+     "top_vs_all": 1.72,
+     "top_hit": 43.6,
+     "dates": 156
     },
     "ens": {
-     "ic": 0.0965,
-     "ic_t": 5.51,
-     "ic_pos": 90.6,
-     "ic_sd": 0.0826,
-     "top_excess": -2.99,
-     "top_vs_all": 3.71,
-     "top_hit": 45.3,
-     "dates": 64
+     "ic": 0.0936,
+     "ic_t": 5.6,
+     "ic_pos": 78.8,
+     "ic_sd": 0.1089,
+     "top_excess": -0.36,
+     "top_vs_all": 2.23,
+     "top_hit": 50.0,
+     "dates": 156
     },
     "prob": {
-     "hit": 68.2,
-     "base_hit": 71.4,
-     "win_rate": 28.6,
-     "brier": 0.2166,
-     "brier_base": 0.2128,
-     "skill": -0.0176,
+     "hit": 61.9,
+     "base_hit": 63.0,
+     "win_rate": 37.0,
+     "brier": 0.238,
+     "brier_base": 0.237,
+     "skill": -0.004,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 9285,
-       "pred": 25.5,
-       "actual": 26.1
+       "n": 11971,
+       "pred": 24.8,
+       "actual": 38.9
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 14965,
-       "pred": 35.0,
-       "actual": 29.2
+       "n": 48252,
+       "pred": 35.9,
+       "actual": 34.9
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 9063,
-       "pred": 44.2,
-       "actual": 29.4
+       "n": 47123,
+       "pred": 44.1,
+       "actual": 38.2
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 2549,
-       "pred": 53.8,
-       "actual": 29.1
+       "n": 6376,
+       "pred": 52.6,
+       "actual": 40.5
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 476,
-       "pred": 63.2,
-       "actual": 38.4
-      },
-      {
-       "bin": "(0.7, 1.0]",
-       "n": 31,
-       "pred": 72.5,
-       "actual": 58.1
+       "n": 56,
+       "pred": 61.8,
+       "actual": 60.7
       }
      ]
     }
    },
    "rolling": {
     "v21": {
-     "ic": 0.0785,
-     "ic_t": 3.11,
-     "ic_pos": 84.1,
-     "ic_sd": 0.0886,
-     "top_excess": -2.37,
-     "top_vs_all": 3.24,
-     "top_hit": 34.1,
-     "dates": 44
+     "ic": 0.0193,
+     "ic_t": 0.83,
+     "ic_pos": 59.6,
+     "ic_sd": 0.1162,
+     "top_excess": -0.29,
+     "top_vs_all": -0.02,
+     "top_hit": 48.6,
+     "dates": 109
     },
     "ridge": {
-     "ic": 0.0745,
-     "ic_t": 2.59,
-     "ic_pos": 81.8,
-     "ic_sd": 0.1051,
-     "top_excess": -5.09,
-     "top_vs_all": 0.52,
-     "top_hit": 29.5,
-     "dates": 44
+     "ic": 0.107,
+     "ic_t": 4.99,
+     "ic_pos": 86.2,
+     "ic_sd": 0.1259,
+     "top_excess": 1.66,
+     "top_vs_all": 1.94,
+     "top_hit": 59.6,
+     "dates": 109
     },
     "logit": {
-     "ic": 0.0367,
-     "ic_t": 1.03,
-     "ic_pos": 56.8,
-     "ic_sd": 0.1199,
-     "top_excess": -3.51,
-     "top_vs_all": 2.1,
-     "top_hit": 38.6,
-     "dates": 44
+     "ic": 0.0701,
+     "ic_t": 2.98,
+     "ic_pos": 76.1,
+     "ic_sd": 0.1287,
+     "top_excess": 2.45,
+     "top_vs_all": 2.73,
+     "top_hit": 57.8,
+     "dates": 109
     },
     "lgbm": {
-     "ic": 0.0796,
-     "ic_t": 3.04,
-     "ic_pos": 86.4,
-     "ic_sd": 0.0956,
-     "top_excess": -3.19,
-     "top_vs_all": 2.42,
-     "top_hit": 36.4,
-     "dates": 44
+     "ic": 0.1032,
+     "ic_t": 5.58,
+     "ic_pos": 86.2,
+     "ic_sd": 0.1056,
+     "top_excess": 1.25,
+     "top_vs_all": 1.52,
+     "top_hit": 51.4,
+     "dates": 109
     },
     "ens": {
-     "ic": 0.0922,
-     "ic_t": 3.9,
-     "ic_pos": 88.6,
-     "ic_sd": 0.0879,
-     "top_excess": -4.01,
-     "top_vs_all": 1.6,
-     "top_hit": 40.9,
-     "dates": 44
+     "ic": 0.0819,
+     "ic_t": 3.78,
+     "ic_pos": 75.2,
+     "ic_sd": 0.1151,
+     "top_excess": 1.84,
+     "top_vs_all": 2.12,
+     "top_hit": 58.7,
+     "dates": 109
     },
     "prob": {
-     "hit": 63.7,
-     "base_hit": 69.2,
-     "win_rate": 30.8,
-     "brier": 0.2319,
-     "brier_base": 0.2244,
-     "skill": -0.0337,
+     "hit": 56.9,
+     "base_hit": 58.3,
+     "win_rate": 41.7,
+     "brier": 0.2501,
+     "brier_base": 0.2485,
+     "skill": -0.0061,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 3326,
-       "pred": 25.9,
-       "actual": 33.2
+       "n": 10613,
+       "pred": 24.4,
+       "actual": 41.2
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 7832,
-       "pred": 35.3,
-       "actual": 31.9
+       "n": 29905,
+       "pred": 35.8,
+       "actual": 41.0
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 6865,
-       "pred": 44.6,
-       "actual": 28.5
+       "n": 31435,
+       "pred": 44.3,
+       "actual": 42.7
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 2492,
-       "pred": 53.8,
-       "actual": 29.2
+       "n": 5885,
+       "pred": 52.7,
+       "actual": 41.2
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 476,
-       "pred": 63.2,
-       "actual": 38.4
-      },
-      {
-       "bin": "(0.7, 1.0]",
-       "n": 31,
-       "pred": 72.5,
-       "actual": 58.1
+       "n": 56,
+       "pred": 61.8,
+       "actual": 60.7
       }
      ]
     }
    },
    "holdout": {
     "v21": {
-     "ic": 0.0894,
-     "ic_t": 2.65,
-     "ic_pos": 75.0,
-     "ic_sd": 0.0988,
-     "top_excess": -4.77,
+     "ic": 0.0597,
+     "ic_t": 3.31,
+     "ic_pos": 76.6,
+     "ic_sd": 0.0792,
+     "top_excess": -3.63,
      "top_vs_all": 4.32,
-     "top_hit": 30.0,
-     "dates": 20
+     "top_hit": 36.2,
+     "dates": 47
     },
     "ridge": {
-     "ic": 0.0978,
-     "ic_t": 4.34,
-     "ic_pos": 85.0,
-     "ic_sd": 0.0711,
-     "top_excess": -6.06,
-     "top_vs_all": 3.03,
-     "top_hit": 20.0,
-     "dates": 20
+     "ic": 0.1283,
+     "ic_t": 4.07,
+     "ic_pos": 83.0,
+     "ic_sd": 0.1283,
+     "top_excess": -6.33,
+     "top_vs_all": 1.63,
+     "top_hit": 31.9,
+     "dates": 47
     },
     "logit": {
-     "ic": 0.103,
-     "ic_t": 1.36,
-     "ic_pos": 75.0,
-     "ic_sd": 0.194,
-     "top_excess": -2.79,
-     "top_vs_all": 6.3,
-     "top_hit": 30.0,
-     "dates": 20
+     "ic": 0.1136,
+     "ic_t": 3.95,
+     "ic_pos": 78.7,
+     "ic_sd": 0.1162,
+     "top_excess": -4.75,
+     "top_vs_all": 3.21,
+     "top_hit": 25.5,
+     "dates": 47
     },
     "lgbm": {
-     "ic": 0.0857,
-     "ic_t": 4.23,
-     "ic_pos": 85.0,
-     "ic_sd": 0.0599,
-     "top_excess": 2.13,
-     "top_vs_all": 11.21,
-     "top_hit": 45.0,
-     "dates": 20
+     "ic": 0.1299,
+     "ic_t": 3.78,
+     "ic_pos": 83.0,
+     "ic_sd": 0.1317,
+     "top_excess": -5.79,
+     "top_vs_all": 2.17,
+     "top_hit": 25.5,
+     "dates": 47
     },
     "ens": {
-     "ic": 0.106,
-     "ic_t": 5.19,
-     "ic_pos": 95.0,
-     "ic_sd": 0.0708,
-     "top_excess": -0.75,
-     "top_vs_all": 8.33,
-     "top_hit": 55.0,
-     "dates": 20
+     "ic": 0.1207,
+     "ic_t": 6.0,
+     "ic_pos": 87.2,
+     "ic_sd": 0.0882,
+     "top_excess": -5.47,
+     "top_vs_all": 2.49,
+     "top_hit": 29.8,
+     "dates": 47
     },
     "prob": {
-     "hit": 74.3,
-     "base_hit": 74.5,
-     "win_rate": 25.5,
-     "brier": 0.1955,
-     "brier_base": 0.197,
-     "skill": 0.0075,
+     "hit": 72.6,
+     "base_hit": 73.1,
+     "win_rate": 26.9,
+     "brier": 0.2117,
+     "brier_base": 0.212,
+     "skill": 0.0014,
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 5959,
-       "pred": 25.2,
-       "actual": 22.2
+       "n": 1358,
+       "pred": 28.0,
+       "actual": 21.6
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 7133,
-       "pred": 34.7,
-       "actual": 26.2
+       "n": 18347,
+       "pred": 36.1,
+       "actual": 25.1
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 2198,
-       "pred": 43.1,
-       "actual": 32.2
+       "n": 15688,
+       "pred": 43.6,
+       "actual": 29.3
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 57,
+       "n": 491,
        "pred": 51.6,
-       "actual": 26.3
+       "actual": 32.6
       }
      ]
     }
    },
    "vs_v21": {
     "ridge": {
-     "diff": -0.0002,
-     "t": -0.01
+     "diff": 0.0819,
+     "t": 3.36
     },
     "logit": {
-     "diff": -0.0245,
-     "t": -1.16
+     "diff": 0.0517,
+     "t": 3.2
     },
     "lgbm": {
-     "diff": -0.0004,
-     "t": -0.02
+     "diff": 0.0797,
+     "t": 3.51
     },
     "ens": {
-     "diff": 0.0146,
-     "t": 1.14
+     "diff": 0.0621,
+     "t": 5.16
     }
    },
    "sufficiency": {
     "horizon": 60,
-    "test_trading_days": 640,
-    "independent_periods": 10.7,
-    "ic_sd": 0.0913,
-    "min_detectable_ic": 0.0783,
-    "periods_needed_for_0.03": 73,
-    "years_needed_for_0.03": 17.9,
+    "test_trading_days": 1560,
+    "independent_periods": 26.0,
+    "ic_sd": 0.1078,
+    "min_detectable_ic": 0.0592,
+    "periods_needed_for_0.03": 102,
+    "years_needed_for_0.03": 25.0,
     "enough": false
    },
-   "rows": 36369
+   "rows": 113778
   }
  },
  "main": 20,
  "verdict": "不足",
- "seconds": 1370,
+ "seconds": 1826,
  "errors": {
   "horizon": 20,
   "method": "分組內的 Rank IC（各測試日分別計算再平均，Newey-West t）與模型前 20% 相對同組平均的超額報酬",
@@ -1091,505 +1053,543 @@
    {
     "dim": "市場環境",
     "bucket": "多頭（加權指數在半年線上）",
-    "rows": 35829,
-    "dates": 64,
+    "rows": 90254,
+    "dates": 122,
     "v21": {
-     "ic": 0.0525,
-     "t": 2.74,
-     "n": 64,
-     "top_vs_bucket": 1.3
+     "ic": 0.0359,
+     "t": 2.69,
+     "n": 122,
+     "top_vs_bucket": 0.73
     },
     "lgbm": {
-     "ic": 0.0509,
-     "t": 3.84,
-     "n": 64,
-     "top_vs_bucket": 0.36
+     "ic": 0.1027,
+     "t": 8.88,
+     "n": 122,
+     "top_vs_bucket": 0.57
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "市場環境",
     "bucket": "空頭（加權指數在半年線下）",
-    "rows": 4571,
-    "dates": 8,
+    "rows": 28829,
+    "dates": 42,
     "v21": {
-     "ic": 0.0214,
-     "t": 0.71,
-     "n": 8,
-     "top_vs_bucket": 0.25
+     "ic": 0.0098,
+     "t": 0.56,
+     "n": 42,
+     "top_vs_bucket": 0.27
     },
     "lgbm": {
-     "ic": 0.0586,
-     "t": 2.15,
-     "n": 8,
-     "top_vs_bucket": 0.27
+     "ic": 0.0793,
+     "t": 3.95,
+     "n": 42,
+     "top_vs_bucket": 0.49
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "波動",
     "bucket": "最低 20%",
-    "rows": 8107,
-    "dates": 72,
+    "rows": 23881,
+    "dates": 164,
     "v21": {
-     "ic": 0.1023,
-     "t": 4.06,
-     "n": 72,
+     "ic": 0.0667,
+     "t": 5.35,
+     "n": 164,
+     "top_vs_bucket": 0.62
+    },
+    "lgbm": {
+     "ic": 0.1137,
+     "t": 9.68,
+     "n": 164,
      "top_vs_bucket": 0.76
     },
-    "lgbm": {
-     "ic": 0.127,
-     "t": 6.17,
-     "n": 72,
-     "top_vs_bucket": 1.16
-    },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "波動",
     "bucket": "中低",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23784,
+    "dates": 164,
     "v21": {
-     "ic": 0.1018,
-     "t": 4.75,
-     "n": 72,
-     "top_vs_bucket": 1.13
+     "ic": 0.0563,
+     "t": 4.52,
+     "n": 164,
+     "top_vs_bucket": 0.57
     },
     "lgbm": {
-     "ic": 0.0649,
-     "t": 3.56,
-     "n": 72,
-     "top_vs_bucket": 0.81
+     "ic": 0.0775,
+     "t": 7.59,
+     "n": 164,
+     "top_vs_bucket": 0.6
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "波動",
     "bucket": "中間",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23787,
+    "dates": 164,
     "v21": {
-     "ic": 0.0265,
-     "t": 1.24,
-     "n": 72,
-     "top_vs_bucket": 0.42
+     "ic": 0.0312,
+     "t": 2.44,
+     "n": 164,
+     "top_vs_bucket": 0.48
     },
     "lgbm": {
-     "ic": 0.0445,
-     "t": 2.47,
-     "n": 72,
-     "top_vs_bucket": 0.39
-    },
-    "evidence": "IC 估計可靠（|t|≥2）"
-   },
-   {
-    "dim": "波動",
-    "bucket": "中高",
-    "rows": 8066,
-    "dates": 72,
-    "v21": {
-     "ic": 0.023,
-     "t": 1.16,
-     "n": 72,
-     "top_vs_bucket": 1.11
-    },
-    "lgbm": {
-     "ic": 0.0511,
-     "t": 2.74,
-     "n": 72,
-     "top_vs_bucket": 0.74
-    },
-    "evidence": "IC 估計可靠（|t|≥2）"
-   },
-   {
-    "dim": "波動",
-    "bucket": "最高 20%",
-    "rows": 8095,
-    "dates": 72,
-    "v21": {
-     "ic": 0.0243,
-     "t": 0.86,
-     "n": 72,
-     "top_vs_bucket": 0.91
-    },
-    "lgbm": {
-     "ic": 0.0299,
-     "t": 1.19,
-     "n": 72,
-     "top_vs_bucket": 1.25
-    },
-    "evidence": "樣本不足，僅供觀察"
-   },
-   {
-    "dim": "近 3 月漲幅",
-    "bucket": "最低 20%",
-    "rows": 8107,
-    "dates": 72,
-    "v21": {
-     "ic": 0.0496,
-     "t": 1.77,
-     "n": 72,
-     "top_vs_bucket": 0.68
-    },
-    "lgbm": {
-     "ic": 0.0378,
-     "t": 1.74,
-     "n": 72,
-     "top_vs_bucket": 0.21
-    },
-    "evidence": "樣本不足，僅供觀察"
-   },
-   {
-    "dim": "近 3 月漲幅",
-    "bucket": "中低",
-    "rows": 8066,
-    "dates": 72,
-    "v21": {
-     "ic": 0.0646,
-     "t": 2.79,
-     "n": 72,
-     "top_vs_bucket": 0.86
-    },
-    "lgbm": {
-     "ic": 0.0363,
-     "t": 1.61,
-     "n": 72,
-     "top_vs_bucket": -0.28
-    },
-    "evidence": "樣本不足，僅供觀察"
-   },
-   {
-    "dim": "近 3 月漲幅",
-    "bucket": "中間",
-    "rows": 8066,
-    "dates": 72,
-    "v21": {
-     "ic": 0.0644,
-     "t": 3.15,
-     "n": 72,
-     "top_vs_bucket": 0.61
-    },
-    "lgbm": {
-     "ic": 0.0727,
-     "t": 3.82,
-     "n": 72,
-     "top_vs_bucket": 0.34
-    },
-    "evidence": "IC 估計可靠（|t|≥2）"
-   },
-   {
-    "dim": "近 3 月漲幅",
-    "bucket": "中高",
-    "rows": 8066,
-    "dates": 72,
-    "v21": {
-     "ic": 0.0353,
-     "t": 2.12,
-     "n": 72,
-     "top_vs_bucket": 0.27
-    },
-    "lgbm": {
-     "ic": 0.0652,
-     "t": 3.65,
-     "n": 72,
+     "ic": 0.0806,
+     "t": 7.45,
+     "n": 164,
      "top_vs_bucket": 0.5
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
-    "dim": "近 3 月漲幅",
-    "bucket": "最高 20%",
-    "rows": 8095,
-    "dates": 72,
+    "dim": "波動",
+    "bucket": "中高",
+    "rows": 23784,
+    "dates": 164,
     "v21": {
-     "ic": 0.0259,
-     "t": 1.42,
-     "n": 72,
-     "top_vs_bucket": 0.58
+     "ic": 0.0262,
+     "t": 1.92,
+     "n": 164,
+     "top_vs_bucket": 0.44
     },
     "lgbm": {
-     "ic": 0.0573,
-     "t": 2.63,
-     "n": 72,
-     "top_vs_bucket": 0.59
+     "ic": 0.0667,
+     "t": 7.75,
+     "n": 164,
+     "top_vs_bucket": 0.7
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "波動",
+    "bucket": "最高 20%",
+    "rows": 23847,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0292,
+     "t": 1.75,
+     "n": 164,
+     "top_vs_bucket": 1.08
+    },
+    "lgbm": {
+     "ic": 0.0881,
+     "t": 7.81,
+     "n": 164,
+     "top_vs_bucket": 1.14
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "近 3 月漲幅",
+    "bucket": "最低 20%",
+    "rows": 23881,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0098,
+     "t": 0.65,
+     "n": 164,
+     "top_vs_bucket": 0.1
+    },
+    "lgbm": {
+     "ic": 0.0918,
+     "t": 7.6,
+     "n": 164,
+     "top_vs_bucket": 0.92
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "近 3 月漲幅",
+    "bucket": "中低",
+    "rows": 23784,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0363,
+     "t": 2.82,
+     "n": 164,
+     "top_vs_bucket": 0.35
+    },
+    "lgbm": {
+     "ic": 0.1035,
+     "t": 7.46,
+     "n": 164,
+     "top_vs_bucket": 0.66
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "近 3 月漲幅",
+    "bucket": "中間",
+    "rows": 23787,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0433,
+     "t": 3.2,
+     "n": 164,
+     "top_vs_bucket": 0.37
+    },
+    "lgbm": {
+     "ic": 0.1013,
+     "t": 7.31,
+     "n": 164,
+     "top_vs_bucket": 0.6
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "近 3 月漲幅",
+    "bucket": "中高",
+    "rows": 23784,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0537,
+     "t": 4.89,
+     "n": 164,
+     "top_vs_bucket": 0.42
+    },
+    "lgbm": {
+     "ic": 0.1121,
+     "t": 8.37,
+     "n": 164,
+     "top_vs_bucket": 0.72
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "近 3 月漲幅",
+    "bucket": "最高 20%",
+    "rows": 23847,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0345,
+     "t": 2.67,
+     "n": 164,
+     "top_vs_bucket": 0.7
+    },
+    "lgbm": {
+     "ic": 0.0786,
+     "t": 7.29,
+     "n": 164,
+     "top_vs_bucket": 0.57
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "估值（盈餘殖利率）",
     "bucket": "最貴 20%",
-    "rows": 8107,
-    "dates": 72,
+    "rows": 23881,
+    "dates": 164,
     "v21": {
-     "ic": 0.047,
-     "t": 1.42,
-     "n": 72,
-     "top_vs_bucket": 1.43
+     "ic": 0.018,
+     "t": 1.1,
+     "n": 164,
+     "top_vs_bucket": 1.39
     },
     "lgbm": {
-     "ic": 0.0183,
-     "t": 0.73,
-     "n": 72,
-     "top_vs_bucket": 0.94
+     "ic": 0.0776,
+     "t": 6.83,
+     "n": 164,
+     "top_vs_bucket": 1.0
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "估值（盈餘殖利率）",
     "bucket": "偏貴",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23784,
+    "dates": 164,
     "v21": {
-     "ic": 0.032,
-     "t": 1.09,
-     "n": 72,
-     "top_vs_bucket": 1.94
+     "ic": 0.0085,
+     "t": 0.52,
+     "n": 164,
+     "top_vs_bucket": 1.02
     },
     "lgbm": {
-     "ic": 0.0315,
-     "t": 1.66,
-     "n": 72,
-     "top_vs_bucket": 1.07
+     "ic": 0.0717,
+     "t": 7.02,
+     "n": 164,
+     "top_vs_bucket": 0.6
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "估值（盈餘殖利率）",
     "bucket": "中間",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23787,
+    "dates": 164,
     "v21": {
      "ic": 0.006,
-     "t": 0.27,
-     "n": 72,
-     "top_vs_bucket": 0.54
+     "t": 0.38,
+     "n": 164,
+     "top_vs_bucket": 0.46
     },
     "lgbm": {
-     "ic": 0.0401,
-     "t": 2.49,
-     "n": 72,
-     "top_vs_bucket": -0.0
+     "ic": 0.0873,
+     "t": 6.86,
+     "n": 164,
+     "top_vs_bucket": 0.54
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "估值（盈餘殖利率）",
     "bucket": "偏便宜",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23784,
+    "dates": 164,
     "v21": {
-     "ic": 0.0301,
-     "t": 1.27,
-     "n": 72,
-     "top_vs_bucket": 0.94
+     "ic": 0.0124,
+     "t": 1.01,
+     "n": 164,
+     "top_vs_bucket": 0.61
     },
     "lgbm": {
-     "ic": 0.0722,
-     "t": 3.53,
-     "n": 72,
-     "top_vs_bucket": 0.89
+     "ic": 0.0978,
+     "t": 7.33,
+     "n": 164,
+     "top_vs_bucket": 0.6
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "估值（盈餘殖利率）",
     "bucket": "最便宜 20%",
-    "rows": 8095,
-    "dates": 72,
+    "rows": 23847,
+    "dates": 164,
     "v21": {
-     "ic": 0.0799,
-     "t": 4.53,
-     "n": 72,
-     "top_vs_bucket": 0.63
+     "ic": 0.015,
+     "t": 1.15,
+     "n": 164,
+     "top_vs_bucket": 0.16
     },
     "lgbm": {
-     "ic": 0.0726,
-     "t": 3.86,
-     "n": 72,
-     "top_vs_bucket": 0.51
+     "ic": 0.1224,
+     "t": 9.0,
+     "n": 164,
+     "top_vs_bucket": 0.73
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "規模",
     "bucket": "最小 20%",
-    "rows": 8107,
-    "dates": 72,
+    "rows": 23881,
+    "dates": 164,
     "v21": {
-     "ic": 0.0054,
-     "t": 0.25,
-     "n": 72,
-     "top_vs_bucket": 0.05
+     "ic": 0.0194,
+     "t": 1.72,
+     "n": 164,
+     "top_vs_bucket": 0.22
     },
     "lgbm": {
-     "ic": 0.0488,
-     "t": 3.57,
-     "n": 72,
-     "top_vs_bucket": -0.12
+     "ic": 0.1059,
+     "t": 8.87,
+     "n": 164,
+     "top_vs_bucket": 0.51
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "規模",
     "bucket": "偏小",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23784,
+    "dates": 164,
     "v21": {
-     "ic": 0.0557,
-     "t": 2.27,
-     "n": 72,
-     "top_vs_bucket": 0.81
+     "ic": 0.0257,
+     "t": 2.13,
+     "n": 164,
+     "top_vs_bucket": 0.33
     },
     "lgbm": {
-     "ic": 0.0511,
-     "t": 2.51,
-     "n": 72,
-     "top_vs_bucket": 0.4
+     "ic": 0.0973,
+     "t": 7.45,
+     "n": 164,
+     "top_vs_bucket": 0.55
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "規模",
     "bucket": "中間",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23787,
+    "dates": 164,
     "v21": {
-     "ic": 0.0279,
-     "t": 1.47,
-     "n": 72,
-     "top_vs_bucket": 1.23
+     "ic": 0.0116,
+     "t": 0.88,
+     "n": 164,
+     "top_vs_bucket": 0.32
     },
     "lgbm": {
-     "ic": 0.0314,
-     "t": 1.47,
-     "n": 72,
-     "top_vs_bucket": 0.19
+     "ic": 0.1013,
+     "t": 6.86,
+     "n": 164,
+     "top_vs_bucket": 0.65
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "規模",
     "bucket": "偏大",
-    "rows": 8066,
-    "dates": 72,
+    "rows": 23784,
+    "dates": 164,
     "v21": {
-     "ic": 0.059,
-     "t": 2.51,
-     "n": 72,
-     "top_vs_bucket": 1.66
+     "ic": 0.0425,
+     "t": 2.84,
+     "n": 164,
+     "top_vs_bucket": 0.95
     },
     "lgbm": {
-     "ic": 0.0343,
-     "t": 1.63,
-     "n": 72,
-     "top_vs_bucket": -0.08
+     "ic": 0.0801,
+     "t": 6.92,
+     "n": 164,
+     "top_vs_bucket": 0.77
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "規模",
     "bucket": "最大 20%",
-    "rows": 8095,
-    "dates": 72,
+    "rows": 23847,
+    "dates": 164,
     "v21": {
-     "ic": 0.0874,
-     "t": 2.74,
-     "n": 72,
-     "top_vs_bucket": 1.43
+     "ic": 0.04,
+     "t": 2.08,
+     "n": 164,
+     "top_vs_bucket": 1.05
     },
     "lgbm": {
-     "ic": 0.0648,
-     "t": 2.89,
-     "n": 72,
-     "top_vs_bucket": 0.95
+     "ic": 0.0619,
+     "t": 4.32,
+     "n": 164,
+     "top_vs_bucket": 0.3
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電子工業",
-    "rows": 7136,
-    "dates": 72,
+    "rows": 19332,
+    "dates": 164,
     "v21": {
-     "ic": 0.0907,
-     "t": 3.78,
-     "n": 72,
-     "top_vs_bucket": 1.14
+     "ic": 0.0537,
+     "t": 3.1,
+     "n": 164,
+     "top_vs_bucket": 0.77
     },
     "lgbm": {
-     "ic": 0.0468,
-     "t": 2.3,
-     "n": 72,
-     "top_vs_bucket": 0.54
+     "ic": 0.0883,
+     "t": 6.9,
+     "n": 164,
+     "top_vs_bucket": 0.6
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電子零組件業",
-    "rows": 5293,
-    "dates": 72,
+    "rows": 14715,
+    "dates": 164,
     "v21": {
-     "ic": 0.0406,
-     "t": 1.79,
-     "n": 72,
-     "top_vs_bucket": 0.57
+     "ic": 0.0332,
+     "t": 2.08,
+     "n": 164,
+     "top_vs_bucket": 0.29
     },
     "lgbm": {
-     "ic": 0.0472,
-     "t": 1.99,
-     "n": 72,
-     "top_vs_bucket": 0.58
+     "ic": 0.0872,
+     "t": 5.52,
+     "n": 164,
+     "top_vs_bucket": 0.48
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "半導體業",
-    "rows": 3730,
-    "dates": 72,
+    "rows": 10175,
+    "dates": 164,
     "v21": {
-     "ic": 0.0194,
-     "t": 0.69,
-     "n": 64,
-     "top_vs_bucket": 0.75
+     "ic": 0.0433,
+     "t": 2.46,
+     "n": 164,
+     "top_vs_bucket": 0.87
     },
     "lgbm": {
-     "ic": 0.0428,
-     "t": 1.67,
-     "n": 64,
-     "top_vs_bucket": 0.57
+     "ic": 0.075,
+     "t": 4.44,
+     "n": 164,
+     "top_vs_bucket": 0.83
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電腦及週邊設備業",
-    "rows": 3143,
-    "dates": 72,
+    "rows": 8797,
+    "dates": 164,
     "v21": {
-     "ic": 0.0395,
-     "t": 1.56,
-     "n": 46,
-     "top_vs_bucket": 0.82
+     "ic": 0.0102,
+     "t": 0.69,
+     "n": 164,
+     "top_vs_bucket": 0.34
     },
     "lgbm": {
-     "ic": 0.0452,
-     "t": 1.92,
-     "n": 46,
-     "top_vs_bucket": 1.03
+     "ic": 0.0863,
+     "t": 4.95,
+     "n": 164,
+     "top_vs_bucket": 0.56
     },
-    "evidence": "樣本不足，僅供觀察"
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "產業",
+    "bucket": "電機機械",
+    "rows": 5171,
+    "dates": 164,
+    "v21": {
+     "ic": -0.0031,
+     "t": -0.15,
+     "n": 95,
+     "top_vs_bucket": 0.33
+    },
+    "lgbm": {
+     "ic": 0.1083,
+     "t": 4.66,
+     "n": 95,
+     "top_vs_bucket": 0.32
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "產業",
+    "bucket": "生技醫療業",
+    "rows": 5166,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0196,
+     "t": 0.8,
+     "n": 87,
+     "top_vs_bucket": 0.19
+    },
+    "lgbm": {
+     "ic": 0.071,
+     "t": 2.77,
+     "n": 87,
+     "top_vs_bucket": -0.22
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
    }
   ],
   "weakest": [
-   "估值（盈餘殖利率）・最貴 20%",
-   "波動・最高 20%",
-   "規模・中間",
+   "規模・最大 20%",
+   "波動・中高",
+   "產業・生技醫療業",
    "估值（盈餘殖利率）・偏貴",
-   "規模・偏大"
+   "產業・半導體業"
   ]
  },
- "registered": "2026-10-17-7e79ede630"
+ "registered": "2026-10-22-4c675d40be"
 }

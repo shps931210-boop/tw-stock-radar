@@ -10,7 +10,7 @@
   "name": "LightGBM（每週重新訓練）",
   "role": "影子模式，不影響排行榜"
  },
- "active": "2026-10-17-7e79ede630",
+ "active": "2026-10-22-4c675d40be",
  "versions": [
   {
    "version": "2026-10-17-7e79ede630",
@@ -178,6 +178,185 @@
      "avg_value_20": 3.3
     }
    },
+   "status": "previous"
+  },
+  {
+   "version": "2026-10-22-4c675d40be",
+   "model_hash": "4c675d40be",
+   "trained_at": "2026-10-22T18:31:29",
+   "method": 2,
+   "feature_version": "45fa4f39",
+   "seconds": 7,
+   "train_period": {
+    "5": {
+     "from": "2019-08-01",
+     "through": "2026-10-14",
+     "rows": 125234,
+     "dates": 175
+    },
+    "20": {
+     "from": "2019-08-01",
+     "through": "2026-09-11",
+     "rows": 124474,
+     "dates": 174
+    },
+    "60": {
+     "from": "2019-08-01",
+     "through": "2026-07-17",
+     "rows": 121464,
+     "dates": 170
+    }
+   },
+   "validation": {
+    "method": "walk-forward（每個測試日只用標籤已到期的資料訓練）",
+    "from": "2019-12-26",
+    "to": "2026-09-11",
+    "holdout_from": "2024-09-04",
+    "metrics": {
+     "v21": {
+      "ic": 0.0292,
+      "ic_t": 2.66,
+      "top_excess": -0.23,
+      "top_vs_all": 0.46
+     },
+     "ridge": {
+      "ic": 0.0947,
+      "ic_t": 8.43,
+      "top_excess": 0.43,
+      "top_vs_all": 1.13
+     },
+     "lgbm": {
+      "ic": 0.0967,
+      "ic_t": 9.35,
+      "top_excess": 0.03,
+      "top_vs_all": 0.73
+     },
+     "ens": {
+      "ic": 0.0804,
+      "ic_t": 8.1,
+      "top_excess": 0.1,
+      "top_vs_all": 0.8
+     }
+    },
+    "holdout": {
+     "v21": 0.034,
+     "ridge": 0.0942,
+     "lgbm": 0.1067,
+     "ens": 0.0887
+    },
+    "vs_v21": {
+     "diff": 0.0675,
+     "t": 4.62
+    },
+    "vs_v21_ens": {
+     "diff": 0.0512,
+     "t": 6.73
+    }
+   },
+   "importance": {
+    "5": {
+     "score_quality": 0.89,
+     "score_growth": 1.64,
+     "score_value": 1.67,
+     "score_momentum": 2.65,
+     "score_trend": 10.3,
+     "mom_12_1": 0.56,
+     "ret_1m": 8.1,
+     "ret_3m": 1.71,
+     "rs_rank": 0.08,
+     "vol_1y": 3.58,
+     "downside_vol": 2.27,
+     "beta": 7.48,
+     "mdd_1y": 2.38,
+     "dist_ma60": 4.35,
+     "ma60_slope_20": 2.77,
+     "rsi": 3.3,
+     "vol_ratio": 5.07,
+     "rev_yoy": 5.54,
+     "rev_yoy_3m": 2.15,
+     "eps_q_yoy": 2.47,
+     "op_q_yoy": 2.64,
+     "roe": 2.01,
+     "gross_margin": 2.41,
+     "op_margin": 2.1,
+     "debt_ratio": 1.77,
+     "earnings_yield": 1.73,
+     "book_to_price": 2.78,
+     "dy": 5.05,
+     "fcf_yield": 2.17,
+     "fscore": 2.62,
+     "market_cap": 3.33,
+     "avg_value_20": 2.43
+    },
+    "20": {
+     "score_quality": 1.25,
+     "score_growth": 2.32,
+     "score_value": 1.36,
+     "score_momentum": 2.39,
+     "score_trend": 8.66,
+     "mom_12_1": 0.62,
+     "ret_1m": 4.61,
+     "ret_3m": 1.22,
+     "rs_rank": 0.03,
+     "vol_1y": 5.87,
+     "downside_vol": 2.07,
+     "beta": 7.82,
+     "mdd_1y": 2.99,
+     "dist_ma60": 3.28,
+     "ma60_slope_20": 1.9,
+     "rsi": 2.47,
+     "vol_ratio": 2.25,
+     "rev_yoy": 2.89,
+     "rev_yoy_3m": 2.51,
+     "eps_q_yoy": 2.57,
+     "op_q_yoy": 2.63,
+     "roe": 3.78,
+     "gross_margin": 2.5,
+     "op_margin": 2.07,
+     "debt_ratio": 1.85,
+     "earnings_yield": 1.96,
+     "book_to_price": 2.73,
+     "dy": 11.58,
+     "fcf_yield": 2.95,
+     "fscore": 2.13,
+     "market_cap": 4.18,
+     "avg_value_20": 2.58
+    },
+    "60": {
+     "score_quality": 1.85,
+     "score_growth": 1.81,
+     "score_value": 1.52,
+     "score_momentum": 1.81,
+     "score_trend": 4.53,
+     "mom_12_1": 0.63,
+     "ret_1m": 0.93,
+     "ret_3m": 0.52,
+     "rs_rank": 0.03,
+     "vol_1y": 7.43,
+     "downside_vol": 2.6,
+     "beta": 7.86,
+     "mdd_1y": 3.28,
+     "dist_ma60": 0.85,
+     "ma60_slope_20": 1.51,
+     "rsi": 0.31,
+     "vol_ratio": 0.43,
+     "rev_yoy": 4.31,
+     "rev_yoy_3m": 1.43,
+     "eps_q_yoy": 3.97,
+     "op_q_yoy": 4.18,
+     "roe": 4.94,
+     "gross_margin": 3.68,
+     "op_margin": 2.67,
+     "debt_ratio": 3.49,
+     "earnings_yield": 1.92,
+     "book_to_price": 3.1,
+     "dy": 13.02,
+     "fcf_yield": 4.35,
+     "fscore": 3.56,
+     "market_cap": 5.31,
+     "avg_value_20": 2.16
+    }
+   },
    "status": "active"
   }
  ],
@@ -191,6 +370,11 @@
    "at": "2026-10-17T17:49:02",
    "kind": "unchanged",
    "msg": "重新訓練的模型和上線版本相同（7e79ede630），不換版"
+  },
+  {
+   "at": "2026-10-22T18:31:36",
+   "kind": "activated",
+   "msg": "2026-10-22-4c675d40be 通過檢查並上線為候選模型（取代 2026-10-17-7e79ede630）"
   }
  ]
 }
