@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "method": 2,
- "generated_at": "2026-10-22T18:18:05",
+ "generated_at": "2026-10-24T13:52:03",
  "shadow": true,
  "start": "2019-08-01",
  "end": "2026-10-14",
@@ -1045,7 +1045,7 @@
  },
  "main": 20,
  "verdict": "不足",
- "seconds": 1826,
+ "seconds": 3708,
  "errors": {
   "horizon": 20,
   "method": "分組內的 Rank IC（各測試日分別計算再平均，Newey-West t）與模型前 20% 相對同組平均的超額報酬",
@@ -1471,76 +1471,76 @@
    {
     "dim": "產業",
     "bucket": "電子工業",
-    "rows": 19332,
+    "rows": 19262,
     "dates": 164,
     "v21": {
-     "ic": 0.0537,
-     "t": 3.1,
+     "ic": 0.0603,
+     "t": 3.69,
      "n": 164,
-     "top_vs_bucket": 0.77
+     "top_vs_bucket": 1.01
     },
     "lgbm": {
-     "ic": 0.0883,
-     "t": 6.9,
+     "ic": 0.0879,
+     "t": 6.5,
      "n": 164,
-     "top_vs_bucket": 0.6
+     "top_vs_bucket": 0.72
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電子零組件業",
-    "rows": 14715,
+    "rows": 14675,
     "dates": 164,
     "v21": {
-     "ic": 0.0332,
-     "t": 2.08,
+     "ic": 0.029,
+     "t": 1.79,
      "n": 164,
-     "top_vs_bucket": 0.29
+     "top_vs_bucket": 0.21
     },
     "lgbm": {
-     "ic": 0.0872,
-     "t": 5.52,
+     "ic": 0.0867,
+     "t": 5.46,
      "n": 164,
-     "top_vs_bucket": 0.48
+     "top_vs_bucket": 0.41
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "半導體業",
-    "rows": 10175,
+    "rows": 10101,
     "dates": 164,
     "v21": {
-     "ic": 0.0433,
-     "t": 2.46,
+     "ic": 0.0418,
+     "t": 2.27,
      "n": 164,
-     "top_vs_bucket": 0.87
+     "top_vs_bucket": 0.61
     },
     "lgbm": {
-     "ic": 0.075,
-     "t": 4.44,
+     "ic": 0.0776,
+     "t": 4.61,
      "n": 164,
-     "top_vs_bucket": 0.83
+     "top_vs_bucket": 0.71
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電腦及週邊設備業",
-    "rows": 8797,
+    "rows": 8774,
     "dates": 164,
     "v21": {
-     "ic": 0.0102,
-     "t": 0.69,
+     "ic": 0.0065,
+     "t": 0.42,
      "n": 164,
-     "top_vs_bucket": 0.34
+     "top_vs_bucket": 0.43
     },
     "lgbm": {
-     "ic": 0.0863,
+     "ic": 0.0842,
      "t": 4.95,
      "n": 164,
-     "top_vs_bucket": 0.56
+     "top_vs_bucket": 0.52
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1566,19 +1566,19 @@
    {
     "dim": "產業",
     "bucket": "生技醫療業",
-    "rows": 5166,
+    "rows": 5113,
     "dates": 164,
     "v21": {
-     "ic": 0.0196,
-     "t": 0.8,
-     "n": 87,
-     "top_vs_bucket": 0.19
+     "ic": 0.0303,
+     "t": 1.24,
+     "n": 84,
+     "top_vs_bucket": 0.04
     },
     "lgbm": {
-     "ic": 0.071,
-     "t": 2.77,
-     "n": 87,
-     "top_vs_bucket": -0.22
+     "ic": 0.0838,
+     "t": 2.97,
+     "n": 84,
+     "top_vs_bucket": -0.01
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    }
@@ -1586,9 +1586,9 @@
   "weakest": [
    "規模・最大 20%",
    "波動・中高",
-   "產業・生技醫療業",
    "估值（盈餘殖利率）・偏貴",
-   "產業・半導體業"
+   "波動・中低",
+   "估值（盈餘殖利率）・最貴 20%"
   ]
  },
  "registered": "2026-10-22-4c675d40be"
