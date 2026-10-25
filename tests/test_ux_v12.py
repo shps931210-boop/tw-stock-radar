@@ -80,3 +80,25 @@ class HomeV16(unittest.TestCase):
         for x in ["a.score", "/100", "AI 評分", "rating(s)", "riskLevel(s)", "查看分析"]:
             self.assertIn(x, row)
         self.assertNotIn("機率", row)   # 分數不是上漲機率
+
+    def test_pick_row_can_add_to_watchlist(self):
+        self.assertIn("starBtn(s.stock_id)", fn("pickRow"))
+        self.assertIn("e.preventDefault(); toggleWatch", HTML)    # 按星號不會跳進個股頁
+
+    def test_watch_row_shows_price_score_risk_rank_move(self):
+        w = fn("homeWatch")
+        for x in ["s.close", "s.chg_pct", "a.score", "AI 評分", "riskLevel(s)", "rankMove(s)", "留意："]:
+            self.assertIn(x, w)
+
+    def test_market_card_says_data_time_not_realtime(self):
+        home = fn("pageHome")
+        self.assertIn("網站更新", home)
+        self.assertIn("非即時行情", home)
+
+    def test_home_regression_e2e_exists(self):
+        e2e = (Path(__file__).parent / "e2e" / "home.mjs").read_text("utf-8")
+        for x in ["大盤資訊清楚可見", "AI 數字評分清楚可見", "股票搜尋正常", "AI 三種策略可以切換", "自選股可以加入並顯示",
+                  "漲跌停資訊正常", "個股分析正常", "AI 績效資料正常", "版面沒有橫向超出", "資料時間與盤後狀態正確"]:
+            self.assertIn(x, e2e)
+        wf = (Path(__file__).parent.parent / ".github" / "workflows" / "e2e.yml").read_text("utf-8")
+        self.assertIn("tests/e2e/home.mjs", wf)

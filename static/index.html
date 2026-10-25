@@ -498,7 +498,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 .qj-next { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .stabs .btn.ghost.on { background: var(--accent); color: var(--panel); }
 .evl { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; } .evl > div { border-bottom: 1px solid var(--line); padding: 4px 0 6px; min-width: 0; }
-.pk2 { grid-template-columns: auto minmax(0, 1fr) 76px; align-items: center; }
+.pk2 { grid-template-columns: auto minmax(0, 1fr) 76px; align-items: center; } .pkw { grid-template-columns: minmax(0, 1fr) 76px; } .pk2 .pk-m > .star { display: inline-flex; font-size: 16px; padding: 0 4px; min-height: 0; min-width: 0; height: auto; vertical-align: -1px; }
 .pk2 .pk-m > * { display: block; } .pk2 .pk-m > b, .pk2 .pk-m > .faint { display: inline; }
 .pk-px { font-size: 14px; margin-top: 1px; } .pk-why { color: var(--muted); margin: 2px 0 4px; }
 .pk-tags { display: flex !important; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
@@ -512,7 +512,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 .mk-bl { display: flex; justify-content: space-between; font-size: 13px; margin-top: 4px; } .mk-bl .up { color: var(--up); } .mk-bl .down { color: var(--down); }
 .mk-sub { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-top: 8px; } .mk-sub .up { color: var(--up); } .mk-sub .down { color: var(--down); }
 @media (max-width: 560px) { .mk-top { grid-template-columns: 1fr 1fr; } .mk-ix:first-child { grid-column: 1 / -1; } .mk-ix:first-child b { font-size: 30px; } }
-.runs { display: flex; flex-wrap: wrap; gap: 3px; } .runs i { width: 12px; height: 12px; border-radius: 3px; } .runs .ok { background: var(--accent-2); opacity: .7; } .runs .bad { background: var(--warn); }
+.runs { display: flex; flex-wrap: wrap; gap: 3px; } .runs i { width: 12px; height: 12px; border-radius: 3px; } .runs .ok { background: var(--accent-2); opacity: .7; } .runs .bad { background: var(--warn); } .runs .part { background: var(--warn); opacity: .45; }
 .gch { width: 100%; min-width: 420px; height: auto; display: block; } .gch .gl { stroke: var(--line); } .gch .zl { stroke: var(--muted); stroke-dasharray: 3 3; }
 .gch .ax { fill: var(--muted); font-size: 11px; } .gch .ca { stroke: var(--accent); stroke-width: 2; } .gch .cb { stroke: var(--accent-2); stroke-width: 2; }
 .lg-a { color: var(--accent); } .lg-b { color: var(--accent-2); }
@@ -807,7 +807,8 @@ const starBtn = (id) => `<button class="icon-btn star ${watch()[id] ? "on" : ""}
 document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-star]");
   if (!b) return;
-  e.stopPropagation(); toggleWatch(b.dataset.star);
+  e.stopPropagation(); e.preventDefault(); toggleWatch(b.dataset.star);
+  if ($("#hwatch")) $("#hwatch").outerHTML = homeWatch();   // 首頁的自選股區塊立刻更新
   const on = !!watch()[b.dataset.star];
   $$(`[data-star="${b.dataset.star}"]`).forEach((x) => { x.classList.toggle("on", on); x.textContent = x.dataset.txt ? (on ? "★ 已在自選股" : "☆ 加入自選股") : on ? "★" : "☆"; });
 }, true);
@@ -1054,7 +1055,7 @@ function riskLevel(s) {
 function pickRow(s, k, raw) {
   const a = s.ai.modes[k], R = raw ? null : recOf(s, k), g = rating(s), rl = riskLevel(s), sc = s.complete ? a.score : null;
   return `<a class="pk pk2" href="#/stock/${esc(s.stock_id)}"><span class="pk-n num">${R?.rank || a.rank}</span>
-    <span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span>
+    <span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span> ${starBtn(s.stock_id)}
       <span class="pk-px num">${s.close != null ? fmtNum(s.close, s.close < 50 ? 2 : 1) : "—"} <span class="${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span></span>
       <span class="small pk-why">${esc(s.ai.strengths[0] || s.ai.tag || "")}</span>
       <span class="pk-tags"><span class="pill ${g.c}">${g.t}</span><span class="pill ${rl.c}">風險 ${rl.t}</span><span class="pk-go">查看分析 ›</span></span></span>
@@ -1067,13 +1068,25 @@ function homePicks() {
     <div class="seg" id="hmode" style="margin-bottom:6px">${ks.map((x) => `<button data-k="${x}" class="${x === k ? "on" : ""}">${esc(M[x].name)}</button>`).join("")}</div>
     <div class="pks">${xs.map((s) => pickRow(s, k)).join("") || `<p class="faint small">${SNAP.rankings_blocked ? "資料不完整，暫停排名" : "目前沒有可排名的股票"}</p>`}</div></section>`;
 }
+function rankMove(s, k = "balanced") {   // 和上一個交易日比的名次變化（資料來自 prev_scores）
+  const P = SNAP.prev_scores || {}, p = P.stocks?.[s.stock_id], r = s.ai.modes[k]?.rank;
+  if (!P.date || !r) return "";
+  if (!p || !p.r?.[k]) return P.partial && r > 20 ? "" : "名次新進";
+  const d = p.r[k] - r;
+  return d === 0 ? "名次持平" : `名次${d > 0 ? "↑" : "↓"}${Math.abs(d)}`;
+}
 function homeWatch() {
   const ids = Object.keys(watch()).filter((id) => BYID[id]);
-  const row = (s) => { const g = rating(s); return `<a class="pk" href="#/stock/${esc(s.stock_id)}"><span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span>${(() => { const r = mainRisk(s, "balanced"); return r && recOf(s, "balanced")?.recommendation_eligibility !== "not_ranked" ? `<br><span class="small warnt">留意：${esc(r)}</span>` : s.ai.risks?.[0] ? `<br><span class="small warnt">留意：${esc(s.ai.risks[0])}</span>` : ""; })()}</span>
-    <span class="pk-r"><span class="num">${fmtNum(s.close, s.close < 50 ? 2 : 1)}</span><span class="num small ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span><span class="pill ${g.c}">${g.t}</span></span></a>`; };
+  const row = (s) => { const a = s.ai.modes.balanced, g = rating(s), rl = riskLevel(s), sc = s.complete ? a.score : null, mv = rankMove(s);
+    const r = mainRisk(s, "balanced") || s.ai.risks?.[0];
+    return `<a class="pk pk2 pkw" href="#/stock/${esc(s.stock_id)}"><span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span>
+      <span class="pk-px num">${s.close != null ? fmtNum(s.close, s.close < 50 ? 2 : 1) : "—"} <span class="${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span></span>
+      ${r ? `<span class="small warnt">留意：${esc(r)}</span>` : ""}
+      <span class="pk-tags"><span class="pill ${g.c}">${g.t}</span><span class="pill ${rl.c}">風險 ${rl.t}</span>${mv ? `<span class="small faint">${mv}</span>` : ""}</span></span>
+      <span class="pk-sc"><b class="num">${sc == null ? "—" : fmtNum(sc, 0)}</b><small>/100</small><span>AI 評分</span></span></a>`; };
   return `<section class="card" id="hwatch"><div class="card-h"><h2>我的自選股</h2>${ids.length ? `<a href="#/watch">全部 ${ids.length} 檔 →</a>` : ""}</div>
-    ${ids.length ? `<div class="pks">${ids.slice(0, 5).map((id) => row(BYID[id])).join("")}</div>`
-      : `<p class="muted" style="margin:0">還沒有自選股。在個股頁按 ☆ 就會出現在這裡。</p><p style="margin:8px 0 0"><a class="btn sm" href="#/search">找股票</a></p>`}</section>`;
+    ${ids.length ? `<div class="pks">${ids.slice(0, 5).map((id) => row(BYID[id])).join("")}</div><p class="small faint" style="margin:6px 0 0">自選股存在這台裝置的瀏覽器；登入後可同步到雲端。</p>`
+      : `<p class="muted" style="margin:0">還沒有自選股。在 AI 精選或個股頁按 ☆ 就會出現在這裡。</p><p style="margin:8px 0 0"><a class="btn sm" href="#/search">找股票</a></p>`}</section>`;
 }
 function homePerf(link = true) {
   const M = SNAP.ai_modes, cell = (k) => { const t = trackLine(k); return `<div class="kpi"><span>${esc(M[k]?.name || k)}</span><b style="font-size:18px">${t.main}</b><small class="faint">${t.sub}</small></div>`; };
@@ -1099,6 +1112,7 @@ function pageHome() {
       <div class="mk-br"><div class="mk-bar" role="img" aria-label="上漲 ${up} 家、下跌 ${dn} 家"><i class="u" style="width:${pct(up)}%"></i><i class="f" style="width:${(100 - pct(up) - pct(dn)).toFixed(1)}%"></i><i class="d" style="width:${pct(dn)}%"></i></div>
         <div class="mk-bl"><span>上漲 <b class="up num">${up}</b></span><span class="faint">平盤 ${tot - up - dn}</span><span>下跌 <b class="down num">${dn}</b></span></div></div>
       ${A ? `<div class="mk-sub"><span>漲停 <b class="up num">${A.limit_up}</b>／跌停 <b class="down num">${A.limit_down}</b></span><span>成交 <b class="num">${money(A.value)}</b></span></div>` : ""}
+      <p class="small faint" style="margin:6px 0 0">盤後資料・${esc(day || "—")} 收盤・網站更新 ${esc((SNAP.generated_at || "").slice(5, 16).replace("T", " "))}（非即時行情）</p>
       <p class="small" style="margin:8px 0 0"><a href="#/market">今日市場</a>・<a href="#/sectors">產業熱力圖</a></p></section>
     ${homePicks()}
     ${homeWatch()}`;
@@ -1887,8 +1901,8 @@ async function loadEvo() {
     <h3 style="margin:10px 0 6px">今天的流程</h3>
     <div class="chips">${(L.pipeline || []).map((x) => `<span class="pill ${ST[x.status]?.[0] || ""}" title="${esc(x.why || "")}">${esc(x.step)}・${ST[x.status]?.[1] || esc(x.status)}</span>`).join(" ")}</div>
     ${(V.acceptance || []).length ? `<h3 style="margin:12px 0 6px">今天的學習成果驗收</h3><div class="evl">${V.acceptance.map((a) => `<div><b>${esc(a.q)}</b> ${a.yes == null ? "" : ok(a.yes)}<br><span class="small">${esc(a.answer)}</span><br><span class="faint small">證據：${esc(a.evidence)}</span></div>`).join("")}</div>` : ""}
-    ${(S.run_status?.history || []).length ? `<h3 style="margin:12px 0 6px">最近 ${S.run_status.history.length} 次執行</h3><div class="runs">${S.run_status.history.map((r) => `<i class="${r.ok ? "ok" : "bad"}" title="${tm(r.at)} ${r.ok ? "成功" : "失敗：" + esc(r.error || "")}"></i>`).join("")}</div>
-      <p class="small faint" style="margin:4px 0 0">成功率 ${fmtNum(S.run_status.success_rate, 0)}%${Object.keys(S.run_status.fail_kinds || {}).length ? "・失敗原因：" + Object.entries(S.run_status.fail_kinds).map(([k, n]) => `${esc(k)} ${n} 次`).join("、") : ""}（左邊是最新）</p>` : ""}
+    ${(S.run_status?.history || []).length ? `<h3 style="margin:12px 0 6px">最近 ${S.run_status.history.length} 次執行</h3><div class="runs">${S.run_status.history.map((r) => `<i class="${!r.ok ? "bad" : (r.failed_steps || []).length ? "part" : "ok"}" title="${tm(r.at)} ${!r.ok ? "失敗：" + esc(r.error || "") : (r.failed_steps || []).length ? "部分步驟失敗：" + esc(r.failed_steps.join("、")) : "成功"}"></i>`).join("")}</div>
+      <p class="small faint" style="margin:4px 0 0">成功率 ${fmtNum(S.run_status.success_rate, 0)}%${Object.keys(S.run_status.fail_kinds || {}).length ? "・失敗原因：" + Object.entries(S.run_status.fail_kinds).map(([k, n]) => `${esc(k)} ${n} 次`).join("、") : ""}${S.run_status.partial_streak ? `・<span class="pill warn">連續 ${S.run_status.partial_streak} 次有步驟失敗</span>` : ""}・最後一次完整成功 ${esc(S.run_status.last_valid_report || "—")}（左邊是最新；淺色＝部分步驟失敗）</p>` : ""}
     <h3 style="margin:12px 0 6px">反省</h3>
     <div class="evl">
       <div><b>新的錯誤證據</b><br><span class="small">${esc(F.q1_new_errors?.text || "—")}${(F.q1_new_errors?.items || []).map((w) => `・${esc(w.sid)} ${pctTxt(w.excess)}`).join("")}</span></div>

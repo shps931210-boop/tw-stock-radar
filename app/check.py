@@ -38,6 +38,9 @@ def main() -> int:
         st = daily_learning.run_status()
         if st.get("alert"):
             problems.append(f"每日自主學習連續失敗 {st['fail_streak']} 次：{(st.get('last') or {}).get('error') or '原因不明'}（最近一次成功：{st.get('last_ok') or '從未'}）")
+        if st.get("partial_alert"):
+            steps = "、".join((st.get("last") or {}).get("failed_steps") or [])
+            problems.append(f"每日自主學習連續 {st['partial_streak']} 次有步驟失敗（{steps}）；最後一次完整成功：{st.get('last_valid_report') or '從未'}")
     if not s.get("history", {}).get("ready", True):
         print(f"⏳ 歷史股價回補中：{s['history']['days']}/{s['history']['need']} 天")
     for x in problems:

@@ -3,6 +3,7 @@
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 import numpy as np
@@ -276,6 +277,24 @@ class V16(unittest.TestCase):
         self.assertEqual(len(st["history"]), 3)
         self.assertEqual(st["history"][0]["at"], "c")     # 最新在前
         self.assertEqual(st["fail_kinds"], {"逾時": 1, "網路或資料來源": 1})
+
+    def test_partial_step_failures_are_alerted(self):
+        """整體跑完但有步驟失敗（Actions 仍顯示成功），連續 2 次也要警示，不能藏起來。"""
+        tmp = Path(tempfile.mkdtemp()) / "runs.json"
+        with mock.patch.dict("os.environ", {"GITHUB_RUN_ID": "1"}):
+            dl.record(True, None, "2026-10-20", 5, path=tmp)
+        with mock.patch.dict("os.environ", {"GITHUB_RUN_ID": "2"}):
+            dl.record(True, None, "2026-10-21", 5, path=tmp, failed_steps=["錯誤分析"])
+        st = dl.run_status(tmp)
+        self.assertEqual(st["partial_streak"], 1)
+        self.assertFalse(st["partial_alert"])
+        with mock.patch.dict("os.environ", {"GITHUB_RUN_ID": "3"}):
+            dl.record(True, None, "2026-10-22", 5, path=tmp, failed_steps=["錯誤分析", "模型競賽"])
+        st = dl.run_status(tmp)
+        self.assertTrue(st["partial_alert"])
+        self.assertTrue(st["needs_human"])
+        self.assertEqual(st["last_valid_report"], "2026-10-20")
+        self.assertEqual(st["fail_streak"], 0)
 
     def test_loss_attribution_and_regimes(self):
         P = fake_preds()

@@ -35,13 +35,19 @@ jobs:
       - name: 打開正式網站驗收 20 檔股票
         id: run
         run: node tests/e2e/live.mjs "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" history/audit/e2e.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 首頁不可退步清單（電腦＋手機：大盤、AI 分數、搜尋、策略切換、自選股、漲跌停、個股、績效、版面、資料時間）
+        id: home
+        continue-on-error: true
+        run: node tests/e2e/home.mjs "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" history/audit/home_e2e.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 保存驗收結果
         if: always() && hashFiles('history/audit/e2e.json') != ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/audit/e2e.json
+          git add history/audit/
           git diff --cached --quiet || git commit -q -m "網站驗收 $(date +%F)"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
       - name: 有股票沒通過就標成失敗
-        run: node -e "const r=require('./history/audit/e2e.json'); if (r.passed < r.results.length) { console.log('未通過：', r.results.filter(x=>!x.ok).map(x=>x.sid+' '+x.problems.join('；')).join('\n')); process.exit(1) }"
+        run: |
+          node -e "const r=require('./history/audit/home_e2e.json'); if (r.passed < r.total) { console.log('首頁退步：', r.results.filter(x=>!x.ok).map(x=>x.device+' '+x.name+' '+x.note).join('\\n')); process.exit(1) }"
+          node -e "const r=require('./history/audit/e2e.json'); if (r.passed < r.results.length) { console.log('未通過：', r.results.filter(x=>!x.ok).map(x=>x.sid+' '+x.problems.join('；')).join('\n')); process.exit(1) }"
