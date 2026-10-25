@@ -485,7 +485,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 .hchips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; } .hchips .pill { padding: 4px 12px; color: var(--ink); }
 .tmap.hmap-s { height: 260px; }
 /* V12 個股頁：快速判斷與分頁 */
-.qj-top { display: flex; gap: 12px; align-items: flex-start; margin: 2px 0 12px; }
+.qj-top { display: flex; gap: 12px; align-items: flex-start; margin: 2px 0 12px; } @media (max-width: 560px) { .qj-top { flex-wrap: wrap; } .qj-top > p { flex-basis: 100%; margin: 0; } }
 .qj-top .pill { font-size: 15px; padding: 4px 14px; font-weight: 600; flex: none; }
 .qj-top p { margin: 0; font-size: 15px; line-height: 1.55; }
 .qj-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
