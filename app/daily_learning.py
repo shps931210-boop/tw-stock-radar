@@ -165,7 +165,7 @@ def errors(L: list[dict]) -> dict:
                     rows.append({"group": k, "n": int(len(g)), "avg_excess": round(float(g["y"].mean()) * 100, 2),
                                  "big_loss_pct": round(float((g["y"] < -0.10).mean()) * 100, 1), "enough": len(g) >= MIN_GROUP})
                 out[key][m] = sorted(rows, key=lambda r: r["avg_excess"])
-        w = tops.sort_values("y").head(8)
+        w = tops.sort_values("y").head(TOPN)
         out["worst"] = [{"sig": r.sig, "sid": r.sid, "industry": r.industry, "model": r.model, "excess": round(r.y * 100, 2)} for r in w.itertuples()]
     out["note"] = f"分組少於 {MIN_GROUP} 筆的只供觀察；這裡只描述哪裡錯，原因要再用對照實驗驗證。"
     return out
@@ -338,6 +338,12 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
         entry = premarket.next_trading_day(date.fromisoformat(day), premarket.holidays(refresh=False)).isoformat()
         on_time = track.on_time(sealed, entry)
     steps, skipped = [], []
+    if sealed and D["dates"] and D["dates"][-1] == day and not (FEAT / f"{day}.json.gz").exists():
+        try:  # V13：預測已封存但沒有特徵快照（例如封存時還沒有這個功能）：用同一份資料補存，才算得出特徵漂移
+            save_features(mp.cross_section(D, day, cfg), day)
+            steps.append(f"補存 {day} 的特徵快照")
+        except Exception as e:  # noqa: BLE001
+            skipped.append(f"特徵快照補存失敗：{e}")
     new = mature(D)
     steps.append(f"到期對帳：新增 {len(new)} 份")
     L = load_matured("20")
@@ -406,8 +412,56 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     else:
         rep["first_run_at"], rep["runs"] = rep["generated_at"], 1
     p.write_text(json.dumps(rep, ensure_ascii=False, indent=1, default=str), "utf-8")
+    try:
+        update_queue(rep, out_dir / "research_queue.json")
+    except Exception as e:  # noqa: BLE001  研究清單失敗不影響每日報告
+        log(f"研究清單沒有更新：{e}")
     log(summary)
     return rep
+
+
+# ---------------- 6. 研究清單（V13）：每天的錯誤與假設累積起來，不會隔天重來 ----------------
+QUEUE = OUT / "research_queue.json"
+
+
+def research_items(rep: dict) -> list[dict]:
+    """把今天的報告整理成研究項目：特徵可能失效、拖累最多的產業、資料品質、預測錯誤最大的股票。只描述，不改模型。"""
+    out = []
+    add = lambda kind, key, text: out.append({"kind": kind, "key": key, "text": text})
+    for t in (rep.get("feature_effect") or {}).get("hypotheses", []):
+        add("feature", t.split(" ")[0], t)
+    err = rep.get("errors") or {}
+    for m, rows in (err.get("by_industry") or {}).items():
+        bad = [r for r in rows if r["enough"] and r["avg_excess"] < 0][:1]
+        for r in bad:
+            add("industry", f"{m}:{r['group']}", f"{r['group']} 是 {m} 前 10 名裡拖累最多的產業（{r['n']} 筆，平均超額 {r['avg_excess']:+.2f}%）："
+                f"下次每週研究比較加不加產業上限")
+    for r in (rep.get("feature_drift") or {}).get("flagged", []) or []:
+        add("data", r.get("feature"), f"{r.get('feature')} 的資料分布或缺漏突然改變：先檢查資料來源，再判斷是不是市場真的變了")
+    for r in err.get("worst", [])[:3]:
+        add("stock", f"{r['sid']}@{r['sig']}", f"{r['sid']}（{r['industry']}）{r['sig']} 進 {r['model']} 前 10 名後 20 日超額 {r['excess']:+.2f}%：查有沒有事件或資料問題")
+    return out
+
+
+def update_queue(rep: dict, path: Path | None = None) -> dict:
+    """研究清單只會新增或更新「最後出現日、出現次數」，不會刪除；狀態（待驗證／已驗證／已否定）由每週研究或人工改。"""
+    path = path or QUEUE
+    Q = json.loads(path.read_text("utf-8")) if path.exists() else {"items": []}
+    by = {(x["kind"], x["key"]): x for x in Q["items"]}
+    for it in research_items(rep):
+        x = by.get((it["kind"], it["key"]))
+        if x:
+            if x["last_seen"] != rep["date"]:
+                x["times"] += 1
+            x["last_seen"], x["text"] = rep["date"], it["text"]
+        else:
+            x = {**it, "first_seen": rep["date"], "last_seen": rep["date"], "times": 1, "status": "待驗證"}
+            Q["items"].append(x)
+            by[(it["kind"], it["key"])] = x
+    Q["updated"] = rep["date"]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(Q, ensure_ascii=False, indent=1), "utf-8")
+    return Q
 
 
 def site_summary(src: Path = OUT, days: int = 30) -> dict | None:
@@ -422,7 +476,9 @@ def site_summary(src: Path = OUT, days: int = 30) -> dict | None:
         hist.append({"date": r["date"], "data_ok": r["data"]["ok"], "sealed": r["sealed"]["today"], "on_time": r["sealed"]["on_time"],
                      "matured": len(r.get("matured_today", [])), "labels": sum((r["candidate"].get("new_labels") or {}).values()),
                      "retrained": r["candidate"].get("retrained"), "version": r["candidate"].get("version"), "risks": len(r.get("risks", []))})
-    return {"latest": latest, "history": hist, "run_status": run_status()}
+    q = json.loads((src / "research_queue.json").read_text("utf-8")) if (src / "research_queue.json").exists() else {"items": []}
+    todo = sorted((x for x in q["items"] if x["status"] == "待驗證"), key=lambda x: (-x["times"], x["first_seen"]))
+    return {"latest": latest, "history": hist, "run_status": run_status(), "queue": {"open": len(todo), "total": len(q["items"]), "top": todo[:5]}}
 
 
 RUNS = OUT / "runs.json"
@@ -462,7 +518,9 @@ def run_status(path: Path | None = None, last: int = 30) -> dict:
     lab = ("最近一次執行成功" if runs[-1]["ok"] else f"最近一次執行失敗（連續 {streak} 次）：{runs[-1].get('error') or '原因不明'}")
     return {"runs": len(runs), "recent": len(recent), "success_rate": round(sum(r["ok"] for r in recent) / len(recent) * 100, 1),
             "fail_streak": streak, "last_ok": ok[-1]["at"] if ok else None, "last_fail": bad[-1] if bad else None,
-            "last": runs[-1], "alert": streak >= ALERT_FAILS, "label": lab}
+            "last": runs[-1], "alert": streak >= ALERT_FAILS, "label": lab,
+            "affects_official": False, "impact": "不影響正式排名與網站更新：正式排行榜是固定權重 V21，學習只更新影子候選模型",
+            "needs_human": streak >= ALERT_FAILS}
 
 
 def main(argv: list[str]) -> int:

@@ -158,5 +158,29 @@ class RunLog(unittest.TestCase):
         self.assertIn("資料庫壞了", st["last"]["error"])
 
 
+class Queue(unittest.TestCase):
+    def test_research_queue_accumulates_and_never_drops(self):
+        p = Path(tempfile.mkdtemp()) / "q.json"
+        rep = {"date": "2026-10-27", "feature_effect": {"hypotheses": ["roe 在最近 20 個到期日的 IC -0.050（t -2.40）"]},
+               "errors": {"by_industry": {"lgbm": [{"group": "航運業", "n": 40, "avg_excess": -3.1, "enough": True}]},
+                          "worst": [{"sid": "2605", "sig": "2026-09-29", "industry": "航運業", "model": "lgbm", "excess": -12.0}]},
+               "feature_drift": {"flagged": []}}
+        q = dl.update_queue(rep, p)
+        self.assertEqual(len(q["items"]), 3)
+        dl.update_queue(rep, p)                                   # 同一天重跑：次數不加
+        q = dl.update_queue({**rep, "date": "2026-10-28", "errors": {}, "feature_effect": {}}, p)   # 隔天沒再出現：保留
+        self.assertEqual(len(q["items"]), 3)
+        q = dl.update_queue({**rep, "date": "2026-10-29"}, p)
+        roe = next(x for x in q["items"] if x["kind"] == "feature")
+        self.assertEqual((roe["times"], roe["first_seen"], roe["last_seen"], roe["status"]), (2, "2026-10-27", "2026-10-29", "待驗證"))
+
+    def test_status_says_official_ranking_unaffected(self):
+        p = Path(tempfile.mkdtemp()) / "runs.json"
+        dl.record(False, "boom", path=p)
+        st = dl.run_status(p)
+        self.assertFalse(st["affects_official"])
+        self.assertIn("不影響正式排名", st["impact"])
+
+
 if __name__ == "__main__":
     unittest.main()

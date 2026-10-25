@@ -117,13 +117,20 @@ def _snapshot_picks(snap: dict) -> tuple[dict, list]:
     return picks, sigs
 
 
+def eligible(s: dict, mode: str) -> bool:
+    """正式推薦資格（V13 再加一道保險）：要有推薦名次、資格是 normal／capped、流動性不是 E／F／未知、資料完整、不是處置股。
+    不合格的股票只留在研究用的原始排名，正式名單不足 TOP_N 檔就照實際數量，不拿不合格的補。"""
+    rec = ((s.get("ai") or {}).get("rec") or {}).get(mode) or {}
+    return (bool(rec.get("rank")) and rec.get("recommendation_eligibility") in ("normal", "capped")
+            and s.get("liquidity_grade") not in ("E", "F", "?") and s.get("complete", True) is not False and not s.get("disposition"))
+
+
 def _rec_picks(snap: dict) -> dict:
     """V27 預設 AI 精選名單（流動性限制後）。和原始名單分開記錄，原始名單與績效計算不受影響。"""
     st = [s for s in snap["stocks"] if s.get("is_common")]
     rec_picks = {}
     for mode in snap.get("ai_modes", {}):
-        ranked = sorted((s for s in st if ((s["ai"].get("rec") or {}).get(mode) or {}).get("rank")),
-                        key=lambda s: s["ai"]["rec"][mode]["rank"])[:TOP_N]
+        ranked = sorted((s for s in st if eligible(s, mode)), key=lambda s: s["ai"]["rec"][mode]["rank"])[:TOP_N]
         rec_picks[mode] = [{"stock_id": s["stock_id"], "name": s["name"], "rank": s["ai"]["rec"][mode]["rank"], "raw_rank": s["ai"]["modes"][mode]["rank"],
                             "score": s["ai"]["modes"][mode]["score"], "liq": s.get("liquidity_grade"), "close": s.get("close"), "industry": s.get("industry"),
                             "factors": {f: s.get(f"score_{f}") for f in FACTORS},
@@ -381,7 +388,7 @@ def performance(dbname: str = "stocks.db") -> dict:
         return {"days": 0, "logs": [], "scorecard": {}}
 
     def groups(L):
-        g = list(L["picks"].items()) + [("signals", L["signals"])]
+        g = list(L["picks"].items()) + [("rec_" + m, x) for m, x in (L.get("rec_picks") or {}).items()] + [("signals", L["signals"])]
         if L.get("universe_ids"):
             g.append(("universe", [{"stock_id": x} for x in L["universe_ids"]]))
         return g
@@ -499,3 +506,37 @@ def changes(snap: dict) -> dict | None:
 
 def _p(x):
     return None if x is None or (isinstance(x, float) and np.isnan(x)) else round(float(x) * 100, 2)
+
+
+def stock_history(dbname: str = "stocks.db", h: int = 20) -> dict:
+    """V13 個股頁「AI 紀錄」：這檔股票哪幾天進過正式精選（前 20 名）、名次，以及之後的實際表現。
+    規則和績效中心一樣：選股日隔天開盤買、第 h 個交易日收盤出場、扣成本、和 0050 同期比；還沒滿 h 天的標「未到期」，只列目前報酬。"""
+    logs = [L for L in load() if L.get("rec_picks")]
+    if not logs:
+        return {}
+    ids = sorted({p["stock_id"] for L in logs for g in L["rec_picks"].values() for p in g})
+    series, idx, bench = _prices(ids, logs[0]["date"], dbname)
+    cal, b = list(idx.index), bench[0]
+    out: dict = {}
+    for L in logs:
+        d = L["date"]
+        nxt = [x for x in cal if x > d]
+        if not nxt:
+            continue
+        entry = nxt[0]
+        for mode, g in L["rec_picks"].items():
+            for p in g:
+                s = series.get(p["stock_id"])
+                row = {"date": d, "mode": mode, "rank": p.get("rank"), "raw_rank": p.get("raw_rank"), "score": p.get("score")}
+                if s is None or untradable(s, entry):
+                    row["status"] = "買不到"
+                else:
+                    held = [x for x in nxt[:h] if x in s.index]
+                    last = held[-1]
+                    o = float(s.at[entry, "open"])
+                    r = float(s.at[last, "close"] / o - 1) - COST
+                    br = float(b.at[last, "close"] / b.at[entry, "open"] - 1) if entry in b.index and last in b.index else None
+                    row.update({"days": len(held), "ret": round(r * 100, 2), "excess": None if br is None else round((r - br) * 100, 2),
+                                "status": "已到期" if len(nxt) >= h else "未到期"})
+                out.setdefault(p["stock_id"], []).append(row)
+    return out

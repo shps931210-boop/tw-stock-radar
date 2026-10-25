@@ -71,6 +71,11 @@ jobs:
           gzip -c data/ml_panel.pkl > ml_panel.pkl.gz
           gh release view ml-panel >/dev/null 2>&1 || gh release create ml-panel --prerelease --title "AI 研究資料集" --notes "每週 AI 歷史回測產生的特徵與標籤（只有公開市場資料），每天的自主學習會補上新到期的標籤。"
           gh release upload ml-panel ml_panel.pkl.gz --clobber
+      # V13 LightGBM 專項研究（只做研究）：預測目標、訓練視窗、模型融合；事前固定 7 個比較，結果寫 history/backtest/lgbm_study.json
+      - name: LightGBM 專項研究
+        continue-on-error: true
+        timeout-minutes: 150
+        run: python -m app.lgbm_study data/ml_panel.pkl
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"

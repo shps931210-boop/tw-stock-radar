@@ -110,7 +110,7 @@ pit = root / "history" / "backtest" / "ai_pit.json"
 if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
-for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
+for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json", "lgbm_study.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
     if (root / "history" / "backtest" / extra).exists():
         (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
         shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)
@@ -205,9 +205,16 @@ if snap_path.exists():
     ids = list(rows)
     dec_path = config.DATA_DIR / "decision.json"  # 個股研究決策卡（app/snapshot.py _decision）
     dec = json.loads(dec_path.read_text("utf-8")) if dec_path.exists() else {}
+    try:  # V13 個股頁「AI 紀錄」：進過正式精選的日期與之後的實際表現
+        from app import track as _track
+        ai_hist = _track.stock_history("stocks.db")
+    except Exception as e:  # noqa: BLE001
+        print(f"個股 AI 紀錄沒有產生：{e}")
+        ai_hist = {}
     for sid in ids:
         (out / "data" / "stock" / f"{sid}.json").write_text(
-            json.dumps({**stock_detail(sid, "stocks.db", rows[sid]), "decision": dec.get(sid)}, ensure_ascii=False, separators=(",", ":")), "utf-8")
+            json.dumps({**stock_detail(sid, "stocks.db", rows[sid]), "decision": dec.get(sid), "ai_history": ai_hist.get(sid, [])},
+                       ensure_ascii=False, separators=(",", ":")), "utf-8")
     (out / "data" / "quality.json").write_text(json.dumps(quality(snap), ensure_ascii=False, indent=1), "utf-8")
     for path, data in public_data(snap).items():  # 給其他程式讀的公開資料（不含任何會員資料）
         (out / "data" / path).parent.mkdir(parents=True, exist_ok=True)

@@ -48,7 +48,7 @@ def _eval(picks, series, entry, exit_, d, days, bench_ret, taiex) -> dict:
                      "untradable": why, "path": path})
     tops = {}
     for n in TOPS:
-        sub = rows[:n]
+        sub = [x for x in rows[:n] if (x.get("rank") or 0) <= n]   # 正式名單的名次可能跳號（受限股票不補進前 10 名）
         if not sub:
             continue
         w = 1 / n

@@ -131,11 +131,14 @@ def annotate(rows: list[dict], modes) -> None:
     for mode in modes:
         ranked = sorted((r for r in rows if r.get("ai", {}).get("modes", {}).get(mode, {}).get("rank")),
                         key=lambda r: r["ai"]["modes"][mode]["rank"])
-        rec, exc = order([(r["stock_id"], r["ai"]["modes"][mode]["score"], r["liq"]["grade"], r.get("vol_1y_pct")) for r in ranked])
+        rec, exc = order([(r["stock_id"], r["ai"]["modes"][mode]["score"], r["liq"]["grade"], r.get("vol_1y_pct")) for r in ranked if not r.get("disposition")])
+        exc += [{"id": r["stock_id"], "reason": "處置股票，交易受限，不列入預設 AI 精選"} for r in ranked if r.get("disposition")]
         by = {r["stock_id"]: r for r in ranked}
+        n_ok = sum(x["eligibility"] == "normal" for x in rec)
+        gap = max(0, TOP - n_ok)   # 正常股票不足 10 檔時，前 10 名就只有這些；受限股票從第 11 名開始，不拿來補滿
         for i, x in enumerate(rec, 1):
             by[x["id"]]["ai"]["rec"][mode] = {"recommendation_eligibility": x["eligibility"], "recommendation_score": x["score"],
-                                              "rank": i, "recommendation_cap_reason": x["reason"]}
+                                              "rank": i if i <= n_ok else i + gap, "recommendation_cap_reason": x["reason"]}
         for x in exc:
             by[x["id"]]["ai"]["rec"][mode] = {"recommendation_eligibility": "excluded", "recommendation_score": None,
                                               "rank": None, "recommendation_cap_reason": x["reason"]}
