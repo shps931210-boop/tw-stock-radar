@@ -75,12 +75,23 @@ jobs:
       - name: LightGBM 專項研究
         continue-on-error: true
         timeout-minutes: 150
-        run: python -m app.lgbm_study data/ml_panel.pkl
+        run: |
+          # V15 研究代理把關：同一研究連續 2 次全部沒通過、新資料又不夠，就不重跑（避免反覆跑已失敗的實驗）
+          if python -m app.evolution allowed lgbm_study; then python -m app.lgbm_study data/ml_panel.pkl; fi
+      # V14 投資組合研究：同一份 LightGBM 排序換 14 種選股與持股方式（用上一步存下的預測，不重新訓練）
+      - name: 投資組合轉化研究
+        continue-on-error: true
+        timeout-minutes: 30
+        run: python -m app.portfolio_study
+      # V15 實驗記憶：把這次每個研究變體登記到 history/research/experiments.json（已登記的不重複）
+      - name: 登記實驗
+        continue-on-error: true
+        run: python -m app.evolution ingest
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/backtest/ history/models/
+          git add history/backtest/ history/models/ history/research/
           if git diff --cached --quiet; then echo "結果沒有變化"; exit 0; fi
           git commit -q -m "AI 歷史回測 $(date +%F)"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done

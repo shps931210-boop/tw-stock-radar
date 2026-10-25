@@ -128,6 +128,690 @@
    "cause": "獨立期間只有 82 期，每期報酬波動大，要偵測 1% 左右的差距需要更多期間；大型權值股強勢期間 0050 本身就很難打敗（同期 0050 買進持有 +462.8%）",
    "decision": "rejected",
    "evidence": "history/backtest/lgbm_study.json（每週 backtest.yml 會自動重跑）"
+  },
+  {
+   "date": "2026-10-25",
+   "version": "V14",
+   "change": "投資組合轉化研究：同一份 LightGBM 排序，比較 14 種選股與持股方式（前 5／10／15／20 名、不確定性加權、流動性加權、波動率加權、排除高波動、產業上限、只取可交易股、續抱緩衝、60 日換股、收盤進出、晚一天進場），加上成本 0～3 倍敏感度",
+   "hypothesis": "LightGBM 排序能力（Rank IC 0.097）沒有變成超額報酬，是因為選股與持股方式不對",
+   "improved": "前 5 名每期 -0.18%（前 10 名 -0.62%）；續抱緩衝把換股率從 77% 降到 55%、每期 -0.41%、最大回撤 -24.9%（前 10 名 -30.1%）；前 20 名最大回撤 -20.4%",
+   "worse": "13 個比較都沒有達到 |t| ≥ 2.89：最好的前 5 名差 +0.44%、t 1.10，而且最大回撤 -37.9% 比前 10 名差 7.8 個百分點；逐期樣本外挑選方式反而比前 10 名差 0.25%",
+   "result": "沒有任何選股方式通過門檻；不扣成本時前 10 名每期仍落後 0050 0.17%",
+   "cause": "問題主要不在組合方式：連不扣成本都輸 0050，代表模型選出的股票本身就跑不贏大型權值股主導的 0050；成本每期約吃掉 0.45%",
+   "decision": "rejected",
+   "evidence": "history/backtest/portfolio_study.json（每週 backtest.yml 自動重跑）"
+  }
+ ],
+ "auto": [
+  {
+   "id": "EXP-20261025-001",
+   "key": "1d28597d2cec",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "t_excess",
+   "kind": "target",
+   "goal": "G1",
+   "hypothesis": "目標一：直接預測 20 日超額報酬（每天截掉頭尾 1%）",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": 0.31,
+    "ic": 0.0404,
+    "mdd": -40.25,
+    "holdout": -1.44
+   },
+   "vs_baseline": {
+    "diff": 0.93,
+    "t": 1.03,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-002",
+   "key": "84e955374057",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "t_riskadj",
+   "kind": "target",
+   "goal": "G1",
+   "hypothesis": "目標三：超額報酬 ÷ 已知的一年波動率（風險調整）",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.2,
+    "ic": 0.0269,
+    "mdd": -25.88,
+    "holdout": -2.79
+   },
+   "vs_baseline": {
+    "diff": 0.42,
+    "t": 0.58,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-003",
+   "key": "ccad6ff8185b",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "w_25",
+   "kind": "train_window",
+   "goal": "G1",
+   "hypothesis": "只用最近 25 個訊號日訓練（約 1 年）",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.17,
+    "ic": 0.0835,
+    "mdd": -25.68,
+    "holdout": -0.41
+   },
+   "vs_baseline": {
+    "diff": 0.45,
+    "t": 0.84,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-004",
+   "key": "fe29579499d5",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "w_50",
+   "kind": "train_window",
+   "goal": "G1",
+   "hypothesis": "只用最近 50 個訊號日訓練（約 2 年）",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.5,
+    "ic": 0.0881,
+    "mdd": -30.04,
+    "holdout": -1.27
+   },
+   "vs_baseline": {
+    "diff": 0.12,
+    "t": 0.26,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-005",
+   "key": "b9858102ce14",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "w_100",
+   "kind": "train_window",
+   "goal": "G1",
+   "hypothesis": "只用最近 100 個訊號日訓練（約 4 年）",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.5,
+    "ic": 0.0939,
+    "mdd": -30.1,
+    "holdout": -0.73
+   },
+   "vs_baseline": {
+    "diff": 0.12,
+    "t": 0.37,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-006",
+   "key": "edc68d25b9c1",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "fuse_targets",
+   "kind": "target",
+   "goal": "G1",
+   "hypothesis": "融合：三種目標預測的百分位平均",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.26,
+    "ic": 0.0651,
+    "mdd": -27.28,
+    "holdout": -2.03
+   },
+   "vs_baseline": {
+    "diff": 0.36,
+    "t": 0.66,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-007",
+   "key": "8ee605f13626",
+   "run_at": "2026-10-25T12:40:16",
+   "family": "lgbm_study",
+   "spec": "ens_v21",
+   "kind": "train_window",
+   "goal": "G1",
+   "hypothesis": "融合：基準 LightGBM 和 V21 的百分位平均",
+   "baseline": "base（LightGBM 排名目標、全部歷史）",
+   "model_version": "2026-10-25",
+   "data_end": "2026-09-11",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.27,
+    "ic": 0.0804,
+    "mdd": -34.13,
+    "holdout": -0.97
+   },
+   "vs_baseline": {
+    "diff": 0.35,
+    "t": 0.74,
+    "n": 82
+   },
+   "baseline_oos": {
+    "net_excess": -0.62
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.69,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/lgbm_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-008",
+   "key": "ec48b7d03644",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "top5",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 5 名等權重",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.18,
+    "t": -0.24,
+    "mdd": -37.87,
+    "total": 336.9,
+    "turnover": 83.2
+   },
+   "vs_baseline": {
+    "diff": 0.44,
+    "t": 1.1,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-009",
+   "key": "85ea4f632d57",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "top15",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 15 名等權重",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.58,
+    "t": -0.94,
+    "mdd": -28.07,
+    "total": 260.8,
+    "turnover": 74.3
+   },
+   "vs_baseline": {
+    "diff": 0.04,
+    "t": 0.25,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-010",
+   "key": "e55fbe15ae17",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "top20",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 20 名等權重",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.51,
+    "t": -0.83,
+    "mdd": -20.41,
+    "total": 289.9,
+    "turnover": 71.5
+   },
+   "vs_baseline": {
+    "diff": 0.11,
+    "t": 0.51,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-011",
+   "key": "ee1b762c35fc",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "uncert",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，模型意見越一致權重越高（不確定性加權）",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.62,
+    "t": -0.9,
+    "mdd": -31.69,
+    "total": 237.4,
+    "turnover": 82.6
+   },
+   "vs_baseline": {
+    "diff": -0.0,
+    "t": -0.01,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "沒有比較好",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-012",
+   "key": "a62fa215fb01",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "liq_w",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，成交金額越大權重越高（流動性加權）",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.5,
+    "t": -0.62,
+    "mdd": -43.92,
+    "total": 224.2,
+    "turnover": 79.7
+   },
+   "vs_baseline": {
+    "diff": 0.12,
+    "t": 0.24,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-013",
+   "key": "d0c01336ca89",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "inv_vol",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，波動越小權重越高（波動率風控）",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.76,
+    "t": -1.18,
+    "mdd": -22.34,
+    "total": 223.2,
+    "turnover": 80.2
+   },
+   "vs_baseline": {
+    "diff": -0.14,
+    "t": -0.69,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "沒有比較好",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-014",
+   "key": "9f3d5db4c34d",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "vol_cut",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "先排除波動最大 20% 的股票，再取前 10 名",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.78,
+    "t": -1.22,
+    "mdd": -23.74,
+    "total": 220.3,
+    "turnover": 76.3
+   },
+   "vs_baseline": {
+    "diff": -0.16,
+    "t": -0.48,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "沒有比較好",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-015",
+   "key": "9f729b9dd5e6",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "ind_cap",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，同一產業最多 2 檔",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.59,
+    "t": -0.93,
+    "mdd": -28.83,
+    "total": 251.8,
+    "turnover": 79.3
+   },
+   "vs_baseline": {
+    "diff": 0.03,
+    "t": 0.16,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-016",
+   "key": "92d3252fc5fe",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "eligible",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "模型排全部股票，只從可交易（流動性 D 級以上）的股票取前 10 名",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.57,
+    "t": -0.86,
+    "mdd": -35.2,
+    "total": 249.7,
+    "turnover": 75.7
+   },
+   "vs_baseline": {
+    "diff": 0.05,
+    "t": 0.22,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-017",
+   "key": "b012d7068c56",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "buffer",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，但原本持股只要還在前 30 名就續抱（降低換股）",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.41,
+    "t": -0.62,
+    "mdd": -24.94,
+    "total": 310.8,
+    "turnover": 55.4
+   },
+   "vs_baseline": {
+    "diff": 0.21,
+    "t": 1.05,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "方向較好但證據不足",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-018",
+   "key": "9ed7b22c00e9",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "hold60",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，每 60 個交易日才換股",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 28,
+   "oos": {
+    "net_excess": -1.91,
+    "t": -1.16,
+    "mdd": -24.65,
+    "total": 201.3,
+    "turnover": 86.1
+   },
+   "vs_baseline": {},
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "每期 60 個交易日，和其他方式的期間長度不同：比年化報酬和總報酬，不做 t 比較",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-019",
+   "key": "8c24b02b22be",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "entry_close",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，改用隔天收盤買、第 20 個交易日後收盤賣",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.74,
+    "t": -1.15,
+    "mdd": -31.63,
+    "total": 220.3,
+    "turnover": 77.4
+   },
+   "vs_baseline": {
+    "diff": -0.12,
+    "t": -0.6,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "沒有比較好",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
+  },
+  {
+   "id": "EXP-20261025-020",
+   "key": "5f4ae24377f0",
+   "run_at": "2026-10-25T12:40:02",
+   "family": "portfolio_study",
+   "spec": "entry_t2",
+   "kind": "portfolio_rule",
+   "goal": "G1",
+   "hypothesis": "前 10 名，晚一天進場（第 2 天開盤買）",
+   "baseline": "前 10 名等權重",
+   "model_version": "2026-10-25",
+   "data_end": "2026-08-28",
+   "periods": 82,
+   "oos": {
+    "net_excess": -0.71,
+    "t": -1.11,
+    "mdd": -32.44,
+    "total": 224.9,
+    "turnover": 77.4
+   },
+   "vs_baseline": {
+    "diff": -0.09,
+    "t": -0.36,
+    "n": 82
+   },
+   "cost_pct": 0.585,
+   "t_need": 2.89,
+   "passed": false,
+   "conclusion": "沒有比較好",
+   "source": "history/backtest/portfolio_study.json",
+   "related": [],
+   "repeat_of_failed": 0
   }
  ]
 }

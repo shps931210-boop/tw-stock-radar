@@ -110,7 +110,7 @@ pit = root / "history" / "backtest" / "ai_pit.json"
 if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
-for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json", "lgbm_study.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
+for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json", "lgbm_study.json", "portfolio_study.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
     if (root / "history" / "backtest" / extra).exists():
         (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
         shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)
@@ -177,6 +177,12 @@ try:  # V31 每日自主學習報告（app/daily_learning.py → history/learnin
         (out / "data" / "predictions" / "daily_learning.json").write_text(json.dumps(dl, ensure_ascii=False, separators=(",", ":"), default=str), "utf-8")
 except Exception as e:
     print("每日學習報告失敗：", e)
+try:  # V14 三本帳：歷史研究／樣本外比較／真實前瞻，分開計算、分開顯示
+    from app import ledgers
+    (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
+    (out / "data" / "predictions" / "ledgers.json").write_text(json.dumps(ledgers.build(), ensure_ascii=False, separators=(",", ":"), default=str), "utf-8")
+except Exception as e:
+    print("三本帳失敗：", e)
 try:  # 每週固定名單績效（app/weekly.py）：每次發布都用最新收盤重算
     if (config.DATA_DIR / "stocks.db").exists():
         from app import weekly

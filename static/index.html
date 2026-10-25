@@ -497,6 +497,13 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 .tabp[hidden] { display: none !important; }
 .qj-next { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .stabs .btn.ghost.on { background: var(--accent); color: var(--panel); }
+.evl { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; } .evl > div { border-bottom: 1px solid var(--line); padding: 4px 0 6px; min-width: 0; }
+.pk-go { font-size: 12px; color: var(--accent); white-space: nowrap; }
+.opsg { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 0 0 12px; }
+.opsg > div { background: var(--bg); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.opsg b { font-size: 14px; overflow-wrap: anywhere; }
+.ledg { display: grid; gap: 12px; } .ledg .lg { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.ledg .lg-live { border-color: var(--accent); } .ledg h3 { margin: 0 0 6px; font-size: 15px; } .ledg p { margin: 0 0 6px; }
 .hp-top { display: flex; justify-content: space-between; gap: 6px; }
 .bnav { display: none; }
 @media (max-width: 760px) { .hm-st { flex-direction: row; align-items: center; } }
@@ -1002,6 +1009,14 @@ function rating(s) {
   if (R?.recommendation_eligibility === "excluded") return { t: "暫不列入", c: "warn", why: `${sub}・流動性不足` };
   return a >= 70 ? { t: "優先研究", c: "acc", why: sub } : a >= 50 ? { t: "觀察", c: "", why: sub } : { t: "暫不考慮", c: "", why: sub };
 }
+// V15 能力邊界：可正式推薦（資料、交易、模型資格都通過）／僅供研究／暫停判斷（資料不完整或系統異常）
+function judgeState(s) {
+  const R = recOf(s, "balanced");
+  if (SNAP.rankings_blocked) return { t: "暫停判斷", c: "warn", why: "今天的資料檢查沒通過，暫停所有判斷" };
+  if ((s.stale_notes || []).length || !s.complete) return { t: "暫停判斷", c: "warn", why: "必要資料不完整或過期" };
+  const ok = R?.rank && ["normal", "capped"].includes(R.recommendation_eligibility) && !["E", "F", "?"].includes(s.liquidity_grade) && !s.disposition;
+  return ok ? { t: "可正式推薦", c: "s-ok", why: "資料、流動性、交易資格都通過" } : { t: "僅供研究", c: "", why: "有 AI 分數，但不符合正式推薦條件" };
+}
 const HOLD = "約 20 個交易日";
 // 實際封存的每週追蹤（均衡型正式精選前 10 名）；還沒有資料就說累積中
 function trackLine(k = "balanced") {
@@ -1014,7 +1029,7 @@ function pickRow(s, k, raw) {
   const a = s.ai.modes[k], R = raw ? null : recOf(s, k), g = rating(s);
   return `<a class="pk" href="#/stock/${esc(s.stock_id)}"><span class="pk-n num">${R?.rank || a.rank}</span>
     <span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span><br><span class="small">${esc(s.ai.strengths[0] || s.ai.tag || "")}</span></span>
-    <span class="pk-r"><span class="num">${s.close != null ? fmtNum(s.close, s.close < 50 ? 2 : 1) : "—"}</span><span class="num small ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span><span class="pill ${g.c}">${g.t}</span></span></a>`;
+    <span class="pk-r"><span class="num">${s.close != null ? fmtNum(s.close, s.close < 50 ? 2 : 1) : "—"}</span><span class="num small ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span><span class="pill ${g.c}">${g.t}</span><span class="pk-go">查看分析 ›</span></span></a>`;
 }
 function homePicks() {
   const M = SNAP.ai_modes, ks = ["stable", "balanced", "aggressive"].filter((k) => M[k]), k = ks.includes(store.get("hmode")) ? store.get("hmode") : "balanced";
@@ -1289,6 +1304,9 @@ async function loadDL() {
   el.innerHTML = `<div class="card-h"><h2>AI 每日學習報告</h2><span class="muted small">資料日 ${esc(L.date)}・${tm(L.generated_at)} 產生</span></div>
     ${failed ? `<div class="banner warn small" style="margin-bottom:10px"><b>最近一次自主學習沒有完成</b>（${tm(RS.last.at)}）：${esc(RS.last.error || "原因不明")}${RS.fail_streak > 1 ? `，已連續失敗 ${RS.fail_streak} 次` : ""}。下面是最近一次成功的報告（${tm(RS.last_ok)}），不是今天的學習結果。</div>` : ""}
     <div class="banner ${L.needs_human ? "warn" : "info"} small" style="margin-bottom:10px"><b>${failed ? "上次成功時：" : ""}${esc(L.summary)}</b>${L.needs_human ? `<br>需要你注意：${esc(L.human_why.join("；"))}` : ""}</div>
+    ${S.ops ? `<div class="opsg">${[["每日任務成功率", S.ops.runs ? fmtNum(S.ops.success_rate, 0) + "%" : "尚無紀錄"], ["最後一次成功", tm(S.ops.last_ok) || "—"],
+      ["連續失敗", `${S.ops.fail_streak || 0} 次`], ["候選模型版本", esc(S.ops.candidate || "—")], ["可以升級嗎", S.ops.promotion?.ok ? "通過門檻，等人工確認" : esc(S.ops.promotion?.label || "還不行")],
+      ["最新研究", esc(S.ops.latest_research || "—")]].map(([k, v]) => `<div><span class="faint small">${k}</span><b>${v}</b></div>`).join("")}</div>` : ""}
     <div class="tbl"><table class="wrap"><tbody>
       <tr><td>學習流程執行狀態</td><td>${RS.runs ? `最近 ${RS.recent} 次成功率 ${fmtNum(RS.success_rate, 0)}%・最近一次成功 ${tm(RS.last_ok) || "—"}${RS.fail_streak ? `・<span class="pill warn">連續失敗 ${RS.fail_streak} 次</span>` : ""}` : "還沒有執行紀錄（從 V31.1 開始記錄）"}</td></tr>
       <tr><td>資料日的行情</td><td>${yes(L.data?.ok, "齊全", "不齊全")} ${esc(L.data?.why || "")}</td></tr>
@@ -1771,6 +1789,7 @@ function pagePerformance() {
     <section><div class="eyebrow">真實紀錄，不是回測</div><h1>績效中心</h1>
       <p class="lead">AI 名單每天開盤前存檔，之後照固定規則算成績：隔天開盤買、扣交易成本，和 0050 比。</p></section>
     <div id="pfsum">${perfTable()}</div>
+    <section class="card" id="ledg" hidden></section>
     <section class="card" id="weekly" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
       ${scorecard(tr)}</section>
@@ -1778,6 +1797,33 @@ function pagePerformance() {
     <section class="card"><div class="card-h"><h2>模型怎麼驗證？</h2></div>
       <p class="small" style="margin:0">模型比賽、資料稽核、AI 每日學習紀錄、歷史回測都在 <a href="#/research">進階研究</a>。</p></section>`;
   loadWeekly().then(() => { const el = $("#pfsum"); if (el) el.innerHTML = perfTable(); });
+  loadLedgers();
+}
+// V14 三本帳：真實前瞻、樣本外比較、歷史研究分開計算、分開顯示（data/predictions/ledgers.json）
+async function loadLedgers() {
+  const el = $("#ledg"); if (!el || !SITE) return;
+  let S; try { const r = await fetch("data/predictions/ledgers.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
+  if (!S) return;
+  const pc = (x) => x == null ? "—" : `<span class="${signCls(x)}">${pctTxt(x)}</span>`, n = (x, d = 2) => x == null ? "—" : fmtNum(x, d);
+  const lv = S.live?.latest, lm = lv?.models || {}, O = S.oos || {}, R = S.research || {}, P = O.portfolio_study;
+  const NM = { v21: "V21（正式）", lgbm: "LightGBM（候選）", ens: "兩者平均" };
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>三本帳</h2><span class="muted small">分開計算，數字不互相借用</span></div>
+    <div class="ledg">
+      <div class="lg lg-live"><h3>① 真實前瞻 <span class="pill s-ok">唯一沒被看過的資料</span></h3>
+        <p class="small">開盤前封存、20 個交易日後才對帳。${lv ? `已封存 ${lv.sealed_days} 天，已到期 ${lv.matured_dates} 個訊號日（${lv.matured_stocks} 筆）。` : "還沒有紀錄。"}</p>
+        ${Object.keys(lm).length ? `<div class="tbl"><table><thead><tr><th>模型</th><th class="r">Rank IC</th><th class="r">前 10 名扣成本超額</th><th class="r">跑贏 0050</th><th class="r">命中率</th><th class="r">最大回撤</th></tr></thead><tbody>
+          ${Object.entries(lm).map(([m, x]) => `<tr><td>${NM[m] || esc(m)}</td><td class="r num">${n(x.ic, 3)}</td><td class="r num">${pc(x.top_net)}</td><td class="r num">${n(x.beat_0050, 0)}%</td><td class="r num">${n(x.hit, 0)}%</td><td class="r num">${x.mdd == null ? "—" : pc(x.mdd)}</td></tr>`).join("")}</tbody></table></div>`
+          : '<p class="small faint" style="margin:0">第一批 20 日預測要到 2026-11 中才到期，之前沒有成績可以看。</p>'}</div>
+      <div class="lg"><h3>② 樣本外比較 <span class="pill">每期只用之前的資料</span></h3>
+        ${O.race ? `<p class="small">${esc(O.race.first)} ～ ${esc(O.race.last)}，前 10 名每期扣成本超額（相對 0050）：V21 ${pc(O.race.v21?.net_excess)}、LightGBM ${pc(O.race.lgbm?.net_excess)}。</p>` : ""}
+        ${P ? `<p class="small">投資組合研究：${esc(P.conclusion)}</p>` : ""}
+        ${O.lgbm_study ? `<p class="small">LightGBM 專項研究：${esc(O.lgbm_study.conclusion)}</p>` : ""}
+        <p class="faint small" style="margin:0">${esc(O.caveat || "")}。詳細在 <a href="#/research">進階研究</a>。</p></div>
+      <div class="lg"><h3>③ 歷史研究 <span class="pill warn">只能參考</span></h3>
+        ${R.ready ? `<p class="small">${esc(R.start)} ～ ${esc(R.end)} 回測，前 10 名每月平均超額：${Object.values(R.modes).map((m) => `${esc(m.name)} ${pc(m.avg_excess)}`).join("、")}；同期 0050 累積 ${pc(Object.values(R.modes)[0]?.bench_total)}。</p>` : ""}
+        <p class="faint small" style="margin:0">${esc(R.caveat || "")}。</p></div>
+    </div>`;
 }
 // V13 LightGBM 專項研究：預測目標、訓練視窗、融合，全部和同一個基準比（history/backtest/lgbm_study.json，每週更新）
 async function loadLgst() {
@@ -1795,6 +1841,48 @@ async function loadLgst() {
       <td class="r num">${x.vs_base ? `${pc(x.vs_base.diff)}<br><span class="faint small">t ${n(x.vs_base.t)}</span>` : "—"}</td><td class="small">${esc(x.verdict?.label || (k === "base" ? "基準" : k === "v21" ? "正式模型" : ""))}</td></tr>`; }).join("")}</tbody></table></div>
     <p class="faint small" style="margin:8px 0 0">${esc(S.rules)}。超額是相對 0050、每期 20 個交易日、等權重前 10 名。這是歷史模擬，不是真實績效。</p>`;
 }
+// V15 AI 研究中心：目標、五種記憶、每日流程、反省、研究任務、晉升把關（來自每日學習報告）
+async function loadEvo() {
+  const el = $("#evo"); if (!el || !SITE) return;
+  let S; try { const r = await fetch("data/predictions/daily_learning.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
+  const L = S?.latest, V = L?.evolution; if (!V || !Object.keys(V).length) return;
+  el.hidden = false;
+  const ST = { success: ["s-ok", "完成"], failed: ["warn", "失敗"], skipped: ["", "跳過"] }, M = V.memory || {}, F = V.reflection || {}, G = V.governance || {};
+  const ok = (b) => `<span class="pill ${b ? "s-ok" : ""}">${b ? "是" : "否"}</span>`;
+  el.innerHTML = `<div class="card-h"><h2>AI 研究中心</h2><span class="muted small">資料日 ${esc(L.date)}・目標第 ${esc(V.mission?.version ?? "—")} 版</span></div>
+    <p style="margin:0 0 8px"><b>${esc(F.supervised_text || "")}</b></p>
+    <h3 style="margin:10px 0 6px">今天的流程</h3>
+    <div class="chips">${(L.pipeline || []).map((x) => `<span class="pill ${ST[x.status]?.[0] || ""}" title="${esc(x.why || "")}">${esc(x.step)}・${ST[x.status]?.[1] || esc(x.status)}</span>`).join(" ")}</div>
+    <h3 style="margin:12px 0 6px">今天學到什麼</h3>
+    <div class="evl">${(F.q5_outcome || []).map((x) => `<div><b>${esc(x.kind)}</b> ${ok(x.done)}<br><span class="small faint">${esc(x.evidence || "")}</span></div>`).join("")}
+      <div><b>新的錯誤證據</b><br><span class="small">${esc(F.q1_new_errors?.text || "—")}${(F.q1_new_errors?.items || []).map((w) => `・${esc(w.sid)} ${pctTxt(w.excess)}`).join("")}</span></div>
+      <div><b>重複出現的錯誤</b><br><span class="small">${esc(F.q2_recurring?.text || "—")}${(F.q2_recurring?.items || []).map((x) => `<br>・${esc(x.text)}（${x.times} 次）`).join("")}</span></div>
+      <div><b>能力有沒有變差</b><br><span class="small">${esc(F.q3_degrading?.text || "—")}</span></div></div>
+    <h3 style="margin:12px 0 6px">研究任務（${V.tasks?.open ?? 0} 項待研究，前 5 項）</h3>
+    ${(V.tasks?.top || []).length ? `<ol class="small" style="margin:0;padding-left:20px">${V.tasks.top.map((t) => `<li><b>${esc(t.question)}</b><br><span class="faint">${esc(t.id)}・對應 ${esc(t.goal_text)}・優先度 ${t.priority}${t.needs_human ? "・需要人工" : ""}${t.prior_failed_experiments ? `・類似實驗失敗過 ${t.prior_failed_experiments} 次` : ""}</span></li>`).join("")}</ol>` : '<p class="small faint" style="margin:0">目前沒有研究任務。</p>'}
+    <h3 style="margin:12px 0 6px">晉升把關：${esc(G.label || "—")}</h3>
+    <div class="chips">${(G.gates || []).map((x) => `<span class="pill ${x.ok ? "s-ok" : ""}" title="${esc(x.value || "")}">${esc(x.gate)} ${x.ok ? "✓" : "✗"}</span>`).join(" ")}</div>
+    <h3 style="margin:12px 0 6px">五種記憶</h3>
+    <p class="small" style="margin:0">預測 ${M.prediction?.n ?? 0} 天・結果 ${M.outcome?.n ?? 0} 份・錯誤 ${M.error?.n ?? 0} 項・實驗 ${M.experiment?.n ?? 0} 筆（自動登記 ${M.experiment?.auto ?? 0}）・目標第 ${M.mission?.version ?? "—"} 版</p>
+    ${(V.new_experiments || []).length ? `<p class="small" style="margin:6px 0 0">今天新登記的實驗：${V.new_experiments.map((x) => `${esc(x.id)} ${esc(x.spec)}${x.passed ? "（通過）" : "（未通過）"}`).join("、")}</p>` : ""}`;
+}
+// V14 投資組合研究：同一份 LightGBM 排序換不同選股與持股方式（history/backtest/portfolio_study.json，每週更新）
+async function loadPst() {
+  const el = $("#pst"); if (!el || !SITE) return;
+  let S; try { const r = await fetch("data/backtest/portfolio_study.json" + verQ("backtest/portfolio_study.json")); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
+  if (!S?.results) return;
+  const R = S.results, n = (x, d = 2) => x == null ? "—" : fmtNum(x, d), pc = (x) => x == null ? "—" : `<span class="${signCls(x)}">${pctTxt(x)}</span>`;
+  const ks = ["v21_top10", ...Object.keys(S.names).filter((k) => k !== "v21_top10" && R[k])], W = S.walk_select || {};
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>投資組合研究</h2><span class="muted small">${esc(S.first)} ～ ${esc(S.last)}・${S.periods} 個 20 日期間・成本 ${S.cost_pct}%</span></div>
+    <p style="margin:0 0 8px"><b>${esc(S.conclusion)}</b></p>
+    <div class="tbl"><table class="wrap"><thead><tr><th>選股方式</th><th class="r">每期扣成本超額</th><th class="r">t</th><th class="r">累積（0050）</th><th class="r">最大回撤</th><th class="r">換股率</th><th class="r">和前 10 名比</th><th>結果</th></tr></thead><tbody>
+    ${ks.map((k) => { const x = R[k]; return `<tr${k === "top10" ? ' style="background:var(--accent-soft)"' : ""}><td>${esc(S.names[k])}</td><td class="r num">${pc(x.net_excess)}</td><td class="r num">${n(x.t)}</td>
+      <td class="r num">${pc(x.total)}<br><span class="faint small">${pctTxt(x.bench_total)}</span></td><td class="r num">${pc(x.mdd)}</td><td class="r num">${n(x.turnover, 0)}%</td>
+      <td class="r num">${x.vs_top10 ? `${pc(x.vs_top10.diff)}<br><span class="faint small">t ${n(x.vs_top10.t)}</span>` : "—"}</td><td class="small">${esc(x.verdict?.label || x.note || (k === "top10" ? "基準" : k === "v21_top10" ? "參考" : ""))}</td></tr>`; }).join("")}</tbody></table></div>
+    <p class="small" style="margin:8px 0 0">逐期樣本外挑選（每期只看之前已到期的成績決定用哪一種方式）：和前 10 名比每期 ${pc(W.vs_top10)}（t ${n(W.t)}，${W.periods ?? 0} 期）。</p>
+    <p class="faint small" style="margin:6px 0 0">${esc(S.rules)}這是歷史模擬，不是真實績效。</p>`;
+}
 function pageResearch() {
   const tr = SNAP.track || { days: 0, logs: [] };
   const g = (x) => x?.avg == null ? "—" : `<span class="${signCls(x.avg)}">${pctTxt(x.avg)}</span>`;
@@ -1802,8 +1890,10 @@ function pageResearch() {
   $("#app").innerHTML = `
     <section><div class="eyebrow">給想深入了解的人</div><h1>進階研究</h1>
       <p class="lead">模型比賽、資料稽核、每日學習紀錄和各種歷史回測。日常選股不需要看這一頁；<a href="#/performance">績效中心</a>有 AI 名單的真實成績。</p></section>
+    <section class="card" id="evo" hidden></section>
     <section class="card" id="race" hidden></section>
     <section class="card" id="lgst" hidden></section>
+    <section class="card" id="pst" hidden></section>
     <section class="card" id="dlearn" hidden></section>
     <section class="card" id="expl" hidden></section>
     <section class="card" id="laudit" hidden></section>
@@ -1838,7 +1928,7 @@ function pageResearch() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadRisk(); loadPort(); loadRace(); loadLgst(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadRisk(); loadPort(); loadRace(); loadLgst(); loadPst(); loadEvo(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
   loadFac();
 }
 
@@ -3702,7 +3792,7 @@ function quickCard(s, d) {
   const risk = (recOf(s, "balanced")?.recommendation_eligibility === "not_ranked" ? "" : mainRisk(s, "balanced")) || (s.timing?.hot || [])[0] || s.ai.risks?.[0] || "", t = trackLine();
   const ranked = Object.values(s.ai.modes).some((x) => x.rank);
   return `<section class="card qj"><div class="card-h"><h2>AI 判斷</h2><span class="faint small">${esc(s.date)} 收盤${s.liquidity_grade ? `・${liqPill(s)}` : ""}</span></div>
-    <div class="qj-top"><span class="pill ${g.c}">${g.t}</span><p>${esc(s.ai.summary || "")}<br><span class="faint small">${esc(g.why)}${ranked ? '・<a href="javascript:void 0" id="toRc">排名理由</a>' : ""}</span></p></div>
+    <div class="qj-top"><span style="display:grid;gap:4px;justify-items:start"><span class="pill ${g.c}">${g.t}</span><span class="pill ${judgeState(s).c}" title="${esc(judgeState(s).why)}">${judgeState(s).t}</span></span><p>${esc(s.ai.summary || "")}<br><span class="faint small">${esc(g.why)}${ranked ? '・<a href="javascript:void 0" id="toRc">排名理由</a>' : ""}</span></p></div>
     <div class="qj-grid">
       <div><span>參考價位</span><b>${zone.main}</b><small>${esc(zone.sub)}</small></div>
       <div><span>主要風險</span><b style="font-size:14px;font-weight:500">${risk ? esc(risk) : "沒有偵測到明顯風險訊號"}</b></div>

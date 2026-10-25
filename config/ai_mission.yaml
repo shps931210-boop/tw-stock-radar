@@ -1,0 +1,62 @@
+# 股栗子 AI 長期目標（V15，2026-10-25 由網站主人訂定）
+# 程式只讀不寫。要改目標或門檻，必須人工改這個檔案並把 version 加一；每日學習會記下每次版本變動。
+version: 1
+owner_decided: "2026-10-25"
+principle: "股栗子不需要功能越來越多，而是決策品質越來越好。每項研究都要先回答：這項修改能改善哪個目標？"
+
+goals:
+  - id: G1
+    priority: P0
+    text: 提高 20 日 AI 選股的成本後超額報酬
+    metric: 20 日前 10 名扣成本超額報酬（相對 0050）
+  - id: G2
+    priority: P0
+    text: 長期爭取跑贏 0050 與加權指數
+    metric: 前 10 名累積報酬 vs 0050、加權指數；跑贏 0050 的期數比例
+  - id: G3
+    priority: P0
+    text: 提升預測排序能力
+    metric: 20 日 Rank IC
+  - id: G4
+    priority: P0
+    text: 降低重大虧損
+    metric: 最大回撤；20 日落後 0050 超過 10% 的比例
+  - id: G5
+    priority: P0
+    text: 推薦的股票必須能實際交易
+    metric: 正式精選中流動性 E、F 級、處置股、資料不完整的檔數（必須是 0）
+  - id: G6
+    priority: P0
+    text: 避免未來資料洩漏與虛假回測
+    metric: 資料稽核全部通過；訓練標籤都在測試日之前到期
+  - id: G7
+    priority: P0
+    text: 每天自動檢查、檢討、學習並留下紀錄
+    metric: 每日學習成功率、連續失敗次數
+  - id: G8
+    priority: P1
+    text: 提升 5 日、60 日預測能力；不同市場環境下更穩定
+    metric: 5／60 日 Rank IC；四種市場環境的前 10 名超額
+  - id: G9
+    priority: P1
+    text: 網站以實際操作為主，不需要閱讀大量文字
+    metric: 首頁區塊數、首頁文字量
+  - id: G10
+    priority: P1
+    text: 不增加必要的付費服務
+    metric: 每月花費 NT$0
+
+# 「越來越準」只用這幾個數字判斷（主要指標一個、輔助指標四個）
+success:
+  primary: 20 日前 10 名扣成本超額報酬
+  supporting: [Rank IC, 跑贏 0050 的比例, 最大回撤, 成熟前瞻樣本數]
+  not_evidence: [訓練次數, 實驗數量, 網頁變漂亮, 只在訓練期間變好]
+
+# 研究代理只能自動調整這幾類東西；其他（正式交易邏輯、部署、資料稽核、付費服務）一律要人工
+research_whitelist: [feature, train_window, model_params, portfolio_rule, target]
+
+# 晉升門檻：數值以 app/learning.py GATE 為準（2026-10-17b 事先定好）；這裡只記錄規則，不能由程式修改
+promotion:
+  human_approval: true
+  auto_promote: false
+  gates: [資料正確, 排序改善, 策略改善, 風險合理, 前瞻驗證]

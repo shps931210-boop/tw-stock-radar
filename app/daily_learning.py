@@ -347,8 +347,16 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     new = mature(D)
     steps.append(f"到期對帳：新增 {len(new)} 份")
     L = load_matured("20")
-    err = errors(L)
-    drift_f = feature_drift(day)
+    fails = {}
+
+    def guard(name, fn, default):  # V15：單一步驟失敗只記下原因，其他步驟照跑
+        try:
+            return fn()
+        except Exception as e:  # noqa: BLE001
+            fails[name] = f"{type(e).__name__}: {e}"[:200]
+            return default
+    err = guard("錯誤分析", lambda: errors(L), {"dates": 0, "note": "錯誤分析失敗"})
+    drift_f = guard("特徵漂移分析", lambda: feature_drift(day), {"status": "error", "label": "特徵漂移分析失敗"})
     cand = {"retrained": False, "reason": "這次只做監控（沒有開啟訓練）"}
     if train and comp.get("ok"):
         try:
@@ -358,7 +366,7 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     elif train:
         cand = {"retrained": False, "reason": f"今天行情不完整，不訓練：{comp.get('why')}"}
         skipped.append("重新訓練")
-    effect = feature_effect(L, cand.get("research_ic"))
+    effect = guard("特徵有效性", lambda: feature_effect(L, cand.get("research_ic")), {"label": "特徵有效性分析失敗", "hypotheses": []})
     sc = json.loads((PRED / "scorecard.json").read_text("utf-8")) if (PRED / "scorecard.json").exists() else {"days": 0, "horizons": {}}
     st = learning.status(sc, cfg)
     reg = learning.load_registry()
@@ -392,7 +400,7 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
            "live": {"sealed_days": sc.get("days", 0), "matured": {h: v.get("matured", 0) for h, v in sc.get("horizons", {}).items()}},
            "candidate": {k: v for k, v in cand.items() if k != "research_ic"},
            "champion": st["champion"], "challenger": (st.get("active") or {}).get("version"),
-           "gate": {k: st["gate"].get(k) for k in ("status", "label", "days", "need", "live", "challenger_name")},
+           "gate": {k: st["gate"].get(k) for k in ("status", "label", "days", "need", "live", "challenger_name", "criteria")},
            "acceptance": st["acceptance"]["label"], "promotion_ok": st["acceptance"]["ok"], "auto_promote": st["auto_promote"],
            "model_drift": st["drift"], "feature_drift": {k: v for k, v in drift_f.items() if k != "rows"}, "feature_effect": effect,
            "errors": err, "risks": risks, "needs_human": bool(human), "human_why": human, "steps": steps, "skipped": skipped,
@@ -412,12 +420,49 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     else:
         rep["first_run_at"], rep["runs"] = rep["generated_at"], 1
     p.write_text(json.dumps(rep, ensure_ascii=False, indent=1, default=str), "utf-8")
+    try:  # V14 真實前瞻帳本：每天一行
+        from . import ledgers
+        if out_dir == OUT:
+            ledgers.record_live(day)
+    except Exception as e:  # noqa: BLE001
+        log(f"真實前瞻帳本沒有更新：{e}")
     try:
-        update_queue(rep, out_dir / "research_queue.json")
+        Q = update_queue(rep, out_dir / "research_queue.json")
     except Exception as e:  # noqa: BLE001  研究清單失敗不影響每日報告
+        Q = None
+        fails["研究清單"] = str(e)[:200]
         log(f"研究清單沒有更新：{e}")
+    evo = {}
+    if out_dir == OUT:   # V15 自主進化：目標檢查、登記實驗、反省、研究任務、晉升把關
+        from . import evolution, ledgers
+        evo = evolution.evolve(rep, Q, json.loads(ledgers.LIVE.read_text("utf-8")) if ledgers.LIVE.exists() else None)
+    rep["evolution"] = evo
+    rep["pipeline"] = pipeline(rep, fails, evo, train)
+    p.write_text(json.dumps(rep, ensure_ascii=False, indent=1, default=str), "utf-8")
     log(summary)
     return rep
+
+
+def pipeline(rep: dict, fails: dict, evo: dict, train: bool) -> list[dict]:
+    """每日總控流程每一步的狀態：success／failed／skipped，失敗和跳過都寫原因。"""
+    S = lambda name, ok, why=None, skip=False: {"step": name, "status": "failed" if name in fails else ("skipped" if skip else ("success" if ok else "failed")),
+                                                "why": fails.get(name) or why}
+    c, g = rep.get("candidate") or {}, rep.get("gate") or {}
+    es = {x["step"]: x for x in (evo or {}).get("steps", [])}
+    E = lambda name, label: ({"step": label, "status": es[name]["status"], "why": es[name].get("why")} if name in es else {"step": label, "status": "skipped", "why": "沒有執行（不是正式學習目錄）"})
+    no_mat = not rep.get("matured_today")
+    return [
+        S("資料品質檢查", rep["data"]["ok"], rep["data"].get("why")),
+        S("預測封存", bool(rep["sealed"]["today"]), None if rep["sealed"]["today"] else "今天沒有封存預測", skip=not rep["sealed"]["today"]),
+        S("成熟標籤對帳", True, "今天沒有預測到期" if no_mat else f"新增 {len(rep['matured_today'])} 份"),
+        S("錯誤分析", True, None if (rep.get("errors") or {}).get("dates") else "還沒有到期的 20 日預測", skip=not (rep.get("errors") or {}).get("dates")),
+        S("特徵漂移分析", True, (rep.get("feature_drift") or {}).get("label")),
+        E("更新研究任務", "研究任務更新"),
+        S("候選模型訓練", bool(c.get("retrained")), c.get("reason") or c.get("version"), skip=not c.get("retrained") and "失敗" not in (c.get("reason") or "")),
+        S("模型競賽", True, g.get("label")),
+        E("晉升把關", "晉升資格評估"),
+        {"step": "學習日誌保存", "status": "success", "why": f"history/learning/{rep['date']}.json"},
+    ]
 
 
 # ---------------- 6. 研究清單（V13）：每天的錯誤與假設累積起來，不會隔天重來 ----------------
@@ -478,7 +523,12 @@ def site_summary(src: Path = OUT, days: int = 30) -> dict | None:
                      "retrained": r["candidate"].get("retrained"), "version": r["candidate"].get("version"), "risks": len(r.get("risks", []))})
     q = json.loads((src / "research_queue.json").read_text("utf-8")) if (src / "research_queue.json").exists() else {"items": []}
     todo = sorted((x for x in q["items"] if x["status"] == "待驗證"), key=lambda x: (-x["times"], x["first_seen"]))
-    return {"latest": latest, "history": hist, "run_status": run_status(), "queue": {"open": len(todo), "total": len(q["items"]), "top": todo[:5]}}
+    rs = run_status()
+    ops = {"success_rate": rs.get("success_rate"), "runs": rs.get("runs", 0), "last_ok": rs.get("last_ok"), "fail_streak": rs.get("fail_streak", 0),
+           "latest_research": (todo[0]["text"] if todo else latest.get("summary")),
+           "candidate": (latest.get("candidate") or {}).get("version") or latest.get("challenger"),
+           "promotion": {"ok": bool(latest.get("promotion_ok")), "label": (latest.get("gate") or {}).get("label") or latest.get("acceptance")}}
+    return {"latest": latest, "history": hist, "run_status": rs, "ops": ops, "queue": {"open": len(todo), "total": len(q["items"]), "top": todo[:5]}}
 
 
 RUNS = OUT / "runs.json"

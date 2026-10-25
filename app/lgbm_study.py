@@ -32,6 +32,8 @@ VARIANTS = {
     "w_100": ("rank", 100, "只用最近 100 個訊號日訓練（約 4 年）"),
 }
 FUSED = {"fuse_targets": "融合：三種目標預測的百分位平均", "ens_v21": "融合：基準 LightGBM 和 V21 的百分位平均"}
+KEEP = ("market_cap", "avg_value_20", "vol_1y", "y60", "st20")   # 組合研究（portfolio_study）要用的欄位
+PREDS = Path(__file__).resolve().parent.parent / "data" / "lgbm_preds.pkl"
 T_NEED = 2.69
 MDD_GAP = 5.0
 
@@ -64,7 +66,7 @@ def walk(panel: pd.DataFrame, sigs: list[str], dates: list[str], idx: pd.Series 
         if len(tr_all) < ml.MIN_TRAIN:
             continue
         te = P[P["date"] == t]
-        o = te[["date", "sid", "industry", y, "v21"] + [c for c in ("market_cap",) if c in te]].copy()
+        o = te[["date", "sid", "industry", y, "v21"] + [c for c in KEEP if c in te]].copy()
         for name, (target, win) in ((k, v[:2]) for k, v in variants.items()):
             tr_d = tr_all[-win:] if win else tr_all
             tr = P[P["date"].isin(tr_d)]
@@ -88,11 +90,13 @@ def _diff(a: dict, b: dict) -> dict:
     return {"diff": round(float(d.mean()), 2) if n else None, "t": round(t, 2) if t is not None else None, "n": n}
 
 
-def run(panel: pd.DataFrame, sigs: list[str], D: dict, log=print) -> dict:
+def run(panel: pd.DataFrame, sigs: list[str], D: dict, log=print, keep: dict | None = None) -> dict:
     from . import robustness as rb
     t0 = time.time()
     dates, idx = D["dates"], D.get("idx_s")
     preds, tests = walk(panel, sigs, dates, idx)
+    if keep is not None:
+        keep.update(preds=preds, tests=tests)
     if not len(preds):
         return {"ready": False, "reason": "測試日不足"}
     cut = tests[int(len(tests) * (1 - mr.HOLDOUT))]
@@ -122,7 +126,7 @@ def run(panel: pd.DataFrame, sigs: list[str], D: dict, log=print) -> dict:
                         ("方向較好但證據不足" if (r["vs_base"]["diff"] or 0) > 0 else "沒有比基準好")}
     passed = [m for m in models if R[m].get("verdict", {}).get("passed")]
     reg = rb.regime4(idx)
-    res = {"schema_version": 1, "study_version": STUDY_VERSION, "horizon": mr.H, "top": mr.TOPN, "t_need": T_NEED, "mdd_gap": MDD_GAP,
+    res = {"schema_version": 1, "study_version": STUDY_VERSION, "generated_at": __import__("app.config", fromlist=["now"]).now().isoformat(timespec="seconds"), "horizon": mr.H, "top": mr.TOPN, "t_need": T_NEED, "mdd_gap": MDD_GAP,
            "tests": len(tests), "first_test": tests[0], "last_test": tests[-1], "holdout_from": cut,
            "independent_periods": R["v21"]["portfolio"].get("periods"), "names": names, "results": R,
            "size": rb.size_study(preds, models, use, mr.portfolio), "regimes": rb.regime_study(preds, models, reg),
@@ -142,7 +146,10 @@ def main(argv: list[str]) -> int:
         return 0
     D = pb.load()
     sigs = ml.signal_dates(D["dates"], pb.auto_start(D))
-    res = run(pd.read_pickle(path), sigs, D)
+    keep = {}
+    res = run(pd.read_pickle(path), sigs, D, keep=keep)
+    if "preds" in keep:   # 存起來給投資組合研究用，不必再訓練一次
+        pd.to_pickle({"preds": keep["preds"], "tests": keep["tests"]}, PREDS)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, ensure_ascii=False, indent=1, default=str), "utf-8")
     return 0
