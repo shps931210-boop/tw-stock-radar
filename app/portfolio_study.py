@@ -207,7 +207,7 @@ def walk_select(R: dict, names: list[str]) -> dict:
             "picked": {v: picks.count(v) for v in sorted(set(picks), key=picks.count, reverse=True)}}
 
 
-def run(preds: pd.DataFrame, tests: list[str], D: dict, log=print) -> dict:
+def run(preds: pd.DataFrame, tests: list[str], D: dict, log=print, features: pd.DataFrame | None = None) -> dict:
     t0 = time.time()
     dates = D["dates"]
     B = {d: mr._bench(D, dates, d) for d in tests}
@@ -234,11 +234,15 @@ def run(preds: pd.DataFrame, tests: list[str], D: dict, log=print) -> dict:
                            "label": "有足夠證據勝過前 10 名等權重" if ok_t and ok_mdd else ("方向較好但證據不足" if (R[v]["vs_top10"]["diff"] or 0) > 0 else "沒有比較好")}
     R["hold60"]["note"] = "每期 60 個交易日，和其他方式的期間長度不同：比年化報酬和總報酬，不做 t 比較"
     sel = walk_select(R, [v for v in VARIANTS if v != "hold60"])
+    from . import robustness as rb
+    reg = rb.regime4(D.get("idx_s"))
+    regimes = {v: _by_regime(R[v], reg) for v in ("top10", "top5", "top20", "buffer", "inv_vol", "ind_cap", "v21_top10")}
+    loss = loss_attribution(preds, use, features)
     passed = [v for v in comp if R[v].get("verdict", {}).get("passed")]
     best = max((v for v in VARIANTS if v != "hold60"), key=lambda v: R[v].get("net_excess") or -1e9)
     res = {"schema_version": 1, "study_version": STUDY_VERSION, "generated_at": __import__("app.config", fromlist=["now"]).now().isoformat(timespec="seconds"), "score": SCORE, "horizon": mr.H, "cost_pct": round(track.COST * 100, 3), "t_need": T_NEED,
            "first": use[0], "last": use[-1], "periods": len(use), "split": half, "names": {**VARIANTS, "v21_top10": "V21 前 10 名等權重（正式模型，參考）"},
-           "results": {k: {kk: vv for kk, vv in r.items()} for k, r in R.items()}, "cost": cost, "halves": halves, "walk_select": sel,
+           "results": {k: {kk: vv for kk, vv in r.items()} for k, r in R.items()}, "cost": cost, "halves": halves, "walk_select": sel, "regimes": regimes, "loss_attribution": loss,
            "passed": passed, "best_in_sample": best, "seconds": round(time.time() - t0),
            "conclusion": ("、".join(VARIANTS[v] for v in passed) + " 通過門檻，下一步放進影子預測做前瞻比較；正式精選不變") if passed else
            "沒有任何選股方式在事前門檻下勝過前 10 名等權重；正式精選的組合方式不變",
@@ -246,6 +250,60 @@ def run(preds: pd.DataFrame, tests: list[str], D: dict, log=print) -> dict:
                     "2024-09 之後的保留期之前已經看過，不當作獨立證據；「逐期樣本外挑選」只用每一期之前的資料決定要用哪一種方式。"}
     log(f"投資組合研究：{res['conclusion']}（{res['seconds']} 秒）")
     return res
+
+
+REG_NAME = {"up_calm": "多頭・平穩", "up_wild": "多頭・波動大", "down_calm": "空頭・平穩", "down_wild": "空頭・波動大"}
+BIG_LOSS = -0.10
+LOSS_FEATS = {"vol_1y": "一年波動", "ret_3m": "近 3 個月漲幅", "mom_12_1": "12-1 個月動能", "earnings_yield": "盈餘殖利率", "dist_ma60": "離季線距離",
+              "rsi": "RSI", "avg_value_20": "成交金額", "market_cap": "市值", "rev_yoy": "月營收年增", "beta": "Beta"}
+
+
+def _by_regime(r: dict, reg: dict) -> dict:
+    """同一個選股方式在四種市場環境（訊號日當天已知）的每期扣成本超額。"""
+    acc: dict = {}
+    for d, v in zip(r.get("dates", []), r.get("series", [])):
+        k = reg.get(d)
+        if k:
+            acc.setdefault(k, []).append(v)
+    out = {}
+    for k, xs in acc.items():
+        x = np.array(xs)
+        t = mr._t(x / 100)
+        out[k] = {"name": REG_NAME.get(k, k), "periods": len(x), "net_excess": round(float(x.mean()), 2), "t": round(t, 2) if t is not None else None}
+    return out
+
+
+def loss_attribution(preds: pd.DataFrame, dates: list[str], features: pd.DataFrame | None = None) -> dict:
+    """重大損失歸因（研究模板）：前 10 名裡 20 日落後 0050 超過 10% 的持股，和其他前 10 名持股比，選股當天的特徵有什麼不同。
+    特徵用當天全市場百分位（訊號日已知），差距用 t 檢定；只描述共同特徵，不代表因果。"""
+    y = f"y{mr.H}"
+    P = preds[preds["date"].isin(dates)]
+    if features is not None and len(features):
+        cols = [c for c in LOSS_FEATS if c in features and c not in P]
+        P = P.merge(features[["date", "sid", *cols]], on=["date", "sid"], how="left")
+    feats = [c for c in LOSS_FEATS if c in P]
+    for c in feats:
+        P[f"p_{c}"] = P.groupby("date")[c].rank(pct=True)
+    top = pd.concat([g.nlargest(10, SCORE) for _, g in P.groupby("date")]) if len(P) else P
+    top = top[top[y].notna()]
+    bad = top[y] < BIG_LOSS
+    out = {"picks": int(len(top)), "big_loss": int(bad.sum()), "share": round(float(bad.mean()) * 100, 1) if len(top) else None, "features": []}
+    if bad.sum() < 20:
+        out["note"] = "重大損失樣本不到 20 筆，不分析"
+        return out
+    for c in feats:
+        a, b = top.loc[bad, f"p_{c}"].dropna(), top.loc[~bad, f"p_{c}"].dropna()
+        if len(a) < 10 or len(b) < 10:
+            continue
+        se = math.sqrt(a.var(ddof=1) / len(a) + b.var(ddof=1) / len(b))
+        t = (a.mean() - b.mean()) / se if se > 0 else None
+        out["features"].append({"feature": c, "name": LOSS_FEATS[c], "loss_pct": round(float(a.mean()) * 100, 1), "other_pct": round(float(b.mean()) * 100, 1),
+                                "t": round(float(t), 2) if t is not None else None})
+    out["features"].sort(key=lambda r: -abs(r["t"] or 0))
+    sig = [r for r in out["features"] if abs(r["t"] or 0) >= 2.81]   # 雙尾 5% ÷ 10 個特徵
+    out["finding"] = ("重大損失的持股在選股當天：" + "；".join(f"{r['name']}的全市場百分位平均 {r['loss_pct']}（其他持股 {r['other_pct']}，t {r['t']}）" for r in sig[:3])
+                      + "。這是共同特徵，要再用樣本外排除規則驗證，才能說能降低損失") if sig else "重大損失的持股和其他持股，在選股當天的特徵沒有顯著差異"
+    return out
 
 
 def _bench_h(D: dict, dates: list[str], sig: str, h: int) -> tuple[float | None, float | None]:
@@ -273,7 +331,12 @@ def main(argv: list[str]) -> int:
         print("沒有 LightGBM 預測（先跑 lgbm_study），跳過")
         return 0
     k = pd.read_pickle(path)
-    res = run(k["preds"], k["tests"], pb.load())
+    panel = None   # 重大損失歸因要用到的特徵（研究資料集）；沒有就只用預測檔裡的欄位
+    pp = Path(argv[1]) if len(argv) > 1 else Path(__file__).resolve().parent.parent / "data" / "ml_panel.pkl"
+    if pp.exists():
+        panel = pd.read_pickle(pp)
+        panel = panel["panel"] if isinstance(panel, dict) else panel
+    res = run(k["preds"], k["tests"], pb.load(), features=panel)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, ensure_ascii=False, indent=1, default=str), "utf-8")
     return 0

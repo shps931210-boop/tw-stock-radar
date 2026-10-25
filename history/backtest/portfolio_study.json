@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "study_version": "2026-10-25",
- "generated_at": "2026-10-25T12:40:02",
+ "generated_at": "2026-10-25T19:08:28",
  "score": "base",
  "horizon": 20,
  "cost_pct": 0.585,
@@ -3011,9 +3011,229 @@
    "buffer": 4
   }
  },
+ "regimes": {
+  "top10": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -1.87,
+    "t": -2.32
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": 0.21,
+    "t": 0.19
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -0.66,
+    "t": -0.57
+   }
+  },
+  "top5": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -2.27,
+    "t": -2.22
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": 1.66,
+    "t": 1.33
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -1.05,
+    "t": -0.73
+   }
+  },
+  "top20": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -1.38,
+    "t": -1.84
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": 0.08,
+    "t": 0.07
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -0.56,
+    "t": -0.55
+   }
+  },
+  "buffer": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -1.32,
+    "t": -1.41
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": 0.25,
+    "t": 0.22
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -0.53,
+    "t": -0.43
+   }
+  },
+  "inv_vol": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -1.28,
+    "t": -1.45
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": -0.51,
+    "t": -0.45
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -0.62,
+    "t": -0.52
+   }
+  },
+  "ind_cap": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -2.18,
+    "t": -2.84
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": 0.47,
+    "t": 0.41
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -0.65,
+    "t": -0.6
+   }
+  },
+  "v21_top10": {
+   "up_calm": {
+    "name": "多頭・平穩",
+    "periods": 24,
+    "net_excess": -1.57,
+    "t": -1.08
+   },
+   "up_wild": {
+    "name": "多頭・波動大",
+    "periods": 37,
+    "net_excess": -0.62,
+    "t": -0.37
+   },
+   "down_wild": {
+    "name": "空頭・波動大",
+    "periods": 21,
+    "net_excess": -0.77,
+    "t": -0.61
+   }
+  }
+ },
+ "loss_attribution": {
+  "picks": 820,
+  "big_loss": 123,
+  "share": 15.0,
+  "features": [
+   {
+    "feature": "vol_1y",
+    "name": "一年波動",
+    "loss_pct": 51.2,
+    "other_pct": 38.3,
+    "t": 3.58
+   },
+   {
+    "feature": "mom_12_1",
+    "name": "12-1 個月動能",
+    "loss_pct": 68.1,
+    "other_pct": 61.5,
+    "t": 2.77
+   },
+   {
+    "feature": "beta",
+    "name": "Beta",
+    "loss_pct": 56.0,
+    "other_pct": 47.9,
+    "t": 2.25
+   },
+   {
+    "feature": "avg_value_20",
+    "name": "成交金額",
+    "loss_pct": 64.0,
+    "other_pct": 56.7,
+    "t": 2.07
+   },
+   {
+    "feature": "earnings_yield",
+    "name": "盈餘殖利率",
+    "loss_pct": 52.9,
+    "other_pct": 59.3,
+    "t": -1.95
+   },
+   {
+    "feature": "rev_yoy",
+    "name": "月營收年增",
+    "loss_pct": 69.4,
+    "other_pct": 65.1,
+    "t": 1.82
+   },
+   {
+    "feature": "rsi",
+    "name": "RSI",
+    "loss_pct": 47.1,
+    "other_pct": 50.2,
+    "t": -1.01
+   },
+   {
+    "feature": "ret_3m",
+    "name": "近 3 個月漲幅",
+    "loss_pct": 57.3,
+    "other_pct": 54.5,
+    "t": 0.99
+   },
+   {
+    "feature": "market_cap",
+    "name": "市值",
+    "loss_pct": 68.1,
+    "other_pct": 65.5,
+    "t": 0.95
+   },
+   {
+    "feature": "dist_ma60",
+    "name": "離季線距離",
+    "loss_pct": 50.7,
+    "other_pct": 49.0,
+    "t": 0.58
+   }
+  ],
+  "finding": "重大損失的持股在選股當天：一年波動的全市場百分位平均 51.2（其他持股 38.3，t 3.58）。這是共同特徵，要再用樣本外排除規則驗證，才能說能降低損失"
+ },
  "passed": [],
  "best_in_sample": "top5",
- "seconds": 15,
+ "seconds": 21,
  "conclusion": "沒有任何選股方式在事前門檻下勝過前 10 名等權重；正式精選的組合方式不變",
  "rules": "14 種方式同一組測試日、成本、母體；和前 10 名等權重比，|t| ≥ 2.89（Bonferroni）且最大回撤不能差超過 5 個百分點才算通過。2024-09 之後的保留期之前已經看過，不當作獨立證據；「逐期樣本外挑選」只用每一期之前的資料決定要用哪一種方式。"
 }

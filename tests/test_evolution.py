@@ -119,7 +119,7 @@ class Tasks(unittest.TestCase):
                        {"kind": "data", "key": "rev_yoy", "text": "rev_yoy 分布改變", "status": "待驗證", "times": 1, "first_seen": "2026-10-27"}]}
         T1 = ev.build_tasks(report(), q, tmp / "t.json", tmp / "e.json", tmp)
         T2 = ev.build_tasks(report(), q, tmp / "t.json", tmp / "e.json", tmp)
-        self.assertEqual(len(T1["tasks"]), 2)
+        self.assertEqual(len(T1["tasks"]), 3)   # 兩項錯誤記憶＋一項特徵失效研究模板
         self.assertEqual([t["id"] for t in T2["tasks"]], [t["id"] for t in T1["tasks"]])
         t = {x["key"]: x for x in T2["tasks"]}
         self.assertTrue(t["q:industry:lgbm:航運"]["allowed"])
@@ -127,7 +127,7 @@ class Tasks(unittest.TestCase):
         for k in ("question", "goal", "hypothesis", "metric", "data_needed", "design", "oos", "budget", "stop_rule", "priority"):
             self.assertIn(k, t["q:industry:lgbm:航運"])
         T3 = ev.build_tasks(report(), {"items": []}, tmp / "t.json", tmp / "e.json", tmp)
-        self.assertEqual(len(T3["tasks"]), 2)   # 不會刪除
+        self.assertEqual(len(T3["tasks"]), 3)   # 不會刪除
 
 
 def gate(ok_ic=True, ok_top=True, ok_beat=True, ok_mdd=True, days=60):
@@ -242,3 +242,46 @@ class PortfolioRules(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class V16(unittest.TestCase):
+    def test_templates_create_full_tasks(self):
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "portfolio_study.json").write_text(json.dumps({"regimes": {"top10": {"up_calm": {"name": "多頭・平穩", "periods": 24, "net_excess": -1.87, "t": -2.32}}},
+            "loss_attribution": {"features": [{"feature": "vol_1y", "name": "一年波動", "loss_pct": 51.2, "other_pct": 38.3, "t": 3.58}]}}), "utf-8")
+        T = ev.build_tasks(report(), None, tmp / "t.json", tmp / "e.json", tmp)
+        by = {t.get("template"): t for t in T["tasks"]}
+        for k in ("regime", "big_loss", "feature_failure"):
+            self.assertIn(k, by)
+            for f in ("hypothesis", "data_needed", "design", "metric", "oos", "budget", "stop_rule"):
+                self.assertTrue(by[k][f], (k, f))
+            self.assertTrue(by[k]["hypothesis"].startswith("待驗證假設"))
+
+    def test_daily_acceptance_answers_seven_questions_honestly(self):
+        rep = report()
+        evo = {"reflection": ev.reflect(rep), "new_experiments": [], "governance": {"label": "未通過", "recommend": False, "gates": [{"gate": "前瞻驗證", "ok": False}]}}
+        A = ev.daily_acceptance(rep, evo, {"tasks": []})
+        self.assertEqual(len(A), 7)
+        self.assertFalse(A[0]["yes"])
+        self.assertIn("沒有", A[0]["answer"])
+        self.assertIn("還不知道", A[4]["answer"])
+        self.assertIn("前瞻驗證", A[6]["answer"])
+        self.assertTrue(all(a["evidence"] for a in A))
+
+    def test_run_history_failure_kinds(self):
+        tmp = Path(tempfile.mkdtemp()) / "runs.json"
+        tmp.write_text(json.dumps({"runs": [{"at": "a", "ok": True}, {"at": "b", "ok": False, "error": "Actions 步驟結果：cancelled（可能逾時或環境錯誤）"},
+                                            {"at": "c", "ok": False, "error": "ConnectionError: x"}]}), "utf-8")
+        st = dl.run_status(tmp)
+        self.assertEqual(len(st["history"]), 3)
+        self.assertEqual(st["history"][0]["at"], "c")     # 最新在前
+        self.assertEqual(st["fail_kinds"], {"逾時": 1, "網路或資料來源": 1})
+
+    def test_loss_attribution_and_regimes(self):
+        P = fake_preds()
+        dates = sorted(P["date"].unique())
+        la = ps.loss_attribution(P, dates)
+        self.assertIn("finding", la) if la["big_loss"] >= 20 else self.assertIn("note", la)
+        r = ps._by_regime({"dates": dates[:4], "series": [1.0, -1.0, 2.0, 0.0]}, {dates[0]: "up_calm", dates[1]: "up_calm", dates[2]: "down_wild"})
+        self.assertEqual(r["up_calm"]["periods"], 2)
+        self.assertNotIn(dates[3], r)

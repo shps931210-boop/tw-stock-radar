@@ -217,7 +217,25 @@ def _trend(rows: list[dict]) -> dict:
 
 
 # ---------------- 4. 研究代理：研究任務 ----------------
-SEVERITY = {"live_drop": 3, "industry": 2, "feature": 2, "data": 3, "stock": 1, "near_miss": 2}
+SEVERITY = {"live_drop": 3, "industry": 2, "feature": 2, "data": 3, "stock": 1, "near_miss": 2, "regime": 2, "big_loss": 3}
+# V16 研究模板：每個模板事先寫好假設、資料、指標、樣本外驗證、預算與中止條件；研究代理只能套模板，不能自己改正式邏輯
+TEMPLATES = {
+    "feature_failure": {"action": "feature", "goal": "G3", "hypothesis": "這類特徵最近失效，拿掉或降低權重可以讓排序變好",
+                        "data_needed": "研究資料集 ml_panel（2019 起）＋已到期的封存預測",
+                        "design": "特徵消融：同一模型、同一組測試日，比較有／沒有這類特徵（app/robustness.py 的分組消融）",
+                        "metric": "20 日 Rank IC（主要）；前 10 名扣成本超額", "oos": "walk-forward，最近一段只用來確認、不用來挑",
+                        "budget": "每週回測內 20 分鐘", "stop_rule": "消融後 IC 差距的 |t| < 2 就結束，記成否定"},
+    "regime": {"action": "portfolio_rule", "goal": "G8", "hypothesis": "模型只在某種市場環境有效，在其他環境應該降低持股或改用 0050",
+               "data_needed": "加權指數（訊號日當天已知的 120 日均線與波動）＋portfolio_study 每期成績",
+               "design": "四種市場環境分組比較前 10 名扣成本超額；若要加切換規則，規則要先寫死，再用之後的期間驗證",
+               "metric": "各環境的每期扣成本超額與 t；切換後的總超額與最大回撤", "oos": "環境判斷只用當天以前的資料；切換規則用新期間驗證",
+               "budget": "每週回測內 5 分鐘", "stop_rule": "沒有任何環境的 |t| ≥ 2，或切換後 12 期內沒有改善就停止"},
+    "big_loss": {"action": "portfolio_rule", "goal": "G4", "hypothesis": "重大損失的持股有共同特徵，事先排除可以降低尾端虧損又不傷報酬",
+                 "data_needed": "前 10 名持股的 20 日結果＋選股當天的特徵百分位",
+                 "design": "比較落後 0050 超過 10% 的持股和其他持股的特徵差異；有顯著差異的特徵再做「排除規則」的組合研究",
+                 "metric": "重大損失比例、最大回撤（主要）；扣成本超額不能變差", "oos": "排除規則事先固定，用 walk-forward 檢查",
+                 "budget": "每週回測內 5 分鐘", "stop_rule": "排除後最大回撤沒改善或超額報酬變差就否定"},
+}
 
 
 def build_tasks(rep: dict, queue: dict | None, path: Path | None = None, exp_path: Path | None = None, bt: Path | None = None) -> dict:
@@ -229,7 +247,7 @@ def build_tasks(rep: dict, queue: dict | None, path: Path | None = None, exp_pat
     wl = set(load_mission().get("research_whitelist", []))
     cand = []
     for x in (queue or {}).get("items", []):
-        if x["status"] != "待驗證":
+        if x["status"] != "待驗證" or x["kind"] == "feature":   # 特徵問題改用「特徵失效研究」模板
             continue
         kind = {"industry": "portfolio_rule", "feature": "feature", "data": "data", "stock": "data"}.get(x["kind"], "data")
         cand.append({"key": f"q:{x['kind']}:{x['key']}", "source": x["kind"], "times": x["times"], "question": x["text"], "action": kind,
@@ -241,6 +259,18 @@ def build_tasks(rep: dict, queue: dict | None, path: Path | None = None, exp_pat
             if (r.get("verdict") or {}).get("passed") is False and (vb.get("diff") or 0) > 0:
                 cand.append({"key": f"nm:{fam}:{k}", "source": "near_miss", "times": 1, "action": f["kinds"][0], "goal": f["goal"],
                              "question": f"{(s.get('names') or {}).get(k) or r.get('name') or k}：方向較好（每期 {vb.get('diff')}%，t {vb.get('t')}）但證據不足，要不要放進影子預測累積真實前瞻？"})
+    ps_ = _read((bt or BT) / "portfolio_study.json") or {}
+    for k, r in ((ps_.get("regimes") or {}).get("top10") or {}).items():
+        if r.get("t") is not None and r["t"] <= -2:
+            cand.append({"key": f"tpl:regime:{k}", "source": "regime", "times": 1, "template": "regime", "action": "portfolio_rule", "goal": "G8",
+                         "question": f"前 10 名在「{r['name']}」時每期落後 0050 {abs(r['net_excess'])}%（t {r['t']}，{r['periods']} 期）：這種環境要不要減碼或改持 0050？"})
+    la = ps_.get("loss_attribution") or {}
+    for f in [x for x in la.get("features", []) if abs(x.get("t") or 0) >= 2.81][:2]:
+        cand.append({"key": f"tpl:big_loss:{f['feature']}", "source": "big_loss", "times": 1, "template": "big_loss", "action": "portfolio_rule", "goal": "G4",
+                     "question": f"重大損失的持股{f['name']}百分位平均 {f['loss_pct']}（其他 {f['other_pct']}，t {f['t']}）：事先排除這類股票能不能降低虧損又不傷報酬？"})
+    for h in ((rep.get("feature_effect") or {}).get("hypotheses") or [])[:3]:
+        cand.append({"key": f"tpl:feature_failure:{h.split(' ')[0]}", "source": "feature", "times": 1, "template": "feature_failure", "action": "feature", "goal": "G3",
+                     "question": "特徵可能失效：" + h})
     tr = (rep.get("reflection") or {}).get("q3_degrading") or {}
     if tr.get("status") == "warn":
         cand.append({"key": f"live:{today[:7]}", "source": "live_drop", "times": 1, "action": "model_params", "goal": "G3",
@@ -261,6 +291,9 @@ def build_tasks(rep: dict, queue: dict | None, path: Path | None = None, exp_pat
                  "budget": "GitHub Actions 免費額度內，每週回測工作最多 330 分鐘",
                  "stop_rule": f"連續 {RETRY_FAILS} 次沒有通過、新資料不足 {RETRY_NEW_PERIODS} 期就暫停",
                  "action": c["action"], "allowed": c["action"] in wl, "needs_human": c["action"] not in wl}
+            if c.get("template"):
+                t.update({k: v for k, v in TEMPLATES[c["template"]].items() if k != "action"}, template=c["template"],
+                         hypothesis="待驗證假設：" + TEMPLATES[c["template"]]["hypothesis"], goal_text=goal_text(TEMPLATES[c["template"]]["goal"]))
             T["tasks"].append(t)
             by[c["key"]] = t
         t.update(last_seen=today, priority=round(score, 2), prior_failed_experiments=fails, question=c["question"])
@@ -292,6 +325,40 @@ def governance(rep: dict, bt: Path | None = None) -> dict:
                       "research": "lgbm_study、portfolio_study 的變體（只做研究）"},
             "gates": gates, "recommend": ok, "human_approval": True,
             "label": "五關都通過：建議升級，等網站主人核准" if ok else f"未通過：{'、'.join(x['gate'] for x in gates if not x['ok'])}。正式模型維持 V21"}
+
+
+def daily_acceptance(rep: dict, evo: dict, T: dict | None) -> list[dict]:
+    """V16 每日學習成果驗收：七個問題，每個都要有證據；沒有證據就照實說沒有。「流程跑成功」不算進步。"""
+    day = rep.get("date")
+    F = evo.get("reflection") or {}
+    labels = sum((rep.get("candidate", {}).get("new_labels") or {}).values())
+    mat = rep.get("matured_stocks_today", 0)
+    err = rep.get("errors") or {}
+    tasks = [t for t in (T or {}).get("tasks", []) if t.get("last_seen") == day]
+    new_t = [t for t in tasks if t.get("created") == day]
+    exps = evo.get("new_experiments") or []
+    g = rep.get("gate") or {}
+    live = g.get("live") or {}
+    gov = evo.get("governance") or {}
+    fails = [x["gate"] for x in gov.get("gates", []) if not x["ok"]]
+    rej = [x for x in exps if not x.get("passed")]
+    A = lambda q, ans, ev, ok: {"q": q, "answer": ans, "evidence": ev, "yes": ok}
+    return [
+        A("今天有學到新資料嗎？", f"新增 {mat} 筆到期結果、{labels} 筆研究訓練標籤" if mat or labels else "沒有：今天沒有預測到期，也沒有新的訓練標籤",
+          "history/learning/matured/、candidate.new_labels", bool(mat or labels)),
+        A("今天發現什麼問題？", (f"錯誤分析涵蓋 {err['dates']} 個到期訊號日；" + (F.get("q2_recurring") or {}).get("text", "")) if err.get("dates") else "沒有新的到期結果，所以沒有新的錯誤統計",
+          "history/learning/research_queue.json", bool(err.get("dates"))),
+        A("今天研究什麼？", "、".join(t["id"] for t in tasks[:8]) + (f"（新增 {len(new_t)} 項）" if new_t else "") if tasks else "沒有更新任何研究任務",
+          "history/research/research_tasks.json", bool(tasks)),
+        A("今天做了什麼實驗？", "、".join(f"{x['id']} {x['spec']}（{'通過' if x['passed'] else '未通過'}）" for x in exps[:8]) if exps else "沒有新的實驗（實驗在每週回測執行）",
+          "history/research/experiments.json auto", bool(exps)),
+        A("新模型變好了嗎？", (f"同一批到期預測：LightGBM 前段扣成本超額 {live['lgbm']['top_net']}%、V21 {live['v21']['top_net']}%（{g.get('days')} 天）" if live.get("lgbm") and live.get("v21")
+                             else f"還不知道：同期到期的真實預測只有 {g.get('days') or 0}／{g.get('need') or 60} 天"), "history/predictions/scorecard.json", None),
+        A("是否值得升級？", gov.get("label") or "—", "五道晉升關卡", bool(gov.get("recommend"))),
+        A("哪些地方仍沒改善？", "；".join(filter(None, ["沒通過的關卡：" + "、".join(fails) if fails else "",
+                                                     f"今天被否定的實驗 {len(rej)} 個" if rej else "", (F.get("q3_degrading") or {}).get("text") if (F.get("q3_degrading") or {}).get("status") == "warn" else ""])) or "—",
+          "晉升關卡、實驗記憶、真實前瞻帳本", None),
+    ]
 
 
 def memory_status() -> dict:
@@ -329,6 +396,7 @@ def evolve(rep: dict, queue: dict | None = None, live: dict | None = None) -> di
     T = step("更新研究任務", lambda: build_tasks(rep2, queue))
     out["tasks"] = {"open": sum(1 for t in (T or {}).get("tasks", []) if t["status"] == "待研究"), "top": [t for t in (T or {}).get("tasks", []) if t["id"] in (T or {}).get("top", [])]}
     out["governance"] = step("晉升把關", lambda: governance(rep))
+    out["acceptance"] = step("成果驗收", lambda: daily_acceptance(rep, out, T))
     out["memory"] = step("記憶盤點", memory_status)
     out["steps"] = steps
     return out

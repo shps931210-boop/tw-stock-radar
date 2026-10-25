@@ -498,6 +498,25 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 .qj-next { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .stabs .btn.ghost.on { background: var(--accent); color: var(--panel); }
 .evl { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; } .evl > div { border-bottom: 1px solid var(--line); padding: 4px 0 6px; min-width: 0; }
+.pk2 { grid-template-columns: auto minmax(0, 1fr) 76px; align-items: center; }
+.pk2 .pk-m > * { display: block; } .pk2 .pk-m > b, .pk2 .pk-m > .faint { display: inline; }
+.pk-px { font-size: 14px; margin-top: 1px; } .pk-why { color: var(--muted); margin: 2px 0 4px; }
+.pk-tags { display: flex !important; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.pk-sc { display: grid; justify-items: center; background: var(--accent-soft); border-radius: 12px; padding: 8px 4px; line-height: 1.1; }
+.pk-sc b { font: 600 26px var(--f-num); color: var(--accent); } .pk-sc small { font-size: 11px; color: var(--muted); } .pk-sc span { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.mk-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; }
+.mk-ix span { display: block; font-size: 12px; color: var(--muted); } .mk-ix b { display: block; font: 600 22px var(--f-num); white-space: nowrap; } .mk-ix:first-child b { font-size: 28px; }
+.mk-ix small { font-size: 13px; } .mk-ix b.up { color: var(--up); } .mk-ix b.down { color: var(--down); }
+.mk-br { margin-top: 14px; } .mk-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--line); }
+.mk-bar i { display: block; height: 100%; } .mk-bar .u { background: var(--up); } .mk-bar .d { background: var(--down); } .mk-bar .f { background: var(--faint); opacity: .4; }
+.mk-bl { display: flex; justify-content: space-between; font-size: 13px; margin-top: 4px; } .mk-bl .up { color: var(--up); } .mk-bl .down { color: var(--down); }
+.mk-sub { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-top: 8px; } .mk-sub .up { color: var(--up); } .mk-sub .down { color: var(--down); }
+@media (max-width: 560px) { .mk-top { grid-template-columns: 1fr 1fr; } .mk-ix:first-child { grid-column: 1 / -1; } .mk-ix:first-child b { font-size: 30px; } }
+.runs { display: flex; flex-wrap: wrap; gap: 3px; } .runs i { width: 12px; height: 12px; border-radius: 3px; } .runs .ok { background: var(--accent-2); opacity: .7; } .runs .bad { background: var(--warn); }
+.gch { width: 100%; min-width: 420px; height: auto; display: block; } .gch .gl { stroke: var(--line); } .gch .zl { stroke: var(--muted); stroke-dasharray: 3 3; }
+.gch .ax { fill: var(--muted); font-size: 11px; } .gch .ca { stroke: var(--accent); stroke-width: 2; } .gch .cb { stroke: var(--accent-2); stroke-width: 2; }
+.lg-a { color: var(--accent); } .lg-b { color: var(--accent-2); }
+.chip.on { background: var(--accent); color: var(--panel); border-color: var(--accent); }
 .pk-go { font-size: 12px; color: var(--accent); white-space: nowrap; }
 .opsg { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 0 0 12px; }
 .opsg > div { background: var(--bg); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -1025,11 +1044,21 @@ function trackLine(k = "balanced") {
   if (!x || !x.weeks) return { main: "累積中", sub: "還沒有完整的一週實際紀錄" };
   return { main: `<span class="num ${signCls(x.avg_excess)}">${pctTxt(x.avg_excess)}</span> / 週`, sub: `前 10 名實際封存 ${x.weeks} 週，贏 0050 ${x.beat} 週` };
 }
+// 風險等級（規則，不是預測）：波動在全市場前 20%、流動性 D 級以下或有異常警示＝高；波動在後 40% 且流動性 A、B 級＝低；其他＝中
+function riskLevel(s) {
+  const v = s.vol_1y_pct, g = s.liquidity_grade, al = (s.ai?.alerts || []).length;
+  if ((v != null && v >= 80) || ["D", "E", "F", "?"].includes(g) || al || s.disposition) return { t: "高", c: "warn" };
+  if (v != null && v < 40 && ["A", "B"].includes(g)) return { t: "低", c: "s-ok" };
+  return { t: "中", c: "" };
+}
 function pickRow(s, k, raw) {
-  const a = s.ai.modes[k], R = raw ? null : recOf(s, k), g = rating(s);
-  return `<a class="pk" href="#/stock/${esc(s.stock_id)}"><span class="pk-n num">${R?.rank || a.rank}</span>
-    <span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span><br><span class="small">${esc(s.ai.strengths[0] || s.ai.tag || "")}</span></span>
-    <span class="pk-r"><span class="num">${s.close != null ? fmtNum(s.close, s.close < 50 ? 2 : 1) : "—"}</span><span class="num small ${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span><span class="pill ${g.c}">${g.t}</span><span class="pk-go">查看分析 ›</span></span></a>`;
+  const a = s.ai.modes[k], R = raw ? null : recOf(s, k), g = rating(s), rl = riskLevel(s), sc = s.complete ? a.score : null;
+  return `<a class="pk pk2" href="#/stock/${esc(s.stock_id)}"><span class="pk-n num">${R?.rank || a.rank}</span>
+    <span class="pk-m"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span>
+      <span class="pk-px num">${s.close != null ? fmtNum(s.close, s.close < 50 ? 2 : 1) : "—"} <span class="${signCls(s.chg_pct)}">${pctTxt(s.chg_pct)}</span></span>
+      <span class="small pk-why">${esc(s.ai.strengths[0] || s.ai.tag || "")}</span>
+      <span class="pk-tags"><span class="pill ${g.c}">${g.t}</span><span class="pill ${rl.c}">風險 ${rl.t}</span><span class="pk-go">查看分析 ›</span></span></span>
+    <span class="pk-sc"><b class="num">${sc == null ? "—" : fmtNum(sc, 0)}</b><small>/100</small><span>AI 評分</span></span></a>`;
 }
 function homePicks() {
   const M = SNAP.ai_modes, ks = ["stable", "balanced", "aggressive"].filter((k) => M[k]), k = ks.includes(store.get("hmode")) ? store.get("hmode") : "balanced";
@@ -1056,19 +1085,22 @@ function pageHome() {
   const m = SNAP.market, MB = SNAP.market_board?.markets, A = MB?.all, day = SNAP.data_dates?.prices || "";
   const stale = SNAP.expected_date && day && day < SNAP.expected_date, B = marketBrief();
   const up = A ? A.up : SNAP.breadth.up, dn = A ? A.down : SNAP.breadth.down, e50 = BYID["0050"];
-  const hot = recRows("balanced").slice(0, 6);
+  const tot = (up || 0) + (dn || 0) + (A?.flat ?? SNAP.breadth.flat ?? 0), pct = (x) => tot ? (x / tot * 100).toFixed(1) : 0;
+  const tw = { up: "偏多", down: "偏空", side: "盤整" }[B.trend] || "—";
   $("#app").innerHTML = `
     <form class="bigsearch" id="hs"><input id="hq" list="stockList" placeholder="輸入股票代號或名稱，例如 2330 或 台積電" aria-label="搜尋股票"><button class="btn lg">查看分析</button></form>
     <p class="small" id="hsmsg" style="margin:-8px 0 10px" hidden></p>
-    <div class="hchips">${hot.map((s) => `<a class="pill" href="#/stock/${esc(s.stock_id)}">${esc(s.name)}</a>`).join("")}</div>
+    <section class="card" id="hmkt"><div class="card-h"><h2>今日大盤</h2><span class="pill ${stale ? "warn" : "s-ok"}">${SNAP.source === "demo" ? "模擬資料" : stale ? "資料待更新" : esc(day) + " 收盤"}</span></div>
+      <div class="mk-top">
+        <div class="mk-ix"><span>加權指數</span><b class="num">${fmtNum(m.taiex, 2)}</b><small class="num ${signCls(m.taiex_chg)}">${m.taiex_pts != null ? `${fmtNum(Math.abs(m.taiex_pts), 2)}（${m.taiex_chg >= 0 ? "+" : "−"}${fmtNum(Math.abs(m.taiex_chg), 2)}%）` : pctTxt(m.taiex_chg)}</small></div>
+        ${e50 ? `<div class="mk-ix"><span>0050</span><b class="num">${fmtNum(e50.close, 2)}</b><small class="num ${signCls(e50.chg_pct)}">${pctTxt(e50.chg_pct)}</small></div>` : ""}
+        <div class="mk-ix"><span>市場強弱</span><b>${tw}</b><small class="faint">${B.trend ? esc(B.TT[B.trend].split("：")[0]) : "資料不足"}</small></div>
+      </div>
+      <div class="mk-br"><div class="mk-bar" role="img" aria-label="上漲 ${up} 家、下跌 ${dn} 家"><i class="u" style="width:${pct(up)}%"></i><i class="f" style="width:${(100 - pct(up) - pct(dn)).toFixed(1)}%"></i><i class="d" style="width:${pct(dn)}%"></i></div>
+        <div class="mk-bl"><span>上漲 <b class="up num">${up}</b></span><span class="faint">平盤 ${tot - up - dn}</span><span>下跌 <b class="down num">${dn}</b></span></div></div>
+      ${A ? `<div class="mk-sub"><span>漲停 <b class="up num">${A.limit_up}</b>／跌停 <b class="down num">${A.limit_down}</b></span><span>成交 <b class="num">${money(A.value)}</b></span></div>` : ""}
+      <p class="small" style="margin:8px 0 0"><a href="#/market">今日市場</a>・<a href="#/sectors">產業熱力圖</a></p></section>
     ${homePicks()}
-    <section class="card" id="hmkt"><div class="card-h"><h2>市場概況</h2><span class="pill ${stale ? "warn" : "s-ok"}">${SNAP.source === "demo" ? "模擬資料" : stale ? "資料待更新" : esc(day) + " 收盤"}</span></div>
-      <div class="kpis">
-        <div class="kpi"><span>加權指數</span><b class="num">${fmtNum(m.taiex, 2)}</b><small class="num ${signCls(m.taiex_chg)}">${pctTxt(m.taiex_chg)}</small></div>
-        ${e50 ? `<div class="kpi"><span>0050</span><b class="num">${fmtNum(e50.close, 2)}</b><small class="num ${signCls(e50.chg_pct)}">${pctTxt(e50.chg_pct)}</small></div>` : ""}
-        <div class="kpi"><span>上漲／下跌</span><b><span class="up">${up}</span> / <span class="down">${dn}</span></b><small class="faint">${B.trend ? esc(B.TT[B.trend].split(/[：，。]/)[0]) : ""}</small></div>
-        ${A ? `<div class="kpi"><span>漲停／跌停</span><b><span class="up">${A.limit_up}</span> / <span class="down">${A.limit_down}</span></b><small class="faint">成交 ${money(A.value)}</small></div>` : ""}</div>
-      <p class="small" style="margin:8px 0 0"><a href="#/market">今日市場</a>・<a href="#/sectors">產業熱力圖</a>・<a href="#/performance">AI 績效</a></p></section>
     ${homeWatch()}`;
   const onMode = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("hmode", b.dataset.k); $("#hpick").outerHTML = homePicks(); $("#hmode").onclick = onMode; };
   $("#hmode").onclick = onMode;
@@ -1849,12 +1881,16 @@ async function loadEvo() {
   el.hidden = false;
   const ST = { success: ["s-ok", "完成"], failed: ["warn", "失敗"], skipped: ["", "跳過"] }, M = V.memory || {}, F = V.reflection || {}, G = V.governance || {};
   const ok = (b) => `<span class="pill ${b ? "s-ok" : ""}">${b ? "是" : "否"}</span>`;
+  const tm = (x) => esc((x || "").slice(0, 16).replace("T", " "));
   el.innerHTML = `<div class="card-h"><h2>AI 研究中心</h2><span class="muted small">資料日 ${esc(L.date)}・目標第 ${esc(V.mission?.version ?? "—")} 版</span></div>
     <p style="margin:0 0 8px"><b>${esc(F.supervised_text || "")}</b></p>
     <h3 style="margin:10px 0 6px">今天的流程</h3>
     <div class="chips">${(L.pipeline || []).map((x) => `<span class="pill ${ST[x.status]?.[0] || ""}" title="${esc(x.why || "")}">${esc(x.step)}・${ST[x.status]?.[1] || esc(x.status)}</span>`).join(" ")}</div>
-    <h3 style="margin:12px 0 6px">今天學到什麼</h3>
-    <div class="evl">${(F.q5_outcome || []).map((x) => `<div><b>${esc(x.kind)}</b> ${ok(x.done)}<br><span class="small faint">${esc(x.evidence || "")}</span></div>`).join("")}
+    ${(V.acceptance || []).length ? `<h3 style="margin:12px 0 6px">今天的學習成果驗收</h3><div class="evl">${V.acceptance.map((a) => `<div><b>${esc(a.q)}</b> ${a.yes == null ? "" : ok(a.yes)}<br><span class="small">${esc(a.answer)}</span><br><span class="faint small">證據：${esc(a.evidence)}</span></div>`).join("")}</div>` : ""}
+    ${(S.run_status?.history || []).length ? `<h3 style="margin:12px 0 6px">最近 ${S.run_status.history.length} 次執行</h3><div class="runs">${S.run_status.history.map((r) => `<i class="${r.ok ? "ok" : "bad"}" title="${tm(r.at)} ${r.ok ? "成功" : "失敗：" + esc(r.error || "")}"></i>`).join("")}</div>
+      <p class="small faint" style="margin:4px 0 0">成功率 ${fmtNum(S.run_status.success_rate, 0)}%${Object.keys(S.run_status.fail_kinds || {}).length ? "・失敗原因：" + Object.entries(S.run_status.fail_kinds).map(([k, n]) => `${esc(k)} ${n} 次`).join("、") : ""}（左邊是最新）</p>` : ""}
+    <h3 style="margin:12px 0 6px">反省</h3>
+    <div class="evl">
       <div><b>新的錯誤證據</b><br><span class="small">${esc(F.q1_new_errors?.text || "—")}${(F.q1_new_errors?.items || []).map((w) => `・${esc(w.sid)} ${pctTxt(w.excess)}`).join("")}</span></div>
       <div><b>重複出現的錯誤</b><br><span class="small">${esc(F.q2_recurring?.text || "—")}${(F.q2_recurring?.items || []).map((x) => `<br>・${esc(x.text)}（${x.times} 次）`).join("")}</span></div>
       <div><b>能力有沒有變差</b><br><span class="small">${esc(F.q3_degrading?.text || "—")}</span></div></div>
@@ -1865,6 +1901,37 @@ async function loadEvo() {
     <h3 style="margin:12px 0 6px">五種記憶</h3>
     <p class="small" style="margin:0">預測 ${M.prediction?.n ?? 0} 天・結果 ${M.outcome?.n ?? 0} 份・錯誤 ${M.error?.n ?? 0} 項・實驗 ${M.experiment?.n ?? 0} 筆（自動登記 ${M.experiment?.auto ?? 0}）・目標第 ${M.mission?.version ?? "—"} 版</p>
     ${(V.new_experiments || []).length ? `<p class="small" style="margin:6px 0 0">今天新登記的實驗：${V.new_experiments.map((x) => `${esc(x.id)} ${esc(x.spec)}${x.passed ? "（通過）" : "（未通過）"}`).join("、")}</p>` : ""}`;
+}
+// V16 模型成長紀錄：正式（V21）vs 候選（LightGBM）同期間比較；樣本外與真實前瞻分開兩張圖
+async function loadGrowth() {
+  const el = $("#grow"); if (!el || !SITE) return;
+  let S; try { const r = await fetch("data/predictions/ledgers.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
+  const G = S?.growth; if (!G) return;
+  el.hidden = false;
+  const MET = { oos: "累積扣成本超額（樣本外）", top_net: "前 10 名扣成本超額（真實）", ic: "Rank IC（真實）", mdd: "最大回撤（真實）", matured: "成熟樣本數（真實）" };
+  const draw = (k) => {
+    let dates, A, B, unit = "%";
+    if (k === "oos") { dates = G.oos?.dates || []; A = G.oos?.champion || []; B = G.oos?.challenger || []; }
+    else if (k === "matured") { dates = G.live?.matured_dates || []; A = G.live?.matured || []; B = []; unit = ""; }
+    else { dates = G.live?.dates || []; A = G.live?.metrics?.[k]?.v21 || []; B = G.live?.metrics?.[k]?.lgbm || []; unit = k === "ic" ? "" : "%"; }
+    const vals = [...A, ...B].filter((v) => v != null);
+    if (vals.length < 2) return `<p class="small faint" style="margin:8px 0">${k === "oos" ? "還沒有樣本外資料" : "真實前瞻還沒有到期的資料：第一批 20 日預測 2026-11 中才到期，之後每天會多一個點。"}</p>`;
+    const W = 640, H = 220, L = 46, R = 10, T = 10, Bm = 26, lo = Math.min(0, ...vals), hi = Math.max(0, ...vals), n = dates.length;
+    const x = (i) => L + (n > 1 ? i / (n - 1) : 0) * (W - L - R), y = (v) => T + (hi - v) / ((hi - lo) || 1) * (H - T - Bm);
+    const line = (xs, cls) => `<polyline class="${cls}" fill="none" points="${xs.map((v, i) => v == null ? "" : `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ")}"/>`;
+    const ticks = [hi, (hi + lo) / 2, lo].map((v) => `<line class="gl" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fmtNum(v, unit === "%" ? 0 : k === "ic" ? 2 : 0)}${unit}</text>`).join("");
+    return `<div class="tbl"><svg viewBox="0 0 ${W} ${H}" class="gch" role="img" aria-label="${esc(MET[k])}">${ticks}<line class="zl" x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}"/>
+      ${line(A, "ca")}${B.length ? line(B, "cb") : ""}<text class="ax" x="${L}" y="${H - 6}">${esc(dates[0] || "")}</text><text class="ax" x="${W - R}" y="${H - 6}" text-anchor="end">${esc(dates[n - 1] || "")}</text></svg></div>
+      <p class="small" style="margin:4px 0 0"><span class="lg-a">━</span> V21（正式）${B.length ? `　<span class="lg-b">━</span> LightGBM（候選）` : ""}${k === "oos" ? `・最後：V21 ${pctTxt(A[A.length - 1])}、LightGBM ${pctTxt(B[B.length - 1])}` : ""}</p>`;
+  };
+  const exps = (G.experiments || []).slice().reverse();
+  el.innerHTML = `<div class="card-h"><h2>模型成長紀錄</h2><span class="muted small">正式模型：${esc(G.champion || "V21")}・候選版本 ${(G.versions || []).length} 個</span></div>
+    <div class="chips" id="gsel" style="margin-bottom:8px">${Object.entries(MET).map(([k, t], i) => `<button data-k="${k}" class="chip${i ? "" : " on"}">${esc(t)}</button>`).join("")}</div>
+    <div id="gch">${draw("oos")}</div>
+    <h3 style="margin:14px 0 6px">每次實驗（新的在上）</h3>
+    ${exps.length ? `<div class="evl">${exps.slice(0, 10).map((x) => `<div><b>${esc(x.family === "lgbm_study" ? "LightGBM" : "選股方式")}・${esc(x.spec)}</b> ${x.passed ? '<span class="pill s-ok">通過</span>' : '<span class="pill">否定</span>'}<br><span class="small">比基準每期 ${x.diff == null ? "—" : pctTxt(x.diff)}${x.t == null ? "" : `（t ${fmtNum(x.t, 2)}）`}</span><br><span class="faint small">${esc(x.id)}・資料到 ${esc(x.data_end || "—")}</span></div>`).join("")}</div>${exps.length > 10 ? `<p class="faint small" style="margin:4px 0 0">共 ${exps.length} 個實驗，只列最新 10 個。</p>` : ""}` : '<p class="small faint">還沒有實驗紀錄。</p>'}
+    ${(G.decisions || []).length ? `<h3 style="margin:14px 0 6px">研究決定</h3><ul class="small" style="margin:0;padding-left:18px">${G.decisions.slice().reverse().slice(0, 8).map((d) => `<li>${esc(d.date)} ${esc(d.version || "")}：${esc(d.change)}…（${esc({ adopted: "採用", shadow: "影子研究", rejected: "不採用", rolled_back: "回滾", pending: "等待" }[d.decision] || d.decision || "")}）</li>`).join("")}</ul>` : ""}`;
+  $("#gsel").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; $$("#gsel button").forEach((x) => x.classList.toggle("on", x === b)); $("#gch").innerHTML = draw(b.dataset.k); };
 }
 // V14 投資組合研究：同一份 LightGBM 排序換不同選股與持股方式（history/backtest/portfolio_study.json，每週更新）
 async function loadPst() {
@@ -1880,6 +1947,8 @@ async function loadPst() {
     ${ks.map((k) => { const x = R[k]; return `<tr${k === "top10" ? ' style="background:var(--accent-soft)"' : ""}><td>${esc(S.names[k])}</td><td class="r num">${pc(x.net_excess)}</td><td class="r num">${n(x.t)}</td>
       <td class="r num">${pc(x.total)}<br><span class="faint small">${pctTxt(x.bench_total)}</span></td><td class="r num">${pc(x.mdd)}</td><td class="r num">${n(x.turnover, 0)}%</td>
       <td class="r num">${x.vs_top10 ? `${pc(x.vs_top10.diff)}<br><span class="faint small">t ${n(x.vs_top10.t)}</span>` : "—"}</td><td class="small">${esc(x.verdict?.label || x.note || (k === "top10" ? "基準" : k === "v21_top10" ? "參考" : ""))}</td></tr>`; }).join("")}</tbody></table></div>
+    ${S.regimes?.top10 ? `<p class="small" style="margin:8px 0 0"><b>市場環境（前 10 名每期扣成本超額）：</b>${Object.values(S.regimes.top10).map((r) => `${esc(r.name)} ${pc(r.net_excess)}（t ${n(r.t)}，${r.periods} 期）`).join("、")}</p>` : ""}
+    ${S.loss_attribution?.finding ? `<p class="small" style="margin:6px 0 0"><b>重大損失歸因：</b>前 10 名持股 ${S.loss_attribution.picks} 筆裡有 ${S.loss_attribution.big_loss} 筆落後 0050 超過 10%（${S.loss_attribution.share}%）。${esc(S.loss_attribution.finding)}。</p>` : ""}
     <p class="small" style="margin:8px 0 0">逐期樣本外挑選（每期只看之前已到期的成績決定用哪一種方式）：和前 10 名比每期 ${pc(W.vs_top10)}（t ${n(W.t)}，${W.periods ?? 0} 期）。</p>
     <p class="faint small" style="margin:6px 0 0">${esc(S.rules)}這是歷史模擬，不是真實績效。</p>`;
 }
@@ -1891,6 +1960,7 @@ function pageResearch() {
     <section><div class="eyebrow">給想深入了解的人</div><h1>進階研究</h1>
       <p class="lead">模型比賽、資料稽核、每日學習紀錄和各種歷史回測。日常選股不需要看這一頁；<a href="#/performance">績效中心</a>有 AI 名單的真實成績。</p></section>
     <section class="card" id="evo" hidden></section>
+    <section class="card" id="grow" hidden></section>
     <section class="card" id="race" hidden></section>
     <section class="card" id="lgst" hidden></section>
     <section class="card" id="pst" hidden></section>
@@ -1928,7 +1998,7 @@ function pageResearch() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadRisk(); loadPort(); loadRace(); loadLgst(); loadPst(); loadEvo(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadRisk(); loadPort(); loadRace(); loadLgst(); loadPst(); loadEvo(); loadGrowth(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
   loadFac();
 }
 

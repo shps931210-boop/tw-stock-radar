@@ -119,8 +119,43 @@ def oos() -> dict:
     return out
 
 
+def growth() -> dict:
+    """模型成長紀錄：正式模型（V21）和候選模型（LightGBM）在同一批期間的累積扣成本超額；
+    樣本外（歷史）和真實前瞻分開兩條時間軸，不混在一起。另附每次實驗與模型版本的時間序列。"""
+    out = {}
+    p = _read(BT / "portfolio_study.json")
+    if p and p.get("results"):
+        R = p["results"]
+        def cum(r):
+            c, xs = 0.0, []
+            for v in r.get("series", []):
+                c = (1 + c / 100) * (1 + v / 100) * 100 - 100
+                xs.append(round(c, 2))
+            return xs
+        a, b = R.get("v21_top10") or {}, R.get("top10") or {}
+        out["oos"] = {"label": "樣本外（歷史 walk-forward）", "dates": b.get("dates", []), "champion": cum(a), "challenger": cum(b),
+                      "note": "前 10 名每期扣成本超額（相對 0050）連乘；每期只用之前的資料訓練"}
+    lv = _read(LIVE) or {"rows": []}
+    rows = [r for r in lv["rows"] if r.get("models")]
+    out["live"] = {"label": "真實前瞻（開盤前封存）", "dates": [r["date"] for r in rows],
+                   "metrics": {k: {m: [((r["models"].get(m) or {}).get(k)) for r in rows] for m in ("v21", "lgbm")} for k in ("top_net", "ic", "mdd", "beat_0050")},
+                   "matured": [r.get("matured_dates", 0) for r in lv["rows"]], "matured_dates": [r["date"] for r in lv["rows"]]}
+    E = _read(ROOT / "history" / "research" / "experiments.json") or {}
+    out["experiments"] = [{"id": x["id"], "at": x["run_at"][:10], "family": x["family"], "spec": x["spec"], "diff": (x.get("vs_baseline") or {}).get("diff"),
+                           "t": (x.get("vs_baseline") or {}).get("t"), "passed": x.get("passed"), "data_end": x.get("data_end")} for x in E.get("auto", [])][-60:]
+    out["decisions"] = [{"date": x.get("date"), "version": x.get("version"), "change": (x.get("change") or "")[:80], "decision": x.get("decision")} for x in E.get("items", [])][-20:]
+    try:
+        from . import learning
+        reg = learning.load_registry()
+        out["versions"] = [{"version": v.get("version"), "trained_at": (v.get("trained_at") or "")[:10], "status": v.get("status")} for v in reg.get("versions", [])][-20:]
+        out["champion"] = (reg.get("champion") or {}).get("name") or "V21 固定權重"
+    except Exception:  # noqa: BLE001
+        out["versions"] = []
+    return out
+
+
 def build() -> dict:
     lv = _read(LIVE) or {"rows": []}
-    return {"generated_at": config.now().isoformat(timespec="seconds"), "research": research(), "oos": oos(),
+    return {"growth": growth(), "generated_at": config.now().isoformat(timespec="seconds"), "research": research(), "oos": oos(),
             "live": {"latest": lv["rows"][-1] if lv["rows"] else None, "history": lv["rows"][-60:],
                      "caveat": "唯一沒被看過的資料：開盤前封存、20 個交易日後才對帳。樣本少時數字波動很大"}}

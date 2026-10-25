@@ -551,6 +551,20 @@ def record(ok: bool, error: str | None = None, day: str | None = None, seconds: 
     return log
 
 
+def _fail_kind(err: str | None) -> str | None:
+    """失敗原因分類（最近 30 次執行的失敗分析用）。"""
+    if not err:
+        return None
+    e = err.lower()
+    if "timeout" in e or "逾時" in err or "cancel" in e:
+        return "逾時"
+    if any(k in e for k in ("connection", "http", "ssl", "timed out", "network")) or "下載" in err:
+        return "網路或資料來源"
+    if any(k in err for k in ("行情", "資料庫", "no such table")) or "keyerror" in e:
+        return "資料問題"
+    return "程式錯誤"
+
+
 def run_status(path: Path | None = None, last: int = 30) -> dict:
     """成功率、連續失敗次數、最近一次成功時間、最近一次失敗原因。"""
     path = path or RUNS
@@ -569,6 +583,8 @@ def run_status(path: Path | None = None, last: int = 30) -> dict:
     return {"runs": len(runs), "recent": len(recent), "success_rate": round(sum(r["ok"] for r in recent) / len(recent) * 100, 1),
             "fail_streak": streak, "last_ok": ok[-1]["at"] if ok else None, "last_fail": bad[-1] if bad else None,
             "last": runs[-1], "alert": streak >= ALERT_FAILS, "label": lab,
+            "history": [{**r, "kind": _fail_kind(r.get("error"))} for r in recent[::-1]],
+            "fail_kinds": {k: sum(1 for r in recent if not r["ok"] and _fail_kind(r.get("error")) == k) for k in {_fail_kind(r.get("error")) for r in recent if not r["ok"]}},
             "affects_official": False, "impact": "不影響正式排名與網站更新：正式排行榜是固定權重 V21，學習只更新影子候選模型",
             "needs_human": streak >= ALERT_FAILS}
 

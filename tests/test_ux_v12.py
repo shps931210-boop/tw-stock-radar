@@ -30,8 +30,8 @@ class Nav(unittest.TestCase):
 class Home(unittest.TestCase):
     def test_four_blocks_search_first(self):
         home = fn("pageHome")
-        order = [home.index(x) for x in ['id="hs"', "homePicks()", 'id="hmkt"', "homeWatch()"]]
-        self.assertEqual(order, sorted(order))                   # V13：搜尋 → AI 今日精選 → 市場概況 → 自選股
+        order = [home.index(x) for x in ['id="hs"', 'id="hmkt"', "homePicks()", "homeWatch()"]]
+        self.assertEqual(order, sorted(order))                   # V16：搜尋 → 今日大盤 → AI 精選（分數）→ 自選股
         for x in ["briefCard()", "statusCard()", "changesCard()", "loadNews", "homePerf()", "drawTreemap"]:
             self.assertNotIn(x, home)
 
@@ -66,3 +66,17 @@ class Stock(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HomeV16(unittest.TestCase):
+    """V16：大盤資訊與 AI 分數要清楚可見（使用者說上一版比較清楚）。"""
+    def test_market_card_has_index_0050_breadth_strength(self):
+        home = fn("pageHome")
+        for x in ["加權指數", "0050", "市場強弱", "上漲", "下跌", "漲停", "mk-bar"]:
+            self.assertIn(x, home)
+
+    def test_pick_row_shows_numeric_score_status_risk(self):
+        row = fn("pickRow")
+        for x in ["a.score", "/100", "AI 評分", "rating(s)", "riskLevel(s)", "查看分析"]:
+            self.assertIn(x, row)
+        self.assertNotIn("機率", row)   # 分數不是上漲機率
