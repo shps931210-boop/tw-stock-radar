@@ -422,11 +422,66 @@ def site_summary(src: Path = OUT, days: int = 30) -> dict | None:
         hist.append({"date": r["date"], "data_ok": r["data"]["ok"], "sealed": r["sealed"]["today"], "on_time": r["sealed"]["on_time"],
                      "matured": len(r.get("matured_today", [])), "labels": sum((r["candidate"].get("new_labels") or {}).values()),
                      "retrained": r["candidate"].get("retrained"), "version": r["candidate"].get("version"), "risks": len(r.get("risks", []))})
-    return {"latest": latest, "history": hist}
+    return {"latest": latest, "history": hist, "run_status": run_status()}
+
+
+RUNS = OUT / "runs.json"
+ALERT_FAILS = 2        # 連續失敗幾次就讓 Actions 標成失敗（寄通知信）
+
+
+def record(ok: bool, error: str | None = None, day: str | None = None, seconds: float | None = None, path: Path | None = None) -> dict:
+    """每一次每日學習的執行結果（成功或失敗都記）。同一個 Actions 執行只記一次。"""
+    import os
+    path = path or RUNS
+    log = json.loads(path.read_text("utf-8")) if path.exists() else {"runs": []}
+    rid = os.environ.get("GITHUB_RUN_ID") or f"local-{time.time():.0f}"
+    if any(r.get("run_id") == rid for r in log["runs"]):
+        return log
+    log["runs"].append({"at": config.now().isoformat(timespec="seconds"), "run_id": rid, "ok": ok, "date": day,
+                        "error": (error or "")[:300] or None, "seconds": None if seconds is None else round(seconds)})
+    log["runs"] = log["runs"][-200:]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(log, ensure_ascii=False, indent=1), "utf-8")
+    return log
+
+
+def run_status(path: Path | None = None, last: int = 30) -> dict:
+    """成功率、連續失敗次數、最近一次成功時間、最近一次失敗原因。"""
+    path = path or RUNS
+    runs = (json.loads(path.read_text("utf-8")) if path.exists() else {"runs": []})["runs"]
+    if not runs:
+        return {"runs": 0, "label": "還沒有執行紀錄"}
+    recent = runs[-last:]
+    streak = 0
+    for r in reversed(runs):
+        if r["ok"]:
+            break
+        streak += 1
+    ok = [r for r in runs if r["ok"]]
+    bad = [r for r in runs if not r["ok"]]
+    lab = ("最近一次執行成功" if runs[-1]["ok"] else f"最近一次執行失敗（連續 {streak} 次）：{runs[-1].get('error') or '原因不明'}")
+    return {"runs": len(runs), "recent": len(recent), "success_rate": round(sum(r["ok"] for r in recent) / len(recent) * 100, 1),
+            "fail_streak": streak, "last_ok": ok[-1]["at"] if ok else None, "last_fail": bad[-1] if bad else None,
+            "last": runs[-1], "alert": streak >= ALERT_FAILS, "label": lab}
 
 
 def main(argv: list[str]) -> int:
-    rep = run(train="--no-train" not in argv)
+    if argv[:1] == ["record"]:   # 工作流程補記：這一步被強制停止（逾時）時，程式自己來不及記錄
+        outcome = argv[1] if len(argv) > 1 else "unknown"
+        if outcome != "success":
+            record(False, f"Actions 步驟結果：{outcome}（可能逾時或環境錯誤）")
+        st = run_status()
+        print(st["label"], f"成功率 {st.get('success_rate')}%")
+        return 1 if st.get("alert") else 0
+    t0 = time.time()
+    try:
+        rep = run(train="--no-train" not in argv)
+    except Exception as e:  # noqa: BLE001  失敗要留下紀錄，網站不會顯示「今天已完成學習」
+        import traceback
+        traceback.print_exc()
+        record(False, f"{type(e).__name__}: {e}", seconds=time.time() - t0)
+        return 1
+    record(True, None, rep["date"], time.time() - t0)
     print(json.dumps({k: rep[k] for k in ("date", "summary", "needs_human")}, ensure_ascii=False))
     return 0
 

@@ -128,6 +128,7 @@ jobs:
       # V31 每日自主學習：到期對帳、錯誤分析、特徵漂移；研究資料集有新到期標籤才重新訓練候選模型（通過上線檢查才換版）
       # 正式排行榜不受影響；失敗不影響網站。時間上限 30 分鐘，程式內另有運算時間預算，不夠就跳過訓練
       - name: 每日自主學習
+        id: dlearn
         if: env.MODE == 'full'
         continue-on-error: true
         timeout-minutes: 30
@@ -137,6 +138,11 @@ jobs:
           gh release download ml-panel -p ml_panel.pkl.gz -D data --clobber && gunzip -f data/ml_panel.pkl.gz || echo "還沒有研究資料集，今天只做監控"
           python -m app.daily_learning
           if [ -f data/ml_panel.pkl ]; then gzip -c data/ml_panel.pkl > ml_panel.pkl.gz && gh release upload ml-panel ml_panel.pkl.gz --clobber; fi
+      # 每日學習的執行紀錄（history/learning/runs.json）：逾時被強制停止時在這裡補記失敗；連續失敗 2 次以上，最後的檢查會讓這次執行標成失敗並寄信
+      - name: 記錄每日學習是否成功
+        if: always() && env.MODE == 'full'
+        continue-on-error: true
+        run: python -m app.daily_learning record "${{ steps.dlearn.outcome }}"
 
       # 新聞與公告失敗不影響股價更新；網站新聞中心會顯示最後成功時間與警告
       - name: 新聞與公司公告

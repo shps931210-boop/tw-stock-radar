@@ -125,5 +125,38 @@ class Retrain(unittest.TestCase):
         self.assertFalse(r["retrained"])
 
 
+class RunLog(unittest.TestCase):
+    def test_failures_are_recorded_and_streak_alerts(self):
+        import os
+        p = Path(tempfile.mkdtemp()) / "runs.json"
+        for i, ok in enumerate((True, False, False)):
+            os.environ["GITHUB_RUN_ID"] = f"r{i}"
+            dl.record(ok, None if ok else "boom", path=p)
+        dl.record(False, "again", path=p)                     # 同一個執行只記一次
+        st = dl.run_status(p)
+        self.assertEqual(st["runs"], 3)
+        self.assertEqual(st["fail_streak"], 2)
+        self.assertTrue(st["alert"])
+        self.assertIsNotNone(st["last_ok"])
+        self.assertIn("boom", st["label"])
+        os.environ["GITHUB_RUN_ID"] = "r9"
+        dl.record(True, path=p)
+        self.assertFalse(dl.run_status(p)["alert"])
+        del os.environ["GITHUB_RUN_ID"]
+
+    def test_crash_is_logged_not_reported_as_done(self):
+        p = Path(tempfile.mkdtemp()) / "runs.json"
+        orig_run, orig_runs = dl.run, dl.RUNS
+        dl.run = lambda **k: (_ for _ in ()).throw(RuntimeError("資料庫壞了"))
+        dl.RUNS = p
+        try:
+            self.assertEqual(dl.main([]), 1)
+        finally:
+            dl.run, dl.RUNS = orig_run, orig_runs
+        st = dl.run_status(p)
+        self.assertFalse(st["last"]["ok"])
+        self.assertIn("資料庫壞了", st["last"]["error"])
+
+
 if __name__ == "__main__":
     unittest.main()

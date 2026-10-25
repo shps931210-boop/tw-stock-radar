@@ -1239,13 +1239,16 @@ async function loadDL() {
   const yes = (v, a = "是", b = "否") => v == null ? "—" : v ? `<span class="pill s-ok">${a}</span>` : `<span class="pill warn">${b}</span>`;
   const mt = L.live?.matured || {}, NM = { v21: "V21 固定權重（正式）", lgbm: "LightGBM（候選）", ens: "V21＋LightGBM 平均" };
   const ind = (E.by_industry?.lgbm || []).filter((r) => r.enough).slice(0, 3);
-  el.innerHTML = `<div class="card-h"><h2>AI 每日學習報告</h2><span class="muted small">${esc(L.date)}・${esc((L.generated_at || "").slice(11, 16))} 更新${L.runs > 1 ? `（今天第 ${L.runs} 次）` : ""}</span></div>
-    <div class="banner ${L.needs_human ? "warn" : "info"} small" style="margin-bottom:10px"><b>${esc(L.summary)}</b>${L.needs_human ? `<br>需要你注意：${esc(L.human_why.join("；"))}` : "<br>今天不需要人工處理。"}</div>
+  const RS = S.run_status || {}, failed = RS.last && RS.last.ok === false, tm = (x) => esc((x || "").slice(0, 16).replace("T", " "));
+  el.innerHTML = `<div class="card-h"><h2>AI 每日學習報告</h2><span class="muted small">資料日 ${esc(L.date)}・${tm(L.generated_at)} 產生</span></div>
+    ${failed ? `<div class="banner warn small" style="margin-bottom:10px"><b>最近一次自主學習沒有完成</b>（${tm(RS.last.at)}）：${esc(RS.last.error || "原因不明")}${RS.fail_streak > 1 ? `，已連續失敗 ${RS.fail_streak} 次` : ""}。下面是最近一次成功的報告（${tm(RS.last_ok)}），不是今天的學習結果。</div>` : ""}
+    <div class="banner ${L.needs_human ? "warn" : "info"} small" style="margin-bottom:10px"><b>${failed ? "上次成功時：" : ""}${esc(L.summary)}</b>${L.needs_human ? `<br>需要你注意：${esc(L.human_why.join("；"))}` : ""}</div>
     <div class="tbl"><table class="wrap"><tbody>
-      <tr><td>今天的行情</td><td>${yes(L.data?.ok, "齊全", "不齊全")} ${esc(L.data?.why || "")}</td></tr>
-      <tr><td>今天的預測封存</td><td>${yes(L.sealed?.today, "已封存", "沒有封存")} ${L.sealed?.on_time === false ? '<span class="pill warn">晚於開盤</span>' : ""} <span class="faint small">${esc(L.sealed?.model_version || "")}</span></td></tr>
+      <tr><td>學習流程執行狀態</td><td>${RS.runs ? `最近 ${RS.recent} 次成功率 ${fmtNum(RS.success_rate, 0)}%・最近一次成功 ${tm(RS.last_ok) || "—"}${RS.fail_streak ? `・<span class="pill warn">連續失敗 ${RS.fail_streak} 次</span>` : ""}` : "還沒有執行紀錄（從 V31.1 開始記錄）"}</td></tr>
+      <tr><td>資料日的行情</td><td>${yes(L.data?.ok, "齊全", "不齊全")} ${esc(L.data?.why || "")}</td></tr>
+      <tr><td>資料日的預測封存</td><td>${yes(L.sealed?.today, "已封存", "沒有封存")} ${L.sealed?.on_time === false ? '<span class="pill warn">晚於開盤</span>' : ""} <span class="faint small">${esc(L.sealed?.model_version || "")}</span></td></tr>
       <tr><td>已累積的真實預測</td><td>${L.live?.sealed_days ?? 0} 天；已到期：5 日 ${mt["5"] ?? 0}、20 日 ${mt["20"] ?? 0}、60 日 ${mt["60"] ?? 0} 天</td></tr>
-      <tr><td>今天到期對帳</td><td>${(L.matured_today || []).length ? L.matured_today.map((x) => `${esc(x.signal_date)} 的 ${x.horizon} 日預測（${x.stocks} 檔）`).join("、") : "今天沒有預測到期"}</td></tr>
+      <tr><td>這次到期對帳</td><td>${(L.matured_today || []).length ? L.matured_today.map((x) => `${esc(x.signal_date)} 的 ${x.horizon} 日預測（${x.stocks} 檔）`).join("、") : "今天沒有預測到期"}</td></tr>
       <tr><td>候選模型</td><td>${C.retrained ? `<span class="pill acc">今天重新訓練</span> ${esc(C.version || "")}（${C.status === "active" ? "通過上線檢查" : "沒通過檢查，沿用上一版"}）` : `<span class="pill">沒有重新訓練</span> ${esc(C.reason || "")}`}<br><span class="faint small">目前上線的候選版本：${esc(L.challenger || "—")}；正式模型：${esc(L.champion?.name || "V21")}</span></td></tr>
       <tr><td>新的訓練標籤</td><td>${C.new_labels ? Object.entries(C.new_labels).map(([h, n]) => `${h} 日 ${n} 筆`).join("、") : "—"}${C.labeled_through ? `<span class="faint small">（標籤已到期到：${Object.entries(C.labeled_through).map(([h, d]) => `${h} 日 ${d || "—"}`).join("、")}）</span>` : ""}</td></tr>
       <tr><td>新舊模型比賽</td><td>${esc(G.label || "—")}<br><span class="faint small">${esc(L.acceptance || "")}</span></td></tr>

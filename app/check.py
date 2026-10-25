@@ -33,6 +33,11 @@ def main() -> int:
         bs = json.loads(b.read_text("utf-8"))
         if not bs.get("ok"):
             problems.append("資料庫備份或還原測試失敗：" + "；".join(bs.get("problems") or ["原因不明"]) + f"（最後一次成功：{bs.get('last_ok') or '從未'}）")
+    if os.environ.get("MODE") == "full":  # V31：每日自主學習連續失敗就寄通知信（網站照樣發布）
+        from . import daily_learning
+        st = daily_learning.run_status()
+        if st.get("alert"):
+            problems.append(f"每日自主學習連續失敗 {st['fail_streak']} 次：{(st.get('last') or {}).get('error') or '原因不明'}（最近一次成功：{st.get('last_ok') or '從未'}）")
     if not s.get("history", {}).get("ready", True):
         print(f"⏳ 歷史股價回補中：{s['history']['days']}/{s['history']['need']} 天")
     for x in problems:
