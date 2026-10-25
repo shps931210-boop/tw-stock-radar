@@ -97,8 +97,44 @@ class HomeV16(unittest.TestCase):
 
     def test_home_regression_e2e_exists(self):
         e2e = (Path(__file__).parent / "e2e" / "home.mjs").read_text("utf-8")
-        for x in ["大盤資訊清楚可見", "AI 數字評分清楚可見", "股票搜尋正常", "AI 三種策略可以切換", "自選股可以加入並顯示",
-                  "漲跌停資訊正常", "個股分析正常", "AI 績效資料正常", "版面沒有橫向超出", "資料時間與盤後狀態正確"]:
+        for x in ["加權指數", "0050", "大盤走勢線圖", "個股走勢圖", "AI 數字評分", "AI 精選股票", "穩健、均衡、積極策略", "股票搜尋", "個股分析",
+                  "自選股", "市場漲跌與漲跌停家數", "產業熱力圖", "正式選股成績單", "AI 每日自主學習", "模型競賽", "預測封存",
+                  "資料時間標示", "手機與電腦主要版面", "會員登入（已實作部分）", "AI 問答（已實作部分）"]:
             self.assertIn(x, e2e)
         wf = (Path(__file__).parent.parent / ".github" / "workflows" / "e2e.yml").read_text("utf-8")
         self.assertIn("tests/e2e/home.mjs", wf)
+
+
+class V18Charts(unittest.TestCase):
+    """V18：首頁大盤走勢線圖、個股總覽先看價格與分數，研究摘要收合。"""
+    def test_home_has_index_trend_chart_with_ranges(self):
+        home = fn("pageHome")
+        self.assertIn('id="hix"', home)
+        self.assertIn("drawHomeIx()", home)
+        for x in ['"5D"', '"1M"', '"3M"', '"1Y"']:
+            self.assertIn(x, HTML[HTML.index("const IXR"):HTML.index("const IXR") + 120])
+        self.assertIn("SNAP.index_series", fn("drawHomeIx"))     # 真實加權指數收盤，不是示意圖
+
+    def test_charts_never_silently_disappear(self):
+        self.assertIn("svgArea(", fn("drawHomeIx"))
+        self.assertIn("svgArea(", fn("drawPrice"))
+        self.assertNotIn("圖表元件無法載入", fn("drawPrice"))
+
+    def test_stock_overview_order(self):
+        page = fn("pageStock")
+        ov = page[page.index('data-t="ov"'):page.index('<div class="tabp" data-t="trend">')]
+        self.assertLess(ov.index('id="pc"'), ov.index("${facCards(s)}"))
+        self.assertLess(ov.index("${facCards(s)}"), ov.index("主要優勢與風險"))
+        self.assertLess(ov.index("主要優勢與風險"), ov.index("researchCard(s, d)"))
+        self.assertIn('<details class="more-card" id="j-rs">', ov)       # 研究摘要預設收合
+        self.assertIn("slice(0, 2)", ov)                                    # 優勢、風險各最多 2 項
+
+    def test_quick_card_shows_score_out_of_100(self):
+        q = fn("quickCard")
+        self.assertIn("qj-sc", q)
+        self.assertIn("/100", q)
+        self.assertIn("相對排名", q)
+
+    def test_factor_cards_are_percentiles_not_probability(self):
+        self.assertIn("50＝中位數", fn("facCards"))
+

@@ -127,6 +127,37 @@ def _quint(score: pd.Series, ret: pd.Series) -> list | None:
     return [float(ret[ok][q == k].mean()) for k in range(5)]
 
 
+BANDS = [(0, 50), (50, 60), (60, 70), (70, 80), (80, 90), (90, 101)]   # AI 分數區間（分數是全市場相對排名，不是機率）
+
+
+def _bands(score: pd.Series, ret: pd.Series, bench: float | None) -> list | None:
+    """每個分數區間：平均超額（相對 0050）、跑贏 0050 的比例、檔數。用來檢查「分數越高、之後表現越好」是否成立。"""
+    ok = score.notna() & ret.notna()
+    if ok.sum() < MIN_N or bench is None:
+        return None
+    sc, ex = score[ok], ret[ok] - bench
+    out = []
+    for lo, hi in BANDS:
+        m = (sc >= lo) & (sc < hi)
+        out.append(None if m.sum() == 0 else {"ex": float(ex[m].mean()), "hit": float((ex[m] > 0).mean()), "n": int(m.sum())})
+    return out
+
+
+def band_summary(rows: list) -> list:
+    """把每月的分數區間結果合併：平均每期超額、t 值（每期一個數字）、跑贏比例、總檔次。"""
+    out = []
+    for i, (lo, hi) in enumerate(BANDS):
+        xs = [r[i] for r in rows if r and r[i]]
+        ex = np.array([x["ex"] for x in xs])
+        sd = float(ex.std(ddof=1)) if len(ex) > 1 else 0.0
+        out.append({"band": f"{lo}–{min(hi, 100)}" if hi <= 100 else f"{lo} 以上", "periods": len(xs),
+                    "n": int(sum(x["n"] for x in xs)),
+                    "excess": round(float(ex.mean()) * 100, 2) if len(ex) else None,
+                    "t": round(float(ex.mean() / (sd / np.sqrt(len(ex)))), 2) if len(ex) > 1 and sd else None,
+                    "hit": round(float(np.mean([x["hit"] for x in xs])) * 100, 1) if xs else None})
+    return out
+
+
 def _cap_pick(ranked: list[tuple[str, str]], n: int, cap: float | None) -> list[str]:
     """依排名往下挑，每個產業最多 n×cap 檔（無產業資料的各自算一類）。"""
     lim = n if cap is None else max(1, int(round(n * cap)))
@@ -169,6 +200,7 @@ def run(dbname: str = "stocks.db", start: str | None = None, limit: int | None =
     ic = {h: {k: {"raw": [], "neu": []} for k in keys} for h in HORIZONS}
     qs = {h: {k: [] for k in keys} for h in HORIZONS}
     reg_ic = {k: {"bull": [], "bear": []} for k in keys}
+    bands = {m: [] for m in modes}
     port = {(m, n, c): {"rets": [], "hit": [], "ind_max": [], "invested": [], "skip": {}, "prev": set()} for m in [*modes, "momentum"] for n in TOPS for c in CAPS}
     bench, months = [], []
     for j, ((sig, entry), (_, exit1)) in enumerate(periods):
@@ -208,6 +240,8 @@ def run(dbname: str = "stocks.db", start: str | None = None, limit: int | None =
                 qs[h][k].append(_quint(s, r))
                 if h == "1m" and reg:
                     reg_ic[k][reg].append(v)
+                if h == "1m" and k in bands:
+                    bands[k].append(_bands(s, r, b))
         # 前 N 名組合（1 個月持有，和 AI 歷史回測同一套交易規則）
         r1 = rets["1m"]
         ranked = {m: [(sid, df.at[sid, "ind"]) for sid in df[df[f"rk_{m}"].notna()].sort_values(f"rk_{m}").index] for m in modes}
@@ -245,6 +279,8 @@ def run(dbname: str = "stocks.db", start: str | None = None, limit: int | None =
                       "spread": round(avg[4] - avg[0], 2) if avg else None,
                       "monthly": [None if v is None else round(v, 3) for v in ic[h][k]["raw"]] if h == "1m" else None}
         out["regime"] = {g: _summ(reg_ic[k][g]) for g in ("bull", "bear")}
+        if k in bands:   # 分數區間校驗（1 個月持有，超額相對 0050，未扣成本）
+            out["bands"] = band_summary(bands[k])
         return out
 
     def port_block(P: dict) -> dict:

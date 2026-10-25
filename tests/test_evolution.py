@@ -304,3 +304,20 @@ class V16(unittest.TestCase):
         r = ps._by_regime({"dates": dates[:4], "series": [1.0, -1.0, 2.0, 0.0]}, {dates[0]: "up_calm", dates[1]: "up_calm", dates[2]: "down_wild"})
         self.assertEqual(r["up_calm"]["periods"], 2)
         self.assertNotIn(dates[3], r)
+
+
+class ScoreBands(unittest.TestCase):
+    def test_bands_split_by_score_and_measure_excess_vs_bench(self):
+        from app import factor_research as fr
+        idx = [f"s{i}" for i in range(60)]
+        score = pd.Series(np.linspace(10, 95, 60), index=idx)
+        ret = pd.Series(np.linspace(-0.05, 0.10, 60), index=idx)
+        b = fr._bands(score, ret, 0.01)
+        self.assertEqual(len(b), len(fr.BANDS))
+        self.assertEqual(sum(x["n"] for x in b if x), 60)
+        self.assertLess(b[0]["ex"], b[-1]["ex"])            # 這組假資料分數越高、報酬越高
+        s = fr.band_summary([b, b])
+        self.assertEqual(s[-1]["band"], "90 以上")
+        self.assertEqual(s[0]["periods"], 2)
+        self.assertIsNone(fr._bands(score, ret, None))       # 沒有基準就不算
+
