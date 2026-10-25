@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "method": 2,
- "generated_at": "2026-10-24T13:52:03",
+ "generated_at": "2026-10-25T23:30:53",
  "shadow": true,
  "start": "2019-08-01",
  "end": "2026-10-14",
@@ -1045,7 +1045,7 @@
  },
  "main": 20,
  "verdict": "不足",
- "seconds": 3708,
+ "seconds": 2449,
  "errors": {
   "horizon": 20,
   "method": "分組內的 Rank IC（各測試日分別計算再平均，Newey-West t）與模型前 20% 相對同組平均的超額報酬",
