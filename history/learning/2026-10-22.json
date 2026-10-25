@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "date": "2026-10-22",
- "generated_at": "2026-10-25T12:50:33",
+ "generated_at": "2026-10-25T19:31:30",
  "seconds": 22,
  "summary": "今天沒有新的學習資料：沒有預測到期、也沒有新的訓練標籤。沒有重新訓練：沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型",
  "data": {
@@ -92,12 +92,12 @@
   "資料庫沒有法人、融資券等籌碼資料，也沒有歷史處置股、全額交割紀錄"
  ],
  "first_run_at": "2026-10-22T21:48:08",
- "runs": 3,
+ "runs": 4,
  "evolution": {
   "mission": {
    "version": 1,
    "hash": "94eeefb77003",
-   "status": "first",
+   "status": "unchanged",
    "alert": false
   },
   "new_experiments": [],
@@ -153,7 +153,7 @@
    "supervised_text": "今天沒有新的到期結果或訓練標籤：只做了資料品質與漂移監控，沒有新的監督式學習"
   },
   "tasks": {
-   "open": 14,
+   "open": 16,
    "top": [
     {
      "id": "RT-20261022-001",
@@ -244,26 +244,27 @@
      "prior_failed_experiments": 1
     },
     {
-     "id": "RT-20261022-005",
-     "key": "nm:lgbm_study:w_100",
+     "id": "RT-20261022-016",
+     "key": "tpl:big_loss:vol_1y",
      "created": "2026-10-22",
      "status": "待研究",
-     "question": "只用最近 100 個訊號日訓練（約 4 年）：方向較好（每期 0.12%，t 0.37）但證據不足，要不要放進影子預測累積真實前瞻？",
-     "goal": "G1",
-     "goal_text": "G1（P0）提高 20 日 AI 選股的成本後超額報酬",
-     "hypothesis": "待驗證假設：只用最近 100 個訊號日訓練（約 4 年）：方向較好（每期 0.12%，t 0.37）但證據不足，要不要放進影子預測累積真實前瞻？",
-     "metric": "20 日前 10 名扣成本超額報酬（主要）；Rank IC、跑贏 0050 比例、最大回撤（輔助）",
-     "data_needed": "已到期的封存預測（history/learning/matured）與研究資料集（ml_panel）",
-     "design": "和現行做法在同一組測試日、同一成本、同一母體比較",
-     "oos": "逐期 walk-forward（訓練標籤要在測試日前到期）；之後放進影子預測累積真實前瞻",
-     "budget": "GitHub Actions 免費額度內，每週回測工作最多 330 分鐘",
-     "stop_rule": "連續 2 次沒有通過、新資料不足 6 期就暫停",
-     "action": "target",
+     "question": "重大損失的持股一年波動百分位平均 51.2（其他 38.3，t 3.58）：事先排除這類股票能不能降低虧損又不傷報酬？",
+     "goal": "G4",
+     "goal_text": "G4（P0）降低重大虧損",
+     "hypothesis": "待驗證假設：重大損失的持股有共同特徵，事先排除可以降低尾端虧損又不傷報酬",
+     "metric": "重大損失比例、最大回撤（主要）；扣成本超額不能變差",
+     "data_needed": "前 10 名持股的 20 日結果＋選股當天的特徵百分位",
+     "design": "比較落後 0050 超過 10% 的持股和其他持股的特徵差異；有顯著差異的特徵再做「排除規則」的組合研究",
+     "oos": "排除規則事先固定，用 walk-forward 檢查",
+     "budget": "每週回測內 5 分鐘",
+     "stop_rule": "排除後最大回撤沒改善或超額報酬變差就否定",
+     "action": "portfolio_rule",
      "allowed": true,
      "needs_human": false,
+     "template": "big_loss",
      "last_seen": "2026-10-22",
-     "priority": 2.4,
-     "prior_failed_experiments": 1
+     "priority": 7.2,
+     "prior_failed_experiments": 0
     }
    ]
   },
@@ -304,6 +305,50 @@
    "human_approval": true,
    "label": "未通過：排序改善、策略改善、風險合理、前瞻驗證。正式模型維持 V21"
   },
+  "acceptance": [
+   {
+    "q": "今天有學到新資料嗎？",
+    "answer": "沒有：今天沒有預測到期，也沒有新的訓練標籤",
+    "evidence": "history/learning/matured/、candidate.new_labels",
+    "yes": false
+   },
+   {
+    "q": "今天發現什麼問題？",
+    "answer": "沒有新的到期結果，所以沒有新的錯誤統計",
+    "evidence": "history/learning/research_queue.json",
+    "yes": false
+   },
+   {
+    "q": "今天研究什麼？",
+    "answer": "RT-20261022-001、RT-20261022-002、RT-20261022-003、RT-20261022-004、RT-20261022-005、RT-20261022-006、RT-20261022-007、RT-20261022-008（新增 16 項）",
+    "evidence": "history/research/research_tasks.json",
+    "yes": true
+   },
+   {
+    "q": "今天做了什麼實驗？",
+    "answer": "沒有新的實驗（實驗在每週回測執行）",
+    "evidence": "history/research/experiments.json auto",
+    "yes": false
+   },
+   {
+    "q": "新模型變好了嗎？",
+    "answer": "還不知道：同期到期的真實預測只有 0／60 天",
+    "evidence": "history/predictions/scorecard.json",
+    "yes": null
+   },
+   {
+    "q": "是否值得升級？",
+    "answer": "未通過：排序改善、策略改善、風險合理、前瞻驗證。正式模型維持 V21",
+    "evidence": "五道晉升關卡",
+    "yes": false
+   },
+   {
+    "q": "哪些地方仍沒改善？",
+    "answer": "沒通過的關卡：排序改善、策略改善、風險合理、前瞻驗證",
+    "evidence": "晉升關卡、實驗記憶、真實前瞻帳本",
+    "yes": null
+   }
+  ],
   "memory": {
    "prediction": {
     "n": 5,
@@ -356,6 +401,10 @@
    },
    {
     "step": "晉升把關",
+    "status": "success"
+   },
+   {
+    "step": "成果驗收",
     "status": "success"
    },
    {

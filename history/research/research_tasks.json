@@ -309,14 +309,60 @@
    "last_seen": "2026-10-22",
    "priority": 2.4,
    "prior_failed_experiments": 1
+  },
+  {
+   "id": "RT-20261022-015",
+   "key": "tpl:regime:up_calm",
+   "created": "2026-10-22",
+   "status": "待研究",
+   "question": "前 10 名在「多頭・平穩」時每期落後 0050 1.87%（t -2.32，24 期）：這種環境要不要減碼或改持 0050？",
+   "goal": "G8",
+   "goal_text": "G8（P1）提升 5 日、60 日預測能力；不同市場環境下更穩定",
+   "hypothesis": "待驗證假設：模型只在某種市場環境有效，在其他環境應該降低持股或改用 0050",
+   "metric": "各環境的每期扣成本超額與 t；切換後的總超額與最大回撤",
+   "data_needed": "加權指數（訊號日當天已知的 120 日均線與波動）＋portfolio_study 每期成績",
+   "design": "四種市場環境分組比較前 10 名扣成本超額；若要加切換規則，規則要先寫死，再用之後的期間驗證",
+   "oos": "環境判斷只用當天以前的資料；切換規則用新期間驗證",
+   "budget": "每週回測內 5 分鐘",
+   "stop_rule": "沒有任何環境的 |t| ≥ 2，或切換後 12 期內沒有改善就停止",
+   "action": "portfolio_rule",
+   "allowed": true,
+   "needs_human": false,
+   "template": "regime",
+   "last_seen": "2026-10-22",
+   "priority": 2.4,
+   "prior_failed_experiments": 0
+  },
+  {
+   "id": "RT-20261022-016",
+   "key": "tpl:big_loss:vol_1y",
+   "created": "2026-10-22",
+   "status": "待研究",
+   "question": "重大損失的持股一年波動百分位平均 51.2（其他 38.3，t 3.58）：事先排除這類股票能不能降低虧損又不傷報酬？",
+   "goal": "G4",
+   "goal_text": "G4（P0）降低重大虧損",
+   "hypothesis": "待驗證假設：重大損失的持股有共同特徵，事先排除可以降低尾端虧損又不傷報酬",
+   "metric": "重大損失比例、最大回撤（主要）；扣成本超額不能變差",
+   "data_needed": "前 10 名持股的 20 日結果＋選股當天的特徵百分位",
+   "design": "比較落後 0050 超過 10% 的持股和其他持股的特徵差異；有顯著差異的特徵再做「排除規則」的組合研究",
+   "oos": "排除規則事先固定，用 walk-forward 檢查",
+   "budget": "每週回測內 5 分鐘",
+   "stop_rule": "排除後最大回撤沒改善或超額報酬變差就否定",
+   "action": "portfolio_rule",
+   "allowed": true,
+   "needs_human": false,
+   "template": "big_loss",
+   "last_seen": "2026-10-22",
+   "priority": 7.2,
+   "prior_failed_experiments": 0
   }
  ],
  "updated": "2026-10-22",
  "top": [
+  "RT-20261022-016",
   "RT-20261022-001",
   "RT-20261022-002",
   "RT-20261022-003",
-  "RT-20261022-004",
-  "RT-20261022-005"
+  "RT-20261022-004"
  ]
 }
