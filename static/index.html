@@ -516,7 +516,7 @@ footer { max-width: 1280px; margin: 0 auto; padding-inline: 16px; padding-block:
 @media (min-width: 900px) { .mk-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: "l ch" "r ch"; gap: 4px 22px; } }
 .mk-chh { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
 .seg.sm button { padding: 3px 9px; font-size: 12px; min-height: 0; }
-#hix { height: 170px; } @media (max-width: 560px) { #hix { height: 140px; } } .mk-rest .mk-br { margin-top: 4px; } .svl { display: block; width: 100%; height: calc(100% - 20px); } .svl-ax { display: flex; justify-content: space-between; gap: 6px; }
+#hix { height: 190px; } @media (max-width: 560px) { #hix { height: 160px; } } .mk-rest .mk-br { margin-top: 4px; } .svl { display: block; width: 100%; height: calc(100% - 20px); } .svl-ax { display: flex; justify-content: space-between; gap: 6px; }
 .mk-ix span { display: block; font-size: 12px; color: var(--muted); } .mk-ix b { display: block; font: 600 22px var(--f-num); white-space: nowrap; } .mk-ix:first-child b { font-size: 28px; }
 .mk-ix small { font-size: 13px; } .mk-ix b.up { color: var(--up); } .mk-ix b.down { color: var(--down); }
 .mk-br { margin-top: 14px; } .mk-bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--line); }
@@ -1152,15 +1152,16 @@ function drawHomeIx() {
   el.innerHTML = "";
   if (hasLWC()) {
     const c = ixChart = mkChart(el, { handleScroll: false, handleScale: false });
-    c.addAreaSeries({ lineColor: css("--accent-2"), topColor: css("--accent-soft"), bottomColor: "transparent", lineWidth: 2, priceLineVisible: false }).setData(pts);
+    // 和 V12 首頁一樣：期間上漲用紅線、下跌用綠線（漲跌色只用在價格變動），不加底色
+    c.addAreaSeries({ lineColor: css(chg >= 0 ? "--up" : "--down"), topColor: "transparent", bottomColor: "transparent", lineWidth: 2, priceLineVisible: false }).setData(pts);
     c.timeScale().fitContent();
-  } else el.innerHTML = svgArea(pts);
+  } else el.innerHTML = svgArea(pts, 170, chg >= 0 ? "var(--up)" : "var(--down)", false);
 }
-function svgArea(pts, h = 170) {   // 備援折線圖：不依賴外部圖表元件
+function svgArea(pts, h = 170, col = "var(--accent-2)", fill = true) {   // 備援折線圖：不依賴外部圖表元件
   if (pts.length < 2) return '<div class="empty small">資料不足，畫不出走勢</div>';
   const W = 600, vs = pts.map((p) => p.value), lo = Math.min(...vs), hi = Math.max(...vs), r = hi - lo || 1;
   const line = pts.map((p, i) => `${(i / (pts.length - 1) * W).toFixed(1)},${(h - 22 - (p.value - lo) / r * (h - 36)).toFixed(1)}`).join(" ");
-  return `<svg class="svl" viewBox="0 0 ${W} ${h}" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,${h - 16} ${line} ${W},${h - 16}" fill="var(--accent-soft)"/><polyline points="${line}" fill="none" stroke="var(--accent-2)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+  return `<svg class="svl" viewBox="0 0 ${W} ${h}" preserveAspectRatio="none" aria-hidden="true">${fill ? `<polygon points="0,${h - 16} ${line} ${W},${h - 16}" fill="var(--accent-soft)"/>` : ""}<polyline points="${line}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
     <div class="svl-ax small faint num"><span>${esc(pts[0].time)}</span><span>高 ${fmtNum(hi, 2)}・低 ${fmtNum(lo, 2)}</span><span>${esc(pts.at(-1).time)}</span></div>`;
 }
 function bindSearch() {
