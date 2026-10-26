@@ -51,7 +51,8 @@ class Backfill(unittest.TestCase):
         self.tmp.cleanup()
 
     def run_fill(self, req):
-        with mock.patch.object(update, "FinMindSource", FakeFM), mock.patch.object(update, "_fin_requests", return_value=(req, None)):
+        with mock.patch.object(update, "FinMindSource", FakeFM), mock.patch.object(update, "_fin_requests", return_value=(req, None)), \
+                mock.patch.object(update.fin_watch, "detect", return_value=({}, [])):
             update.update_fundamentals(self.cfg)
         with db.connect() as con:
             return json.loads(db.get_meta(con, "fundamental_queue"))

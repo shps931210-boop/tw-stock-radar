@@ -142,6 +142,15 @@ try:
                 ensure_ascii=False, separators=(",", ":")), "utf-8")
 except Exception as e:
     print("投資組合輔助資料失敗：", e)
+if (root / "history" / "audit" / "steps.json").exists():  # V19：失敗不影響網站的步驟，每次執行的結果（app/step_log.py）
+    shutil.copy(root / "history" / "audit" / "steps.json", out / "data" / "steps.json")
+if (config.DATA_DIR / "fin_watch.json").exists():  # V19：新財報公告偵測與補抓（app/fin_watch.py）
+    shutil.copy(config.DATA_DIR / "fin_watch.json", out / "data" / "fin_watch.json")
+audit_rows = {}
+if (config.DATA_DIR / "coverage_audit.json").exists():  # V19：全市場資料完整性稽核；逐檔明細放進個股 JSON，總表不帶逐檔資料
+    _au = json.loads((config.DATA_DIR / "coverage_audit.json").read_text("utf-8"))
+    audit_rows = {x["id"]: x for x in _au.pop("stocks", [])}
+    (out / "data" / "coverage_audit.json").write_text(json.dumps(_au, ensure_ascii=False, separators=(",", ":")), "utf-8")
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
 try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與到期對帳成績
@@ -219,7 +228,8 @@ if snap_path.exists():
         ai_hist = {}
     for sid in ids:
         (out / "data" / "stock" / f"{sid}.json").write_text(
-            json.dumps({**stock_detail(sid, "stocks.db", rows[sid]), "decision": dec.get(sid), "ai_history": ai_hist.get(sid, [])},
+            json.dumps({**stock_detail(sid, "stocks.db", rows[sid]), "decision": dec.get(sid), "ai_history": ai_hist.get(sid, []),
+                        "coverage": audit_rows.get(sid)},
                        ensure_ascii=False, separators=(",", ":")), "utf-8")
     (out / "data" / "quality.json").write_text(json.dumps(quality(snap), ensure_ascii=False, indent=1), "utf-8")
     for path, data in public_data(snap).items():  # 給其他程式讀的公開資料（不含任何會員資料）

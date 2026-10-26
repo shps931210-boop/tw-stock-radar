@@ -2088,6 +2088,60 @@ async function loadCoverage() {
       ${Object.entries(C.samples).map(([k, x]) => `<tr><td>${esc(k)}</td>${x ? `<td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td>${Object.values(x.status).map((v) => `<td class="small">${esc(ST[v] || "—")}</td>`).join("")}` : '<td colspan="8" class="faint">目前沒有這類股票</td>'}</tr>`).join("")}</tbody></table></div></details>
     <p class="faint small" style="margin:8px 0 0">財報與月營收歷史來自 FinMind，免費額度每小時有限；夜間每小時補抓一次：會員申請的股票最優先，再來是從沒抓過的股票（依成交金額排序），額度用完就停，下一個小時接著補。完整 AI 排行榜仍要求五個因子都齊全才排名。</p>`;
 }
+// V19 全市場資料完整性稽核（data/coverage_audit.json，app/coverage.py audit）：直接查正式資料庫，不含示範資料
+async function loadDQ() {
+  const el = $("#dqCard"); if (!el || !SITE) return;
+  const A = await fetch("data/coverage_audit.json" + verQ("coverage_audit.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!A) return;
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>全市場資料完整性</h2><span class="muted small">${A.universe.common} 檔普通股（上市 ${A.universe.twse}・上櫃 ${A.universe.tpex}）・股價資料日 ${esc(A.as_of.prices || "—")}</span></div>
+    <p class="small" style="margin:0 0 10px">直接查正式資料庫逐檔統計。「不符合正式推薦資格」只代表不進 AI 精選（例如成交金額太低），<b>不等於沒有資料</b>；這些股票的研究資訊照常可看。</p>
+    <div class="tbl"><table><thead><tr><th>項目</th><th class="r">股票數</th><th class="r">比例</th></tr></thead><tbody>
+      ${A.summary.map((x) => `<tr><td>${esc(x.label)}</td><td class="r num">${fmtNum(x.stocks, 0)}</td><td class="r num"><b>${x.pct ?? "—"}%</b></td></tr>`).join("")}</tbody></table></div>
+    <p class="small" style="margin:10px 0 4px">整體狀態：${Object.entries(A.overall || {}).map(([k, v]) => `${esc(k)} <b class="num">${fmtNum(v, 0)}</b> 檔`).join("・")}</p>
+    <h3 style="margin:14px 0 6px">資料缺口排行（影響檔數）</h3>
+    <div class="tbl"><table class="wrap"><tbody>${A.gaps.slice(0, 16).map((g) => `<tr><td>${esc(g.why)}<div class="faint small">例：${g.examples.slice(0, 4).map((x) => `<a href="#/stock/${esc(x)}">${esc(x)}</a>`).join("、")}</div></td><td class="r num">${fmtNum(g.stocks, 0)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:8px 0 0">${(A.notes || []).map(esc).join(" ")} 每檔股票的起迄日期與筆數在個股頁最下方「資料來源與完整度」。</p>`;
+}
+// V19 新財報公告偵測與補抓（data/fin_watch.json，app/fin_watch.py）
+async function loadFinWatch() {
+  const el = $("#finCard"); if (!el || !SITE) return;
+  const F = await fetch("data/fin_watch.json" + verQ("fin_watch.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!F) return;
+  const q = (x) => `${x.slice(0, 4)} 年第 ${x.slice(-1)} 季`, t = (x) => esc((x || "").slice(5, 16).replace("T", " "));
+  const L = F.latency_hours || {}, D = F.detect;
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>新財報自動更新</h2><span class="muted small">${F.in_season ? `${q(F.quarter)}申報期間・法定期限 ${esc(F.deadline)}` : `最新應公布季度 ${q(F.quarter)}`}</span></div>
+    <p class="small" style="margin:0 0 10px">每次更新先讀證交所、櫃買中心公開資料，看哪些公司已公告新一季財報；資料庫還沒有的，排進優先補抓（AI 精選與候選 → 會員申請 → 成交金額），抓到後重新計算 AI 評分。資料來源還沒同步就 6 小時後再試，不會因為固定 20 天週期而漏掉。</p>
+    <div class="kpis"><div class="kpi"><span>官方已公告</span><b class="num">${fmtNum(F.announced, 0)}</b></div><div class="kpi"><span>已同步進資料庫</span><b class="num">${fmtNum(F.synced, 0)}</b></div>
+      <div class="kpi"><span>等待資料來源</span><b class="num">${fmtNum(F.waiting, 0)}</b></div><div class="kpi"><span>資料庫有${esc(q(F.quarter))}</span><b class="num">${fmtNum(F.db_has_quarter, 0)}／${fmtNum(F.db_stocks, 0)}</b></div></div>
+    <p class="small" style="margin:10px 0 0">同步延遲（偵測到公告 → 完整財報入庫）：${L.n ? `中位數 <b>${L.median}</b> 小時、最長 ${L.max} 小時（${L.n} 檔）` : "這一季還沒有同步紀錄"}。
+      偵測：${D ? `${t(D.at)}，${D.endpoints_ok}／${D.endpoints} 個官方端點成功，讀到 ${fmtNum(D.stocks, 0)} 家公司` : "還沒有執行紀錄"}${D && !D.endpoints_ok ? '，<b class="down">官方端點全部失敗，改用財報季每 5 天重抓保底</b>' : ""}。</p>
+    ${F.waiting_list?.length ? `<details style="margin-top:8px"><summary class="small">等待資料來源同步（${F.waiting_list.length} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>偵測時間</th><th class="r">官方 EPS</th><th class="r">嘗試</th></tr></thead><tbody>
+      ${F.waiting_list.map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td class="num">${t(x.first_seen)}</td><td class="r num">${x.eps == null ? "—" : fmtNum(x.eps, 2)}</td><td class="r num">${x.attempts}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
+    ${F.rescored?.length ? `<details style="margin-top:8px"><summary class="small">新財報入庫後的 AI 均衡型分數變化（最近 ${Math.min(F.rescored.length, 30)} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>季度</th><th>入庫時間</th><th class="r">之前</th><th class="r">之後</th></tr></thead><tbody>
+      ${F.rescored.slice(0, 30).map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period)}</td><td class="num">${t(x.synced_at)}</td><td class="r num">${x.before == null ? "—" : fmtNum(x.before, 1)}</td><td class="r num">${x.after == null ? "—" : fmtNum(x.after, 1)}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
+    ${F.revisions?.length ? `<p class="faint small" style="margin:8px 0 0">最近偵測到 ${F.revisions.length} 筆財報數字更正（重抓時數值變動超過 0.5%），已保留紀錄。</p>` : ""}
+    <p class="faint small" style="margin:8px 0 0">${esc(F.note)}</p>`;
+  const S = await fetch("data/steps.json" + verQ("steps.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (S?.status && Object.keys(S.status).length) el.insertAdjacentHTML("beforeend", `<h3 style="margin:14px 0 6px">失敗不影響網站的步驟</h3>
+    <p class="small" style="margin:0 0 6px">這些步驟失敗時網站照常更新，但每次結果都會記錄；同一步驟連續失敗 2 次會寄通知信。</p>
+    <div class="tbl"><table><thead><tr><th>步驟</th><th>最近一次</th><th class="r">連續失敗</th><th>最後成功</th></tr></thead><tbody>
+    ${Object.entries(S.status).map(([k, x]) => `<tr><td>${esc(k)}</td><td>${x.last === "success" ? '<span class="ok">成功</span>' : `<span class="down">${esc(x.last)}</span>`}</td><td class="r num">${x.streak}</td><td class="num small">${esc((x.last_ok || "從未").slice(0, 16).replace("T", " "))}</td></tr>`).join("")}</tbody></table></div>`);
+}
+// 個股頁「資料來源與完整度」：每種資料的起迄日期、筆數、具體缺口（app/coverage.py audit）
+function dataCard(s, d) {
+  const c = d?.coverage;
+  if (!c) return "";
+  const row = (l, x, unit, src) => `<tr><td>${l}</td><td class="num">${x ? `${esc(x[0])} ～ ${esc(x[1])}` : "沒有資料"}</td><td class="r num">${x ? `${fmtNum(x[2], 0)} ${unit}` : "—"}</td><td class="faint small">${src}</td></tr>`;
+  const ST = { ready: "完整可用", partial: "部分可用", insufficient_history: "歷史不足", stale: "資料過期", missing_source: "資料來源缺失", calculation_error: "計算錯誤" };
+  return `<details class="more-card" id="j-dq"><summary><b>資料來源與完整度</b><span class="faint small">${esc(ST[c.st] || c.st)}${c.why.length ? `・${c.why.length} 項缺口` : ""}</span></summary>
+    <section class="card"><div class="tbl"><table><thead><tr><th>資料</th><th>起迄</th><th class="r">筆數</th><th>來源</th></tr></thead><tbody>
+      ${row("收盤行情", c.px, "天", "證交所／櫃買中心")}${row("月營收", c.rev, "個月", "FinMind")}${row("季報", c.fin, "季", "FinMind")}
+      ${row("三大法人", c.inst, "天", "證交所／櫃買中心")}${row("融資融券", c.mg, "天", "證交所／櫃買中心")}</tbody></table></div>
+      ${c.why.length ? `<ul class="small" style="margin:8px 0 0;padding-left:18px">${c.why.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : '<p class="small" style="margin:8px 0 0">主要資料都齊全。</p>'}
+      <p class="small" style="margin:6px 0 0">${c.elig ? "符合正式推薦資格。" : esc(c.not_elig || "不符合正式推薦資格")}${c.elig ? "" : "（研究資訊照常可看，只是不列入 AI 精選）"}</p></section></details>`;
+}
 // AI 訓練資料盤點：五個問題的答案都從資料庫查出（app/data_inventory.py）
 async function loadInventory() {
   const el = $("#invCard"); if (!el || !SITE) return;
@@ -2134,7 +2188,7 @@ async function loadAudit() {
     ${(A.warnings || []).length ? `<p class="small" style="color:var(--warn);margin:6px 0 0">${esc(A.warnings.join("；"))}</p>` : ""}`;
 }
 function pageTrust() {
-  setTimeout(loadAudit, 0); setTimeout(loadCoverage, 0); setTimeout(loadInventory, 0); setTimeout(loadE2E, 0);
+  setTimeout(loadAudit, 0); setTimeout(loadFinWatch, 0); setTimeout(loadDQ, 0); setTimeout(loadCoverage, 0); setTimeout(loadInventory, 0); setTimeout(loadE2E, 0);
   const d = SNAP.data_dates, q = Object.fromEntries((SNAP.health || []).map((h) => [h.source, h])), fr = SNAP.freshness_rule || {};
   const base = SNAP.stocks.filter((s) => s.base_ok), comp = base.filter((s) => s.complete).length;
   const miss = {}; base.forEach((s) => (s.missing_factors || []).forEach((f) => (miss[f] = (miss[f] || 0) + 1)));
@@ -2144,6 +2198,8 @@ function pageTrust() {
     <section><div class="eyebrow">資料、模型、績效都攤開來看</div><h1>資料來源與方法</h1>
       <p class="lead">每個資料來源的最新資料日、更新時間與狀態，目前使用的模型版本，以及模型的驗證結果。「資料日」是行情所屬的交易日；「發布時間」是網站完成計算的時間。</p></section>
     ${statusCard()}
+    <section class="card" id="finCard" hidden></section>
+    <section class="card" id="dqCard" hidden></section>
     <section class="card" id="covCard" hidden></section>
     <section class="card" id="e2eCard" hidden></section>
     <section class="card" id="invCard" hidden></section>
@@ -3998,6 +4054,7 @@ async function pageStock(id) {
     </section>
     ${profileCard(d.profile)}
     </details>
+    ${dataCard(s, d)}
     <div class="meta-row">${[["股價", s.date], ["法人", s.inst_date], ["融資", s.margin_date], ["本益比", s.val_date], ["月營收", s.rev_ym], ["財報", s.fin_period]]
       .map(([l, v]) => `<span>${l} <b class="num">${v || "—"}</b></span>`).join("")}<span>資料完整度 <b class="num">${s.data_completeness ?? "—"}%</b></span>
       ${s.industry_rank ? `<span>產業內 <b class="num">${s.industry_rank} / ${s.industry_n}</b>（${esc(s.industry)}）</span>` : ""}</div></div>

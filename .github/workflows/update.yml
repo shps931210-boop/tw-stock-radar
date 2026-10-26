@@ -99,6 +99,7 @@ jobs:
 
       # 連線診斷只用來查問題，失敗不影響更新；資料是否可用由後面的「檢查資料是否最新」把關
       - name: 連線診斷（結果發布在網站的 data/probe.json；只在完整更新時跑）
+        id: probe
         if: env.MODE == 'full'
         continue-on-error: true
         run: python -m app.probe
@@ -119,6 +120,7 @@ jobs:
       # 每日影子預測（V23）：套用每週訓練好的模型，封存到 history/predictions/；失敗不影響網站
       # V27：快速盤後更新也會跑；當天上市、上櫃行情都齊全才封存（不齊就等下一次），同一天只封存一次
       - name: 每日影子預測
+        id: shadow
         if: env.MODE != 'premarket'
         continue-on-error: true
         run: |
@@ -146,6 +148,7 @@ jobs:
 
       # 新聞與公告失敗不影響股價更新；網站新聞中心會顯示最後成功時間與警告
       - name: 新聞與公司公告
+        id: news
         if: env.MODE != 'backfill'
         continue-on-error: true
         env:
@@ -153,6 +156,7 @@ jobs:
         run: python -m app.news
 
       - name: 國際市場（美股、費城半導體、匯率）
+        id: glob
         if: env.MODE != 'backfill'
         continue-on-error: true
         env:
@@ -160,6 +164,7 @@ jobs:
         run: python -m app.global_mkt
 
       - name: AI 盤前情報（隔夜市場、收盤後事件、盤前版風險標示）
+        id: pre
         if: env.MODE == 'premarket'
         continue-on-error: true
         timeout-minutes: 10
@@ -168,9 +173,19 @@ jobs:
         run: python -m app.premarket
 
       - name: 盤前情報對帳（盤後版／盤前版的實際結果）
+        id: prescore
         if: env.MODE == 'full'
         continue-on-error: true
         run: python -m app.premarket --score
+
+      # V19：失敗不影響網站的步驟也要留下紀錄（history/audit/steps.json）；同一步驟連續失敗 2 次，最後的檢查會寄信
+      - name: 記錄非必要步驟的結果
+        if: always()
+        continue-on-error: true
+        run: >-
+          python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
+          "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}"
 
       - name: 備份資料庫到 GitHub Release
         id: backup

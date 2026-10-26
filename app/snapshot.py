@@ -123,6 +123,30 @@ def _ref_scores(df: pd.DataFrame, S_in: pd.DataFrame, base: pd.Series) -> list:
     return out
 
 
+TURN_COL = {"eps_q_yoy": "eps_q_turn", "op_q_yoy": "op_q_turn"}
+
+
+def _gap_label(df: pd.DataFrame, k: str, i: int) -> tuple[str, str]:
+    """缺漏項目的種類：na＝去年同期虧損、年增率不適用；stale＝資料過期；miss＝真的沒有資料。"""
+    lab = ITEM_LABEL[k]
+    t = df[TURN_COL[k]].iloc[i] if k in TURN_COL and TURN_COL[k] in df else None
+    if isinstance(t, str) and t:
+        return "na", lab
+    if k == "earnings_yield" and "eps_ttm" in df and pd.notna(df["eps_ttm"].iloc[i]) and df["eps_ttm"].iloc[i] <= 0:
+        return "loss", lab
+    if k in df and pd.notna(df[k].iloc[i]):
+        return "stale", lab
+    return "miss", lab
+
+
+def _gap_text(gs: list) -> str:
+    """把缺漏項目寫成一句話，例如「缺近三月營收，因去年同期虧損，EPS 年增不適用」。"""
+    by = {kind: [lab for k2, lab in gs if k2 == kind] for kind in ("miss", "stale", "na", "loss")}
+    seg = (["缺" + "、".join(by["miss"])] if by["miss"] else []) + (["、".join(by["stale"]) + "資料過期"] if by["stale"] else []) + \
+          (["因去年同期虧損，" + "、".join(by["na"]) + "不適用"] if by["na"] else []) + (["近四季虧損，本益比不適用"] if by["loss"] else [])
+    return "，".join(seg) if seg else "缺必要資料"
+
+
 def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]:
     """多因子評分（基本門檻、因子百分位、綜合分數）。today：判斷財報、營收是否過期的基準日（歷史回測傳當時的日期）。"""
     bf = cfg["base_filter"]
@@ -189,9 +213,13 @@ def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]
         req, need = REQUIRED[f]
         ok = H[req].all(axis=1) & (H.sum(axis=1) >= need)
         df[f"score_{f}"] = pd.concat(cols, axis=1).mean(axis=1, skipna=True).where(ok)
-        for i in np.flatnonzero(~ok.to_numpy()):
-            fin = bool(df["is_financial"].iloc[i])
-            gaps[f][i] = [ITEM_LABEL[k] for k, _ in parts if not H[k].iloc[i]
+        # 缺漏說明看「資料本身」有沒有（不看是否通過排行榜門檻），並分清楚是沒資料、資料過期，還是去年同期虧損而不適用
+        fin_all = df["is_financial"].astype(bool)
+        H_any = pd.concat([(S_in[k].notna() & ~(fin_all & (k in ("debt_ratio", "op_margin")))).rename(k) for k, _ in parts], axis=1)
+        ok_any = H_any[req].all(axis=1) & (H_any.sum(axis=1) >= need)
+        for i in np.flatnonzero(~ok_any.to_numpy()):
+            fin = bool(fin_all.iloc[i])
+            gaps[f][i] = [_gap_label(df, k, i) for k, _ in parts if not H_any[k].iloc[i]
                           and not (fin and k in ("debt_ratio", "op_margin"))][:3]
     df["score_momentum"] = df["rs_rank"]
     if "mom_12_1" in df:
@@ -236,7 +264,9 @@ def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]
         stale_note.append(n)
     df["stale_notes"] = stale_note
     pos = {k: i for i, k in enumerate(df.index)}
-    df["missing_detail"] = [[f"{FACTOR_LABEL[k]}（缺{'、'.join(gaps[k][pos[ix]]) or '必要資料'}）" for k in w if pd.isna(S.loc[ix, k])]
+    df["missing_detail"] = [[f"{FACTOR_LABEL[k]}（{_gap_text(gaps[k][pos[ix]]) if isinstance(gaps[k][pos[ix]][0], tuple) else '缺' + '、'.join(gaps[k][pos[ix]])}）" if gaps[k][pos[ix]] else
+                             f"{FACTOR_LABEL[k]}（資料齊全，但未通過排行榜基本門檻，不計正式分數）" if not base.loc[ix] else
+                             f"{FACTOR_LABEL[k]}（缺必要資料）" for k in w if pd.isna(S.loc[ix, k])]
                             for ix in df.index]
     df["complete"] = df["missing_factors"].map(len) == 0
     df["composite"] = ((S.fillna(0) * W).sum(axis=1) / W.sum(axis=1).replace(0, np.nan)).where(base & df["complete"])
@@ -298,7 +328,12 @@ def build(demo: bool = False) -> dict:
             fm_queue = json.loads(db.get_meta(con, "fundamental_queue") or "null")
         except ValueError:
             fm_queue = None
-    decision = _decision(rows, max((r.get("date") or "" for r in rows), default=""), fm_done, fm_queue)
+        ann = None
+        if not demo:  # 官方已公告、資料庫還沒有的新一季財報（app/fin_watch.py）
+            from . import fin_watch
+            fin_watch.ensure(con)
+            ann = dict(con.execute("SELECT stock_id, MAX(period) FROM fin_announce WHERE status IN ('pending','waiting_source') GROUP BY stock_id").fetchall())
+    decision = _decision(rows, max((r.get("date") or "" for r in rows), default=""), fm_done, fm_queue, ann)
 
     with db.connect(dbname) as con:
         official = None if demo else db.get_meta(con, "official_latest_twse")
@@ -407,6 +442,14 @@ def build(demo: bool = False) -> dict:
         (config.DATA_DIR / ("coverage_demo.json" if demo else "coverage.json")).write_text(json.dumps(cov, ensure_ascii=False, separators=(",", ":")), "utf-8")
     except Exception as e:
         print("覆蓋率報告失敗：", e)
+    if not demo:
+        try:  # V19：新財報同步後的改分紀錄、全市場資料完整性稽核
+            from . import coverage, fin_watch
+            with db.connect(dbname) as con:
+                fin_watch.after_snapshot(con)
+                (config.DATA_DIR / "coverage_audit.json").write_text(json.dumps(coverage.audit(con, rows, decision), ensure_ascii=False, separators=(",", ":")), "utf-8")
+        except Exception as e:
+            print("財報偵測紀錄或資料完整性稽核失敗：", e)
     return out
 
 
@@ -440,7 +483,8 @@ def _queue_txt(q: dict | None) -> str:
     return f"（財報補齊中：{when} 補了 {q['done']} 筆{left}；{tail}）"
 
 
-def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set | None, fm_queue: dict | None = None) -> dict:
+def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set | None, fm_queue: dict | None = None,
+             ann: dict | None = None) -> dict:
     """行情、基本面、估值、短線、波段、長期、AI 評分，各自的狀態與原因。"""
     M = {}
     d = r.get("date")
@@ -452,12 +496,15 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
     if not fin:
         why.append("尚未取得季報" + (_queue_txt(fm_queue) if fm_done is not None and r["stock_id"] not in fm_done else ""))
     elif r.get("fin_stale"):
-        why.append(f"季報停在 {fin}")
+        why.append(f"季報停在 {fin}（法定公告期限已過，應已有更新的季報）")
+    a = (ann or {}).get(r["stock_id"])
+    if a and (not fin or a > fin):
+        why.append(f"{a[:4]} 年第 {a[-1]} 季財報已公告，資料來源尚未同步，夜間會自動補抓")
     if not rev:
         why.append("尚未取得月營收")
     elif r.get("rev_stale"):
         why.append(f"月營收停在 {rev}")
-    M["fundamental"] = {"status": "ready" if not why else "stale" if fin and rev else "partial" if fin or rev else "missing_source",
+    M["fundamental"] = {"status": "ready" if not why or (fin and rev and not r.get("fin_stale") and not r.get("rev_stale")) else "stale" if fin and rev else "partial" if fin or rev else "missing_source",
                         "asof": " / ".join(x for x in (fin, rev) if x) or None, "why": "；".join(why) or None}
     M["valuation"] = {"status": v["status"], "why": v.get("why")}
     if st.get("ready"):
@@ -482,7 +529,7 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
     return M
 
 
-def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None, fm_queue: dict | None = None) -> dict:
+def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None, fm_queue: dict | None = None, ann: dict | None = None) -> dict:
     """個股研究決策卡：進出場策略狀態、估值區間、長期判斷、各模組資料狀態。完整內容另存 data/decision.json（只放進個股 JSON），
     快照裡只留一行摘要（plan），避免整份快照變大。"""
     from . import strategy, valuation
@@ -497,7 +544,7 @@ def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None,
         v = _valuation_fill(r, vb)
         lg = strategy.long_status({**r, "ref_scores": ref}, v)
         out[r["stock_id"]] = {"strategy": st, "long": lg, "valuation": v, "ref_scores": ref if isinstance(ref, dict) else None,
-                              "modules": _modules({**r, "ref_scores": ref}, st, v, lg, price_day, fm_done, fm_queue)}
+                              "modules": _modules({**r, "ref_scores": ref}, st, v, lg, price_day, fm_done, fm_queue, ann)}
         vb = v if v.get("p50") is not None else None
         tech = lambda m: (st.get(m) or {}).get("state", "na") if st.get("ready") else "na"
         r["plan"] = {"short": tech("short"), "swing": tech("swing"), "long": lg["state"],

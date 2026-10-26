@@ -177,7 +177,7 @@ def long_status(s: dict, pe: dict | None) -> dict:
     q = s.get("score_quality") if ranked else ref.get("quality")
     g = s.get("score_growth") if ranked else ref.get("growth")
     comp = (s.get("ai") or {}).get("modes", {}).get("balanced", {}).get("score") if ranked and s.get("complete") else None
-    det = {x.split("（")[0]: x for x in s.get("missing_detail") or []} if ranked else {}
+    det = {x.split("（")[0]: x for x in s.get("missing_detail") or []}
     unknown = []
     if q is None: unknown.append(det.get("財務品質", "財務品質因子還不能計算（缺財報資料）"))
     if g is None: unknown.append(det.get("成長能力", "成長能力因子還不能計算（缺財報或營收資料）"))

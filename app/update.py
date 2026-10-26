@@ -16,7 +16,7 @@ from datetime import date, datetime, timedelta
 
 import requests
 
-from . import config, db, events
+from . import config, db, events, fin_watch
 from .sources import http
 from .sources.finmind import FinMindError, FinMindSource
 from .sources.tpex import TpexSource
@@ -406,10 +406,18 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
         deep = {"fm_revenue": ("fm_revenue_hist", rev_long), "fm_financials": ("fm_financials_hist", fin)} if fs else {}
         # 補齊佇列：從來沒抓過的股票優先（依成交金額排序），再來才是定期重抓；額度用完就停，下次從還沒補到的繼續
         # 第三優先：以前只抓了近幾年的股票，把財報與月營收往前補到 fin_history_start（長期回測與模型研究用），每檔只補一次
+        # V19：官方已公告、資料庫還沒有的新一季財報最優先（正式推薦與候選 → 會員申請與追蹤清單 → 成交金額）
+        fin_watch.run_detect(errors)
+        hot = fin_watch.hot_list(con, req + cfg.get("watchlist", []) + ids)
+        hot_ids = {sid for sid, _ in hot}
         new, due, hist = [], [], []
         for sid in ids:
             for src, age, fn, table in plan:
                 t = db.fetched_at(con, src, sid)
+                if src == "fm_financials":
+                    if sid in hot_ids:
+                        continue  # 已排進新財報佇列
+                    age = fin_watch.fin_age(con, sid, config.today(), age)  # 財報季內缺最新季：5 天（偵測失敗時的保底）
                 if not t:
                     new.append((sid, src, deep[src][1] if src in deep else fn, table))
                 elif config.now() - t > timedelta(days=age):
@@ -419,16 +427,22 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
                 if t and src in deep and not db.fetched_at(con, deep[src][0], sid):
                     hist.append((sid, deep[src][0], deep[src][1], table))
         new.sort(key=lambda x: x[1] == "fm_dividends")  # 先補財報與營收（研究卡需要），股利最後；同類依原順序（會員申請→成交金額）
-        todo = new + due + hist
+        todo = [(sid, "fm_financials", fin, "financials") for sid, _ in hot] + new + due + hist
+        hot_period = dict(hot)
         # 補齊進度（網站「資料來源與方法」和個股研究卡會顯示）：這次要補多少、補了多少、失敗原因、是否因額度用完而停下
-        Q = {"run_at": config.now().isoformat(timespec="seconds"), "stocks": len(ids), "new": len(new), "due": len(due), "hist": len(hist),
+        Q = {"run_at": config.now().isoformat(timespec="seconds"), "stocks": len(ids), "hot": len(hot), "new": len(new), "due": len(due), "hist": len(hist),
              "done": 0, "failed": 0, "quota_hit": False, "errors": [], "requested": len(req)}
         db.set_meta(con, "fundamental_queue", json.dumps(Q, ensure_ascii=False))
         for n, (sid, src, fn, table) in enumerate(todo, 1):
             _say(progress, "財報與營收", n, len(todo), f"{sid} {src[3:]}")
             try:
-                db.upsert(con, table, fn(sid))
+                data = fn(sid)
+                if table == "financials":
+                    fin_watch.compare(con, sid, data)  # 更正紀錄、每季第一次取得時間
+                db.upsert(con, table, data)
                 db.log_fetch(con, src, sid)
+                if table == "financials" and sid in hot_period:
+                    Q["hot_synced"] = Q.get("hot_synced", 0) + fin_watch.after_fetch(con, sid, hot_period.pop(sid))
                 if src in deep and fn is deep[src][1]:  # 第一次就從長期起點抓起，不必再補
                     db.log_fetch(con, deep[src][0], sid)
                 con.commit()
@@ -476,7 +490,7 @@ def run(daily: bool = True, fundamentals: bool = True, progress=None, fast: bool
     stages = []
     if fast:
         near = {**cfg, "price_backfill_days": FAST_DAYS, "flow_backfill_days": FAST_DAYS, "history_dates_per_run": 0}
-        stages.append(("快速收盤更新", lambda: (_latest_only(cfg, errors), update_daily(near, progress, errors), update_exrights(near, errors),
+        stages.append(("快速收盤更新", lambda: (_latest_only(cfg, errors), fin_watch.run_detect(errors), update_daily(near, progress, errors), update_exrights(near, errors),
                                                 update_revenue_bulk(cfg, errors), events.update(cfg, errors))))
     elif daily:
         stages.append(("最新收盤價", lambda: _latest_only(cfg, errors)))

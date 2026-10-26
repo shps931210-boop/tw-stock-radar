@@ -41,6 +41,8 @@ def main() -> int:
         if st.get("partial_alert"):
             steps = "、".join((st.get("last") or {}).get("failed_steps") or [])
             problems.append(f"每日自主學習連續 {st['partial_streak']} 次有步驟失敗（{steps}）；最後一次完整成功：{st.get('last_valid_report') or '從未'}")
+    from . import step_log  # V19：失敗不影響網站的步驟，連續失敗 2 次以上也要寄信
+    problems += step_log.alerts()
     if not s.get("history", {}).get("ready", True):
         print(f"⏳ 歷史股價回補中：{s['history']['days']}/{s['history']['need']} 天")
     for x in problems:
