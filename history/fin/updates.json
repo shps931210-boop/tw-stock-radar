@@ -1,9 +1,11 @@
 {
- "generated_at": "2026-10-26T17:44:47",
+ "generated_at": "2026-10-26T18:49:34",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
  "waiting": 0,
+ "slow": 0,
+ "corrected": 0,
  "db_has_quarter": 0,
  "latency_hours": {
   "n": 0,
@@ -13,10 +15,108 @@
  "rescored": [],
  "revisions": [],
  "detect": {
-  "at": "2026-10-26T17:38:35",
+  "at": "2026-10-26T18:45:35",
   "endpoints_ok": 8,
   "endpoints": 12,
   "stocks": 1981,
-  "new": 1981
- }
+  "new": 0
+ },
+ "endpoints": [
+  {
+   "market": "twse",
+   "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
+   "ok": true,
+   "stocks": 1051,
+   "error": null,
+   "rows": 1051
+  },
+  {
+   "market": "twse",
+   "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_basi",
+   "ok": true,
+   "stocks": 10,
+   "error": null,
+   "rows": 10
+  },
+  {
+   "market": "twse",
+   "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_bd",
+   "ok": true,
+   "stocks": 3,
+   "error": null,
+   "rows": 3
+  },
+  {
+   "market": "twse",
+   "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_fh",
+   "ok": true,
+   "stocks": 13,
+   "error": null,
+   "rows": 13
+  },
+  {
+   "market": "twse",
+   "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ins",
+   "ok": true,
+   "stocks": 5,
+   "error": null,
+   "rows": 5
+  },
+  {
+   "market": "twse",
+   "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_mim",
+   "ok": true,
+   "stocks": 4,
+   "error": null,
+   "rows": 4
+  },
+  {
+   "market": "tpex",
+   "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
+   "ok": true,
+   "stocks": 888,
+   "error": null,
+   "rows": 888
+  },
+  {
+   "market": "tpex",
+   "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_basi",
+   "ok": false,
+   "stocks": 0,
+   "error": null,
+   "rows": 1
+  },
+  {
+   "market": "tpex",
+   "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_bd",
+   "ok": true,
+   "stocks": 7,
+   "error": null,
+   "rows": 7
+  },
+  {
+   "market": "tpex",
+   "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_fh",
+   "ok": false,
+   "stocks": 0,
+   "error": null,
+   "rows": 1
+  },
+  {
+   "market": "tpex",
+   "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ins",
+   "ok": false,
+   "stocks": 0,
+   "error": null,
+   "rows": 1
+  },
+  {
+   "market": "tpex",
+   "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_mim",
+   "ok": false,
+   "stocks": 0,
+   "error": null,
+   "rows": 1
+  }
+ ]
 }
