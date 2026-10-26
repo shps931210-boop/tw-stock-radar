@@ -1,83 +1,634 @@
 {
- "generated_at": "2026-10-26T19:33:55",
+ "generated_at": "2026-10-26T23:19:13",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
- "waiting": 4,
+ "waiting": 0,
  "slow": 0,
  "corrected": 0,
- "mismatch": 1,
+ "mismatch": 0,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 0,
+ "db_has_quarter": 1,
  "latency_hours": {
   "n": 0,
   "median": null,
   "max": null
  },
- "waiting_list": [
+ "waiting_list": [],
+ "rescored": [
   {
-   "stock_id": "6467",
-   "name": "泰合",
+   "stock_id": "6938",
+   "name": "藍新資訊",
    "period": "2026-Q2",
+   "synced_at": "2026-10-26T23:07:02",
+   "before": null,
+   "after": null,
+   "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
-   "attempts": 0,
-   "eps": -1.83,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
-   "corrected_at": null,
-   "note": "資料庫和官方累計數字不一致：營業收入 資料庫 1,359 千元／官方 1,350 千元"
-  },
-  {
-   "stock_id": "4804",
-   "name": "大略-KY",
-   "period": "2026-Q2",
-   "first_seen": "2026-10-26T17:38:35",
-   "attempts": 0,
-   "eps": -0.78,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
-   "corrected_at": null,
-   "note": null
+   "fetched_at": "2026-10-26T23:07:02",
+   "rescored_at": null,
+   "corrected_at": null
   },
   {
    "stock_id": "6898",
    "name": "程曦資訊",
    "period": "2026-Q2",
+   "synced_at": "2026-10-26T23:06:59",
+   "before": null,
+   "after": null,
+   "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
-   "attempts": 0,
-   "eps": 2.8,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
-   "corrected_at": null,
-   "note": null
+   "fetched_at": "2026-10-26T23:06:59",
+   "rescored_at": null,
+   "corrected_at": null
   },
   {
-   "stock_id": "6938",
-   "name": "藍新資訊",
+   "stock_id": "4804",
+   "name": "大略-KY",
    "period": "2026-Q2",
+   "synced_at": "2026-10-26T23:06:56",
+   "before": null,
+   "after": null,
+   "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
-   "attempts": 0,
-   "eps": 2.99,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
-   "corrected_at": null,
-   "note": null
+   "fetched_at": "2026-10-26T23:06:56",
+   "rescored_at": null,
+   "corrected_at": null
+  },
+  {
+   "stock_id": "6467",
+   "name": "泰合",
+   "period": "2026-Q2",
+   "synced_at": "2026-10-26T23:06:54",
+   "before": null,
+   "after": null,
+   "latency_h": 5.5,
+   "first_seen": "2026-10-26T17:38:35",
+   "fetched_at": "2026-10-26T23:06:54",
+   "rescored_at": null,
+   "corrected_at": null
   }
  ],
- "rescored": [],
- "revisions": [],
+ "revisions": [
+  {
+   "stock_id": "1101",
+   "period": "2018-Q2",
+   "detected_at": "2026-10-26T23:17:15",
+   "fields": {
+    "ocf": [
+     8190517000.0,
+     8453310000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1101",
+   "period": "2018-Q3",
+   "detected_at": "2026-10-26T23:17:15",
+   "fields": {
+    "ocf": [
+     4067944000.0,
+     3805151000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1101",
+   "period": "2019-Q4",
+   "detected_at": "2026-10-26T23:17:15",
+   "fields": {
+    "ocf": [
+     11182871000.0,
+     11524151000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1101",
+   "period": "2022-Q2",
+   "detected_at": "2026-10-26T23:17:15",
+   "fields": {
+    "ocf": [
+     -843015000.0,
+     -275404000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1101",
+   "period": "2022-Q3",
+   "detected_at": "2026-10-26T23:17:15",
+   "fields": {
+    "ocf": [
+     1720238000.0,
+     1152627000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1560",
+   "period": "2018-Q2",
+   "detected_at": "2026-10-26T23:17:01",
+   "fields": {
+    "ocf": [
+     116450000.0,
+     111515000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1560",
+   "period": "2018-Q3",
+   "detected_at": "2026-10-26T23:17:01",
+   "fields": {
+    "ocf": [
+     146669000.0,
+     151410000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2018-Q1",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     68476000.0,
+     41634000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2018-Q2",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     9056000.0,
+     29908000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2018-Q3",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     14817000.0,
+     23666000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2018-Q4",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     70891000.0,
+     68032000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2019-Q3",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     75543000.0,
+     76836000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2019-Q4",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     13745000.0,
+     12452000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2020-Q3",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     -25964000.0,
+     -23829000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2021-Q1",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     45399000.0,
+     44765000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2021-Q2",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     80918000.0,
+     81552000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2022-Q2",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     84223000.0,
+     82911000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6217",
+   "period": "2022-Q3",
+   "detected_at": "2026-10-26T23:16:58",
+   "fields": {
+    "ocf": [
+     72897000.0,
+     74209000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8086",
+   "period": "2019-Q2",
+   "detected_at": "2026-10-26T23:16:48",
+   "fields": {
+    "ocf": [
+     58090000.0,
+     58623000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8210",
+   "period": "2019-Q4",
+   "detected_at": "2026-10-26T23:16:44",
+   "fields": {
+    "ocf": [
+     401278000.0,
+     397530000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8210",
+   "period": "2022-Q1",
+   "detected_at": "2026-10-26T23:16:44",
+   "fields": {
+    "ocf": [
+     -475695000.0,
+     -469783000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8210",
+   "period": "2022-Q2",
+   "detected_at": "2026-10-26T23:16:44",
+   "fields": {
+    "ocf": [
+     -225934000.0,
+     -231846000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2018-Q4",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     1804282000.0,
+     1785980000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2019-Q1",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     1048079000.0,
+     1041841000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2019-Q2",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     -139921000.0,
+     -135622000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2021-Q2",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     590542000.0,
+     1166356000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2021-Q3",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     4935026000.0,
+     5169736000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2021-Q4",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     2562923000.0,
+     3295072000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2022-Q1",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     -1024679000.0,
+     -1035943000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2395",
+   "period": "2022-Q2",
+   "detected_at": "2026-10-26T23:16:40",
+   "fields": {
+    "ocf": [
+     1617502000.0,
+     1628766000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5475",
+   "period": "2018-Q1",
+   "detected_at": "2026-10-26T23:16:37",
+   "fields": {
+    "ocf": [
+     11900000.0,
+     11736000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2885",
+   "period": "2018-Q2",
+   "detected_at": "2026-10-26T23:16:33",
+   "fields": {
+    "ocf": [
+     -24716597000.0,
+     -27869847000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2885",
+   "period": "2018-Q3",
+   "detected_at": "2026-10-26T23:16:33",
+   "fields": {
+    "ocf": [
+     35674086000.0,
+     38827336000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3363",
+   "period": "2018-Q3",
+   "detected_at": "2026-10-26T23:16:30",
+   "fields": {
+    "ocf": [
+     143970000.0,
+     146588000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3363",
+   "period": "2018-Q4",
+   "detected_at": "2026-10-26T23:16:30",
+   "fields": {
+    "ocf": [
+     -91311000.0,
+     -93929000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3363",
+   "period": "2020-Q2",
+   "detected_at": "2026-10-26T23:16:30",
+   "fields": {
+    "ocf": [
+     23798000.0,
+     23988000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3260",
+   "period": "2020-Q4",
+   "detected_at": "2026-10-26T23:16:27",
+   "fields": {
+    "ocf": [
+     245431000.0,
+     237706000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2017-Q4",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     174206000.0,
+     248203000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2018-Q1",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     -10041000.0,
+     16117000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2018-Q2",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     98870000.0,
+     96182000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2018-Q3",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     181165000.0,
+     178477000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2018-Q4",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     268758000.0,
+     247976000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2022-Q1",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     160694000.0,
+     157487000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2022-Q2",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     162623000.0,
+     158687000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2022-Q3",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     160844000.0,
+     150760000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8028",
+   "period": "2022-Q4",
+   "detected_at": "2026-10-26T23:16:16",
+   "fields": {
+    "ocf": [
+     316057000.0,
+     308122000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2340",
+   "period": "2020-Q2",
+   "detected_at": "2026-10-26T23:16:05",
+   "fields": {
+    "ocf": [
+     -45419000.0,
+     -47839000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2340",
+   "period": "2020-Q3",
+   "detected_at": "2026-10-26T23:16:05",
+   "fields": {
+    "ocf": [
+     265046000.0,
+     268708000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2340",
+   "period": "2020-Q4",
+   "detected_at": "2026-10-26T23:16:05",
+   "fields": {
+    "ocf": [
+     498043000.0,
+     492858000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2340",
+   "period": "2022-Q1",
+   "detected_at": "2026-10-26T23:16:05",
+   "fields": {
+    "ocf": [
+     174029000.0,
+     176656000.0
+    ]
+   }
+  }
+ ],
  "detect": {
-  "at": "2026-10-26T19:28:44",
+  "at": "2026-10-26T23:06:46",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 1981,
   "new": 0,
   "corrected": 0,
-  "mismatch": 1
+  "mismatch": 0
  },
  "endpoints": [
   {

@@ -40,33 +40,69 @@
     "預測封存日曆": "success",
     "整合測試": "skipped"
    }
+  },
+  {
+   "at": "2026-10-26T23:20:58",
+   "run_id": "40342353861",
+   "mode": "full",
+   "steps": {
+    "連線診斷": "success",
+    "影子預測封存": "success",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "success",
+    "預測封存日曆": "success",
+    "整合測試": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-10-26T19:34:13",
+   "last_ok": "2026-10-26T23:20:58",
    "last": "success",
-   "runs": 3,
+   "runs": 4,
    "fails": 0
   },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-10-26T19:34:13",
+   "last_ok": "2026-10-26T23:20:58",
    "last": "success",
-   "runs": 3,
+   "runs": 4,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-10-26T19:34:13",
+   "last_ok": "2026-10-26T23:20:58",
    "last": "success",
-   "runs": 3,
+   "runs": 4,
    "fails": 0
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-10-26T19:34:13",
+   "last_ok": "2026-10-26T23:20:58",
+   "last": "success",
+   "runs": 2,
+   "fails": 0
+  },
+  "連線診斷": {
+   "streak": 0,
+   "last_ok": "2026-10-26T23:20:58",
+   "last": "success",
+   "runs": 1,
+   "fails": 0
+  },
+  "盤前情報對帳": {
+   "streak": 0,
+   "last_ok": "2026-10-26T23:20:58",
+   "last": "success",
+   "runs": 1,
+   "fails": 0
+  },
+  "整合測試": {
+   "streak": 0,
+   "last_ok": "2026-10-26T23:20:58",
    "last": "success",
    "runs": 1,
    "fails": 0
