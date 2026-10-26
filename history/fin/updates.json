@@ -1,25 +1,83 @@
 {
- "generated_at": "2026-10-26T18:49:34",
+ "generated_at": "2026-10-26T19:33:55",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
- "waiting": 0,
+ "waiting": 4,
  "slow": 0,
  "corrected": 0,
+ "mismatch": 1,
+ "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
  "db_has_quarter": 0,
  "latency_hours": {
   "n": 0,
   "median": null,
   "max": null
  },
+ "waiting_list": [
+  {
+   "stock_id": "6467",
+   "name": "泰合",
+   "period": "2026-Q2",
+   "first_seen": "2026-10-26T17:38:35",
+   "attempts": 0,
+   "eps": -1.83,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": "資料庫和官方累計數字不一致：營業收入 資料庫 1,359 千元／官方 1,350 千元"
+  },
+  {
+   "stock_id": "4804",
+   "name": "大略-KY",
+   "period": "2026-Q2",
+   "first_seen": "2026-10-26T17:38:35",
+   "attempts": 0,
+   "eps": -0.78,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6898",
+   "name": "程曦資訊",
+   "period": "2026-Q2",
+   "first_seen": "2026-10-26T17:38:35",
+   "attempts": 0,
+   "eps": 2.8,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6938",
+   "name": "藍新資訊",
+   "period": "2026-Q2",
+   "first_seen": "2026-10-26T17:38:35",
+   "attempts": 0,
+   "eps": 2.99,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  }
+ ],
  "rescored": [],
  "revisions": [],
  "detect": {
-  "at": "2026-10-26T18:45:35",
-  "endpoints_ok": 8,
+  "at": "2026-10-26T19:28:44",
+  "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 1981,
-  "new": 0
+  "new": 0,
+  "corrected": 0,
+  "mismatch": 1
  },
  "endpoints": [
   {
@@ -28,7 +86,8 @@
    "ok": true,
    "stocks": 1051,
    "error": null,
-   "rows": 1051
+   "rows": 1051,
+   "empty": null
   },
   {
    "market": "twse",
@@ -36,7 +95,8 @@
    "ok": true,
    "stocks": 10,
    "error": null,
-   "rows": 10
+   "rows": 10,
+   "empty": null
   },
   {
    "market": "twse",
@@ -44,7 +104,8 @@
    "ok": true,
    "stocks": 3,
    "error": null,
-   "rows": 3
+   "rows": 3,
+   "empty": null
   },
   {
    "market": "twse",
@@ -52,7 +113,8 @@
    "ok": true,
    "stocks": 13,
    "error": null,
-   "rows": 13
+   "rows": 13,
+   "empty": null
   },
   {
    "market": "twse",
@@ -60,7 +122,8 @@
    "ok": true,
    "stocks": 5,
    "error": null,
-   "rows": 5
+   "rows": 5,
+   "empty": null
   },
   {
    "market": "twse",
@@ -68,7 +131,8 @@
    "ok": true,
    "stocks": 4,
    "error": null,
-   "rows": 4
+   "rows": 4,
+   "empty": null
   },
   {
    "market": "tpex",
@@ -76,15 +140,17 @@
    "ok": true,
    "stocks": 888,
    "error": null,
-   "rows": 888
+   "rows": 888,
+   "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_basi",
-   "ok": false,
+   "ok": true,
    "stocks": 0,
    "error": null,
-   "rows": 1
+   "rows": 1,
+   "empty": true
   },
   {
    "market": "tpex",
@@ -92,31 +158,35 @@
    "ok": true,
    "stocks": 7,
    "error": null,
-   "rows": 7
+   "rows": 7,
+   "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_fh",
-   "ok": false,
+   "ok": true,
    "stocks": 0,
    "error": null,
-   "rows": 1
+   "rows": 1,
+   "empty": true
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ins",
-   "ok": false,
+   "ok": true,
    "stocks": 0,
    "error": null,
-   "rows": 1
+   "rows": 1,
+   "empty": true
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_mim",
-   "ok": false,
+   "ok": true,
    "stocks": 0,
    "error": null,
-   "rows": 1
+   "rows": 1,
+   "empty": true
   }
  ]
 }
