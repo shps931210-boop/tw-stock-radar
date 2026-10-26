@@ -100,6 +100,21 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     const rs = await page.$eval("#j-rs", (el) => ({ open: el.open, top: el.getBoundingClientRect().top + scrollY }));
     return [c.ok && top < rs.top && !rs.open, `${c.kind} ${c.wh}；走勢圖在研究摘要之前、研究摘要預設收合`];
   });
+  await check(21, "走勢頁：期間切換與交易訊號", async () => {
+    await page.click('.stabs [data-t="trend"]');
+    await page.waitForTimeout(800);
+    const c = await chartOk("#tc");
+    const n = await page.$$eval("#hzSeg .hzc", (xs) => xs.length);
+    const pills = await page.$$eval("#hzSeg .hzc .pill", (xs) => xs.map((x) => x.innerText.trim()));
+    await page.click('#hzSeg [data-h="short"]'); await page.waitForTimeout(500);
+    const t = await page.$eval("#t-ck h2", (e) => e.innerText);
+    const plan = await page.$eval("#t-plan", (e) => e.innerText);
+    const c2 = await chartOk("#tc");
+    const order = await page.$eval("#tr-top", (e) => e.getBoundingClientRect().top < document.querySelector("#t-adv").getBoundingClientRect().top);
+    await page.click('#hzSeg [data-h="swing"]');
+    return [c.ok && c2.ok && n === 3 && /短線/.test(t) && /進場/.test(plan) && order && pills.length === 3,
+      `${c.kind} ${c.wh}；三期間狀態：${pills.join("／")}；切到短線後條件檢查=${t.trim()}；研究細節在後`];
+  });
   await home();
   await check(10, "自選股", async () => {
     const star = await page.$("#hpick .pk [data-star]");

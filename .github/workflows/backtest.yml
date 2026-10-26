@@ -44,18 +44,22 @@ jobs:
         run: python -m app.factor_research
       # 風險規則逐項檢驗（過熱、高波動、產業集中、市場狀態、0050 基準部位）：只做研究，不改正式模型
       - name: 風險規則逐項檢驗
+        id: risk
         continue-on-error: true
         run: python -m app.risk_research
       # V28 資料與回測稽核（有沒有偷看到未來資料）：只報告，不擋後面的研究
       - name: 資料與回測稽核
+        id: leak
         continue-on-error: true
         run: python -m app.leak_audit
       # V27 推薦組合風險研究（原始／流動性限制／產業限制／聯合限制 Top10）：只做研究，原始排名不變
       - name: 推薦組合風險研究
+        id: port
         continue-on-error: true
         run: python -m app.portfolio_research
       # V22 預測模型研究（影子模式，不影響正式排行榜）：V21 固定權重 vs Ridge／Logistic／LightGBM
       - name: 預測模型研究
+        id: mlr
         continue-on-error: true
         env:
           ML_PANEL_CACHE: "1"        # V31：研究資料集存成 data/ml_panel.pkl，給每天的自主學習補標籤、重新訓練候選模型
@@ -63,6 +67,7 @@ jobs:
           pip install lightgbm==4.5.0
           python -m app.ml_research
       - name: 上傳研究資料集（每日自主學習用）
+        id: panel
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -73,6 +78,7 @@ jobs:
           gh release upload ml-panel ml_panel.pkl.gz --clobber
       # V13 LightGBM 專項研究（只做研究）：預測目標、訓練視窗、模型融合；事前固定 7 個比較，結果寫 history/backtest/lgbm_study.json
       - name: LightGBM 專項研究
+        id: lgbm
         continue-on-error: true
         timeout-minutes: 150
         run: |
@@ -80,18 +86,30 @@ jobs:
           if python -m app.evolution allowed lgbm_study; then python -m app.lgbm_study data/ml_panel.pkl; fi
       # V14 投資組合研究：同一份 LightGBM 排序換 14 種選股與持股方式（用上一步存下的預測，不重新訓練）
       - name: 投資組合轉化研究
+        id: pst
         continue-on-error: true
         timeout-minutes: 30
         run: python -m app.portfolio_study
       # V15 實驗記憶：把這次每個研究變體登記到 history/research/experiments.json（已登記的不重複）
       - name: 登記實驗
+        id: ingest
         continue-on-error: true
         run: python -m app.evolution ingest
+      # V20：只做研究、失敗不擋後面步驟的項目，每次結果都記錄（history/audit/steps_backtest.json）；同一步驟連續失敗 2 次，下一次盤後檢查會寄信
+      - name: 記錄研究步驟的結果
+        if: always()
+        continue-on-error: true
+        env:
+          STEP_LOG: history/audit/steps_backtest.json
+        run: >-
+          python -m app.step_log "風險規則檢驗=${{ steps.risk.outcome }}" "資料與回測稽核=${{ steps.leak.outcome }}"
+          "組合風險研究=${{ steps.port.outcome }}" "預測模型研究=${{ steps.mlr.outcome }}" "上傳研究資料集=${{ steps.panel.outcome }}"
+          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}"
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add history/backtest/ history/models/ history/research/
+          git add history/backtest/ history/models/ history/research/ history/audit/steps_backtest.json
           if git diff --cached --quiet; then echo "結果沒有變化"; exit 0; fi
           git commit -q -m "AI 歷史回測 $(date +%F)"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done

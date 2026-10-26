@@ -159,3 +159,24 @@ class StepLog(unittest.TestCase):
             with mock.patch.dict("os.environ", {"GITHUB_RUN_ID": "3"}):
                 step_log.record(["新聞與公告=success"], p)
             self.assertEqual(step_log.alerts(p), [])
+
+
+class SlowAndCorrection(Queue):
+    def test_after_max_attempts_switches_to_slow_tracking(self):
+        self.detect({"2330": {"period": "2026-Q3"}})
+        with db.connect() as con:
+            con.execute("UPDATE fin_announce SET attempts=?, last_try=?, status='waiting_source'", (fin_watch.MAX_ATTEMPTS, NOW.isoformat()))
+            self.assertEqual(fin_watch.hot_list(con, [], now=datetime(2026, 11, 1, 22, 0)), [])  # 低頻：3 天內不重試
+            self.assertEqual(fin_watch.hot_list(con, [], now=datetime(2026, 11, 2, 22, 0)), [("2330", "2026-Q3")])  # 但不會永久放棄
+
+    def test_official_change_retriggers_even_after_sync(self):
+        self.detect({"2330": {"period": "2026-Q2", "eps": 1.0}})  # 已同步
+        with db.connect() as con:
+            con.execute("UPDATE fin_announce SET attempts=?", (fin_watch.MAX_ATTEMPTS,))
+        self.detect({"2330": {"period": "2026-Q2", "eps": 1.3}})  # 官方更正
+        with db.connect() as con:
+            row = con.execute("SELECT status, attempts, corrected_at FROM fin_announce").fetchone()
+            hot = fin_watch.hot_list(con, [], now=NOW)
+        self.assertEqual(row[:2], ("pending", 0))
+        self.assertTrue(row[2])
+        self.assertEqual(hot, [("2330", "2026-Q2")])

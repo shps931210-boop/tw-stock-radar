@@ -163,8 +163,46 @@ def status(px: pd.DataFrame) -> dict:
                 if not t["close"] > t["ma60"]: miss.append("股價在季線之下")
                 if setup and not on: miss.append(f"已回檔到月線附近，等收盤站上月線且高於前一天最高價 {f['high'].iloc[-2]:.2f}")
                 elif not miss: miss.append(f"趨勢條件符合，等回檔到月線 {t['ma20']:.2f} 的 2% 以內再轉強（目前距月線 {(t['close'] / t['ma20'] - 1) * 100:+.1f}%）")
-        out[m] = {"state": "triggered" if on else "setup" if setup else "none", "miss": miss, **{k: round(v, 2) if v is not None else None for k, v in lv.items()}}
+        out[m] = {"state": "triggered" if on else "setup" if setup else "none", "miss": miss, "checks": _checks(m, f, e),
+                  **{k: round(v, 2) if v is not None else None for k, v in lv.items()}}
+    out["trend"] = trend_label(t)
     return out
+
+
+def _ok(x) -> bool | None:
+    return None if x is None or (isinstance(x, float) and np.isnan(x)) else bool(x)
+
+
+def _checks(m: str, f: pd.DataFrame, e: dict) -> list[dict]:
+    """進場條件拆成幾個「符合／未符合」的檢查項目（網站走勢頁用）；和 entries() 用同一組欄位與門檻。"""
+    t, prev_high = f.iloc[-1], float(f["high"].iloc[-2]) if len(f) > 1 else None
+    c = float(t["close"])
+    liq = {"k": "成交量足夠（20 日平均成交金額 ≥ 1,000 萬）", "ok": _ok(t["liquid"])}
+    if m == "short":
+        return [{"k": "股價位置：站上月線", "ok": _ok(c > t["ma20"]), "v": f"月線 {t['ma20']:.2f}"},
+                {"k": "突破：收盤高於前 20 日最高價", "ok": _ok(c > t["hh20"]), "v": f"前高 {t['hh20']:.2f}"},
+                {"k": "量能：成交量 ≥ 1.5 倍均量", "ok": _ok((t["vol_ratio"] or 0) >= 1.5), "v": f"{(t['vol_ratio'] or 0):.1f} 倍"},
+                {"k": "K 棒：今天收紅", "ok": _ok(c > t["open"])}, liq]
+    touched = bool((f["low"].tail(3) <= f["ma20"].tail(3) * 1.02).any())
+    return [{"k": "中期趨勢：月線在季線之上、季線向上", "ok": _ok(t["ma20"] > t["ma60"] and bool(t["ma60_up"])), "v": f"月線 {t['ma20']:.2f}／季線 {t['ma60']:.2f}"},
+            {"k": "股價位置：站上季線", "ok": _ok(c > t["ma60"])},
+            {"k": "回檔：近 3 天曾回到月線 2% 以內", "ok": touched},
+            {"k": "轉強：站上月線且高於前一天最高價", "ok": _ok(c > t["ma20"] and prev_high is not None and c > prev_high),
+             "v": f"前一天最高 {prev_high:.2f}" if prev_high else None}, liq]
+
+
+def trend_label(t) -> dict:
+    """目前趨勢（只看均線位置，不是預測）：偏多／盤整／偏弱。"""
+    c, m20, m60, m240 = (float(t[k]) if pd.notna(t[k]) else None for k in ("close", "ma20", "ma60", "ma240"))
+    if m20 is None or m60 is None:
+        return {"label": "資料不足", "cls": "", "why": "均線還算不出來"}
+    up = bool(t["ma60_up"])
+    pts = sum([c > m20, m20 > m60, up, c > m60] + ([c > m240] if m240 else []))
+    n = 5 if m240 else 4
+    lab = "偏多" if pts >= n - 1 else "偏弱" if pts <= 1 else "盤整"
+    why = "、".join([f"股價{'在' if c > m20 else '跌破'}月線{'之上' if c > m20 else ''}", f"月線{'高於' if m20 > m60 else '低於'}季線", f"季線{'向上' if up else '走平或向下'}"]
+                    + ([f"股價{'在' if c > m240 else '低於'}年線{'之上' if c > m240 else ''}"] if m240 else []))
+    return {"label": lab, "cls": {"偏多": "up", "偏弱": "down"}.get(lab, ""), "why": why, "score": f"{pts}/{n}"}
 
 
 def long_status(s: dict, pe: dict | None) -> dict:

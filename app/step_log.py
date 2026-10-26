@@ -13,7 +13,8 @@ import sys
 
 from . import config
 
-PATH = config.ROOT / "history" / "audit" / "steps.json"
+PATH = config.ROOT / (os.environ.get("STEP_LOG") or "history/audit/steps.json")
+BACKTEST = config.ROOT / "history" / "audit" / "steps_backtest.json"  # 每週研究回測（backtest.yml）
 KEEP = 120
 ALERT = 2
 
@@ -63,6 +64,8 @@ def status(d: dict) -> dict:
 
 
 def alerts(path=None) -> list[str]:
+    if path is None:  # 盤後更新與每週研究兩份紀錄都檢查
+        return alerts(PATH) + (alerts(BACKTEST) if BACKTEST != PATH and BACKTEST.exists() else [])
     st = status(load(path))
     return [f"「{k}」連續失敗 {s['streak']} 次（最後成功：{(s['last_ok'] or '從未')[:16].replace('T', ' ')}）" for k, s in st.items() if s["streak"] >= ALERT]
 

@@ -26,7 +26,7 @@ from .sources.twse import HEADERS
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS fin_announce (stock_id TEXT, period TEXT, report_date TEXT, source TEXT, first_seen TEXT,
   eps REAL, revenue REAL, status TEXT, attempts INTEGER DEFAULT 0, last_try TEXT, synced_at TEXT,
-  score_before REAL, score_after REAL, PRIMARY KEY (stock_id, period));
+  score_before REAL, score_after REAL, corrected_at TEXT, PRIMARY KEY (stock_id, period));
 CREATE TABLE IF NOT EXISTS fin_seen (stock_id TEXT, period TEXT, first_seen TEXT, source TEXT, fields INTEGER,
   PRIMARY KEY (stock_id, period));
 CREATE TABLE IF NOT EXISTS fin_revision (stock_id TEXT, period TEXT, detected_at TEXT, detail TEXT,
@@ -43,11 +43,14 @@ ENDPOINTS = [("twse", TWSE + f"t187ap06_L_{k}") for k in KINDS] + [("tpex", TPEX
 DEADLINE = {1: (5, 15), 2: (8, 14), 3: (11, 14), 4: (3, 31)}
 CORE = ("revenue", "gross_profit", "operating_income", "net_income", "eps", "total_assets", "total_liabilities", "equity", "ocf")
 RETRY_HOURS = 6
-MAX_ATTEMPTS = 20
+MAX_ATTEMPTS = 20      # 高頻重試次數（每 6 小時，約 5 天）；之後改成低頻持續追蹤，不會永久放棄
+SLOW_HOURS = 72        # 低頻追蹤：每 3 天再試一次，直到資料來源同步或官方資料改變
 
 
 def ensure(con) -> None:
     con.executescript(SCHEMA)
+    if "corrected_at" not in {r[1] for r in con.execute("PRAGMA table_info(fin_announce)")}:
+        con.execute("ALTER TABLE fin_announce ADD COLUMN corrected_at TEXT")
 
 
 def _qend(y: int, q: int) -> date:
@@ -166,7 +169,7 @@ def record(con, found: dict, diag: list, now: datetime | None = None) -> dict:
     for sid, v in found.items():
         if not ("1000" <= sid <= "9999" and len(sid) == 4):
             continue
-        cur = con.execute("SELECT status FROM fin_announce WHERE stock_id=? AND period=?", (sid, v["period"])).fetchone()
+        cur = con.execute("SELECT status, eps FROM fin_announce WHERE stock_id=? AND period=?", (sid, v["period"])).fetchone()
         synced = (have.get(sid) or "") >= v["period"]
         if cur is None:
             new += 1
@@ -175,11 +178,19 @@ def record(con, found: dict, diag: list, now: datetime | None = None) -> dict:
                                                       "already" if synced else "pending", None))
         elif synced and cur[0] in ("pending", "waiting_source"):
             con.execute("UPDATE fin_announce SET status='synced', synced_at=? WHERE stock_id=? AND period=?", (ts, sid, v["period"]))
+        elif _changed(cur[1], v.get("eps")):
+            # 官方數字變了（更正或重新公告）：重新觸發高頻補抓，重試次數歸零；已同步的也要重抓一次讓資料庫跟上更正
+            con.execute("UPDATE fin_announce SET status='pending', attempts=0, last_try=NULL, eps=?, revenue=?, corrected_at=? WHERE stock_id=? AND period=?",
+                        (v.get("eps"), v.get("revenue"), ts, sid, v["period"]))
     ok = sum(1 for d in diag if d.get("ok"))
     db.set_meta(con, "fin_watch_detect", json.dumps({"at": ts, "endpoints_ok": ok, "endpoints": len(diag), "stocks": len(found), "new": new,
                                                      "diag": diag}, ensure_ascii=False))
     con.commit()
     return {"stocks": len(found), "new": new, "endpoints_ok": ok}
+
+
+def _changed(a, b) -> bool:
+    return a is not None and b is not None and abs(b - a) > max(abs(a) * 0.005, 0.005)
 
 
 def run_detect(errors: list | None = None) -> dict | None:
@@ -213,15 +224,14 @@ def hot_list(con, front: list[str], now: datetime | None = None) -> list[tuple[s
     """官方已公布、資料庫還沒有的季度：回傳 [(股票代號, 季度)]，依優先順序。上次嘗試未滿 6 小時的先跳過。"""
     ensure(con)
     now = now or config.now()
-    rows = con.execute("SELECT stock_id, period, attempts, last_try FROM fin_announce WHERE status IN ('pending','waiting_source')").fetchall()
+    rows = con.execute("SELECT stock_id, period, attempts, last_try, corrected_at FROM fin_announce WHERE status IN ('pending','waiting_source')").fetchall()
     have = _latest_db(con)
     todo = []
-    for sid, per, n, last in rows:
-        if (have.get(sid) or "") >= per:
-            continue
-        if n and n >= MAX_ATTEMPTS:
-            continue
-        if last and now - datetime.fromisoformat(last) < timedelta(hours=RETRY_HOURS):
+    for sid, per, n, last, corr in rows:
+        if (have.get(sid) or "") >= per and not corr:
+            continue  # 資料庫已有該季（更正的除外：要重抓一次）
+        wait = SLOW_HOURS if (n or 0) >= MAX_ATTEMPTS else RETRY_HOURS  # 高頻重試用完改低頻，持續追蹤
+        if last and now - datetime.fromisoformat(last) < timedelta(hours=wait):
             continue
         todo.append((sid, per))
     rank = {sid: i for i, sid in enumerate(dict.fromkeys(_priority(con) + front))}
@@ -303,7 +313,8 @@ def summary(con, today: date | None = None) -> dict:
     in_db = sum(1 for sid, p in have.items() if len(sid) == 4 and p >= q)
     lat = sorted(h for r in rows if r["status"] == "synced" and (h := _hours(r["first_seen"], r["synced_at"])) is not None)
     waiting = [{"stock_id": r["stock_id"], "name": names.get(r["stock_id"]), "first_seen": r["first_seen"], "attempts": r["attempts"],
-                "eps": r["eps"], "status": r["status"]} for r in rows if r["status"] in ("pending", "waiting_source")]
+                "eps": r["eps"], "status": r["status"], "slow": (r["attempts"] or 0) >= MAX_ATTEMPTS, "last_try": r["last_try"]}
+               for r in rows if r["status"] in ("pending", "waiting_source")]
     changed = [{"stock_id": r["stock_id"], "name": names.get(r["stock_id"]), "period": r["period"], "synced_at": r["synced_at"],
                 "before": r["score_before"], "after": r["score_after"], "latency_h": _hours(r["first_seen"], r["synced_at"])}
                for r in db.read(con, "SELECT * FROM fin_announce WHERE status='synced' ORDER BY synced_at DESC LIMIT 200").to_dict("records")]
@@ -316,6 +327,8 @@ def summary(con, today: date | None = None) -> dict:
         "detect": {k: v for k, v in (det or {}).items() if k != "diag"} if det else None,
         "endpoints": [{k: d.get(k) for k in ("market", "url", "ok", "stocks", "error", "rows")} for d in (det or {}).get("diag", [])],
         "announced": len(rows), "synced": sum(r["status"] in ("synced", "already") for r in rows), "waiting": len(waiting),
+        "slow": sum(w["slow"] for w in waiting), "corrected": sum(1 for r in rows if r.get("corrected_at")),
+        "retry_rule": f"每 {RETRY_HOURS} 小時重試，{MAX_ATTEMPTS} 次後改成每 {SLOW_HOURS // 24} 天低頻追蹤，直到同步；官方數字變動會重新觸發",
         "db_has_quarter": in_db, "db_stocks": n_common,
         "latency_hours": {"n": len(lat), "median": lat[len(lat) // 2] if lat else None, "max": lat[-1] if lat else None},
         "waiting_list": waiting[:100], "rescored": changed, "revisions": revs,
@@ -336,7 +349,7 @@ def after_snapshot(con, out_dir=None) -> dict:
     (config.DATA_DIR / "fin_watch.json").write_text(json.dumps(s, ensure_ascii=False, separators=(",", ":")), "utf-8")
     h = config.ROOT / "history" / "fin"
     h.mkdir(parents=True, exist_ok=True)
-    (h / "updates.json").write_text(json.dumps({k: s[k] for k in ("generated_at", "quarter", "announced", "synced", "waiting", "db_has_quarter",
+    (h / "updates.json").write_text(json.dumps({k: s[k] for k in ("generated_at", "quarter", "announced", "synced", "waiting", "slow", "corrected", "db_has_quarter",
                                                                   "latency_hours", "rescored", "revisions", "detect", "endpoints")},
                                                ensure_ascii=False, indent=1), "utf-8")
     return s

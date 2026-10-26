@@ -142,8 +142,9 @@ try:
                 ensure_ascii=False, separators=(",", ":")), "utf-8")
 except Exception as e:
     print("投資組合輔助資料失敗：", e)
-if (root / "history" / "audit" / "steps.json").exists():  # V19：失敗不影響網站的步驟，每次執行的結果（app/step_log.py）
-    shutil.copy(root / "history" / "audit" / "steps.json", out / "data" / "steps.json")
+for _sf in ("steps.json", "steps_backtest.json"):  # V19／V20：失敗不影響網站的步驟（盤後更新、每週研究），每次執行的結果（app/step_log.py）
+    if (root / "history" / "audit" / _sf).exists():
+        shutil.copy(root / "history" / "audit" / _sf, out / "data" / _sf)
 if (config.DATA_DIR / "fin_watch.json").exists():  # V19：新財報公告偵測與補抓（app/fin_watch.py）
     shutil.copy(config.DATA_DIR / "fin_watch.json", out / "data" / "fin_watch.json")
 audit_rows = {}
