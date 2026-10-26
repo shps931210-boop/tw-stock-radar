@@ -152,6 +152,10 @@ if (config.DATA_DIR / "coverage_audit.json").exists():  # V19：全市場資料�
     _au = json.loads((config.DATA_DIR / "coverage_audit.json").read_text("utf-8"))
     audit_rows = {x["id"]: x for x in _au.pop("stocks", [])}
     (out / "data" / "coverage_audit.json").write_text(json.dumps(_au, ensure_ascii=False, separators=(",", ":")), "utf-8")
+_cal = config.ROOT / "history" / "audit" / "seal_calendar.json"
+if _cal.exists():  # V20.1 預測封存日曆（app/seal_calendar.py）
+    (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
+    shutil.copy(_cal, out / "data" / "predictions" / "calendar.json")
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
 try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與到期對帳成績

@@ -60,7 +60,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
       - name: 自動測試（資料對齊、完整性、備援同步；失敗就不更新網站）
-        run: python -m unittest discover tests
+        run: python -m tests.run unit   # 純單元測試：不准連外網、每個測試 60 秒上限；整合測試在完整更新後另外跑
 
   update:
     runs-on: ubuntu-latest
@@ -178,6 +178,21 @@ jobs:
         continue-on-error: true
         run: python -m app.premarket --score
 
+      # V20.1 整合測試：真實官方 OpenAPI 欄位、正式資料庫和官方數字是否一致、封存日曆有沒有缺漏（失敗只記錄，不影響網站）
+      - name: 整合測試
+        id: integ
+        if: env.MODE == 'full'
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python -m tests.run integration
+
+      # V20.1 預測封存日曆：每個交易日有沒有封存、什麼時候到期、成績單有沒有跟上（history/audit/seal_calendar.json）
+      - name: 預測封存日曆
+        id: seal
+        if: always() && env.MODE != 'premarket'
+        continue-on-error: true
+        run: python -m app.seal_calendar
+
       # V19：失敗不影響網站的步驟也要留下紀錄（history/audit/steps.json）；同一步驟連續失敗 2 次，最後的檢查會寄信
       - name: 記錄非必要步驟的結果
         if: always()
@@ -185,7 +200,7 @@ jobs:
         run: >-
           python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
-          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}"
 
       - name: 備份資料庫到 GitHub Release
         id: backup

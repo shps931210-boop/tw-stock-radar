@@ -1404,6 +1404,7 @@ async function loadDL() {
       ["最新研究", esc(S.ops.latest_research || "—")]].map(([k, v]) => `<div><span class="faint small">${k}</span><b>${v}</b></div>`).join("")}</div>` : ""}
     <div class="tbl"><table class="wrap"><tbody>
       <tr><td>學習流程執行狀態</td><td>${RS.runs ? `最近 ${RS.recent} 次成功率 ${fmtNum(RS.success_rate, 0)}%・最近一次成功 ${tm(RS.last_ok) || "—"}${RS.fail_streak ? `・<span class="pill warn">連續失敗 ${RS.fail_streak} 次</span>` : ""}` : "還沒有執行紀錄（從 V31.1 開始記錄）"}</td></tr>
+      ${RS.data_label ? `<tr><td>有沒有新資料可以學</td><td>${RS.no_new_data_streak ? `<span class="pill warn">${esc(RS.data_label)}</span>` : esc(RS.data_label)}${RS.last_new_data ? `・最近一次有新交易日：${esc(RS.last_new_data)}` : ""}</td></tr>` : ""}
       <tr><td>資料日的行情</td><td>${yes(L.data?.ok, "齊全", "不齊全")} ${esc(L.data?.why || "")}</td></tr>
       <tr><td>資料日的預測封存</td><td>${yes(L.sealed?.today, "已封存", "沒有封存")} ${L.sealed?.on_time === false ? '<span class="pill warn">晚於開盤</span>' : ""} <span class="faint small">${esc(L.sealed?.model_version || "")}</span></td></tr>
       <tr><td>已累積的真實預測</td><td>${L.live?.sealed_days ?? 0} 天；已到期：5 日 ${mt["5"] ?? 0}、20 日 ${mt["20"] ?? 0}、60 日 ${mt["60"] ?? 0} 天</td></tr>
@@ -1576,7 +1577,25 @@ async function loadPredSc() {
       ${H.matured ? `<div class="tbl"><table><thead><tr><th>模型</th><th class="r">平均 Rank IC</th><th class="r">IC 為正</th><th class="r">前 20 名平均超額</th><th class="r">方向命中／Brier</th></tr></thead><tbody>
         ${Object.entries(names).filter(([k]) => H[k]).map(([k, n]) => `<tr><td>${n}</td><td class="r num">${fmtNum(H[k].ic, 3)}</td><td class="r num">${fmtNum(H[k].ic_pos, 0)}%</td><td class="r num ${signCls(H[k].top_excess)}">${pctTxt(H[k].top_excess)}</td>
           <td class="r num">${H[k].brier != null ? `${fmtNum(H[k].hit, 1)}%／${fmtNum(H[k].brier, 3)}<br><span class="faint small">只猜平均 ${fmtNum(H[k].brier_base, 3)}</span>` : "—"}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted small" style="margin:0">還沒有到期的預測。</p>`}`; }).join("")}
+    <div id="sealCal"></div>
     <p class="faint small" style="margin:8px 0 0">規則和歷史研究完全相同：訊號日隔天開盤進場、第 h 個交易日後開盤出場、減去同期間 0050，未扣成本。每天的預測檔在 <a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/predictions" target="_blank" rel="noopener">GitHub</a> 公開，不會事後修改。到期天數少於 20 天前，差異多半只是運氣；新模型沒有在這裡持續勝過 V21 之前，不會取代正式排行榜。</p>`;
+  loadSealCal();
+}
+// V20.1 預測封存日曆：每個應有預測的交易日、休市原因、到期日、對帳統計是否跟上（history/audit/seal_calendar.json）
+async function loadSealCal() {
+  const el = $("#sealCal"); if (!el) return;
+  const C = await fetch("data/predictions/calendar.json" + verQ("predictions/calendar.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  if (!C?.days?.length) return;
+  const S = C.summary, m = (x) => x.matured ? '<span class="ckok">已到期</span>' : `<span class="num">${esc(x.due.slice(5))}</span>`;
+  el.innerHTML = `<h3 style="margin:14px 0 6px">封存日曆</h3>
+    <p class="small" style="margin:0 0 6px">${esc(S.first)} 起應有預測的交易日 <b>${S.expected}</b> 天，已封存 <b>${S.sealed}</b> 天（開盤前封存 ${S.on_time} 天）${S.missing.length ? `，<b class="ckw">缺漏 ${S.missing.length} 天：${esc(S.missing.join("、"))}</b>（不會事後補做）` : "，沒有缺漏"}。
+      ${S.next_due ? `下一個到期：${esc(S.next_due.date)}（${esc(S.next_due.horizon)} 日）。` : ""}${Object.keys(S.scorecard_lag || {}).length ? `<b class="ckw">對帳統計落後：${Object.entries(S.scorecard_lag).map(([h, n]) => `${h} 日少算 ${n} 天`).join("、")}</b>` : ""}</p>
+    <div class="tbl"><table><thead><tr><th>日期</th><th>封存</th><th>精選紀錄</th><th class="r">5 日</th><th class="r">20 日</th><th class="r">60 日</th></tr></thead><tbody>
+    ${[...C.days].reverse().map((d) => d.trading
+      ? `<tr><td class="num">${esc(d.date)}</td><td>${d.sealed ? `${d.on_time ? "開盤前" : "<b class=\"ckw\">開盤後</b>"}・${fmtNum(d.n, 0)} 檔` : `<span class="ckw">${esc(d.reason)}</span>`}</td><td>${d.picks ? "有" : "—"}</td>
+         ${["5", "20", "60"].map((h) => `<td class="r small">${d.sealed ? m(d.maturity[h]) : "—"}</td>`).join("")}</tr>`
+      : `<tr><td class="num faint">${esc(d.date)}</td><td colspan="5" class="faint small">休市：${esc(d.reason)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:4px 0 0">${esc(C.rule)}</p>`;
 }
 async function loadJoint() {
   if (!SITE) return;
@@ -2122,11 +2141,12 @@ async function loadFinWatch() {
       <div class="kpi"><span>等待資料來源</span><b class="num">${fmtNum(F.waiting, 0)}</b>${F.slow ? `<small>其中 ${F.slow} 檔低頻追蹤</small>` : ""}</div><div class="kpi"><span>資料庫有${esc(q(F.quarter))}</span><b class="num">${fmtNum(F.db_has_quarter, 0)}／${fmtNum(F.db_stocks, 0)}</b></div></div>
     <p class="small" style="margin:10px 0 0">同步延遲（偵測到公告 → 完整財報入庫）：${L.n ? `中位數 <b>${L.median}</b> 小時、最長 ${L.max} 小時（${L.n} 檔）` : "這一季還沒有同步紀錄"}。
       偵測：${D ? `${t(D.at)}，${D.endpoints_ok}／${D.endpoints} 個官方端點成功，讀到 ${fmtNum(D.stocks, 0)} 家公司` : "還沒有執行紀錄"}${D && !D.endpoints_ok ? '，<b class="down">官方端點全部失敗，改用財報季每 5 天重抓保底</b>' : ""}。</p>
-    ${F.waiting_list?.length ? `<details style="margin-top:8px"><summary class="small">等待資料來源同步（${F.waiting_list.length} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>偵測時間</th><th class="r">官方 EPS</th><th class="r">嘗試</th></tr></thead><tbody>
-      ${F.waiting_list.map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td class="num">${t(x.first_seen)}</td><td class="r num">${x.eps == null ? "—" : fmtNum(x.eps, 2)}</td><td class="r num">${x.attempts}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
-    ${F.rescored?.length ? `<details style="margin-top:8px"><summary class="small">新財報入庫後的 AI 均衡型分數變化（最近 ${Math.min(F.rescored.length, 30)} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>季度</th><th>入庫時間</th><th class="r">之前</th><th class="r">之後</th></tr></thead><tbody>
-      ${F.rescored.slice(0, 30).map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period)}</td><td class="num">${t(x.synced_at)}</td><td class="r num">${x.before == null ? "—" : fmtNum(x.before, 1)}</td><td class="r num">${x.after == null ? "—" : fmtNum(x.after, 1)}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
-    ${F.revisions?.length ? `<p class="faint small" style="margin:8px 0 0">最近偵測到 ${F.revisions.length} 筆財報數字更正（重抓時數值變動超過 0.5%），已保留紀錄。</p>` : ""}
+    ${F.waiting_list?.length ? `<details style="margin-top:8px"><summary class="small">等待資料來源同步或修正（${F.waiting_list.length} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>季度</th><th>偵測時間</th><th class="r">官方 EPS</th><th class="r">嘗試</th><th>原因</th></tr></thead><tbody>
+      ${F.waiting_list.map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period || "")}</td><td class="num">${t(x.first_seen)}</td><td class="r num">${x.eps == null ? "—" : fmtNum(x.eps, 2)}</td><td class="r num">${x.attempts}</td><td class="small">${esc(x.note || "資料來源尚未收錄這一季")}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
+    ${F.rescored?.length ? `<details style="margin-top:8px"><summary class="small">新財報入庫後的 AI 均衡型分數變化（最近 ${Math.min(F.rescored.length, 30)} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>季度</th><th>偵測公告</th><th>入庫</th><th>重新評分</th><th class="r">之前</th><th class="r">之後</th></tr></thead><tbody>
+      ${F.rescored.slice(0, 30).map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period)}</td><td class="num">${t(x.first_seen)}</td><td class="num">${t(x.synced_at)}</td><td class="num">${x.rescored_at ? t(x.rescored_at) : "待重算"}</td><td class="r num">${x.before == null ? "—" : fmtNum(x.before, 1)}</td><td class="r num">${x.after == null ? "—" : fmtNum(x.after, 1)}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
+    ${F.checks ? `<p class="small" style="margin:8px 0 0">更正與一致性檢查：${esc(F.checks)}。${F.mismatch ? `目前 <b>${F.mismatch}</b> 檔資料庫和官方對不上，已排進重抓。` : ""}</p>` : ""}
+    ${F.revisions?.length ? `<p class="faint small" style="margin:8px 0 0">最近偵測到 ${F.revisions.length} 筆財報數字更正或拒絕寫入紀錄，已保留。</p>` : ""}
     <p class="faint small" style="margin:8px 0 0">${esc(F.note)}</p>`;
   const get = (f) => fetch("data/" + f + verQ(f)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const [S1, S2] = await Promise.all([get("steps.json"), get("steps_backtest.json")]);
@@ -3972,11 +3992,14 @@ function trendCard(s, d) {
       <span class="hzn">${n}<small>${esc(R(k).hold || "")}</small></span><span class="pill ${t[1]}">${t[0]}</span><span class="hzw">${esc(x.why || "")}</span><span class="faint hzv">${esc(val(k))}</span></button>`; }).join("")}</section>
     <section class="card" id="t-px"><div class="card-h"><h2>股價與均線</h2><div class="seg sm" id="trng">${["3M", "6M", "1Y", "2Y"].map((r) => `<button data-r="${r}" class="${r === store.get("trng", "6M") ? "on" : ""}">${r}</button>`).join("")}</div></div>
       <div class="chart" id="tc"></div>
-      <p class="faint small" style="margin:6px 0 0">收盤價、月線（20 日）、季線（60 日）${hz === "long" ? "、年線（240 日）" : ""}與成交量；▲ 是過去出現${esc(HZ[hz])}${hz === "long" ? "（長期規則沒有每日訊號，改標波段）" : ""}進場訊號的日子，只標訊號、不代表之後一定上漲。</p></section>
+      <p class="faint small" style="margin:6px 0 0">${hz === "long" ? "收盤價、月線（20 日）、季線（60 日）、年線（240 日）與成交量。長期判斷看基本面與估值，沒有每日進場訊號，所以圖上不標進場點；年線只當長期趨勢參考。"
+        : `收盤價、月線（20 日）、季線（60 日）與成交量；▲ 是過去出現${esc(HZ[hz])}進場訊號的日子，只標訊號、不代表之後一定上漲。`}</p></section>
     <section class="card" id="t-ck"><div class="card-h"><h2>${esc(HZ[hz])}條件檢查</h2><span class="pill ${HZ_ST[S[hz].key][1]}">${HZ_ST[S[hz].key][0]}</span></div>
       ${ck ? `<div class="cks">${ck.map((c) => `<div class="ck2">${mk(c.ok)}<span>${esc(c.k)}</span><span class="num faint small">${esc(c.v || "")}</span></div>`).join("")}</div>`
         : `<div class="cks">${(p?.miss || []).map((m) => `<div class="ck2"><span class="muted">未符合</span><span>${esc(m)}</span><span></span></div>`).join("") || `<div class="ck2"><b class="ckok">符合</b><span>品質、成長、AI 分數、估值條件都通過</span><span></span></div>`}
-          ${(p?.warn || []).map((m) => `<div class="ck2"><b class="ckw">注意</b><span>${esc(m)}</span><span></span></div>`).join("")}</div>${p?.note ? `<p class="faint small" style="margin:6px 0 0">${esc(p.note)}</p>` : ""}`}
+          ${(p?.warn || []).map((m) => `<div class="ck2"><b class="ckw">注意</b><span>${esc(m)}</span><span></span></div>`).join("")}</div>${p?.note ? `<p class="faint small" style="margin:6px 0 0">${esc(p.note)}</p>` : ""}
+          ${hz === "long" ? `<p class="small" id="t-lbasis" style="margin:8px 0 0">長期判斷依據：季報到 <b>${esc(d.financials?.at(-1)?.period?.replace("-Q", " 年第 ") ?? "—")}${d.financials?.length ? " 季" : ""}</b>、月營收到 <b>${esc(d.revenue?.at(-1)?.ym || "—")}</b>、本益比 <b>${esc(d.valuation?.at(-1)?.date || "—")}</b>。
+            看品質、成長、AI 分數與估值四項，只在新財報、新月營收或估值變化時改變，不使用短線或波段的每日訊號。</p>` : ""}`}
       <details style="margin-top:8px"><summary class="small">完整規則</summary><div class="tbl"><table class="wrap dplan"><tbody>
         ${[["觀察條件", R(hz).setup], ["進場條件", R(hz).entry], ["停損／失效", R(hz).stop], ["停利／出場", hz === "long" ? R(hz).exit : R(hz).target], ["論點失效", R(hz).invalid]].filter(([, v]) => v).map(([k, v]) => `<tr><th>${k}</th><td>${esc(v)}</td></tr>`).join("")}</tbody></table></div></details></section>
     <section class="card" id="t-plan"><div class="card-h"><h2>進出場參考</h2></div>
@@ -4002,7 +4025,8 @@ function drawTrend(px, D) {
   c.priceScale("v").applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
   v.setData(view.map((p) => ({ time: p.date, value: p.volume / 1000, color: (p.close >= p.open ? up : dn) + "55" })));
   c.priceScale("right").applyOptions({ scaleMargins: { top: 0.06, bottom: 0.22 } });
-  const sig = trendSignals(px, hz === "short" ? "short" : "swing").filter((t) => t >= from);
+  const sig = hz === "long" ? [] : trendSignals(px, hz).filter((t) => t >= from);  // 長期沒有每日訊號，不借用波段訊號
+  el.dataset.sig = sig.length;  // 圖上標了幾個訊號（網站驗收檢查長期不借用短線訊號）
   if (sig.length && line.setMarkers) line.setMarkers(sig.map((t) => ({ time: t, position: "belowBar", color: css("--accent"), shape: "arrowUp", text: "" })));
   c.timeScale().fitContent();
 }

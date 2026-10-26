@@ -1,4 +1,4 @@
-// 「不可退步清單」端到端驗收（20 項）：用真的瀏覽器（電腦＋手機尺寸）打開網站，實際操作搜尋、切換策略、加入自選股、進入個股與各功能頁。
+// 「不可退步清單」端到端驗收（22 項）：用真的瀏覽器（電腦＋手機尺寸）打開網站，實際操作搜尋、切換策略、加入自選股、進入個股與各功能頁。
 // 用法：node tests/e2e/home.mjs <網站網址> <輸出 JSON> [playwright 路徑]
 // 任何一項沒通過，程式結束碼為 1（網站驗收工作流程會標成失敗並寄信）。
 // 本機預覽沒有外部圖表元件時，可設 LWC_FILE=<lightweight-charts 檔案路徑> 讓瀏覽器改讀本機檔案。
@@ -81,6 +81,8 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     const sw = await page.evaluate(() => document.documentElement.scrollWidth);
     return [sw <= w, `頁寬 ${sw}px（視窗 ${w}px）`];
   });
+  const shot = async (name) => { if (process.env.SHOT_DIR) await page.screenshot({ path: path.join(process.env.SHOT_DIR, `${name}-${dev === "手機" ? "m" : "d"}.png`), fullPage: true }); };
+  await shot("home");
   await check(8, "股票搜尋", async () => {
     const sid = (snap.stocks.find((s) => s.stock_id === "2330") || snap.stocks[0]).stock_id;
     await page.fill("#hq", sid); await page.press("#hq", "Enter");
@@ -100,6 +102,7 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     const rs = await page.$eval("#j-rs", (el) => ({ open: el.open, top: el.getBoundingClientRect().top + scrollY }));
     return [c.ok && top < rs.top && !rs.open, `${c.kind} ${c.wh}；走勢圖在研究摘要之前、研究摘要預設收合`];
   });
+  await shot("overview");
   await check(21, "走勢頁：期間切換與交易訊號", async () => {
     await page.click('.stabs [data-t="trend"]');
     await page.waitForTimeout(800);
@@ -111,9 +114,26 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     const plan = await page.$eval("#t-plan", (e) => e.innerText);
     const c2 = await chartOk("#tc");
     const order = await page.$eval("#tr-top", (e) => e.getBoundingClientRect().top < document.querySelector("#t-adv").getBoundingClientRect().top);
-    await page.click('#hzSeg [data-h="swing"]');
+    await page.click('#hzSeg [data-h="swing"]'); await page.waitForTimeout(400);
     return [c.ok && c2.ok && n === 3 && /短線/.test(t) && /進場/.test(plan) && order && pills.length === 3,
       `${c.kind} ${c.wh}；三期間狀態：${pills.join("／")}；切到短線後條件檢查=${t.trim()}；研究細節在後`];
+  });
+  await check(22, "走勢頁：三種期間各自的圖表、條件與依據", async () => {
+    const out = [];
+    let ok = true;
+    for (const [k, name] of [["short", "短線"], ["swing", "波段"], ["long", "長期"]]) {
+      await page.click(`#hzSeg [data-h="${k}"]`); await page.waitForTimeout(600);
+      const c = await chartOk("#tc");
+      const r = await page.evaluate(() => ({ h: document.querySelector("#t-ck h2")?.innerText || "", rows: document.querySelectorAll("#t-ck .ck2").length,
+        plan: document.querySelector("#t-plan")?.innerText || "", sig: Number(document.querySelector("#tc")?.dataset.sig ?? -1),
+        basis: document.querySelector("#t-lbasis")?.innerText || "", cap: document.querySelector("#t-px p")?.innerText || "" }));
+      const good = c.ok && r.h.includes(name) && r.rows > 0 && /進場/.test(r.plan) && (k === "long" ? r.sig === 0 && /季報到/.test(r.basis) && /不標進場點/.test(r.cap) : r.sig >= 0);
+      ok = ok && good;
+      out.push(`${name}：${good ? "通過" : "失敗"}（圖 ${c.wh}、條件 ${r.rows} 項、圖上訊號 ${r.sig} 個${k === "long" ? "、有判斷依據=" + /季報到/.test(r.basis) : ""}）`);
+      if (process.env.SHOT_DIR) await page.locator("#tr-top").screenshot({ path: path.join(process.env.SHOT_DIR, `trend-${k}-${dev === "手機" ? "m" : "d"}.png`) });
+    }
+    await page.click('#hzSeg [data-h="swing"]'); await page.waitForTimeout(300);
+    return [ok, out.join("；")];
   });
   await home();
   await check(10, "自選股", async () => {

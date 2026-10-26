@@ -536,17 +536,20 @@ ALERT_FAILS = 2        # 連續失敗幾次就讓 Actions 標成失敗（寄通�
 
 
 def record(ok: bool, error: str | None = None, day: str | None = None, seconds: float | None = None, path: Path | None = None,
-           failed_steps: list | None = None) -> dict:
-    """每一次每日學習的執行結果（成功或失敗都記）。同一個 Actions 執行只記一次。"""
+           failed_steps: list | None = None, learned: dict | None = None) -> dict:
+    """每一次每日學習的執行結果（成功或失敗都記）。同一個 Actions 執行只記一次。
+    V20.1：「流程成功」和「有新資料可以學」分開記：new_day＝資料日期比上一次成功執行新；learned 是到期份數、新標籤數、是否重訓。"""
     import os
     path = path or RUNS
     log = json.loads(path.read_text("utf-8")) if path.exists() else {"runs": []}
     rid = os.environ.get("GITHUB_RUN_ID") or f"local-{time.time():.0f}"
     if any(r.get("run_id") == rid for r in log["runs"]):
         return log
+    prev = next((r.get("date") for r in reversed(log["runs"]) if r.get("ok") and r.get("date")), None)
     log["runs"].append({"at": config.now().isoformat(timespec="seconds"), "run_id": rid, "ok": ok, "date": day,
                         "error": (error or "")[:300] or None, "seconds": None if seconds is None else round(seconds),
-                        "failed_steps": list(failed_steps or [])})
+                        "failed_steps": list(failed_steps or []),
+                        **({"new_day": bool(day and (prev is None or day > prev)), "prev_date": prev, **(learned or {})} if ok else {})})
     log["runs"] = log["runs"][-200:]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(log, ensure_ascii=False, indent=1), "utf-8")
@@ -586,12 +589,21 @@ def run_status(path: Path | None = None, last: int = 30) -> dict:
         partial += 1
     ok = [r for r in runs if r["ok"]]
     bad = [r for r in runs if not r["ok"]]
+    same = 0   # 流程成功、但資料日期和上一次一樣（休市、颱風假或資料還沒更新）的連續次數
+    for r in reversed(runs):
+        if not r["ok"] or r.get("new_day", True):
+            break
+        same += 1
+    newest = next((r for r in reversed(ok) if r.get("new_day")), None)
     lab = ("最近一次執行成功" if runs[-1]["ok"] else f"最近一次執行失敗（連續 {streak} 次）：{runs[-1].get('error') or '原因不明'}")
     return {"runs": len(runs), "recent": len(recent), "success_rate": round(sum(r["ok"] for r in recent) / len(recent) * 100, 1),
             "fail_streak": streak, "last_ok": ok[-1]["at"] if ok else None, "last_fail": bad[-1] if bad else None,
             "last": runs[-1], "alert": streak >= ALERT_FAILS, "label": lab,
             "partial_streak": partial, "partial_alert": partial >= ALERT_FAILS,
             "last_valid_report": next((r.get("date") for r in reversed(runs) if r["ok"] and not r.get("failed_steps")), None),
+            "no_new_data_streak": same, "last_new_data": (newest or {}).get("date"), "last_new_data_at": (newest or {}).get("at"),
+            "data_label": (f"最近 {same} 次執行成功，但資料日期都是 {runs[-1].get('date')}，沒有新交易日可以學" if same
+                           else "最近一次執行有新交易日資料" if runs[-1]["ok"] else "最近一次執行失敗"),
             "history": [{**r, "kind": _fail_kind(r.get("error"))} for r in recent[::-1]],
             "fail_kinds": {k: sum(1 for r in recent if not r["ok"] and _fail_kind(r.get("error")) == k) for k in {_fail_kind(r.get("error")) for r in recent if not r["ok"]}},
             "affects_official": False, "impact": "不影響正式排名與網站更新：正式排行榜是固定權重 V21，學習只更新影子候選模型",
@@ -615,7 +627,9 @@ def main(argv: list[str]) -> int:
         record(False, f"{type(e).__name__}: {e}", seconds=time.time() - t0)
         return 1
     record(True, None, rep["date"], time.time() - t0,
-           failed_steps=[x["step"] for x in rep.get("pipeline") or [] if x.get("status") == "failed"])
+           failed_steps=[x["step"] for x in rep.get("pipeline") or [] if x.get("status") == "failed"],
+           learned={"matured": len(rep.get("matured_today") or []), "labels": sum(((rep.get("candidate") or {}).get("new_labels") or {}).values()),
+                    "retrained": bool((rep.get("candidate") or {}).get("retrained")), "sealed": bool((rep.get("sealed") or {}).get("today"))})
     print(json.dumps({k: rep[k] for k in ("date", "summary", "needs_human")}, ensure_ascii=False))
     return 0
 

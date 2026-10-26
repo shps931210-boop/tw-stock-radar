@@ -12,10 +12,10 @@ from tests.test_backfill import FakeFM
 NOW = datetime(2026, 10, 30, 21, 0)
 
 
-def fin_row(sid, period, eps=1.0, rev=100.0):
+def fin_row(sid, period, eps=1.0, rev=100.0, ni=10.0):
     y, q = int(period[:4]), int(period[-1])
     return {"stock_id": sid, "period": period, "period_end": f"{y}-{q * 3:02d}-{30 if q in (2, 3) else 31}", "revenue": rev, "eps": eps,
-            "net_income": 10.0}
+            "net_income": ni}
 
 
 class Calendar(unittest.TestCase):
@@ -48,7 +48,7 @@ class Parse(unittest.TestCase):
         self.assertEqual(info["fields"], ["foo"])
 
 
-class Queue(unittest.TestCase):
+class _DB(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.old = db.DATA_DIR, config.DATA_DIR, config.ROOT
@@ -68,6 +68,8 @@ class Queue(unittest.TestCase):
         with db.connect() as con:
             return fin_watch.record(con, found, [{"ok": True}], now=NOW)
 
+
+class Queue(_DB):
     def test_new_quarter_goes_first_and_ranked_stock_leads(self):
         self.detect({"2330": {"period": "2026-Q3"}, "1234": {"period": "2026-Q3"}, "1101": {"period": "2026-Q2"}})
         with db.connect() as con:
@@ -161,7 +163,7 @@ class StepLog(unittest.TestCase):
             self.assertEqual(step_log.alerts(p), [])
 
 
-class SlowAndCorrection(Queue):
+class SlowAndCorrection(_DB):
     def test_after_max_attempts_switches_to_slow_tracking(self):
         self.detect({"2330": {"period": "2026-Q3"}})
         with db.connect() as con:
@@ -180,3 +182,81 @@ class SlowAndCorrection(Queue):
         self.assertEqual(row[:2], ("pending", 0))
         self.assertTrue(row[2])
         self.assertEqual(hot, [("2330", "2026-Q2")])
+
+
+class OfficialCheck(_DB):
+    """V20.1：不只看 EPS；官方是年初至今累計（千元），和資料庫各季加總比對；舊數字不覆蓋新數字。"""
+    OFF = {"period": "2026-Q2", "source": "twse:t187ap06_L_ci", "eps": 2.0, "revenue": 200000, "net_income": 20000, "parent_ni": 20000}
+
+    def setUp(self):
+        super().setUp()
+        with db.connect() as con:  # 每季營收 1 億元、淨利 1 千萬元；Q1+Q2＝官方累計 20 萬、2 萬千元
+            db.upsert(con, "financials", [self.row("2026-Q1"), self.row("2026-Q2")])
+
+    @staticmethod
+    def row(period, **kw):
+        return {**fin_row("2330", period, rev=1e8, ni=1e7), **kw}
+
+    def test_parse_extra_fields_and_empty_endpoint(self):
+        got, info = fin_watch.parse([{"出表日期": "1151030", "年度": "115", "季別": "2", "公司代號": "2330", "營業收入": "10", "營業利益（損失）": "3",
+                                      "本期淨利（淨損）": "2", "淨利（淨損）歸屬於母公司業主": "1.5", "基本每股盈餘（元）": "1"}])
+        self.assertEqual({k: got["2330"][k] for k in ("operating_income", "net_income", "parent_ni")}, {"operating_income": 3, "net_income": 2, "parent_ni": 1.5})
+        got, info = fin_watch.parse([{"Date": "1151026", "Year": "", "Season": "", "SecuritiesCompanyCode": "", "CompanyName": ""}])
+        self.assertEqual(got, {})
+        self.assertTrue(info.get("empty"))  # 櫃買中心沒有這類公司：端點正常，不算失敗
+
+    def test_revenue_only_correction_retriggers(self):
+        self.detect({"2330": self.OFF})
+        with db.connect() as con:
+            self.assertEqual(con.execute("SELECT status FROM fin_announce").fetchone()[0], "already")
+        self.detect({"2330": {**self.OFF, "revenue": 250000}})  # EPS 沒變，只有營收更正
+        with db.connect() as con:
+            row = con.execute("SELECT status, corrected_at, note FROM fin_announce").fetchone()
+            rev = json.loads(con.execute("SELECT detail FROM fin_revision").fetchone()[0])
+            hot = fin_watch.hot_list(con, [], now=NOW)
+        self.assertEqual(row[0], "pending")
+        self.assertTrue(row[1])
+        self.assertIn("營業收入", row[2])
+        self.assertEqual(rev["revenue"], [200000, 250000])
+        self.assertEqual(hot, [("2330", "2026-Q2")])
+
+    def test_db_disagrees_with_official_goes_to_queue(self):
+        self.detect({"2330": {**self.OFF, "net_income": 50000, "parent_ni": 50000}})  # 資料庫淨利加總 2 千萬，官方 5 千萬
+        with db.connect() as con:
+            st, note = con.execute("SELECT status, note FROM fin_announce").fetchone()
+            hot = fin_watch.hot_list(con, [], now=NOW)
+            self.assertFalse(fin_watch.after_fetch(con, "2330", "2026-Q2", now=NOW))  # 重抓還是舊數字：不算同步
+            st2, note2 = con.execute("SELECT status, note FROM fin_announce").fetchone()
+        self.assertEqual(st, "pending")
+        self.assertIn("本期淨利", note)
+        self.assertEqual(hot, [("2330", "2026-Q2")])
+        self.assertEqual(st2, "waiting_source")
+        self.assertIn("不一致", note2)
+
+    def test_stale_source_does_not_overwrite_and_blank_keeps_old(self):
+        self.detect({"2330": self.OFF})
+        stale = self.row("2026-Q2", revenue=7e7)  # 和官方對不上的舊版數字
+        blank = self.row("2026-Q1", net_income=None, eps=1.1)
+        with db.connect() as con:
+            rows = fin_watch.guard(con, "2330", [blank, stale], now=NOW)
+            rec = json.loads(con.execute("SELECT detail FROM fin_revision").fetchone()[0])
+        self.assertEqual([r["period"] for r in rows], ["2026-Q1"])  # Q2 舊數字被擋下
+        self.assertEqual(rows[0]["net_income"], 1e7)  # 空白欄位保留原本的數字
+        self.assertEqual(rows[0]["eps"], 1.1)
+        self.assertEqual(rec["source"], "拒絕寫入")
+
+    def test_full_cycle_times_and_rescore(self):
+        """公告 → 補抓 → 入庫 → 重新評分，四個時間都有紀錄，分數變化可以追。"""
+        self.detect({"2330": {**self.OFF, "period": "2026-Q3", "revenue": 300000, "net_income": 30000, "parent_ni": 30000}})
+        with db.connect() as con:
+            self.assertEqual(fin_watch.hot_list(con, [], now=NOW), [("2330", "2026-Q3")])
+            db.upsert(con, "financials", fin_watch.guard(con, "2330", [self.row("2026-Q3")]))
+            db.set_meta(con, "scores_today", json.dumps({"s": {"2330": {"sc": {"balanced": 50.0}}}}))
+            self.assertTrue(fin_watch.after_fetch(con, "2330", "2026-Q3", now=NOW))
+            db.set_meta(con, "scores_today", json.dumps({"s": {"2330": {"sc": {"balanced": 57.5}}}}))
+            with mock.patch.object(config, "today", return_value=date(2026, 10, 30)), mock.patch.object(config, "now", return_value=NOW):
+                s = fin_watch.after_snapshot(con)
+        r = s["rescored"][0]
+        self.assertEqual((r["before"], r["after"]), (50.0, 57.5))
+        for k in ("first_seen", "fetched_at", "synced_at", "rescored_at"):
+            self.assertTrue(r[k], k)

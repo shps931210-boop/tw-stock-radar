@@ -447,7 +447,12 @@ def build(demo: bool = False) -> dict:
             from . import coverage, fin_watch
             with db.connect(dbname) as con:
                 fin_watch.after_snapshot(con)
-                (config.DATA_DIR / "coverage_audit.json").write_text(json.dumps(coverage.audit(con, rows, decision), ensure_ascii=False, separators=(",", ":")), "utf-8")
+                au = coverage.audit(con, rows, decision)
+                (config.DATA_DIR / "coverage_audit.json").write_text(json.dumps(au, ensure_ascii=False, separators=(",", ":")), "utf-8")
+                # V20.1：總表（不含逐檔）也存進 repository，正式資料庫的覆蓋率每次更新都留下紀錄，不必另外下載資料庫
+                h = config.ROOT / "history" / "audit"
+                h.mkdir(parents=True, exist_ok=True)
+                (h / "coverage.json").write_text(json.dumps({k: v for k, v in au.items() if k != "stocks"}, ensure_ascii=False, indent=1), "utf-8")
         except Exception as e:
             print("財報偵測紀錄或資料完整性稽核失敗：", e)
     return out

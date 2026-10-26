@@ -407,7 +407,7 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
         # 補齊佇列：從來沒抓過的股票優先（依成交金額排序），再來才是定期重抓；額度用完就停，下次從還沒補到的繼續
         # 第三優先：以前只抓了近幾年的股票，把財報與月營收往前補到 fin_history_start（長期回測與模型研究用），每檔只補一次
         # V19：官方已公告、資料庫還沒有的新一季財報最優先（正式推薦與候選 → 會員申請與追蹤清單 → 成交金額）
-        fin_watch.run_detect(errors)
+        fin_watch.run_detect(errors, con)  # 用同一條連線，避免和上面還沒提交的寫入互鎖
         hot = fin_watch.hot_list(con, req + cfg.get("watchlist", []) + ids)
         hot_ids = {sid for sid, _ in hot}
         new, due, hist = [], [], []
@@ -438,6 +438,7 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
             try:
                 data = fn(sid)
                 if table == "financials":
+                    data = fin_watch.guard(con, sid, data)  # 空白欄位不蓋掉舊數字；和官方不一致的舊版數字不寫入
                     fin_watch.compare(con, sid, data)  # 更正紀錄、每季第一次取得時間
                 db.upsert(con, table, data)
                 db.log_fetch(con, src, sid)
