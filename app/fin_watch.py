@@ -141,6 +141,8 @@ def detect(session: requests.Session | None = None) -> tuple[dict, list]:
             js = r.json()
             got, info = parse(js if isinstance(js, list) else [])
             d.update(info, ok=bool(got), stocks=len(got))
+            if not got and isinstance(js, list) and js:
+                d["sample"] = {k: str(v)[:20] for k, v in list(js[0].items())[:6]}  # 解析不到時留下第一列，方便查欄位
             for sid, v in got.items():
                 if sid not in found or v["period"] > found[sid]["period"]:
                     found[sid] = {**v, "source": f"{mkt}:{url.rsplit('/', 1)[-1]}"}
@@ -335,6 +337,6 @@ def after_snapshot(con, out_dir=None) -> dict:
     h = config.ROOT / "history" / "fin"
     h.mkdir(parents=True, exist_ok=True)
     (h / "updates.json").write_text(json.dumps({k: s[k] for k in ("generated_at", "quarter", "announced", "synced", "waiting", "db_has_quarter",
-                                                                  "latency_hours", "rescored", "revisions", "detect")},
+                                                                  "latency_hours", "rescored", "revisions", "detect", "endpoints")},
                                                ensure_ascii=False, indent=1), "utf-8")
     return s
