@@ -1,15 +1,17 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-27T09:49:43",
+ "generated_at": "2026-10-27T14:56:32",
  "summary": {
   "first": "2026-10-16",
-  "last_data": "2026-10-22",
+  "last_data": "2026-10-27",
   "today": "2026-10-27",
-  "expected": 5,
+  "expected": 6,
   "sealed": 5,
   "on_time": 5,
-  "missing": [],
-  "picks": 5,
+  "missing": [
+   "2026-10-27"
+  ],
+  "picks": 6,
   "pre_open": 0,
   "closed": [
    {
@@ -198,10 +200,10 @@
    "date": "2026-10-27",
    "trading": true,
    "entry": "2026-10-28",
-   "picks": false,
+   "picks": true,
    "pre_open": false,
    "sealed": false,
-   "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
+   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
    "maturity": {
     "5": {
      "due": "2026-11-04",
