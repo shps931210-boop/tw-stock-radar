@@ -1,16 +1,14 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-27T14:56:32",
+ "generated_at": "2026-10-27T15:34:17",
  "summary": {
   "first": "2026-10-16",
   "last_data": "2026-10-27",
   "today": "2026-10-27",
   "expected": 6,
-  "sealed": 5,
-  "on_time": 5,
-  "missing": [
-   "2026-10-27"
-  ],
+  "sealed": 6,
+  "on_time": 6,
+  "missing": [],
   "picks": 6,
   "pre_open": 0,
   "closed": [
@@ -29,9 +27,9 @@
    "60": 0
   },
   "scorecard": {
-   "generated_at": "2026-10-22T15:30:55",
-   "days": 5,
-   "last": "2026-10-22",
+   "generated_at": "2026-10-27T15:34:02",
+   "days": 6,
+   "last": "2026-10-27",
    "matured": {
     "5": 0,
     "20": 0,
@@ -202,8 +200,13 @@
    "entry": "2026-10-28",
    "picks": true,
    "pre_open": false,
-   "sealed": false,
-   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
+   "sealed": true,
+   "generated_at": "2026-10-27T15:33:35",
+   "on_time": true,
+   "model_version": "2026-10-22-4c675d40be",
+   "n": 741,
+   "status": "experimental",
+   "data_ok": true,
    "maturity": {
     "5": {
      "due": "2026-11-04",
