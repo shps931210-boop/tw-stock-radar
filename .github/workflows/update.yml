@@ -260,7 +260,15 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add history
             git commit -q -m "每日選股紀錄 $(ls history/picks | tail -1 | sed 's/.json//')"
-            for i in 1 2 3; do git pull -q --rebase origin main && git push -q origin HEAD:main && break; sleep 5; done
+            # 排隊的兩次更新會改到同一批稽核檔（steps.json 等）：衝突時以這次剛產生的版本為準（-X theirs＝正在重放的這次 commit）；
+            # 三次都推不上去就讓這一步失敗，不再默默遺失紀錄（10/27 第一次模擬交易紀錄就是這樣沒存進 repository）
+            ok=""
+            for i in 1 2 3; do
+              if git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main; then ok=1; break; fi
+              git rebase --abort 2>/dev/null || true
+              sleep 5
+            done
+            [ -n "$ok" ] || { echo "::error::每日紀錄推送失敗"; exit 1; }
           fi
       # 會員通知：依每位會員的觀察清單產生通知（會員沒打開網站也會收到）。
       # 需要 Secret SUPABASE_SECRET_KEY（Supabase 的 sb_secret_ 金鑰），只在這一步使用，不會進網站；沒設定就跳過。
