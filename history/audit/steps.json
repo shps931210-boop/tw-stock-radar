@@ -205,6 +205,21 @@
     "預測封存日曆": "skipped",
     "整合測試": "skipped"
    }
+  },
+  {
+   "at": "2026-10-27T12:04:12",
+   "run_id": "40447282898",
+   "mode": "premarket",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "skipped",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "success",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "skipped",
+    "整合測試": "skipped"
+   }
   }
  ],
  "status": {
@@ -217,16 +232,16 @@
   },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-10-27T09:04:05",
+   "last_ok": "2026-10-27T12:04:12",
    "last": "success",
-   "runs": 6,
+   "runs": 7,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-10-27T09:04:05",
+   "last_ok": "2026-10-27T12:04:12",
    "last": "success",
-   "runs": 6,
+   "runs": 7,
    "fails": 0
   },
   "預測封存日曆": {
@@ -259,9 +274,9 @@
   },
   "盤前情報": {
    "streak": 0,
-   "last_ok": "2026-10-27T09:04:05",
+   "last_ok": "2026-10-27T12:04:12",
    "last": "success",
-   "runs": 2,
+   "runs": 3,
    "fails": 0
   }
  }
