@@ -1,8 +1,8 @@
 {
- "at": "2026-10-27T15:29:58.631Z",
+ "at": "2026-10-27T15:36:01.518Z",
  "site": "https://shps931210-boop.github.io/tw-stock-radar/",
  "as_of": "2026-10-27",
- "passed": 46,
+ "passed": 48,
  "total": 48,
  "results": [
   {
@@ -163,8 +163,8 @@
    "device": "電腦",
    "id": 23,
    "name": "AI 模擬交易與預測回放（只模擬、不下單）",
-   "ok": false,
-   "note": "錯誤：page.waitForFunction: Timeout 30000ms exceeded."
+   "ok": true,
+   "note": "還沒成交，第一次進場 2026-10-28・均衡型總資產 1000000・真實下單關閉"
   },
   {
    "device": "電腦",
@@ -331,8 +331,8 @@
    "device": "手機",
    "id": 23,
    "name": "AI 模擬交易與預測回放（只模擬、不下單）",
-   "ok": false,
-   "note": "錯誤：page.waitForFunction: Timeout 30000ms exceeded."
+   "ok": true,
+   "note": "還沒成交，第一次進場 2026-10-28・均衡型總資產 1000000・真實下單關閉"
   },
   {
    "device": "手機",
