@@ -159,6 +159,13 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     await page.waitForFunction(() => document.querySelector("#app")?.innerText.includes("0050"), null, { timeout: 30000 });
     return [true, "績效中心有對照 0050 的成績"];
   });
+  await check(23, "AI 模擬交易與預測回放（只模擬、不下單）", async () => {
+    await page.waitForFunction(() => { const a = document.querySelector("#paper"), b = document.querySelector("#replay"); return a && !a.hidden && b && !b.hidden; }, null, { timeout: 30000 });
+    const t = await page.$eval("#paper", (el) => el.innerText);
+    const P = await (await fetch(base + "data/paper/paper.json" + bust)).json();
+    return [/只模擬、不下單/.test(t) && P.live_trading === false && /永久關閉/.test(t),
+      `${P.first_entry ? `第一次模擬進場 ${P.first_entry}` : `還沒成交，第一次進場 ${P.plan?.entry_date || "—"}`}・均衡型總資產 ${P.books.balanced.kpi.equity}・真實下單關閉`];
+  });
   await check(14, "AI 每日自主學習", async () => {
     await go("#/research", "#app");
     await page.waitForFunction(() => { const e = document.querySelector("#evo"); return e && !e.hidden && /執行|學習/.test(e.innerText); }, null, { timeout: 30000 });

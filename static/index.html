@@ -1908,6 +1908,8 @@ function pagePerformance() {
     <section><div class="eyebrow">真實紀錄，不是回測</div><h1>績效中心</h1>
       <p class="lead">AI 名單每天開盤前存檔，之後照固定規則算成績：隔天開盤買、扣交易成本，和 0050 比。</p></section>
     <div id="pfsum">${perfTable()}</div>
+    <section class="card" id="paper" hidden></section>
+    <section class="card" id="replay" hidden></section>
     <section class="card" id="ledg" hidden></section>
     <section class="card" id="weekly" hidden></section>
     <section class="card"><div class="card-h"><h2>AI 名單上線後追蹤</h2><span class="muted small">固定規則：隔天開盤買進、第 1／5／20／60 個交易日收盤出場、扣成本 ${tr.cost_pct ?? 0.585}%</span></div>
@@ -1917,6 +1919,91 @@ function pagePerformance() {
       <p class="small" style="margin:0">模型比賽、資料稽核、AI 每日學習紀錄、歷史回測都在 <a href="#/research">進階研究</a>。</p></section>`;
   loadWeekly().then(() => { const el = $("#pfsum"); if (el) el.innerHTML = perfTable(); });
   loadLedgers();
+  loadPaper();
+}
+// V20.3 AI 模擬交易（只模擬、不下單）與 AI 預測回放（data/paper/）
+let PAPER = null, REPLAY = null;
+const PMODES = { stable: "穩健型", balanced: "均衡型", aggressive: "積極型" };
+async function loadPaper() {
+  if (!SITE) return;
+  const get = (p) => fetch(`data/${p}${verQ(p) || "?t=" + Date.now()}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  [PAPER, REPLAY] = await Promise.all([get("paper/paper.json"), get("paper/replay.json")]);
+  if (PAPER) renderPaper();
+  if (REPLAY?.days?.length) renderReplay();
+}
+function oddsHtml(O, unit) {
+  if (!O) return "";
+  const ci = (x) => x?.ci95 ? `<span class="faint small">（95% 區間 ${x.ci95[0]}～${x.ci95[1]}%）</span>` : "";
+  const r = (k, l) => `<tr><td>${l}</td><td class="r num">${O[k]?.n ?? 0}</td><td class="r num">${O[k]?.pct == null ? "—" : fmtNum(O[k].pct, 1) + "%"} ${ci(O[k])}</td></tr>`;
+  const e = O.early || {}, en = (e.target || 0) + (e.stop || 0) + (e.expiry || 0);
+  return `<div class="tbl"><table><thead><tr><th>出場方式</th><th class="r">${unit}</th><th class="r">比例</th></tr></thead><tbody>
+    ${r("target", "先碰到停利（+20%）")}${r("stop", "先碰到停損（−10%）")}${r("expiry", "持有滿 20 個交易日")}</tbody></table></div>
+    <p class="small" style="margin:6px 0 0">共 <b>${O.n}</b> ${unit}・${esc(O.label)}${O.mean_ret != null ? `・扣成本平均報酬 <span class="num ${signCls(O.mean_ret)}">${pctTxt(O.mean_ret)}</span>${O.ci95_ret ? `<span class="faint small">（95% 區間 ${pctTxt(O.ci95_ret[0])}～${pctTxt(O.ci95_ret[1])}）</span>` : ""}・賺錢比例 ${fmtNum(O.win_pct, 1)}%` : ""}${O.mean_excess != null ? `・相對 0050 平均 <span class="num ${signCls(O.mean_excess)}">${pctTxt(O.mean_excess)}</span>` : ""}${O.unfilled ? `・買不到 ${O.unfilled} 筆（不算交易）` : ""}</p>
+    ${en ? `<p class="faint small" style="margin:2px 0 0">還在 20 個交易日觀察期內就先出場的：停利 ${e.target || 0}、停損 ${e.stop || 0}、到期 ${e.expiry || 0} 筆。這些不算進比例，因為太早算只會看到很快停損或停利的交易，比例會偏掉。</p>` : ""}
+    <p class="faint small" style="margin:2px 0 0">${esc(O.rule || "")}</p>`;
+}
+function renderPaper() {
+  const el = $("#paper"), P = PAPER; if (!el) return;
+  const m = PMODES[store.get("paperMode")] ? store.get("paperMode") : "balanced", B = P.books[m], K = B.kpi, BN = P.bench || {};
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`, $n = (v) => v == null ? "—" : fmtNum(v, 0);
+  const st = (s) => `${esc(s.name || "")} <span class="faint num">${esc(s.sid)}</span>`;
+  const plan = P.plan;
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>AI 模擬交易</h2><span class="pill s-ok">只模擬、不下單</span></div>
+    <p class="small" style="margin:0 0 8px">每天用開盤前封存的正式 AI 精選，依固定規則模擬買賣、扣掉手續費和證交稅，和同一筆錢買 0050、加權指數比。這是從 ${esc(P.start_signal)} 的名單開始的前瞻紀錄，<b>不是回測</b>；不會送出任何真實委託。</p>
+    <div class="seg" id="pmode" style="margin-bottom:10px">${Object.entries(PMODES).map(([k, n]) => `<button data-k="${k}" class="${k === m ? "on" : ""}">${n}</button>`).join("")}</div>
+    ${P.first_entry ? "" : `<p class="small" style="margin:0 0 8px"><b>還沒有任何模擬成交。</b>${plan ? `第一次模擬進場是 ${esc(plan.entry_date)} 開盤（用 ${esc(plan.signal_date)} 的正式精選，${esc(twTime(plan.generated_at))} 封存）。` : ""}</p>`}
+    <div class="kpis">
+      <div class="kpi"><span>總資產</span><b>${$n(K.equity)}</b><small class="faint">起始 1,000,000</small></div>
+      <div class="kpi"><span>報酬（扣成本）</span><b>${pc(K.ret)}</b><small class="faint">最大回撤 ${K.mdd == null ? "—" : pctTxt(K.mdd)}</small></div>
+      <div class="kpi"><span>現金</span><b>${$n(K.cash)}</b><small class="faint">持股 ${K.n_open} 檔</small></div>
+      <div class="kpi"><span>已出場</span><b>${K.n_closed} 筆</b><small class="faint">已實現 ${$n(K.realized)} 元</small></div>
+      <div class="kpi"><span>同期 0050</span><b>${pc(BN.e0050?.ret)}</b><small class="faint">最大回撤 ${BN.e0050?.mdd == null ? "—" : pctTxt(BN.e0050.mdd)}</small></div>
+      <div class="kpi"><span>同期加權指數</span><b>${pc(BN.taiex?.ret)}</b><small class="faint">已付手續費 ${$n(K.fees)}・證交稅 ${$n(K.taxes)}</small></div>
+    </div>
+    ${plan ? `<h3 style="margin:14px 0 6px">下一個交易日（${esc(plan.entry_date)}）開盤預計</h3>
+      <p class="small" style="margin:0">買進：${(plan.buys[m] || []).map((x) => `${st(x)}（第 ${x.rank} 名）`).join("、") || "沒有空位"}${(plan.sells[m] || []).length ? `<br>賣出：${plan.sells[m].map((x) => `${esc(x.sid)}（${esc(x.reason)}）`).join("、")}` : ""}</p>
+      <p class="faint small" style="margin:2px 0 0">名單：${esc(plan.pick_file)}（${esc(twTime(plan.generated_at))} 封存，模型 ${esc(plan.model_version || "—")}）。開盤買不到（漲停鎖死、沒成交）會取消，照實記錄。</p>` : ""}
+    <h3 style="margin:14px 0 6px">目前持股</h3>
+    ${B.positions.length ? `<div class="tbl"><table><thead><tr><th>股票</th><th>進場日</th><th class="r">買進價</th><th class="r">股數</th><th class="r">收盤</th><th class="r">未實現（扣成本）</th><th class="r">停損／停利價</th><th class="r">第幾天</th></tr></thead><tbody>
+      ${B.positions.map((p) => `<tr><td>${st(p)}${p.pending_exit ? `<br><span class="faint small">明天開盤賣：${esc(p.pending_exit)}</span>` : ""}</td><td class="num">${esc(p.entry_date)}</td><td class="r num">${fmtNum(p.entry_price, 2)}</td><td class="r num">${fmtNum(p.shares, 0)}</td><td class="r num">${fmtNum(p.last_close, 2)}</td><td class="r">${pc(p.unreal_ret)}</td><td class="r num small">${fmtNum(p.stop_price, 2)}／${fmtNum(p.target_price, 2)}</td><td class="r num">${p.held_days ?? "—"}</td></tr>`).join("")}</tbody></table></div>`
+      : '<p class="small faint" style="margin:0">目前沒有持股。</p>'}
+    <h3 style="margin:14px 0 6px">逐筆交易紀錄</h3>
+    ${B.trades.length ? B.trades.map((t) => `<details class="small" style="border-bottom:1px solid var(--line);padding:6px 0"><summary><b class="num">${esc(t.id)}</b> ${st(t)}・${esc(t.entry_date)} → ${esc(t.exit_date)}・${esc(t.exit_reason)}・扣成本 ${pc(t.net_ret)}（0050 同期 ${pc(t.bench_ret)}）・損益 ${$n(t.pnl)} 元</summary>
+        <p style="margin:6px 0 0">進場原因：${esc(t.reason)}<br>名單：${esc(t.pick_file)}（${esc(twTime(t.pick_generated_at))} 封存），模型 ${esc(t.model_version || "—")}（${esc((t.model_hash || "").slice(0, 10))}），資料日期 ${esc(Object.entries(t.data_dates || {}).map(([k, v]) => `${k} ${v}`).join("、"))}<br>
+        買進 ${fmtNum(t.shares, 0)} 股 @ ${fmtNum(t.entry_price, 2)}（開盤 ${fmtNum(t.entry_open, 2)}），手續費 ${t.buy_fee}；賣出均價 ${fmtNum(t.exit_price, 2)}，手續費 ${t.sell_fee}、證交稅 ${t.sell_tax}${t.dividends ? `、除權息 ${fmtNum(t.dividends, 0)}` : ""}<br>
+        停損 ${fmtNum(t.stop_price, 2)}／停利 ${fmtNum(t.target_price, 2)}，出場訊號 ${esc(t.exit_signal_date || "—")}，扣成本前 ${pc(t.gross_ret)}、超額 ${pc(t.excess)}${t.fill_note ? `<br>${esc(t.fill_note)}` : ""}</p></details>`).join("")
+      : '<p class="small faint" style="margin:0">還沒有出場的交易。</p>'}
+    ${B.orders.some((o) => o.status !== "filled") ? `<h3 style="margin:14px 0 6px">沒成交或部分成交的委託</h3><div class="tbl"><table><thead><tr><th>日期</th><th>買賣</th><th>股票</th><th class="r">想要／成交股數</th><th>原因</th></tr></thead><tbody>
+      ${B.orders.filter((o) => o.status !== "filled").slice(0, 30).map((o) => `<tr><td class="num">${esc(o.date)}</td><td>${o.side === "buy" ? "買" : "賣"}</td><td>${st(o)}</td><td class="r num">${o.want ?? "—"}／${o.filled}</td><td class="small">${esc(o.why || "")}</td></tr>`).join("")}</tbody></table></div>` : ""}
+    <h3 style="margin:14px 0 6px">結果統計</h3>${oddsHtml(B.odds, "筆")}
+    ${B.review.length ? `<h3 style="margin:14px 0 6px">虧損交易檢討</h3><div class="tbl"><table class="wrap"><thead><tr><th>交易</th><th class="r">扣成本</th><th>出問題的環節</th></tr></thead><tbody>
+      ${B.review.map((r) => `<tr><td>${esc(r.id)} ${st(r)}</td><td class="r">${pc(r.net_ret)}</td><td class="small">${r.labels.map(esc).join("<br>") || "找不到明確原因"}${Object.values(r.notes || {}).map((x) => `<br><span class="faint">${esc(x)}</span>`).join("")}</td></tr>`).join("")}</tbody></table></div>
+      <p class="faint small" style="margin:4px 0 0">同一個原因累積 3 筆以上，會列進 AI 研究清單當作待驗證的假設；不會自動修改正式策略。</p>` : ""}
+    <p class="faint small" style="margin:12px 0 0">規則（${esc(P.rules_version)} 版，事先固定）：${esc(P.rules)}<br>
+      可重算檢查：每次執行都從頭重算整本帳，已記錄 ${P.integrity.days_recorded} 天的結果指紋，${P.integrity.n_mismatch ? `<b class="ckw">有 ${P.integrity.n_mismatch} 次重算和當天紀錄不同</b>（多半是官方修正價格）` : "重算和當天紀錄一致"}。
+      真實下單：${P.live_trading ? "開啟" : "永久關閉（券商下單只有預留介面，不存放任何帳號、密碼或憑證）"}。成本：${esc(P.cost)}</p>`;
+  el.querySelectorAll("#pmode button").forEach((b) => (b.onclick = () => { store.set("paperMode", b.dataset.k); renderPaper(); }));
+}
+function renderReplay() {
+  const el = $("#replay"), R = REPLAY; if (!el) return;
+  const o = { d: R.days[0].date, m: "balanced", ...store.get("replay", {}) };
+  const D = R.days.find((x) => x.date === o.d) || R.days[0], M = D.modes[o.m] || D.modes.balanced;
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`;
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>AI 預測回放</h2><span class="muted small">只用當時封存的紀錄</span></div>
+    <p class="small" style="margin:0 0 8px">選一天，看當時 AI 精選的前 10 名、分數、模型版本和用到的資料日期，再看之後實際怎麼走。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <select id="rpd">${R.days.map((x) => `<option value="${esc(x.date)}"${x.date === D.date ? " selected" : ""}>${esc(x.date)}${x.on_time ? "" : "（封存太晚）"}</option>`).join("")}</select>
+      <div class="seg" id="rpm">${Object.entries(PMODES).map(([k, n]) => `<button data-k="${k}" class="${k === o.m ? "on" : ""}">${n}</button>`).join("")}</div></div>
+    <p class="faint small" style="margin:0 0 6px">${esc(D.list_kind)}・${esc(D.file)}・${esc(twTime(D.generated_at))} 封存${D.on_time ? "（進場日開盤前）" : '<b class="ckw">（開盤後才產生，不計入統計）</b>'}・模型 ${esc(D.model_version || "—")}（${esc((D.model_hash || "").slice(0, 10))}）・當時資料：${esc(Object.entries(D.data_dates || {}).map(([k, v]) => `${k} ${v}`).join("、"))}・進場日 ${esc(D.entry)}</p>
+    <div class="tbl"><table class="wrap"><thead><tr><th class="r">名次</th><th>股票</th><th class="r">分數</th><th>當時的主因</th><th>結果</th><th class="r">扣成本</th><th class="r">0050 同期</th><th class="r">加權指數</th></tr></thead><tbody>
+    ${M.picks.map((r) => `<tr><td class="r num">${r.rank}</td><td>${esc(r.name || "")} <span class="faint num">${esc(r.sid)}</span></td><td class="r num">${fmtNum(r.score, 1)}</td><td class="small">${esc((r.reason || "").split("；")[1] || "")}</td>
+      <td class="small">${esc(r.status)}${r.as_of ? `<span class="faint">（到 ${esc(r.as_of)}）</span>` : ""}</td><td class="r">${pc(r.net_ret)}</td><td class="r">${pc(r.bench_ret)}</td><td class="r">${pc(r.taiex_ret)}</td></tr>`).join("")}</tbody></table></div>
+    <h3 style="margin:14px 0 6px">所有封存名單的結果統計（${PMODES[o.m]}前 10 名）</h3>${oddsHtml(R.odds[o.m], "檔次")}
+    <p class="faint small" style="margin:8px 0 0">${esc(R.rule)}<br>${esc(R.note)}</p>`;
+  $("#rpd").onchange = (e) => { store.set("replay", { ...o, d: e.target.value }); renderReplay(); };
+  el.querySelectorAll("#rpm button").forEach((b) => (b.onclick = () => { store.set("replay", { ...o, m: b.dataset.k }); renderReplay(); }));
 }
 // V14 三本帳：真實前瞻、樣本外比較、歷史研究分開計算、分開顯示（data/predictions/ledgers.json）
 async function loadLedgers() {

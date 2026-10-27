@@ -119,6 +119,14 @@ jobs:
         if: env.MODE == 'premarket'
         run: python -c "from app import snapshot; snapshot.build()"
 
+      # V20.3 AI 模擬交易（只模擬、不下單）：依封存的正式精選和固定規則整本重算，寫進 history/paper/；失敗不影響網站
+      - name: AI 模擬交易
+        id: paper
+        if: always() && env.MODE != 'premarket'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python -m app.paper
+
       # 每日影子預測（V23）：套用每週訓練好的模型，封存到 history/predictions/；失敗不影響網站
       # V27：快速盤後更新也會跑；當天上市、上櫃行情都齊全才封存（不齊就等下一次），同一天只封存一次
       - name: 每日影子預測
@@ -202,7 +210,7 @@ jobs:
         run: >-
           python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
-          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}"
 
       - name: 備份資料庫到 GitHub Release
         id: backup

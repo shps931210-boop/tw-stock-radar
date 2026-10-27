@@ -485,6 +485,11 @@ def research_items(rep: dict) -> list[dict]:
         add("data", r.get("feature"), f"{r.get('feature')} 的資料分布或缺漏突然改變：先檢查資料來源，再判斷是不是市場真的變了")
     for r in err.get("worst", [])[:3]:
         add("stock", f"{r['sid']}@{r['sig']}", f"{r['sid']}（{r['industry']}）{r['sig']} 進 {r['model']} 前 10 名後 20 日超額 {r['excess']:+.2f}%：查有沒有事件或資料問題")
+    try:   # AI 模擬交易的虧損檢討（app/paper.py）：只當研究假設，不會自動改正式策略
+        from . import paper
+        out += paper.research_items()
+    except Exception:  # noqa: BLE001
+        pass
     return out
 
 

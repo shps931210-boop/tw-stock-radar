@@ -156,6 +156,10 @@ _cal = config.ROOT / "history" / "audit" / "seal_calendar.json"
 if _cal.exists():  # V20.1 預測封存日曆（app/seal_calendar.py）
     (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
     shutil.copy(_cal, out / "data" / "predictions" / "calendar.json")
+for _src, _dst in (("site.json", "paper.json"), ("replay.json", "replay.json")):  # V20.3 AI 模擬交易與預測回放（app/paper.py）
+    if (config.ROOT / "history" / "paper" / _src).exists():
+        (out / "data" / "paper").mkdir(parents=True, exist_ok=True)
+        shutil.copy(config.ROOT / "history" / "paper" / _src, out / "data" / "paper" / _dst)
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
 try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與到期對帳成績

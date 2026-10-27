@@ -19,7 +19,7 @@ from datetime import datetime, timezone, timedelta
 from . import config
 
 HIST = ("history/backtest/", "history/models/", "history/predictions/", "history/premarket/", "history/research/", "history/learning/",
-        "history/audit/", "history/fin/")
+        "history/audit/", "history/fin/", "history/paper/")
 SKIP = ("data/.gitkeep", "package-lock.json", "history/backtest/joint_trades.json")
 CODE = ("app/", "static/", "tests/", "worker/", "supabase/", ".github/", "build_site.py", "build_demo.py", "requirements.txt", "config", "docs/", "README.md")
 
