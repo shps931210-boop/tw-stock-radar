@@ -1590,11 +1590,11 @@ async function loadSealCal() {
   el.innerHTML = `<h3 style="margin:14px 0 6px">封存日曆</h3>
     <p class="small" style="margin:0 0 6px">${esc(S.first)} 起應有預測的交易日 <b>${S.expected}</b> 天，已封存 <b>${S.sealed}</b> 天（開盤前封存 ${S.on_time} 天）${S.missing.length ? `，<b class="ckw">缺漏 ${S.missing.length} 天：${esc(S.missing.join("、"))}</b>（不會事後補做）` : "，沒有缺漏"}。
       ${S.next_due ? `下一個到期：${esc(S.next_due.date)}（${esc(S.next_due.horizon)} 日）。` : ""}${Object.keys(S.scorecard_lag || {}).length ? `<b class="ckw">對帳統計落後：${Object.entries(S.scorecard_lag).map(([h, n]) => `${h} 日少算 ${n} 天`).join("、")}</b>` : ""}</p>
-    <div class="tbl"><table><thead><tr><th>日期</th><th>封存</th><th>精選紀錄</th><th class="r">5 日</th><th class="r">20 日</th><th class="r">60 日</th></tr></thead><tbody>
+    <div class="tbl"><table><thead><tr><th>日期</th><th>封存</th><th>精選紀錄</th><th>盤前版</th><th class="r">5 日</th><th class="r">20 日</th><th class="r">60 日</th></tr></thead><tbody>
     ${[...C.days].reverse().map((d) => d.trading
-      ? `<tr><td class="num">${esc(d.date)}</td><td>${d.sealed ? `${d.on_time ? "開盤前" : "<b class=\"ckw\">開盤後</b>"}・${fmtNum(d.n, 0)} 檔` : `<span class="ckw">${esc(d.reason)}</span>`}</td><td>${d.picks ? "有" : "—"}</td>
+      ? `<tr><td class="num">${esc(d.date)}</td><td>${d.sealed ? `${d.on_time ? "開盤前" : "<b class=\"ckw\">開盤後</b>"}・${fmtNum(d.n, 0)} 檔` : `<span class="ckw">${esc(d.reason)}</span>`}</td><td>${d.picks ? "有" : "—"}</td><td>${d.pre_open ? "有" : '<span class="faint">沒有</span>'}</td>
          ${["5", "20", "60"].map((h) => `<td class="r small">${d.sealed ? m(d.maturity[h]) : "—"}</td>`).join("")}</tr>`
-      : `<tr><td class="num faint">${esc(d.date)}</td><td colspan="5" class="faint small">休市：${esc(d.reason)}</td></tr>`).join("")}</tbody></table></div>
+      : `<tr><td class="num faint">${esc(d.date)}</td><td colspan="6" class="faint small">休市：${esc(d.reason)}</td></tr>`).join("")}</tbody></table></div>
     <p class="faint small" style="margin:4px 0 0">${esc(C.rule)}</p>`;
 }
 async function loadJoint() {

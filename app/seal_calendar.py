@@ -78,7 +78,8 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
         elif not why:
             rec = sealed.get(s)
             entry = trading_after(d, 1)
-            r = {"date": s, "trading": True, "entry": entry.isoformat(), "picks": s in pk}
+            r = {"date": s, "trading": True, "entry": entry.isoformat(), "picks": s in pk,
+                 "pre_open": (pred / "pre_open" / f"{s}.json").exists()}  # 這一天開盤前有沒有封存盤前版（V26）
             if rec:
                 g = rec.get("generated_at") or ""
                 r.update(sealed=True, generated_at=g, on_time=g[:16] < f"{entry.isoformat()}T{OPEN_AT}" if g else None,
@@ -102,6 +103,7 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
         "expected": len(tr), "sealed": sum(bool(r.get("sealed")) for r in tr), "on_time": sum(bool(r.get("on_time")) for r in tr),
         "missing": [r["date"] for r in tr if not r.get("sealed")],
         "picks": sum(bool(r.get("picks")) for r in tr),
+        "pre_open": sum(bool(r.get("pre_open")) for r in tr),
         "closed": [{"date": r["date"], "reason": r["reason"]} for r in rows if not r["trading"]],
         "matured": {str(h): sum(1 for r in tr if r.get("maturity", {}).get(str(h), {}).get("matured")) for h in HORIZONS},
         "scorecard": {"generated_at": sc.get("generated_at"), "days": sc.get("days"), "last": sc.get("last"),

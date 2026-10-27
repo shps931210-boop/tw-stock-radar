@@ -62,3 +62,14 @@ class LearningNewData(unittest.TestCase):
         self.assertEqual(st["last_new_data"], "2026-10-22")
         self.assertIn("沒有新交易日", st["data_label"])
         self.assertEqual(st["fail_streak"], 0)  # 流程本身是成功的
+
+
+class Export(unittest.TestCase):
+    def test_zip_has_audit_results_and_manifest(self):
+        from app import export
+        fs = export.files()
+        for f in ("history/audit/coverage.json", "history/audit/seal_calendar.json", "history/fin/updates.json", "app/export.py"):
+            self.assertIn(f, fs)
+        m = export.manifest(fs[:3] + ["app/export.py"], {f: b"x" for f in fs[:3] + ["app/export.py"]})
+        self.assertTrue(m["commit"] and m["code_sha256"])
+        self.assertIn("last_data_date", m["data"])

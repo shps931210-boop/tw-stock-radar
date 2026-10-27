@@ -16,9 +16,11 @@ on:
     - cron: "40 6 * * 1-5"     # 14:40 快速：補上較晚公布的櫃買與法人資料
     - cron: "30 8 * * 1-5"     # 16:30 快速：補跑（萬一前一次延遲或失敗）
     - cron: "0 13 * * 1-5"     # 21:00 完整：融資等最晚公布的資料＋歷史回補、財報、股利
+    - cron: "17 14 * * 1-5"    # 22:17 完整（備援）：GitHub 排程常延遲、偶爾整個漏掉（10/26 21:00 沒有啟動）；已完成的封存不會覆寫
     - cron: "30 14-22 * * *"   # 22:30～06:30 每小時：夜間財報補齊
     - cron: "20 22 * * 0-4"    # 交易日 06:20 盤前：隔夜美股、匯率、收盤後公告
-    - cron: "15 0 * * 1-5"     # 交易日 08:15 盤前：再收集一次並封存「盤前版」（08:40 前發布）
+    - cron: "35 23 * * 0-4"    # 交易日 07:35 盤前（V20.2）：排程實際約晚 40 分鐘才啟動，08:15 那次總是 08:57～09:00 才跑，錯過封存時間
+    - cron: "15 0 * * 1-5"     # 交易日 08:15 盤前：再收集一次並封存「盤前版」（08:40 前發布；實際常延遲到開盤）
     - cron: "30 3 * * 1-5"     # 交易日 11:30：盤前版封存後的新重大事件警示
     - cron: "0 2 * * 6"        # 週六 10:00：週末事件收集（美股週五結果、週五盤後公告）
     - cron: "0 12 * * 0"       # 週日 20:00：週末事件收集
@@ -43,7 +45,7 @@ env:
   TZ: Asia/Taipei
   # 21:00 的排程與手動選 full 跑完整更新，其他都是快速更新
   # 盤前（premarket）：不抓行情，只收集隔夜市場與事件、產生盤前情報（app/premarket.py）
-  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || inputs.mode == 'full') && 'full' || (github.event.schedule == '30 14-22 * * *' || inputs.mode == 'backfill') && 'backfill' || (contains(fromJSON('["20 22 * * 0-4","15 0 * * 1-5","30 3 * * 1-5","0 2 * * 6","0 12 * * 0"]'), github.event.schedule) || inputs.mode == 'premarket') && 'premarket' || 'fast' }}
+  MODE: ${{ (github.event.schedule == '0 13 * * 1-5' || github.event.schedule == '17 14 * * 1-5' || inputs.mode == 'full') && 'full' || (github.event.schedule == '30 14-22 * * *' || inputs.mode == 'backfill') && 'backfill' || (contains(fromJSON('["20 22 * * 0-4","35 23 * * 0-4","15 0 * * 1-5","30 3 * * 1-5","0 2 * * 6","0 12 * * 0"]'), github.event.schedule) || inputs.mode == 'premarket') && 'premarket' || 'fast' }}
   SUPABASE_URL: ${{ vars.SUPABASE_URL }}   # 會員登入（公開值，放在 repository variables）
   SUPABASE_KEY: ${{ vars.SUPABASE_KEY }}
 

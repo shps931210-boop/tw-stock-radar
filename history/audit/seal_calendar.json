@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-27T07:13:07",
+ "generated_at": "2026-10-27T09:49:43",
  "summary": {
   "first": "2026-10-16",
   "last_data": "2026-10-22",
@@ -10,6 +10,7 @@
   "on_time": 5,
   "missing": [],
   "picks": 5,
+  "pre_open": 0,
   "closed": [
    {
     "date": "2026-10-23",
@@ -48,6 +49,7 @@
    "trading": true,
    "entry": "2026-10-19",
    "picks": true,
+   "pre_open": false,
    "sealed": true,
    "generated_at": "2026-10-17T12:23:26",
    "on_time": true,
@@ -75,6 +77,7 @@
    "trading": true,
    "entry": "2026-10-20",
    "picks": true,
+   "pre_open": false,
    "sealed": true,
    "generated_at": "2026-10-19T15:00:24",
    "on_time": true,
@@ -102,6 +105,7 @@
    "trading": true,
    "entry": "2026-10-21",
    "picks": true,
+   "pre_open": false,
    "sealed": true,
    "generated_at": "2026-10-20T15:24:47",
    "on_time": true,
@@ -129,6 +133,7 @@
    "trading": true,
    "entry": "2026-10-22",
    "picks": true,
+   "pre_open": false,
    "sealed": true,
    "generated_at": "2026-10-21T15:28:16",
    "on_time": true,
@@ -156,6 +161,7 @@
    "trading": true,
    "entry": "2026-10-27",
    "picks": true,
+   "pre_open": false,
    "sealed": true,
    "generated_at": "2026-10-22T15:30:26",
    "on_time": true,
@@ -193,6 +199,7 @@
    "trading": true,
    "entry": "2026-10-28",
    "picks": false,
+   "pre_open": false,
    "sealed": false,
    "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
    "maturity": {
