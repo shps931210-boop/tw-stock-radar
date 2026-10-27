@@ -359,14 +359,30 @@
     "整合測試": "skipped",
     "AI 模擬交易": "success"
    }
+  },
+  {
+   "at": "2026-10-28T04:08:10",
+   "run_id": "40574634173",
+   "mode": "backfill",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "success",
+    "新聞與公告": "skipped",
+    "國際市場": "skipped",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "success",
+    "整合測試": "skipped",
+    "AI 模擬交易": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-10-28T03:32:04",
+   "last_ok": "2026-10-28T04:08:10",
    "last": "success",
-   "runs": 21,
+   "runs": 22,
    "fails": 0
   },
   "新聞與公告": {
@@ -385,9 +401,9 @@
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-10-28T03:32:04",
+   "last_ok": "2026-10-28T04:08:10",
    "last": "success",
-   "runs": 19,
+   "runs": 20,
    "fails": 0
   },
   "連線診斷": {
@@ -420,9 +436,9 @@
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-10-28T03:32:04",
+   "last_ok": "2026-10-28T04:08:10",
    "last": "success",
-   "runs": 4,
+   "runs": 5,
    "fails": 0
   }
  }
