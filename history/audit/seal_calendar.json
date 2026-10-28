@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-29T06:15:47",
+ "generated_at": "2026-10-29T07:10:20",
  "summary": {
   "first": "2026-10-16",
   "last_data": "2026-10-28",
@@ -10,8 +10,8 @@
   "on_time": 7,
   "missing": [],
   "picks": 7,
-  "pre_open": 1,
-  "pre_open_on_time": 1,
+  "pre_open": 2,
+  "pre_open_on_time": 2,
   "pre_open_note": "盤前版＝盤前情報：開盤前依隔夜國際市場與收盤後公告更新風險標示，AI 分數沿用前一天收盤後封存的正式預測（還沒有驗證過的事件模型不改分數）。正式前瞻預測是收盤後封存、隔天開盤前就已存在的那一份。",
   "closed": [
    {
@@ -232,7 +232,10 @@
    "trading": true,
    "entry": "2026-10-29",
    "picks": true,
-   "pre_open": false,
+   "pre_open": true,
+   "pre_open_at": "2026-10-29T06:59:12",
+   "pre_open_on_time": true,
+   "pre_open_scores_changed": false,
    "sealed": true,
    "generated_at": "2026-10-28T15:06:43",
    "on_time": true,
