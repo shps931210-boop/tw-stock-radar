@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T09:15:06",
+ "generated_at": "2026-10-28T12:14:38",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
@@ -26,8 +26,20 @@
    "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
    "fetched_at": "2026-10-26T23:07:02",
-   "rescored_at": null,
-   "corrected_at": null
+   "rescored_at": "2026-10-28T12:14:38",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q2",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（交易日數不足），依規則不產生正式綜合分數"
+   }
   },
   {
    "stock_id": "6898",
@@ -39,8 +51,20 @@
    "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
    "fetched_at": "2026-10-26T23:06:59",
-   "rescored_at": null,
-   "corrected_at": null
+   "rescored_at": "2026-10-28T12:14:38",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q2",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（交易日數不足），依規則不產生正式綜合分數"
+   }
   },
   {
    "stock_id": "4804",
@@ -52,8 +76,20 @@
    "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
    "fetched_at": "2026-10-26T23:06:56",
-   "rescored_at": null,
-   "corrected_at": null
+   "rescored_at": "2026-10-28T12:14:38",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q2",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低、長期虧損），依規則不產生正式綜合分數"
+   }
   },
   {
    "stock_id": "6467",
@@ -65,8 +101,20 @@
    "latency_h": 5.5,
    "first_seen": "2026-10-26T17:38:35",
    "fetched_at": "2026-10-26T23:06:54",
-   "rescored_at": null,
-   "corrected_at": null
+   "rescored_at": "2026-10-28T12:14:38",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q2",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（交易日數不足），依規則不產生正式綜合分數"
+   }
   }
  ],
  "revisions": [
