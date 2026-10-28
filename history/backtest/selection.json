@@ -1,0 +1,1530 @@
+{
+ "modes": {
+  "stable": {
+   "name": "穩健型",
+   "deciles": {
+    "decile_excess": [
+     -1.54,
+     -1.17,
+     -1.03,
+     -0.75,
+     -0.74,
+     -0.84,
+     -0.73,
+     -0.75,
+     -0.19,
+     -0.77
+    ],
+    "decile_beat_bench": [
+     42.5,
+     39.1,
+     43.7,
+     42.5,
+     43.7,
+     44.8,
+     43.7,
+     46.0,
+     47.1,
+     44.8
+    ],
+    "top_minus_bottom": 0.77,
+    "t_top_minus_bottom": 1.85,
+    "ic": 0.0265,
+    "ic_t": 2.01,
+    "ic_pos": 58.6,
+    "monotonic": false
+   },
+   "decompose": {
+    "top_vs_0050": -0.92,
+    "universe_vs_0050": -0.85,
+    "t_universe_vs_0050": -1.66,
+    "universe_beat_0050": 42.5,
+    "selection": -0.07,
+    "t_selection": -0.19,
+    "selection_pos": 42.5
+   },
+   "layers": {
+    "selection_by_regime": {
+     "bull": {
+      "mean": -0.14,
+      "n": 64,
+      "t": -0.34
+     },
+     "bear": {
+      "mean": 0.13,
+      "n": 23,
+      "t": 0.18
+     }
+    },
+    "ic_by_liquidity": {
+     "高流動性": {
+      "ic": 0.0364,
+      "t": 2.22
+     },
+     "中流動性": {
+      "ic": 0.0139,
+      "t": 0.8
+     },
+     "低流動性": {
+      "ic": 0.0259,
+      "t": 1.52
+     }
+    }
+   },
+   "concentration": {
+    "concentrated_periods": 38,
+    "other_periods": 49,
+    "concentrated_excess": -1.75,
+    "other_excess": -0.38,
+    "diff": -1.36,
+    "t": -1.11
+   },
+   "tops": {
+    "5": {
+     "periods": 87,
+     "total": 165.28,
+     "bench_total": 564.05,
+     "avg_excess": -1.12,
+     "t_excess": -1.73,
+     "beat_0050": 39.1,
+     "mdd": -36.59,
+     "big_loss": 2.3
+    },
+    "10": {
+     "periods": 87,
+     "total": 132.56,
+     "bench_total": 564.05,
+     "avg_excess": -1.27,
+     "t_excess": -2.04,
+     "beat_0050": 41.4,
+     "mdd": -28.9,
+     "big_loss": 4.6
+    },
+    "20": {
+     "periods": 87,
+     "total": 145.56,
+     "bench_total": 564.05,
+     "avg_excess": -1.19,
+     "t_excess": -2.05,
+     "beat_0050": 34.5,
+     "mdd": -29.32,
+     "big_loss": 5.7
+    },
+    "50": {
+     "periods": 87,
+     "total": 235.89,
+     "bench_total": 564.05,
+     "avg_excess": -0.83,
+     "t_excess": -1.5,
+     "beat_0050": 46.0,
+     "mdd": -20.72,
+     "big_loss": 4.6
+    }
+   },
+   "challengers": {
+    "BASE": {
+     "rule": "原版前 10 名",
+     "periods": 87,
+     "total": 132.56,
+     "bench_total": 564.05,
+     "avg_excess": -1.27,
+     "t_excess": -2.04,
+     "beat_0050": 41.4,
+     "mdd": -28.9,
+     "big_loss": 4.6,
+     "turnover": 49.8,
+     "dev": {
+      "periods": 67,
+      "total": 123.72,
+      "bench_total": 188.49,
+      "avg_excess": -0.38,
+      "t_excess": -0.6,
+      "beat_0050": 44.8,
+      "mdd": -28.9,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 3.95,
+      "bench_total": 130.18,
+      "avg_excess": -4.27,
+      "t_excess": -2.77,
+      "beat_0050": 30.0,
+      "mdd": -19.69,
+      "big_loss": 5.0
+     }
+    },
+    "T5": {
+     "rule": "只買前 5 名",
+     "periods": 87,
+     "total": 165.28,
+     "bench_total": 564.05,
+     "avg_excess": -1.12,
+     "t_excess": -1.73,
+     "beat_0050": 39.1,
+     "mdd": -36.59,
+     "big_loss": 2.3,
+     "turnover": 54.0,
+     "dev": {
+      "periods": 67,
+      "total": 139.03,
+      "bench_total": 188.49,
+      "avg_excess": -0.28,
+      "t_excess": -0.42,
+      "beat_0050": 43.3,
+      "mdd": -36.59,
+      "big_loss": 3.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 10.98,
+      "bench_total": 130.18,
+      "avg_excess": -3.94,
+      "t_excess": -2.46,
+      "beat_0050": 25.0,
+      "mdd": -19.71,
+      "big_loss": 0.0
+     },
+     "vs_base": {
+      "dev_diff": 0.09,
+      "dev_t": 0.27,
+      "first_half": 0.03,
+      "second_half": 0.16,
+      "holdout_diff": 0.33,
+      "mdd_gap": -7.69,
+      "passed": false
+     }
+    },
+    "T20": {
+     "rule": "買前 20 名",
+     "periods": 87,
+     "total": 145.56,
+     "bench_total": 564.05,
+     "avg_excess": -1.19,
+     "t_excess": -2.05,
+     "beat_0050": 34.5,
+     "mdd": -29.32,
+     "big_loss": 5.7,
+     "turnover": 44.5,
+     "dev": {
+      "periods": 67,
+      "total": 118.64,
+      "bench_total": 188.49,
+      "avg_excess": -0.42,
+      "t_excess": -0.7,
+      "beat_0050": 37.3,
+      "mdd": -29.32,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 12.31,
+      "bench_total": 130.18,
+      "avg_excess": -3.78,
+      "t_excess": -2.63,
+      "beat_0050": 25.0,
+      "mdd": -17.66,
+      "big_loss": 10.0
+     },
+     "vs_base": {
+      "dev_diff": -0.04,
+      "dev_t": -0.15,
+      "first_half": 0.12,
+      "second_half": -0.19,
+      "holdout_diff": 0.48,
+      "mdd_gap": -0.42,
+      "passed": false
+     }
+    },
+    "BUF": {
+     "rule": "前 10 名，但已持有的股票排名還在前 30 名就續抱（降低換手成本）",
+     "periods": 87,
+     "total": 229.38,
+     "bench_total": 564.05,
+     "avg_excess": -0.86,
+     "t_excess": -1.42,
+     "beat_0050": 41.4,
+     "mdd": -26.0,
+     "big_loss": 3.4,
+     "turnover": 28.7,
+     "dev": {
+      "periods": 67,
+      "total": 161.34,
+      "bench_total": 188.49,
+      "avg_excess": -0.16,
+      "t_excess": -0.26,
+      "beat_0050": 44.8,
+      "mdd": -26.0,
+      "big_loss": 3.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 26.03,
+      "bench_total": 130.18,
+      "avg_excess": -3.21,
+      "t_excess": -2.12,
+      "beat_0050": 30.0,
+      "mdd": -18.61,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": 0.22,
+      "dev_t": 0.71,
+      "first_half": 0.17,
+      "second_half": 0.27,
+      "holdout_diff": 1.06,
+      "mdd_gap": 2.9,
+      "passed": false
+     }
+    },
+    "BIG": {
+     "rule": "只在市值前 150 大的股票裡挑前 10 名",
+     "periods": 87,
+     "total": 377.27,
+     "bench_total": 564.05,
+     "avg_excess": -0.35,
+     "t_excess": -0.65,
+     "beat_0050": 44.8,
+     "mdd": -38.47,
+     "big_loss": 4.6,
+     "turnover": 33.5,
+     "dev": {
+      "periods": 67,
+      "total": 172.29,
+      "bench_total": 188.49,
+      "avg_excess": -0.08,
+      "t_excess": -0.15,
+      "beat_0050": 46.3,
+      "mdd": -38.47,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 75.28,
+      "bench_total": 130.18,
+      "avg_excess": -1.25,
+      "t_excess": -0.82,
+      "beat_0050": 40.0,
+      "mdd": -16.39,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": 0.3,
+      "dev_t": 0.6,
+      "first_half": 0.49,
+      "second_half": 0.11,
+      "holdout_diff": 3.02,
+      "mdd_gap": -9.57,
+      "passed": false
+     }
+    },
+    "TREND": {
+     "rule": "只挑股價在季線之上且季線上揚的股票",
+     "periods": 87,
+     "total": 136.28,
+     "bench_total": 564.05,
+     "avg_excess": -1.2,
+     "t_excess": -1.83,
+     "beat_0050": 43.7,
+     "mdd": -34.41,
+     "big_loss": 6.9,
+     "turnover": 59.3,
+     "dev": {
+      "periods": 67,
+      "total": 128.91,
+      "bench_total": 188.49,
+      "avg_excess": -0.33,
+      "t_excess": -0.51,
+      "beat_0050": 44.8,
+      "mdd": -34.41,
+      "big_loss": 6.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 3.22,
+      "bench_total": 130.18,
+      "avg_excess": -4.14,
+      "t_excess": -2.36,
+      "beat_0050": 40.0,
+      "mdd": -21.52,
+      "big_loss": 10.0
+     },
+     "vs_base": {
+      "dev_diff": 0.05,
+      "dev_t": 0.16,
+      "first_half": 0.12,
+      "second_half": -0.02,
+      "holdout_diff": 0.13,
+      "mdd_gap": -5.51,
+      "passed": false
+     }
+    },
+    "IND2": {
+     "rule": "同一產業最多 2 檔",
+     "periods": 87,
+     "total": 122.11,
+     "bench_total": 564.05,
+     "avg_excess": -1.33,
+     "t_excess": -2.12,
+     "beat_0050": 40.2,
+     "mdd": -28.35,
+     "big_loss": 4.6,
+     "turnover": 51.3,
+     "dev": {
+      "periods": 67,
+      "total": 113.49,
+      "bench_total": 188.49,
+      "avg_excess": -0.45,
+      "t_excess": -0.69,
+      "beat_0050": 44.8,
+      "mdd": -28.35,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 4.04,
+      "bench_total": 130.18,
+      "avg_excess": -4.28,
+      "t_excess": -2.85,
+      "beat_0050": 25.0,
+      "mdd": -16.9,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": -0.07,
+      "dev_t": -0.66,
+      "first_half": -0.03,
+      "second_half": -0.11,
+      "holdout_diff": -0.01,
+      "mdd_gap": 0.55,
+      "passed": false
+     }
+    },
+    "GROW": {
+     "rule": "成長分數至少 60",
+     "periods": 87,
+     "total": 160.82,
+     "bench_total": 564.05,
+     "avg_excess": -1.11,
+     "t_excess": -1.78,
+     "beat_0050": 41.4,
+     "mdd": -35.37,
+     "big_loss": 4.6,
+     "turnover": 51.5,
+     "dev": {
+      "periods": 67,
+      "total": 154.4,
+      "bench_total": 188.49,
+      "avg_excess": -0.15,
+      "t_excess": -0.23,
+      "beat_0050": 44.8,
+      "mdd": -35.37,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 2.52,
+      "bench_total": 130.18,
+      "avg_excess": -4.31,
+      "t_excess": -2.92,
+      "beat_0050": 30.0,
+      "mdd": -17.67,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": 0.23,
+      "dev_t": 0.7,
+      "first_half": 0.17,
+      "second_half": 0.28,
+      "holdout_diff": -0.04,
+      "mdd_gap": -6.47,
+      "passed": false
+     }
+    },
+    "BUFBIG": {
+     "rule": "BUF＋BIG",
+     "periods": 87,
+     "total": 377.36,
+     "bench_total": 564.05,
+     "avg_excess": -0.34,
+     "t_excess": -0.66,
+     "beat_0050": 43.7,
+     "mdd": -28.48,
+     "big_loss": 5.7,
+     "turnover": 11.0,
+     "dev": {
+      "periods": 67,
+      "total": 172.99,
+      "bench_total": 188.49,
+      "avg_excess": -0.07,
+      "t_excess": -0.15,
+      "beat_0050": 46.3,
+      "mdd": -28.48,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 74.87,
+      "bench_total": 130.18,
+      "avg_excess": -1.25,
+      "t_excess": -0.77,
+      "beat_0050": 35.0,
+      "mdd": -15.25,
+      "big_loss": 10.0
+     },
+     "vs_base": {
+      "dev_diff": 0.31,
+      "dev_t": 0.65,
+      "first_half": 0.87,
+      "second_half": -0.25,
+      "holdout_diff": 3.01,
+      "mdd_gap": 0.42,
+      "passed": false
+     }
+    }
+   }
+  },
+  "balanced": {
+   "name": "均衡型",
+   "deciles": {
+    "decile_excess": [
+     -1.88,
+     -1.27,
+     -1.19,
+     -1.02,
+     -0.98,
+     -0.69,
+     -0.48,
+     -0.43,
+     -0.38,
+     -0.15
+    ],
+    "decile_beat_bench": [
+     35.6,
+     44.8,
+     40.2,
+     42.5,
+     40.2,
+     43.7,
+     46.0,
+     46.0,
+     39.1,
+     43.7
+    ],
+    "top_minus_bottom": 1.73,
+    "t_top_minus_bottom": 4.08,
+    "ic": 0.0255,
+    "ic_t": 2.17,
+    "ic_pos": 59.8,
+    "monotonic": true
+   },
+   "decompose": {
+    "top_vs_0050": -0.71,
+    "universe_vs_0050": -0.85,
+    "t_universe_vs_0050": -1.6,
+    "universe_beat_0050": 40.2,
+    "selection": 0.13,
+    "t_selection": 0.24,
+    "selection_pos": 44.8
+   },
+   "layers": {
+    "selection_by_regime": {
+     "bull": {
+      "mean": 0.22,
+      "n": 64,
+      "t": 0.32
+     },
+     "bear": {
+      "mean": -0.12,
+      "n": 23,
+      "t": -0.13
+     }
+    },
+    "ic_by_liquidity": {
+     "高流動性": {
+      "ic": 0.0172,
+      "t": 1.22
+     },
+     "中流動性": {
+      "ic": 0.0229,
+      "t": 1.73
+     },
+     "低流動性": {
+      "ic": 0.0446,
+      "t": 3.19
+     }
+    }
+   },
+   "concentration": {
+    "concentrated_periods": 43,
+    "other_periods": 44,
+    "concentrated_excess": -0.96,
+    "other_excess": -0.6,
+    "diff": -0.36,
+    "t": -0.21
+   },
+   "tops": {
+    "5": {
+     "periods": 87,
+     "total": 69.58,
+     "bench_total": 564.05,
+     "avg_excess": -1.48,
+     "t_excess": -1.56,
+     "beat_0050": 41.4,
+     "mdd": -50.09,
+     "big_loss": 8.0
+    },
+    "10": {
+     "periods": 87,
+     "total": 170.71,
+     "bench_total": 564.05,
+     "avg_excess": -1.02,
+     "t_excess": -1.18,
+     "beat_0050": 46.0,
+     "mdd": -32.21,
+     "big_loss": 3.4
+    },
+    "20": {
+     "periods": 87,
+     "total": 251.54,
+     "bench_total": 564.05,
+     "avg_excess": -0.73,
+     "t_excess": -0.99,
+     "beat_0050": 37.9,
+     "mdd": -34.76,
+     "big_loss": 4.6
+    },
+    "50": {
+     "periods": 87,
+     "total": 343.0,
+     "bench_total": 564.05,
+     "avg_excess": -0.44,
+     "t_excess": -0.68,
+     "beat_0050": 43.7,
+     "mdd": -33.87,
+     "big_loss": 5.7
+    }
+   },
+   "challengers": {
+    "BASE": {
+     "rule": "原版前 10 名",
+     "periods": 87,
+     "total": 170.71,
+     "bench_total": 564.05,
+     "avg_excess": -1.02,
+     "t_excess": -1.18,
+     "beat_0050": 46.0,
+     "mdd": -32.21,
+     "big_loss": 3.4,
+     "turnover": 41.7,
+     "dev": {
+      "periods": 67,
+      "total": 134.49,
+      "bench_total": 188.49,
+      "avg_excess": -0.24,
+      "t_excess": -0.25,
+      "beat_0050": 49.3,
+      "mdd": -32.21,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 15.45,
+      "bench_total": 130.18,
+      "avg_excess": -3.65,
+      "t_excess": -1.85,
+      "beat_0050": 35.0,
+      "mdd": -16.91,
+      "big_loss": 0.0
+     }
+    },
+    "T5": {
+     "rule": "只買前 5 名",
+     "periods": 87,
+     "total": 69.58,
+     "bench_total": 564.05,
+     "avg_excess": -1.48,
+     "t_excess": -1.56,
+     "beat_0050": 41.4,
+     "mdd": -50.09,
+     "big_loss": 8.0,
+     "turnover": 46.3,
+     "dev": {
+      "periods": 67,
+      "total": 65.22,
+      "bench_total": 188.49,
+      "avg_excess": -0.69,
+      "t_excess": -0.68,
+      "beat_0050": 43.3,
+      "mdd": -50.09,
+      "big_loss": 7.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 2.64,
+      "bench_total": 130.18,
+      "avg_excess": -4.15,
+      "t_excess": -1.81,
+      "beat_0050": 35.0,
+      "mdd": -22.06,
+      "big_loss": 10.0
+     },
+     "vs_base": {
+      "dev_diff": -0.45,
+      "dev_t": -0.89,
+      "first_half": 0.22,
+      "second_half": -1.1,
+      "holdout_diff": -0.5,
+      "mdd_gap": -17.88,
+      "passed": false
+     }
+    },
+    "T20": {
+     "rule": "買前 20 名",
+     "periods": 87,
+     "total": 251.54,
+     "bench_total": 564.05,
+     "avg_excess": -0.73,
+     "t_excess": -0.99,
+     "beat_0050": 37.9,
+     "mdd": -34.76,
+     "big_loss": 4.6,
+     "turnover": 36.6,
+     "dev": {
+      "periods": 67,
+      "total": 119.71,
+      "bench_total": 188.49,
+      "avg_excess": -0.37,
+      "t_excess": -0.46,
+      "beat_0050": 40.3,
+      "mdd": -34.76,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 60.0,
+      "bench_total": 130.18,
+      "avg_excess": -1.91,
+      "t_excess": -1.16,
+      "beat_0050": 30.0,
+      "mdd": -12.95,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": -0.14,
+      "dev_t": -0.38,
+      "first_half": -0.37,
+      "second_half": 0.09,
+      "holdout_diff": 1.74,
+      "mdd_gap": -2.55,
+      "passed": false
+     }
+    },
+    "BUF": {
+     "rule": "前 10 名，但已持有的股票排名還在前 30 名就續抱（降低換手成本）",
+     "periods": 87,
+     "total": 208.99,
+     "bench_total": 564.05,
+     "avg_excess": -0.87,
+     "t_excess": -1.12,
+     "beat_0050": 41.4,
+     "mdd": -43.73,
+     "big_loss": 4.6,
+     "turnover": 21.6,
+     "dev": {
+      "periods": 67,
+      "total": 89.54,
+      "bench_total": 188.49,
+      "avg_excess": -0.56,
+      "t_excess": -0.63,
+      "beat_0050": 41.8,
+      "mdd": -43.73,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 63.02,
+      "bench_total": 130.18,
+      "avg_excess": -1.88,
+      "t_excess": -1.18,
+      "beat_0050": 40.0,
+      "mdd": -14.05,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": -0.33,
+      "dev_t": -1.03,
+      "first_half": -0.53,
+      "second_half": -0.13,
+      "holdout_diff": 1.77,
+      "mdd_gap": -11.52,
+      "passed": false
+     }
+    },
+    "BIG": {
+     "rule": "只在市值前 150 大的股票裡挑前 10 名",
+     "periods": 87,
+     "total": 433.99,
+     "bench_total": 564.05,
+     "avg_excess": -0.11,
+     "t_excess": -0.16,
+     "beat_0050": 42.5,
+     "mdd": -50.25,
+     "big_loss": 6.9,
+     "turnover": 31.5,
+     "dev": {
+      "periods": 67,
+      "total": 141.53,
+      "bench_total": 188.49,
+      "avg_excess": -0.15,
+      "t_excess": -0.21,
+      "beat_0050": 40.3,
+      "mdd": -50.25,
+      "big_loss": 7.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 121.08,
+      "bench_total": 130.18,
+      "avg_excess": 0.03,
+      "t_excess": 0.02,
+      "beat_0050": 50.0,
+      "mdd": -16.98,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": 0.08,
+      "dev_t": 0.11,
+      "first_half": 1.41,
+      "second_half": -1.21,
+      "holdout_diff": 3.68,
+      "mdd_gap": -18.04,
+      "passed": false
+     }
+    },
+    "TREND": {
+     "rule": "只挑股價在季線之上且季線上揚的股票",
+     "periods": 87,
+     "total": 312.94,
+     "bench_total": 564.05,
+     "avg_excess": -0.51,
+     "t_excess": -0.61,
+     "beat_0050": 46.0,
+     "mdd": -25.11,
+     "big_loss": 2.3,
+     "turnover": 57.0,
+     "dev": {
+      "periods": 67,
+      "total": 235.92,
+      "bench_total": 188.49,
+      "avg_excess": 0.3,
+      "t_excess": 0.34,
+      "beat_0050": 49.3,
+      "mdd": -25.11,
+      "big_loss": 3.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 22.93,
+      "bench_total": 130.18,
+      "avg_excess": -3.21,
+      "t_excess": -1.53,
+      "beat_0050": 35.0,
+      "mdd": -18.99,
+      "big_loss": 0.0
+     },
+     "vs_base": {
+      "dev_diff": 0.53,
+      "dev_t": 1.11,
+      "first_half": 0.83,
+      "second_half": 0.24,
+      "holdout_diff": 0.44,
+      "mdd_gap": 7.1,
+      "passed": false
+     }
+    },
+    "IND2": {
+     "rule": "同一產業最多 2 檔",
+     "periods": 87,
+     "total": 153.93,
+     "bench_total": 564.05,
+     "avg_excess": -1.11,
+     "t_excess": -1.36,
+     "beat_0050": 46.0,
+     "mdd": -28.63,
+     "big_loss": 4.6,
+     "turnover": 42.3,
+     "dev": {
+      "periods": 67,
+      "total": 122.15,
+      "bench_total": 188.49,
+      "avg_excess": -0.33,
+      "t_excess": -0.37,
+      "beat_0050": 49.3,
+      "mdd": -28.63,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 14.31,
+      "bench_total": 130.18,
+      "avg_excess": -3.7,
+      "t_excess": -2.0,
+      "beat_0050": 35.0,
+      "mdd": -15.25,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": -0.09,
+      "dev_t": -0.43,
+      "first_half": -0.05,
+      "second_half": -0.14,
+      "holdout_diff": -0.05,
+      "mdd_gap": 3.58,
+      "passed": false
+     }
+    },
+    "GROW": {
+     "rule": "成長分數至少 60",
+     "periods": 87,
+     "total": 146.26,
+     "bench_total": 564.05,
+     "avg_excess": -1.12,
+     "t_excess": -1.3,
+     "beat_0050": 44.8,
+     "mdd": -32.21,
+     "big_loss": 4.6,
+     "turnover": 42.2,
+     "dev": {
+      "periods": 67,
+      "total": 112.26,
+      "bench_total": 188.49,
+      "avg_excess": -0.38,
+      "t_excess": -0.41,
+      "beat_0050": 47.8,
+      "mdd": -32.21,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 16.02,
+      "bench_total": 130.18,
+      "avg_excess": -3.6,
+      "t_excess": -1.79,
+      "beat_0050": 35.0,
+      "mdd": -16.91,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": -0.15,
+      "dev_t": -2.14,
+      "first_half": -0.19,
+      "second_half": -0.11,
+      "holdout_diff": 0.05,
+      "mdd_gap": 0.0,
+      "passed": false
+     }
+    },
+    "BUFBIG": {
+     "rule": "BUF＋BIG",
+     "periods": 87,
+     "total": 583.13,
+     "bench_total": 564.05,
+     "avg_excess": 0.17,
+     "t_excess": 0.25,
+     "beat_0050": 48.3,
+     "mdd": -52.46,
+     "big_loss": 5.7,
+     "turnover": 13.0,
+     "dev": {
+      "periods": 67,
+      "total": 158.75,
+      "bench_total": 188.49,
+      "avg_excess": -0.04,
+      "t_excess": -0.05,
+      "beat_0050": 46.3,
+      "mdd": -52.46,
+      "big_loss": 6.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 164.01,
+      "bench_total": 130.18,
+      "avg_excess": 0.86,
+      "t_excess": 0.54,
+      "beat_0050": 55.0,
+      "mdd": -18.82,
+      "big_loss": 5.0
+     },
+     "vs_base": {
+      "dev_diff": 0.2,
+      "dev_t": 0.25,
+      "first_half": 1.37,
+      "second_half": -0.94,
+      "holdout_diff": 4.51,
+      "mdd_gap": -20.25,
+      "passed": false
+     }
+    }
+   }
+  },
+  "aggressive": {
+   "name": "積極型",
+   "deciles": {
+    "decile_excess": [
+     -1.18,
+     -0.61,
+     -0.31,
+     -0.17,
+     -0.17,
+     -0.13,
+     -0.86,
+     0.01,
+     -0.86,
+     0.54
+    ],
+    "decile_beat_bench": [
+     42.4,
+     44.7,
+     44.7,
+     50.6,
+     45.9,
+     50.6,
+     42.4,
+     43.5,
+     44.7,
+     45.9
+    ],
+    "top_minus_bottom": 1.71,
+    "t_top_minus_bottom": 2.08,
+    "ic": -0.0149,
+    "ic_t": -0.92,
+    "ic_pos": 49.4,
+    "monotonic": false
+   },
+   "decompose": {
+    "top_vs_0050": 0.78,
+    "universe_vs_0050": -0.17,
+    "t_universe_vs_0050": -0.3,
+    "universe_beat_0050": 43.7,
+    "selection": 0.95,
+    "t_selection": 1.22,
+    "selection_pos": 51.7
+   },
+   "layers": {
+    "selection_by_regime": {
+     "bull": {
+      "mean": 1.31,
+      "n": 64,
+      "t": 1.4
+     },
+     "bear": {
+      "mean": -0.08,
+      "n": 23,
+      "t": -0.06
+     }
+    },
+    "ic_by_liquidity": {
+     "高流動性": {
+      "ic": -0.0164,
+      "t": -0.8
+     },
+     "中流動性": {
+      "ic": -0.016,
+      "t": -0.77
+     },
+     "低流動性": {
+      "ic": -0.0245,
+      "t": -1.58
+     }
+    }
+   },
+   "concentration": {
+    "concentrated_periods": 53,
+    "other_periods": 34,
+    "concentrated_excess": 0.54,
+    "other_excess": 1.05,
+    "diff": -0.51,
+    "t": -0.25
+   },
+   "tops": {
+    "5": {
+     "periods": 87,
+     "total": 797.52,
+     "bench_total": 564.05,
+     "avg_excess": 1.06,
+     "t_excess": 0.77,
+     "beat_0050": 52.9,
+     "mdd": -51.79,
+     "big_loss": 16.1
+    },
+    "10": {
+     "periods": 87,
+     "total": 578.06,
+     "bench_total": 564.05,
+     "avg_excess": 0.43,
+     "t_excess": 0.41,
+     "beat_0050": 48.3,
+     "mdd": -42.76,
+     "big_loss": 9.2
+    },
+    "20": {
+     "periods": 87,
+     "total": 625.49,
+     "bench_total": 564.05,
+     "avg_excess": 0.41,
+     "t_excess": 0.43,
+     "beat_0050": 44.8,
+     "mdd": -32.03,
+     "big_loss": 10.3
+    },
+    "50": {
+     "periods": 87,
+     "total": 330.03,
+     "bench_total": 564.05,
+     "avg_excess": -0.35,
+     "t_excess": -0.48,
+     "beat_0050": 41.4,
+     "mdd": -31.58,
+     "big_loss": 8.0
+    }
+   },
+   "challengers": {
+    "BASE": {
+     "rule": "原版前 10 名",
+     "periods": 87,
+     "total": 578.06,
+     "bench_total": 564.05,
+     "avg_excess": 0.43,
+     "t_excess": 0.41,
+     "beat_0050": 48.3,
+     "mdd": -42.76,
+     "big_loss": 9.2,
+     "turnover": 53.7,
+     "dev": {
+      "periods": 67,
+      "total": 357.9,
+      "bench_total": 188.49,
+      "avg_excess": 0.96,
+      "t_excess": 0.9,
+      "beat_0050": 47.8,
+      "mdd": -36.74,
+      "big_loss": 6.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 48.08,
+      "bench_total": 130.18,
+      "avg_excess": -1.35,
+      "t_excess": -0.46,
+      "beat_0050": 50.0,
+      "mdd": -42.76,
+      "big_loss": 20.0
+     }
+    },
+    "T5": {
+     "rule": "只買前 5 名",
+     "periods": 87,
+     "total": 797.52,
+     "bench_total": 564.05,
+     "avg_excess": 1.06,
+     "t_excess": 0.77,
+     "beat_0050": 52.9,
+     "mdd": -51.79,
+     "big_loss": 16.1,
+     "turnover": 57.2,
+     "dev": {
+      "periods": 67,
+      "total": 906.74,
+      "bench_total": 188.49,
+      "avg_excess": 2.44,
+      "t_excess": 1.7,
+      "beat_0050": 56.7,
+      "mdd": -27.95,
+      "big_loss": 11.9
+     },
+     "holdout": {
+      "periods": 20,
+      "total": -10.85,
+      "bench_total": 130.18,
+      "avg_excess": -3.54,
+      "t_excess": -1.0,
+      "beat_0050": 40.0,
+      "mdd": -51.79,
+      "big_loss": 30.0
+     },
+     "vs_base": {
+      "dev_diff": 1.48,
+      "dev_t": 1.85,
+      "first_half": 1.16,
+      "second_half": 1.79,
+      "holdout_diff": -2.19,
+      "mdd_gap": -9.03,
+      "passed": false
+     }
+    },
+    "T20": {
+     "rule": "買前 20 名",
+     "periods": 87,
+     "total": 625.49,
+     "bench_total": 564.05,
+     "avg_excess": 0.41,
+     "t_excess": 0.43,
+     "beat_0050": 44.8,
+     "mdd": -32.03,
+     "big_loss": 10.3,
+     "turnover": 52.0,
+     "dev": {
+      "periods": 67,
+      "total": 259.17,
+      "bench_total": 188.49,
+      "avg_excess": 0.51,
+      "t_excess": 0.54,
+      "beat_0050": 43.3,
+      "mdd": -31.53,
+      "big_loss": 9.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 101.99,
+      "bench_total": 130.18,
+      "avg_excess": 0.07,
+      "t_excess": 0.02,
+      "beat_0050": 50.0,
+      "mdd": -32.03,
+      "big_loss": 15.0
+     },
+     "vs_base": {
+      "dev_diff": -0.44,
+      "dev_t": -1.07,
+      "first_half": 0.03,
+      "second_half": -0.9,
+      "holdout_diff": 1.42,
+      "mdd_gap": 10.73,
+      "passed": false
+     }
+    },
+    "BUF": {
+     "rule": "前 10 名，但已持有的股票排名還在前 30 名就續抱（降低換手成本）",
+     "periods": 87,
+     "total": 460.44,
+     "bench_total": 564.05,
+     "avg_excess": 0.21,
+     "t_excess": 0.2,
+     "beat_0050": 48.3,
+     "mdd": -42.56,
+     "big_loss": 11.5,
+     "turnover": 42.6,
+     "dev": {
+      "periods": 67,
+      "total": 234.3,
+      "bench_total": 188.49,
+      "avg_excess": 0.47,
+      "t_excess": 0.44,
+      "beat_0050": 47.8,
+      "mdd": -42.56,
+      "big_loss": 9.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 67.65,
+      "bench_total": 130.18,
+      "avg_excess": -0.68,
+      "t_excess": -0.24,
+      "beat_0050": 50.0,
+      "mdd": -37.68,
+      "big_loss": 20.0
+     },
+     "vs_base": {
+      "dev_diff": -0.48,
+      "dev_t": -1.78,
+      "first_half": -0.69,
+      "second_half": -0.29,
+      "holdout_diff": 0.67,
+      "mdd_gap": 0.2,
+      "passed": false
+     }
+    },
+    "BIG": {
+     "rule": "只在市值前 150 大的股票裡挑前 10 名",
+     "periods": 87,
+     "total": 729.72,
+     "bench_total": 564.05,
+     "avg_excess": 0.53,
+     "t_excess": 0.63,
+     "beat_0050": 52.9,
+     "mdd": -39.59,
+     "big_loss": 8.0,
+     "turnover": 46.2,
+     "dev": {
+      "periods": 67,
+      "total": 268.99,
+      "bench_total": 188.49,
+      "avg_excess": 0.5,
+      "t_excess": 0.63,
+      "beat_0050": 52.2,
+      "mdd": -39.59,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 124.87,
+      "bench_total": 130.18,
+      "avg_excess": 0.63,
+      "t_excess": 0.24,
+      "beat_0050": 55.0,
+      "mdd": -31.15,
+      "big_loss": 20.0
+     },
+     "vs_base": {
+      "dev_diff": -0.46,
+      "dev_t": -0.55,
+      "first_half": 0.87,
+      "second_half": -1.74,
+      "holdout_diff": 1.98,
+      "mdd_gap": 3.17,
+      "passed": false
+     }
+    },
+    "TREND": {
+     "rule": "只挑股價在季線之上且季線上揚的股票",
+     "periods": 87,
+     "total": 601.86,
+     "bench_total": 564.05,
+     "avg_excess": 0.46,
+     "t_excess": 0.44,
+     "beat_0050": 48.3,
+     "mdd": -42.76,
+     "big_loss": 9.2,
+     "turnover": 54.3,
+     "dev": {
+      "periods": 67,
+      "total": 360.66,
+      "bench_total": 188.49,
+      "avg_excess": 0.97,
+      "t_excess": 0.91,
+      "beat_0050": 47.8,
+      "mdd": -34.57,
+      "big_loss": 6.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 52.36,
+      "bench_total": 130.18,
+      "avg_excess": -1.24,
+      "t_excess": -0.43,
+      "beat_0050": 50.0,
+      "mdd": -42.76,
+      "big_loss": 20.0
+     },
+     "vs_base": {
+      "dev_diff": 0.01,
+      "dev_t": 0.07,
+      "first_half": -0.13,
+      "second_half": 0.14,
+      "holdout_diff": 0.1,
+      "mdd_gap": 0.0,
+      "passed": false
+     }
+    },
+    "IND2": {
+     "rule": "同一產業最多 2 檔",
+     "periods": 87,
+     "total": 770.16,
+     "bench_total": 564.05,
+     "avg_excess": 0.73,
+     "t_excess": 0.67,
+     "beat_0050": 49.4,
+     "mdd": -38.92,
+     "big_loss": 9.2,
+     "turnover": 54.4,
+     "dev": {
+      "periods": 67,
+      "total": 399.13,
+      "bench_total": 188.49,
+      "avg_excess": 1.08,
+      "t_excess": 1.03,
+      "beat_0050": 47.8,
+      "mdd": -32.61,
+      "big_loss": 6.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 74.34,
+      "bench_total": 130.18,
+      "avg_excess": -0.43,
+      "t_excess": -0.13,
+      "beat_0050": 55.0,
+      "mdd": -38.92,
+      "big_loss": 20.0
+     },
+     "vs_base": {
+      "dev_diff": 0.12,
+      "dev_t": 0.49,
+      "first_half": -0.22,
+      "second_half": 0.46,
+      "holdout_diff": 0.91,
+      "mdd_gap": 3.84,
+      "passed": false
+     }
+    },
+    "GROW": {
+     "rule": "成長分數至少 60",
+     "periods": 87,
+     "total": 632.51,
+     "bench_total": 564.05,
+     "avg_excess": 0.53,
+     "t_excess": 0.5,
+     "beat_0050": 48.3,
+     "mdd": -42.76,
+     "big_loss": 9.2,
+     "turnover": 53.7,
+     "dev": {
+      "periods": 67,
+      "total": 365.92,
+      "bench_total": 188.49,
+      "avg_excess": 0.99,
+      "t_excess": 0.93,
+      "beat_0050": 47.8,
+      "mdd": -36.74,
+      "big_loss": 6.0
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 57.22,
+      "bench_total": 130.18,
+      "avg_excess": -1.0,
+      "t_excess": -0.33,
+      "beat_0050": 50.0,
+      "mdd": -42.76,
+      "big_loss": 20.0
+     },
+     "vs_base": {
+      "dev_diff": 0.03,
+      "dev_t": 1.0,
+      "first_half": 0.06,
+      "second_half": 0.0,
+      "holdout_diff": 0.35,
+      "mdd_gap": 0.0,
+      "passed": false
+     }
+    },
+    "BUFBIG": {
+     "rule": "BUF＋BIG",
+     "periods": 87,
+     "total": 743.84,
+     "bench_total": 564.05,
+     "avg_excess": 0.55,
+     "t_excess": 0.65,
+     "beat_0050": 49.4,
+     "mdd": -39.49,
+     "big_loss": 5.7,
+     "turnover": 35.2,
+     "dev": {
+      "periods": 67,
+      "total": 219.18,
+      "bench_total": 188.49,
+      "avg_excess": 0.3,
+      "t_excess": 0.37,
+      "beat_0050": 47.8,
+      "mdd": -39.49,
+      "big_loss": 4.5
+     },
+     "holdout": {
+      "periods": 20,
+      "total": 164.38,
+      "bench_total": 130.18,
+      "avg_excess": 1.38,
+      "t_excess": 0.54,
+      "beat_0050": 55.0,
+      "mdd": -29.67,
+      "big_loss": 10.0
+     },
+     "vs_base": {
+      "dev_diff": -0.66,
+      "dev_t": -0.82,
+      "first_half": 0.67,
+      "second_half": -1.94,
+      "holdout_diff": 2.73,
+      "mdd_gap": 3.27,
+      "passed": false
+     }
+    }
+   }
+  }
+ },
+ "factors": {
+  "quality": {
+   "name": "品質",
+   "top10pct_vs_universe": -0.31,
+   "t": -1.15,
+   "ic": 0.0014,
+   "ic_t": 0.12,
+   "first_half": -0.65,
+   "second_half": 0.02
+  },
+  "growth": {
+   "name": "成長",
+   "top10pct_vs_universe": 0.77,
+   "t": 2.69,
+   "ic": 0.0184,
+   "ic_t": 1.72,
+   "first_half": 0.38,
+   "second_half": 1.14
+  },
+  "value": {
+   "name": "價值",
+   "top10pct_vs_universe": 0.0,
+   "t": 0.01,
+   "ic": 0.0423,
+   "ic_t": 2.74,
+   "first_half": 0.05,
+   "second_half": -0.04
+  },
+  "momentum": {
+   "name": "動能",
+   "top10pct_vs_universe": 0.44,
+   "t": 0.88,
+   "ic": -0.0019,
+   "ic_t": -0.12,
+   "first_half": -0.11,
+   "second_half": 0.98
+  },
+  "trend": {
+   "name": "趨勢",
+   "top10pct_vs_universe": 1.09,
+   "t": 3.81,
+   "ic": 0.0119,
+   "ic_t": 0.91,
+   "first_half": 1.15,
+   "second_half": 1.02
+  }
+ },
+ "passed": [],
+ "periods": 87,
+ "dev_periods": 67,
+ "first": "2019-07-31",
+ "last": "2026-08-27",
+ "schema_version": 1,
+ "study_version": "2026-10-28",
+ "generated_at": "2026-10-28T19:24:19+08:00",
+ "step": 20,
+ "holdout_from": "2025-01-01",
+ "t_need": 2.6,
+ "mdd_gap": 5.0,
+ "cost_pct": 0.585,
+ "challenger_rules": {
+  "T5": "只買前 5 名",
+  "T20": "買前 20 名",
+  "BUF": "前 10 名，但已持有的股票排名還在前 30 名就續抱（降低換手成本）",
+  "BIG": "只在市值前 150 大的股票裡挑前 10 名",
+  "TREND": "只挑股價在季線之上且季線上揚的股票",
+  "IND2": "同一產業最多 2 檔",
+  "GROW": "成長分數至少 60",
+  "BUFBIG": "BUF＋BIG"
+ },
+ "data_end": "2026-10-28",
+ "seconds": 1203,
+ "run_by": "本機（和 GitHub 同一份資料庫備份）；之後每週回測自動重跑",
+ "note": "歷史回測（研究），不是前瞻績效；正式模型不因本研究自動改變。"
+}
