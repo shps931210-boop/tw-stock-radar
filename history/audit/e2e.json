@@ -1,16 +1,16 @@
 {
  "schema_version": 1,
- "ran_at": "2026-10-28T15:48:55",
+ "ran_at": "2026-10-28T17:21:43",
  "base": "https://shps931210-boop.github.io/tw-stock-radar/",
  "data_date": "2026-10-28",
- "site_generated_at": "2026-10-28T15:40:34",
+ "site_generated_at": "2026-10-28T17:15:22",
  "page_errors": 0,
- "passed": 20,
+ "passed": 19,
  "results": [
   {
-   "sid": "3008",
-   "name": "大立光",
-   "industry": "電子工業",
+   "sid": "2884",
+   "name": "玉山金",
+   "industry": "金融保險",
    "group": "上市大型股",
    "ok": true,
    "problems": [],
@@ -59,16 +59,16 @@
    ]
   },
   {
-   "sid": "2425",
-   "name": "承啟",
-   "industry": "電腦及週邊設備業",
+   "sid": "3047",
+   "name": "訊舟",
+   "industry": "電子工業",
    "group": "上市中小型股",
    "ok": true,
    "problems": [],
    "modules": [
     "行情・完成",
     "基本面・完成",
-    "估值・完成",
+    "估值・不適用",
     "短線・完成",
     "波段・完成",
     "長期・部分完成",
@@ -93,9 +93,9 @@
    ]
   },
   {
-   "sid": "8411",
-   "name": "福貞-KY",
-   "industry": "其他",
+   "sid": "1533",
+   "name": "車王電",
+   "industry": "汽車工業",
    "group": "上市中小型股",
    "ok": true,
    "problems": [],
@@ -106,7 +106,7 @@
     "短線・完成",
     "波段・完成",
     "長期・部分完成",
-    "AI 評分・參考分項，不排名"
+    "AI 評分・母體外綜合分數，不排名"
    ]
   },
   {
@@ -144,27 +144,10 @@
    ]
   },
   {
-   "sid": "7747",
-   "name": "昕奇雲端",
-   "industry": "數位雲端類",
+   "sid": "5426",
+   "name": "振發",
+   "industry": "電腦及週邊設備業",
    "group": "上櫃股票",
-   "ok": true,
-   "problems": [],
-   "modules": [
-    "行情・完成",
-    "基本面・完成",
-    "估值・完成",
-    "短線・完成",
-    "波段・完成",
-    "長期・部分完成",
-    "AI 評分・母體外綜合分數，不排名"
-   ]
-  },
-  {
-   "sid": "2855",
-   "name": "統一證",
-   "industry": "金融保險",
-   "group": "金融股",
    "ok": true,
    "problems": [],
    "modules": [
