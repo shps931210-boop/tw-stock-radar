@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-28T17:16:37",
+ "generated_at": "2026-10-28T21:06:06",
  "source": "正式資料庫 data/stocks.db（證交所、櫃買中心、FinMind）；不含示範資料",
  "as_of": {
   "prices": "2026-10-28",
@@ -599,7 +599,7 @@
   },
   {
    "why": "估值合理性：資料缺失",
-   "stocks": 63
+   "stocks": 64
   },
   {
    "why": "趨勢確認：股價歷史不足（新上市或停牌）",

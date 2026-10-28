@@ -1,0 +1,3889 @@
+{
+ "version": 3,
+ "kind": "補正版",
+ "date": "2026-10-28",
+ "model_version": "v1.1",
+ "model_hash": "ce1e61207b30",
+ "generated_at": "2026-10-28T21:04:33",
+ "data_dates": {
+  "prices": "2026-10-28",
+  "revenue": "2026-09",
+  "financials": "2026-Q2"
+ },
+ "taiex": 47035.6,
+ "universe": {
+  "total": 2006,
+  "base_ok": 939
+ },
+ "picks": {
+  "stable": [
+   {
+    "stock_id": "2851",
+    "name": "中再保",
+    "rank": 1,
+    "score": 84.1,
+    "close": 49.05,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 96.875,
+     "growth": 51.9381,
+     "value": 67.6471,
+     "momentum": 82.3851,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 2,
+    "score": 82.8,
+    "close": 35.2,
+    "industry": "航運業",
+    "factors": {
+     "quality": 80.0922,
+     "growth": 83.7457,
+     "value": 92.939,
+     "momentum": 71.5536,
+     "trend": 80.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2615",
+    "name": "萬海",
+    "rank": 3,
+    "score": 81.2,
+    "close": 118.5,
+    "industry": "航運業",
+    "factors": {
+     "quality": 72.2516,
+     "growth": 79.2405,
+     "value": 90.2376,
+     "momentum": 68.2713,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2637",
+    "name": "慧洋-KY",
+    "rank": 4,
+    "score": 78.4,
+    "close": 100.0,
+    "industry": "航運業",
+    "factors": {
+     "quality": 69.0087,
+     "growth": 70.5859,
+     "value": 85.3633,
+     "momentum": 73.523,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "1615",
+    "name": "大山",
+    "rank": 5,
+    "score": 75.2,
+    "close": 48.1,
+    "industry": "電器電纜",
+    "factors": {
+     "quality": 81.1862,
+     "growth": 55.7149,
+     "value": 78.6821,
+     "momentum": 24.6171,
+     "trend": 100.0
+    },
+    "liq": "F",
+    "rec": "excluded"
+   },
+   {
+    "stock_id": "3356",
+    "name": "奇偶",
+    "rank": 6,
+    "score": 74.4,
+    "close": 71.3,
+    "industry": "光電業",
+    "factors": {
+     "quality": 66.1578,
+     "growth": 69.7491,
+     "value": 79.2769,
+     "momentum": 61.2691,
+     "trend": 100.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "3617",
+    "name": "碩天",
+    "rank": 7,
+    "score": 74.1,
+    "close": 253.5,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 76.5793,
+     "growth": 60.8714,
+     "value": 74.2476,
+     "momentum": 37.965,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6532",
+    "name": "瑞耘",
+    "rank": 8,
+    "score": 74.1,
+    "close": 119.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 82.4201,
+     "growth": 77.7383,
+     "value": 44.2737,
+     "momentum": 73.3042,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2006",
+    "name": "東和鋼鐵",
+    "rank": 9,
+    "score": 72.8,
+    "close": 93.6,
+    "industry": "鋼鐵工業",
+    "factors": {
+     "quality": 69.5346,
+     "growth": 41.6012,
+     "value": 77.9568,
+     "momentum": 62.9103,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2027",
+    "name": "大成鋼",
+    "rank": 10,
+    "score": 71.8,
+    "close": 51.0,
+    "industry": "鋼鐵工業",
+    "factors": {
+     "quality": 61.116,
+     "growth": 74.6693,
+     "value": 78.8777,
+     "momentum": 51.86,
+     "trend": 100.0
+    },
+    "liq": "B",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2603",
+    "name": "長榮",
+    "rank": 11,
+    "score": 71.8,
+    "close": 263.0,
+    "industry": "航運業",
+    "factors": {
+     "quality": 54.5065,
+     "growth": 62.9939,
+     "value": 89.8744,
+     "momentum": 61.8162,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2330",
+    "name": "台積電",
+    "rank": 12,
+    "score": 71.7,
+    "close": 2425.0,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 92.8173,
+     "growth": 67.5974,
+     "value": 34.4166,
+     "momentum": 72.5383,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6782",
+    "name": "視陽",
+    "rank": 13,
+    "score": 71.2,
+    "close": 268.5,
+    "industry": "生技醫療業",
+    "factors": {
+     "quality": 85.541,
+     "growth": 46.4377,
+     "value": 47.5305,
+     "momentum": 54.5952,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "4105",
+    "name": "東洋",
+    "rank": 14,
+    "score": 70.4,
+    "close": 80.1,
+    "industry": "生技醫療業",
+    "factors": {
+     "quality": 84.116,
+     "growth": 33.6978,
+     "value": 72.7106,
+     "momentum": 31.8381,
+     "trend": 80.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "3287",
+    "name": "廣寰科",
+    "rank": 15,
+    "score": 70.1,
+    "close": 62.0,
+    "industry": "電腦及週邊設備業",
+    "factors": {
+     "quality": 70.5286,
+     "growth": 61.8478,
+     "value": 61.374,
+     "momentum": 53.8293,
+     "trend": 100.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6491",
+    "name": "晶碩",
+    "rank": 16,
+    "score": 70.0,
+    "close": 430.5,
+    "industry": "化學生技醫療",
+    "factors": {
+     "quality": 77.6061,
+     "growth": 50.1034,
+     "value": 53.3025,
+     "momentum": 56.674,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6263",
+    "name": "普萊德",
+    "rank": 17,
+    "score": 69.9,
+    "close": 171.0,
+    "industry": "通信網路業",
+    "factors": {
+     "quality": 86.9105,
+     "growth": 35.1619,
+     "value": 47.5582,
+     "momentum": 46.8271,
+     "trend": 100.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6509",
+    "name": "聚和",
+    "rank": 18,
+    "score": 69.8,
+    "close": 48.2,
+    "industry": "化學工業",
+    "factors": {
+     "quality": 70.3215,
+     "growth": 42.8005,
+     "value": 76.1597,
+     "momentum": 63.3479,
+     "trend": 80.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6894",
+    "name": "衛司特",
+    "rank": 19,
+    "score": 69.8,
+    "close": 407.0,
+    "industry": "綠能環保類",
+    "factors": {
+     "quality": 76.2948,
+     "growth": 77.1809,
+     "value": 36.4656,
+     "momentum": 74.3982,
+     "trend": 100.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "2606",
+    "name": "裕民",
+    "rank": 20,
+    "score": 69.4,
+    "close": 73.5,
+    "industry": "航運業",
+    "factors": {
+     "quality": 58.7198,
+     "growth": 63.1963,
+     "value": 85.4563,
+     "momentum": 62.2538,
+     "trend": 80.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   }
+  ],
+  "balanced": [
+   {
+    "stock_id": "2451",
+    "name": "創見",
+    "rank": 1,
+    "score": 89.0,
+    "close": 293.5,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 95.1857,
+     "growth": 97.7576,
+     "value": 75.1424,
+     "momentum": 86.4333,
+     "trend": 80.0
+    },
+    "liq": "B",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 2,
+    "score": 82.3,
+    "close": 35.2,
+    "industry": "航運業",
+    "factors": {
+     "quality": 80.0922,
+     "growth": 83.7457,
+     "value": 92.939,
+     "momentum": 71.5536,
+     "trend": 80.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2615",
+    "name": "萬海",
+    "rank": 3,
+    "score": 79.8,
+    "close": 118.5,
+    "industry": "航運業",
+    "factors": {
+     "quality": 72.2516,
+     "growth": 79.2405,
+     "value": 90.2376,
+     "momentum": 68.2713,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2851",
+    "name": "中再保",
+    "rank": 4,
+    "score": 77.9,
+    "close": 49.05,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 96.875,
+     "growth": 51.9381,
+     "value": 67.6471,
+     "momentum": 82.3851,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5386",
+    "name": "青雲",
+    "rank": 5,
+    "score": 76.8,
+    "close": 250.0,
+    "industry": "電腦及週邊設備業",
+    "factors": {
+     "quality": 57.2339,
+     "growth": 97.1443,
+     "value": 72.2976,
+     "momentum": 99.453,
+     "trend": 60.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2637",
+    "name": "慧洋-KY",
+    "rank": 6,
+    "score": 76.5,
+    "close": 100.0,
+    "industry": "航運業",
+    "factors": {
+     "quality": 69.0087,
+     "growth": 70.5859,
+     "value": 85.3633,
+     "momentum": 73.523,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2059",
+    "name": "川湖",
+    "rank": 7,
+    "score": 76.4,
+    "close": 10150.0,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 94.8832,
+     "growth": 93.4392,
+     "value": 22.5475,
+     "momentum": 93.6543,
+     "trend": 60.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6651",
+    "name": "全宇昕",
+    "rank": 8,
+    "score": 75.8,
+    "close": 140.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 87.1882,
+     "growth": 68.6743,
+     "value": 58.8681,
+     "momentum": 84.3545,
+     "trend": 80.0
+    },
+    "liq": "E",
+    "rec": "excluded"
+   },
+   {
+    "stock_id": "4967",
+    "name": "十銓",
+    "rank": 9,
+    "score": 75.0,
+    "close": 279.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 64.2212,
+     "growth": 96.3792,
+     "value": 53.1969,
+     "momentum": 86.7615,
+     "trend": 80.0
+    },
+    "liq": "B",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5515",
+    "name": "建國",
+    "rank": 10,
+    "score": 74.0,
+    "close": 49.5,
+    "industry": "建材營造",
+    "factors": {
+     "quality": 73.9251,
+     "growth": 53.3501,
+     "value": 89.2911,
+     "momentum": 83.9168,
+     "trend": 80.0
+    },
+    "liq": "E",
+    "rec": "excluded"
+   },
+   {
+    "stock_id": "6532",
+    "name": "瑞耘",
+    "rank": 11,
+    "score": 74.0,
+    "close": 119.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 82.4201,
+     "growth": 77.7383,
+     "value": 44.2737,
+     "momentum": 73.3042,
+     "trend": 100.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3081",
+    "name": "聯亞",
+    "rank": 12,
+    "score": 73.5,
+    "close": 2580.0,
+    "industry": "通信網路業",
+    "factors": {
+     "quality": 89.2962,
+     "growth": 90.9406,
+     "value": 15.0821,
+     "momentum": 99.5624,
+     "trend": 60.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6531",
+    "name": "愛普*",
+    "rank": 13,
+    "score": 73.2,
+    "close": 843.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 88.7137,
+     "growth": 88.4771,
+     "value": 28.3018,
+     "momentum": 85.558,
+     "trend": 60.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "8299",
+    "name": "群聯",
+    "rank": 14,
+    "score": 73.2,
+    "close": 2040.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 67.6692,
+     "growth": 97.9037,
+     "value": 46.7362,
+     "momentum": 87.4179,
+     "trend": 60.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2855",
+    "name": "統一證",
+    "rank": 15,
+    "score": 73.1,
+    "close": 55.9,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 59.1912,
+     "growth": 92.9177,
+     "value": 55.8824,
+     "momentum": 86.5427,
+     "trend": 80.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5864",
+    "name": "致和證",
+    "rank": 16,
+    "score": 73.0,
+    "close": 37.0,
+    "industry": "金融業",
+    "factors": {
+     "quality": 68.6275,
+     "growth": 66.642,
+     "value": 81.6176,
+     "momentum": 89.4967,
+     "trend": 60.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6419",
+    "name": "京晨科",
+    "rank": 17,
+    "score": 72.7,
+    "close": 146.5,
+    "industry": "光電業",
+    "factors": {
+     "quality": 59.4937,
+     "growth": 92.3327,
+     "value": 51.1358,
+     "momentum": 90.5908,
+     "trend": 80.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   },
+   {
+    "stock_id": "5274",
+    "name": "信驊",
+    "rank": 18,
+    "score": 72.5,
+    "close": 17295.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 88.1358,
+     "growth": 80.1704,
+     "value": 17.7218,
+     "momentum": 96.2801,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3498",
+    "name": "陽程",
+    "rank": 19,
+    "score": 72.4,
+    "close": 263.5,
+    "industry": "其他電子類",
+    "factors": {
+     "quality": 57.8521,
+     "growth": 93.0195,
+     "value": 36.3278,
+     "momentum": 96.8271,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3356",
+    "name": "奇偶",
+    "rank": 20,
+    "score": 72.3,
+    "close": 71.3,
+    "industry": "光電業",
+    "factors": {
+     "quality": 66.1578,
+     "growth": 69.7491,
+     "value": 79.2769,
+     "momentum": 61.2691,
+     "trend": 100.0
+    },
+    "liq": "D",
+    "rec": "capped"
+   }
+  ],
+  "aggressive": [
+   {
+    "stock_id": "2451",
+    "name": "創見",
+    "rank": 1,
+    "score": 90.2,
+    "close": 293.5,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 95.1857,
+     "growth": 97.7576,
+     "value": 75.1424,
+     "momentum": 86.4333,
+     "trend": 80.0
+    },
+    "liq": "B",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3498",
+    "name": "陽程",
+    "rank": 2,
+    "score": 87.1,
+    "close": 263.5,
+    "industry": "其他電子類",
+    "factors": {
+     "quality": 57.8521,
+     "growth": 93.0195,
+     "value": 36.3278,
+     "momentum": 96.8271,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3167",
+    "name": "大量",
+    "rank": 3,
+    "score": 86.3,
+    "close": 1030.0,
+    "industry": "電機機械",
+    "factors": {
+     "quality": 66.3828,
+     "growth": 88.1756,
+     "value": 19.9679,
+     "momentum": 98.2495,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2305",
+    "name": "全友",
+    "rank": 4,
+    "score": 84.9,
+    "close": 54.0,
+    "industry": "電腦及週邊設備業",
+    "factors": {
+     "quality": 51.4944,
+     "growth": 97.218,
+     "value": 31.0875,
+     "momentum": 98.6871,
+     "trend": 80.0
+    },
+    "liq": "B",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "4967",
+    "name": "十銓",
+    "rank": 5,
+    "score": 84.1,
+    "close": 279.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 64.2212,
+     "growth": 96.3792,
+     "value": 53.1969,
+     "momentum": 86.7615,
+     "trend": 80.0
+    },
+    "liq": "B",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5274",
+    "name": "信驊",
+    "rank": 6,
+    "score": 83.1,
+    "close": 17295.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 88.1358,
+     "growth": 80.1704,
+     "value": 17.7218,
+     "momentum": 96.2801,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6672",
+    "name": "騰輝電子-KY",
+    "rank": 7,
+    "score": 82.9,
+    "close": 562.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 59.0977,
+     "growth": 86.0767,
+     "value": 17.3845,
+     "momentum": 93.4354,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3443",
+    "name": "創意",
+    "rank": 8,
+    "score": 82.5,
+    "close": 8170.0,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 66.7024,
+     "growth": 77.3113,
+     "value": 14.3777,
+     "momentum": 98.9059,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2855",
+    "name": "統一證",
+    "rank": 9,
+    "score": 82.2,
+    "close": 55.9,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 59.1912,
+     "growth": 92.9177,
+     "value": 55.8824,
+     "momentum": 86.5427,
+     "trend": 80.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "8299",
+    "name": "群聯",
+    "rank": 10,
+    "score": 82.0,
+    "close": 2040.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 67.6692,
+     "growth": 97.9037,
+     "value": 46.7362,
+     "momentum": 87.4179,
+     "trend": 60.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "1303",
+    "name": "南亞",
+    "rank": 11,
+    "score": 81.9,
+    "close": 319.0,
+    "industry": "塑膠工業",
+    "factors": {
+     "quality": 47.6406,
+     "growth": 82.5029,
+     "value": 24.2944,
+     "momentum": 98.7965,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3037",
+    "name": "欣興",
+    "rank": 12,
+    "score": 81.5,
+    "close": 1100.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 51.4166,
+     "growth": 88.2164,
+     "value": 19.2279,
+     "momentum": 99.7812,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6834",
+    "name": "天二科技",
+    "rank": 13,
+    "score": 81.1,
+    "close": 125.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 48.4899,
+     "growth": 92.0255,
+     "value": 22.4403,
+     "momentum": 95.0766,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "8046",
+    "name": "南電",
+    "rank": 14,
+    "score": 80.8,
+    "close": 1300.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 64.7537,
+     "growth": 82.9078,
+     "value": 16.6386,
+     "momentum": 97.4836,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6213",
+    "name": "聯茂",
+    "rank": 15,
+    "score": 80.7,
+    "close": 778.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 39.5487,
+     "growth": 83.9314,
+     "value": 16.2878,
+     "momentum": 98.4683,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6173",
+    "name": "信昌電",
+    "rank": 16,
+    "score": 80.6,
+    "close": 289.5,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 67.8041,
+     "growth": 77.7928,
+     "value": 31.6701,
+     "momentum": 98.5777,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6187",
+    "name": "萬潤",
+    "rank": 17,
+    "score": 80.4,
+    "close": 1345.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 83.4034,
+     "growth": 76.9428,
+     "value": 21.3065,
+     "momentum": 92.9978,
+     "trend": 80.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 18,
+    "score": 79.4,
+    "close": 35.2,
+    "industry": "航運業",
+    "factors": {
+     "quality": 80.0922,
+     "growth": 83.7457,
+     "value": 92.939,
+     "momentum": 71.5536,
+     "trend": 80.0
+    },
+    "liq": "C",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "1815",
+    "name": "富喬",
+    "rank": 19,
+    "score": 79.2,
+    "close": 144.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 68.6406,
+     "growth": 85.8338,
+     "value": 21.9997,
+     "momentum": 75.8206,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3189",
+    "name": "景碩",
+    "rank": 20,
+    "score": 79.0,
+    "close": 1035.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 47.1482,
+     "growth": 74.682,
+     "value": 17.0698,
+     "momentum": 99.6718,
+     "trend": 100.0
+    },
+    "liq": "A",
+    "rec": "normal"
+   }
+  ]
+ },
+ "signals": [
+  {
+   "stock_id": "1342",
+   "name": "八貫",
+   "close": 99.2,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.9
+  },
+  {
+   "stock_id": "1560",
+   "name": "中砂",
+   "close": 914.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 63.3
+  },
+  {
+   "stock_id": "1597",
+   "name": "直得",
+   "close": 149.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 58.8
+  },
+  {
+   "stock_id": "1708",
+   "name": "東鹼",
+   "close": 50.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 66.6
+  },
+  {
+   "stock_id": "2030",
+   "name": "彰源",
+   "close": 29.25,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 59.2
+  },
+  {
+   "stock_id": "2049",
+   "name": "上銀",
+   "close": 343.5,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 58.5
+  },
+  {
+   "stock_id": "2069",
+   "name": "運錩",
+   "close": 28.25,
+   "triggers": [
+    "sig_ma_cross",
+    "sig_macd_cross"
+   ],
+   "score": 57.3
+  },
+  {
+   "stock_id": "2303",
+   "name": "聯電",
+   "close": 128.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 69.6
+  },
+  {
+   "stock_id": "2327",
+   "name": "國巨*",
+   "close": 547.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.4
+  },
+  {
+   "stock_id": "2330",
+   "name": "台積電",
+   "close": 2425.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 70.5
+  },
+  {
+   "stock_id": "2351",
+   "name": "順德",
+   "close": 205.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.1
+  },
+  {
+   "stock_id": "2360",
+   "name": "致茂",
+   "close": 2035.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 70.9
+  },
+  {
+   "stock_id": "2368",
+   "name": "金像電",
+   "close": 1185.0,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 67.0
+  },
+  {
+   "stock_id": "2395",
+   "name": "研華",
+   "close": 689.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 67.1
+  },
+  {
+   "stock_id": "2404",
+   "name": "漢唐",
+   "close": 1100.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 62.6
+  },
+  {
+   "stock_id": "2420",
+   "name": "新巨",
+   "close": 53.6,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 59.2
+  },
+  {
+   "stock_id": "2426",
+   "name": "鼎元",
+   "close": 91.2,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.9
+  },
+  {
+   "stock_id": "2451",
+   "name": "創見",
+   "close": 293.5,
+   "triggers": [
+    "sig_macd_cross",
+    "sig_breakout"
+   ],
+   "score": 89.0
+  },
+  {
+   "stock_id": "2455",
+   "name": "全新",
+   "close": 512.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 67.7
+  },
+  {
+   "stock_id": "2464",
+   "name": "盟立",
+   "close": 179.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.0
+  },
+  {
+   "stock_id": "2491",
+   "name": "吉祥全",
+   "close": 40.4,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 67.7
+  },
+  {
+   "stock_id": "2535",
+   "name": "達欣工",
+   "close": 93.0,
+   "triggers": [
+    "sig_ma_cross",
+    "sig_macd_cross"
+   ],
+   "score": 64.5
+  },
+  {
+   "stock_id": "2612",
+   "name": "中航",
+   "close": 62.0,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 55.6
+  },
+  {
+   "stock_id": "2615",
+   "name": "萬海",
+   "close": 118.5,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 79.8
+  },
+  {
+   "stock_id": "3017",
+   "name": "奇鋐",
+   "close": 3215.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 69.5
+  },
+  {
+   "stock_id": "3022",
+   "name": "威強電",
+   "close": 91.4,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 60.7
+  },
+  {
+   "stock_id": "3028",
+   "name": "增你強",
+   "close": 60.8,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.2
+  },
+  {
+   "stock_id": "3036",
+   "name": "文曄",
+   "close": 217.0,
+   "triggers": [
+    "sig_ma_cross",
+    "sig_macd_cross"
+   ],
+   "score": 63.4
+  },
+  {
+   "stock_id": "3037",
+   "name": "欣興",
+   "close": 1100.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.3
+  },
+  {
+   "stock_id": "3042",
+   "name": "晶技",
+   "close": 178.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.6
+  },
+  {
+   "stock_id": "3081",
+   "name": "聯亞",
+   "close": 2580.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 73.5
+  },
+  {
+   "stock_id": "3088",
+   "name": "艾訊",
+   "close": 122.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 61.1
+  },
+  {
+   "stock_id": "3141",
+   "name": "晶宏",
+   "close": 74.7,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.5
+  },
+  {
+   "stock_id": "3189",
+   "name": "景碩",
+   "close": 1035.0,
+   "triggers": [
+    "sig_kd_cross",
+    "sig_pullback"
+   ],
+   "score": 61.2
+  },
+  {
+   "stock_id": "3219",
+   "name": "倚強科",
+   "close": 107.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 63.4
+  },
+  {
+   "stock_id": "3260",
+   "name": "威剛",
+   "close": 363.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 69.6
+  },
+  {
+   "stock_id": "3312",
+   "name": "弘憶股",
+   "close": 50.9,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 55.4
+  },
+  {
+   "stock_id": "3324",
+   "name": "雙鴻",
+   "close": 1435.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 59.7
+  },
+  {
+   "stock_id": "3443",
+   "name": "創意",
+   "close": 8170.0,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 67.0
+  },
+  {
+   "stock_id": "3450",
+   "name": "聯鈞",
+   "close": 441.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 58.6
+  },
+  {
+   "stock_id": "3490",
+   "name": "單井",
+   "close": 42.05,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 59.9
+  },
+  {
+   "stock_id": "3491",
+   "name": "昇達科",
+   "close": 1340.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.0
+  },
+  {
+   "stock_id": "3529",
+   "name": "力旺",
+   "close": 2655.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.3
+  },
+  {
+   "stock_id": "3533",
+   "name": "嘉澤",
+   "close": 1955.0,
+   "triggers": [
+    "sig_ma_cross",
+    "sig_macd_cross"
+   ],
+   "score": 56.8
+  },
+  {
+   "stock_id": "3537",
+   "name": "堡達",
+   "close": 56.2,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 63.2
+  },
+  {
+   "stock_id": "3556",
+   "name": "禾瑞亞",
+   "close": 62.0,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 68.9
+  },
+  {
+   "stock_id": "3563",
+   "name": "牧德",
+   "close": 687.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 59.1
+  },
+  {
+   "stock_id": "3617",
+   "name": "碩天",
+   "close": 253.5,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 68.7
+  },
+  {
+   "stock_id": "3665",
+   "name": "貿聯-KY",
+   "close": 1810.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.7
+  },
+  {
+   "stock_id": "3675",
+   "name": "德微",
+   "close": 286.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.3
+  },
+  {
+   "stock_id": "3680",
+   "name": "家登",
+   "close": 532.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.8
+  },
+  {
+   "stock_id": "4576",
+   "name": "大銀微系統",
+   "close": 227.5,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 61.1
+  },
+  {
+   "stock_id": "4736",
+   "name": "泰博",
+   "close": 132.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 67.8
+  },
+  {
+   "stock_id": "4763",
+   "name": "材料*-KY",
+   "close": 46.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 56.8
+  },
+  {
+   "stock_id": "4771",
+   "name": "望隼",
+   "close": 207.5,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 63.4
+  },
+  {
+   "stock_id": "4908",
+   "name": "前鼎",
+   "close": 206.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 59.2
+  },
+  {
+   "stock_id": "4916",
+   "name": "事欣科",
+   "close": 103.5,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 67.4
+  },
+  {
+   "stock_id": "4949",
+   "name": "有成精密",
+   "close": 81.1,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 62.8
+  },
+  {
+   "stock_id": "4951",
+   "name": "精拓科",
+   "close": 86.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.2
+  },
+  {
+   "stock_id": "4961",
+   "name": "天鈺",
+   "close": 192.0,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 59.8
+  },
+  {
+   "stock_id": "4967",
+   "name": "十銓",
+   "close": 279.5,
+   "triggers": [
+    "sig_macd_cross",
+    "sig_breakout"
+   ],
+   "score": 75.0
+  },
+  {
+   "stock_id": "4979",
+   "name": "華星光",
+   "close": 488.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 65.7
+  },
+  {
+   "stock_id": "4991",
+   "name": "環宇-KY",
+   "close": 441.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.4
+  },
+  {
+   "stock_id": "5243",
+   "name": "乙盛-KY",
+   "close": 95.3,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 61.2
+  },
+  {
+   "stock_id": "5269",
+   "name": "祥碩",
+   "close": 1505.0,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 56.8
+  },
+  {
+   "stock_id": "5274",
+   "name": "信驊",
+   "close": 17295.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 72.5
+  },
+  {
+   "stock_id": "5285",
+   "name": "界霖",
+   "close": 89.7,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.0
+  },
+  {
+   "stock_id": "5289",
+   "name": "宜鼎",
+   "close": 1160.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 71.9
+  },
+  {
+   "stock_id": "5292",
+   "name": "華懋",
+   "close": 244.5,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 57.1
+  },
+  {
+   "stock_id": "5386",
+   "name": "青雲",
+   "close": 250.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 76.8
+  },
+  {
+   "stock_id": "5471",
+   "name": "松翰",
+   "close": 49.3,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.1
+  },
+  {
+   "stock_id": "5508",
+   "name": "永信建",
+   "close": 52.7,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.6
+  },
+  {
+   "stock_id": "5609",
+   "name": "中菲行",
+   "close": 79.1,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 56.5
+  },
+  {
+   "stock_id": "6016",
+   "name": "康和證",
+   "close": 22.4,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 71.8
+  },
+  {
+   "stock_id": "6139",
+   "name": "亞翔",
+   "close": 673.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.8
+  },
+  {
+   "stock_id": "6166",
+   "name": "凌華",
+   "close": 113.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 58.8
+  },
+  {
+   "stock_id": "6177",
+   "name": "達麗",
+   "close": 45.15,
+   "triggers": [
+    "sig_kd_cross",
+    "sig_macd_cross"
+   ],
+   "score": 70.0
+  },
+  {
+   "stock_id": "6206",
+   "name": "飛捷",
+   "close": 133.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 65.1
+  },
+  {
+   "stock_id": "6227",
+   "name": "茂綸",
+   "close": 125.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 63.9
+  },
+  {
+   "stock_id": "6291",
+   "name": "沛亨",
+   "close": 385.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 66.1
+  },
+  {
+   "stock_id": "6491",
+   "name": "晶碩",
+   "close": 430.5,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 65.0
+  },
+  {
+   "stock_id": "6515",
+   "name": "穎崴",
+   "close": 4935.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.2
+  },
+  {
+   "stock_id": "6526",
+   "name": "達發",
+   "close": 803.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.4
+  },
+  {
+   "stock_id": "6530",
+   "name": "創威",
+   "close": 90.2,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 57.6
+  },
+  {
+   "stock_id": "6548",
+   "name": "長科*",
+   "close": 77.9,
+   "triggers": [
+    "sig_pullback"
+   ],
+   "score": 62.6
+  },
+  {
+   "stock_id": "6584",
+   "name": "南俊國際",
+   "close": 441.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.6
+  },
+  {
+   "stock_id": "6585",
+   "name": "鼎基",
+   "close": 94.7,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.6
+  },
+  {
+   "stock_id": "6605",
+   "name": "帝寶",
+   "close": 136.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 61.5
+  },
+  {
+   "stock_id": "6642",
+   "name": "富致",
+   "close": 72.3,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.7
+  },
+  {
+   "stock_id": "6651",
+   "name": "全宇昕",
+   "close": 140.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 75.8
+  },
+  {
+   "stock_id": "6683",
+   "name": "雍智科技",
+   "close": 1215.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 65.9
+  },
+  {
+   "stock_id": "6690",
+   "name": "安碁資訊",
+   "close": 188.0,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 56.7
+  },
+  {
+   "stock_id": "6693",
+   "name": "廣閎科",
+   "close": 169.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 66.1
+  },
+  {
+   "stock_id": "6739",
+   "name": "竹陞科技",
+   "close": 908.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.8
+  },
+  {
+   "stock_id": "6829",
+   "name": "千附精密",
+   "close": 200.0,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 56.9
+  },
+  {
+   "stock_id": "6861",
+   "name": "睿生光電",
+   "close": 245.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 62.8
+  },
+  {
+   "stock_id": "6922",
+   "name": "宸曜",
+   "close": 196.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.1
+  },
+  {
+   "stock_id": "6944",
+   "name": "兆聯實業",
+   "close": 780.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 66.7
+  },
+  {
+   "stock_id": "6953",
+   "name": "家碩",
+   "close": 233.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 56.1
+  },
+  {
+   "stock_id": "7610",
+   "name": "聯友金屬-創",
+   "close": 1400.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 68.1
+  },
+  {
+   "stock_id": "7712",
+   "name": "博盛半導體",
+   "close": 151.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 60.8
+  },
+  {
+   "stock_id": "7728",
+   "name": "光焱科技",
+   "close": 539.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 55.7
+  },
+  {
+   "stock_id": "7734",
+   "name": "印能科技",
+   "close": 2375.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.7
+  },
+  {
+   "stock_id": "7765",
+   "name": "中華資安",
+   "close": 240.0,
+   "triggers": [
+    "sig_ma_cross",
+    "sig_macd_cross"
+   ],
+   "score": 55.5
+  },
+  {
+   "stock_id": "8091",
+   "name": "翔名",
+   "close": 205.5,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 62.6
+  },
+  {
+   "stock_id": "8109",
+   "name": "博大",
+   "close": 132.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 67.0
+  },
+  {
+   "stock_id": "8112",
+   "name": "至上",
+   "close": 84.8,
+   "triggers": [
+    "sig_ma_cross"
+   ],
+   "score": 61.7
+  },
+  {
+   "stock_id": "8271",
+   "name": "宇瞻",
+   "close": 191.5,
+   "triggers": [
+    "sig_kd_cross",
+    "sig_macd_cross"
+   ],
+   "score": 70.2
+  },
+  {
+   "stock_id": "8358",
+   "name": "金居",
+   "close": 460.0,
+   "triggers": [
+    "sig_kd_cross"
+   ],
+   "score": 64.0
+  },
+  {
+   "stock_id": "8464",
+   "name": "億豐",
+   "close": 374.5,
+   "triggers": [
+    "sig_macd_cross"
+   ],
+   "score": 57.9
+  }
+ ],
+ "universe_ids": [
+  "1102",
+  "1104",
+  "1210",
+  "1215",
+  "1216",
+  "1227",
+  "1229",
+  "1231",
+  "1232",
+  "1303",
+  "1307",
+  "1319",
+  "1342",
+  "1402",
+  "1416",
+  "1434",
+  "1440",
+  "1459",
+  "1476",
+  "1477",
+  "1503",
+  "1504",
+  "1513",
+  "1514",
+  "1519",
+  "1537",
+  "1558",
+  "1560",
+  "1563",
+  "1565",
+  "1582",
+  "1590",
+  "1597",
+  "1605",
+  "1608",
+  "1609",
+  "1612",
+  "1615",
+  "1618",
+  "1707",
+  "1708",
+  "1709",
+  "1712",
+  "1713",
+  "1714",
+  "1717",
+  "1720",
+  "1722",
+  "1723",
+  "1732",
+  "1736",
+  "1773",
+  "1785",
+  "1795",
+  "1809",
+  "1810",
+  "1815",
+  "1904",
+  "1907",
+  "2006",
+  "2010",
+  "2015",
+  "2020",
+  "2027",
+  "2030",
+  "2031",
+  "2033",
+  "2049",
+  "2059",
+  "2069",
+  "2101",
+  "2103",
+  "2105",
+  "2106",
+  "2107",
+  "2108",
+  "2201",
+  "2204",
+  "2206",
+  "2207",
+  "2211",
+  "2221",
+  "2228",
+  "2233",
+  "2243",
+  "2247",
+  "2301",
+  "2302",
+  "2303",
+  "2305",
+  "2308",
+  "2312",
+  "2313",
+  "2316",
+  "2317",
+  "2323",
+  "2324",
+  "2327",
+  "2328",
+  "2329",
+  "2330",
+  "2331",
+  "2345",
+  "2347",
+  "2348",
+  "2351",
+  "2352",
+  "2353",
+  "2354",
+  "2355",
+  "2356",
+  "2357",
+  "2359",
+  "2360",
+  "2362",
+  "2363",
+  "2365",
+  "2368",
+  "2374",
+  "2375",
+  "2376",
+  "2377",
+  "2379",
+  "2382",
+  "2383",
+  "2385",
+  "2393",
+  "2395",
+  "2397",
+  "2401",
+  "2402",
+  "2404",
+  "2409",
+  "2412",
+  "2417",
+  "2420",
+  "2421",
+  "2426",
+  "2427",
+  "2428",
+  "2436",
+  "2439",
+  "2441",
+  "2442",
+  "2449",
+  "2451",
+  "2453",
+  "2454",
+  "2455",
+  "2458",
+  "2464",
+  "2465",
+  "2467",
+  "2468",
+  "2472",
+  "2474",
+  "2476",
+  "2478",
+  "2480",
+  "2481",
+  "2483",
+  "2484",
+  "2486",
+  "2489",
+  "2491",
+  "2492",
+  "2493",
+  "2495",
+  "2501",
+  "2504",
+  "2515",
+  "2520",
+  "2528",
+  "2535",
+  "2539",
+  "2542",
+  "2543",
+  "2545",
+  "2546",
+  "2547",
+  "2548",
+  "2597",
+  "2603",
+  "2605",
+  "2606",
+  "2607",
+  "2609",
+  "2610",
+  "2611",
+  "2612",
+  "2614",
+  "2615",
+  "2617",
+  "2618",
+  "2630",
+  "2633",
+  "2634",
+  "2636",
+  "2637",
+  "2641",
+  "2645",
+  "2707",
+  "2727",
+  "2731",
+  "2753",
+  "2801",
+  "2812",
+  "2820",
+  "2834",
+  "2838",
+  "2845",
+  "2850",
+  "2851",
+  "2855",
+  "2880",
+  "2881",
+  "2882",
+  "2884",
+  "2885",
+  "2886",
+  "2887",
+  "2889",
+  "2890",
+  "2891",
+  "2892",
+  "2897",
+  "2903",
+  "2912",
+  "2915",
+  "3003",
+  "3004",
+  "3005",
+  "3008",
+  "3010",
+  "3013",
+  "3014",
+  "3015",
+  "3017",
+  "3019",
+  "3021",
+  "3022",
+  "3023",
+  "3026",
+  "3028",
+  "3029",
+  "3030",
+  "3031",
+  "3034",
+  "3035",
+  "3036",
+  "3037",
+  "3042",
+  "3044",
+  "3045",
+  "3048",
+  "3051",
+  "3059",
+  "3078",
+  "3081",
+  "3088",
+  "3090",
+  "3093",
+  "3094",
+  "3114",
+  "3131",
+  "3135",
+  "3138",
+  "3141",
+  "3147",
+  "3162",
+  "3163",
+  "3167",
+  "3169",
+  "3189",
+  "3209",
+  "3211",
+  "3213",
+  "3217",
+  "3218",
+  "3219",
+  "3221",
+  "3227",
+  "3231",
+  "3236",
+  "3260",
+  "3264",
+  "3265",
+  "3287",
+  "3289",
+  "3290",
+  "3293",
+  "3297",
+  "3305",
+  "3311",
+  "3312",
+  "3317",
+  "3324",
+  "3338",
+  "3356",
+  "3357",
+  "3374",
+  "3376",
+  "3388",
+  "3402",
+  "3406",
+  "3413",
+  "3416",
+  "3430",
+  "3441",
+  "3443",
+  "3444",
+  "3450",
+  "3455",
+  "3467",
+  "3479",
+  "3483",
+  "3490",
+  "3491",
+  "3498",
+  "3515",
+  "3518",
+  "3526",
+  "3528",
+  "3529",
+  "3532",
+  "3533",
+  "3537",
+  "3540",
+  "3548",
+  "3551",
+  "3555",
+  "3556",
+  "3558",
+  "3563",
+  "3564",
+  "3577",
+  "3580",
+  "3581",
+  "3583",
+  "3587",
+  "3588",
+  "3592",
+  "3594",
+  "3596",
+  "3597",
+  "3605",
+  "3615",
+  "3617",
+  "3624",
+  "3645",
+  "3653",
+  "3661",
+  "3663",
+  "3665",
+  "3673",
+  "3675",
+  "3680",
+  "3689",
+  "3693",
+  "3694",
+  "3702",
+  "3703",
+  "3704",
+  "3705",
+  "3706",
+  "3708",
+  "3709",
+  "3711",
+  "4104",
+  "4105",
+  "4114",
+  "4123",
+  "4129",
+  "4137",
+  "4164",
+  "4167",
+  "4303",
+  "4306",
+  "4441",
+  "4532",
+  "4533",
+  "4536",
+  "4541",
+  "4542",
+  "4551",
+  "4556",
+  "4566",
+  "4571",
+  "4576",
+  "4585",
+  "4707",
+  "4720",
+  "4721",
+  "4722",
+  "4736",
+  "4739",
+  "4746",
+  "4749",
+  "4755",
+  "4760",
+  "4763",
+  "4764",
+  "4766",
+  "4770",
+  "4771",
+  "4772",
+  "4903",
+  "4904",
+  "4906",
+  "4908",
+  "4912",
+  "4915",
+  "4916",
+  "4938",
+  "4949",
+  "4951",
+  "4953",
+  "4958",
+  "4961",
+  "4966",
+  "4967",
+  "4968",
+  "4971",
+  "4973",
+  "4977",
+  "4979",
+  "4991",
+  "5009",
+  "5013",
+  "5209",
+  "5210",
+  "5225",
+  "5234",
+  "5236",
+  "5243",
+  "5258",
+  "5269",
+  "5274",
+  "5284",
+  "5285",
+  "5288",
+  "5289",
+  "5291",
+  "5292",
+  "5299",
+  "5306",
+  "5309",
+  "5314",
+  "5328",
+  "5347",
+  "5381",
+  "5386",
+  "5388",
+  "5392",
+  "5425",
+  "5426",
+  "5432",
+  "5434",
+  "5439",
+  "5443",
+  "5452",
+  "5457",
+  "5465",
+  "5469",
+  "5471",
+  "5474",
+  "5483",
+  "5498",
+  "5508",
+  "5515",
+  "5521",
+  "5534",
+  "5536",
+  "5607",
+  "5608",
+  "5609",
+  "5864",
+  "5871",
+  "5876",
+  "5880",
+  "5904",
+  "6005",
+  "6016",
+  "6021",
+  "6023",
+  "6024",
+  "6104",
+  "6112",
+  "6117",
+  "6121",
+  "6122",
+  "6126",
+  "6133",
+  "6136",
+  "6138",
+  "6139",
+  "6143",
+  "6146",
+  "6147",
+  "6148",
+  "6150",
+  "6155",
+  "6156",
+  "6165",
+  "6166",
+  "6168",
+  "6170",
+  "6173",
+  "6174",
+  "6175",
+  "6176",
+  "6177",
+  "6179",
+  "6182",
+  "6187",
+  "6188",
+  "6189",
+  "6190",
+  "6191",
+  "6192",
+  "6196",
+  "6197",
+  "6199",
+  "6202",
+  "6204",
+  "6205",
+  "6206",
+  "6207",
+  "6208",
+  "6209",
+  "6213",
+  "6214",
+  "6215",
+  "6221",
+  "6223",
+  "6224",
+  "6227",
+  "6231",
+  "6235",
+  "6239",
+  "6244",
+  "6245",
+  "6257",
+  "6261",
+  "6263",
+  "6266",
+  "6271",
+  "6274",
+  "6277",
+  "6278",
+  "6279",
+  "6282",
+  "6284",
+  "6285",
+  "6290",
+  "6291",
+  "6292",
+  "6409",
+  "6411",
+  "6412",
+  "6414",
+  "6415",
+  "6416",
+  "6418",
+  "6419",
+  "6432",
+  "6438",
+  "6442",
+  "6446",
+  "6449",
+  "6469",
+  "6472",
+  "6477",
+  "6488",
+  "6491",
+  "6498",
+  "6504",
+  "6509",
+  "6510",
+  "6515",
+  "6517",
+  "6525",
+  "6526",
+  "6530",
+  "6531",
+  "6532",
+  "6538",
+  "6546",
+  "6548",
+  "6561",
+  "6568",
+  "6579",
+  "6584",
+  "6585",
+  "6592",
+  "6603",
+  "6605",
+  "6613",
+  "6640",
+  "6642",
+  "6643",
+  "6651",
+  "6658",
+  "6664",
+  "6667",
+  "6669",
+  "6670",
+  "6672",
+  "6679",
+  "6683",
+  "6689",
+  "6690",
+  "6691",
+  "6693",
+  "6697",
+  "6708",
+  "6712",
+  "6715",
+  "6716",
+  "6719",
+  "6727",
+  "6732",
+  "6739",
+  "6741",
+  "6743",
+  "6751",
+  "6753",
+  "6756",
+  "6757",
+  "6761",
+  "6768",
+  "6781",
+  "6782",
+  "6788",
+  "6789",
+  "6799",
+  "6803",
+  "6805",
+  "6811",
+  "6829",
+  "6830",
+  "6834",
+  "6840",
+  "6841",
+  "6861",
+  "6862",
+  "6870",
+  "6873",
+  "6890",
+  "6894",
+  "6902",
+  "6913",
+  "6922",
+  "6933",
+  "6937",
+  "6944",
+  "6953",
+  "6957",
+  "6962",
+  "6994",
+  "7556",
+  "7610",
+  "7631",
+  "7703",
+  "7704",
+  "7709",
+  "7712",
+  "7714",
+  "7722",
+  "7728",
+  "7734",
+  "7740",
+  "7749",
+  "7750",
+  "7751",
+  "7765",
+  "8016",
+  "8021",
+  "8033",
+  "8039",
+  "8042",
+  "8046",
+  "8050",
+  "8064",
+  "8069",
+  "8070",
+  "8074",
+  "8076",
+  "8081",
+  "8086",
+  "8088",
+  "8091",
+  "8096",
+  "8099",
+  "8103",
+  "8109",
+  "8111",
+  "8112",
+  "8114",
+  "8147",
+  "8150",
+  "8163",
+  "8182",
+  "8210",
+  "8213",
+  "8240",
+  "8255",
+  "8261",
+  "8271",
+  "8289",
+  "8299",
+  "8341",
+  "8358",
+  "8383",
+  "8390",
+  "8415",
+  "8436",
+  "8438",
+  "8454",
+  "8462",
+  "8464",
+  "8473",
+  "8478",
+  "8926",
+  "8932",
+  "8936",
+  "8996",
+  "9802",
+  "9904",
+  "9907",
+  "9910",
+  "9911",
+  "9914",
+  "9917",
+  "9921",
+  "9925",
+  "9927",
+  "9933",
+  "9938",
+  "9939",
+  "9941",
+  "9945",
+  "9958"
+ ],
+ "rec_picks": {
+  "stable": [
+   {
+    "stock_id": "2851",
+    "name": "中再保",
+    "rank": 1,
+    "raw_rank": 1,
+    "score": 84.1,
+    "liq": "C",
+    "close": 49.05,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 96.875,
+     "growth": 51.9381,
+     "value": 67.6471,
+     "momentum": 82.3851,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 2,
+    "raw_rank": 2,
+    "score": 82.8,
+    "liq": "C",
+    "close": 35.2,
+    "industry": "航運業",
+    "factors": {
+     "quality": 80.0922,
+     "growth": 83.7457,
+     "value": 92.939,
+     "momentum": 71.5536,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2615",
+    "name": "萬海",
+    "rank": 3,
+    "raw_rank": 3,
+    "score": 81.2,
+    "liq": "A",
+    "close": 118.5,
+    "industry": "航運業",
+    "factors": {
+     "quality": 72.2516,
+     "growth": 79.2405,
+     "value": 90.2376,
+     "momentum": 68.2713,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2637",
+    "name": "慧洋-KY",
+    "rank": 4,
+    "raw_rank": 4,
+    "score": 78.4,
+    "liq": "C",
+    "close": 100.0,
+    "industry": "航運業",
+    "factors": {
+     "quality": 69.0087,
+     "growth": 70.5859,
+     "value": 85.3633,
+     "momentum": 73.523,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3617",
+    "name": "碩天",
+    "rank": 5,
+    "raw_rank": 7,
+    "score": 74.1,
+    "liq": "C",
+    "close": 253.5,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 76.5793,
+     "growth": 60.8714,
+     "value": 74.2476,
+     "momentum": 37.965,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6532",
+    "name": "瑞耘",
+    "rank": 6,
+    "raw_rank": 8,
+    "score": 74.1,
+    "liq": "C",
+    "close": 119.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 82.4201,
+     "growth": 77.7383,
+     "value": 44.2737,
+     "momentum": 73.3042,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2006",
+    "name": "東和鋼鐵",
+    "rank": 7,
+    "raw_rank": 9,
+    "score": 72.8,
+    "liq": "C",
+    "close": 93.6,
+    "industry": "鋼鐵工業",
+    "factors": {
+     "quality": 69.5346,
+     "growth": 41.6012,
+     "value": 77.9568,
+     "momentum": 62.9103,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2027",
+    "name": "大成鋼",
+    "rank": 8,
+    "raw_rank": 10,
+    "score": 71.8,
+    "liq": "B",
+    "close": 51.0,
+    "industry": "鋼鐵工業",
+    "factors": {
+     "quality": 61.116,
+     "growth": 74.6693,
+     "value": 78.8777,
+     "momentum": 51.86,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2603",
+    "name": "長榮",
+    "rank": 9,
+    "raw_rank": 11,
+    "score": 71.8,
+    "liq": "A",
+    "close": 263.0,
+    "industry": "航運業",
+    "factors": {
+     "quality": 54.5065,
+     "growth": 62.9939,
+     "value": 89.8744,
+     "momentum": 61.8162,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2330",
+    "name": "台積電",
+    "rank": 10,
+    "raw_rank": 12,
+    "score": 71.7,
+    "liq": "A",
+    "close": 2425.0,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 92.8173,
+     "growth": 67.5974,
+     "value": 34.4166,
+     "momentum": 72.5383,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3356",
+    "name": "奇偶",
+    "rank": 11,
+    "raw_rank": 6,
+    "score": 74.4,
+    "liq": "D",
+    "close": 71.3,
+    "industry": "光電業",
+    "factors": {
+     "quality": 66.1578,
+     "growth": 69.7491,
+     "value": 79.2769,
+     "momentum": 61.2691,
+     "trend": 100.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6782",
+    "name": "視陽",
+    "rank": 12,
+    "raw_rank": 13,
+    "score": 71.2,
+    "liq": "C",
+    "close": 268.5,
+    "industry": "生技醫療業",
+    "factors": {
+     "quality": 85.541,
+     "growth": 46.4377,
+     "value": 47.5305,
+     "momentum": 54.5952,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "4105",
+    "name": "東洋",
+    "rank": 13,
+    "raw_rank": 14,
+    "score": 70.4,
+    "liq": "D",
+    "close": 80.1,
+    "industry": "生技醫療業",
+    "factors": {
+     "quality": 84.116,
+     "growth": 33.6978,
+     "value": 72.7106,
+     "momentum": 31.8381,
+     "trend": 80.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "3287",
+    "name": "廣寰科",
+    "rank": 14,
+    "raw_rank": 15,
+    "score": 70.1,
+    "liq": "D",
+    "close": 62.0,
+    "industry": "電腦及週邊設備業",
+    "factors": {
+     "quality": 70.5286,
+     "growth": 61.8478,
+     "value": 61.374,
+     "momentum": 53.8293,
+     "trend": 100.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6491",
+    "name": "晶碩",
+    "rank": 15,
+    "raw_rank": 16,
+    "score": 70.0,
+    "liq": "C",
+    "close": 430.5,
+    "industry": "化學生技醫療",
+    "factors": {
+     "quality": 77.6061,
+     "growth": 50.1034,
+     "value": 53.3025,
+     "momentum": 56.674,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6263",
+    "name": "普萊德",
+    "rank": 16,
+    "raw_rank": 17,
+    "score": 69.9,
+    "liq": "D",
+    "close": 171.0,
+    "industry": "通信網路業",
+    "factors": {
+     "quality": 86.9105,
+     "growth": 35.1619,
+     "value": 47.5582,
+     "momentum": 46.8271,
+     "trend": 100.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6509",
+    "name": "聚和",
+    "rank": 17,
+    "raw_rank": 18,
+    "score": 69.8,
+    "liq": "D",
+    "close": 48.2,
+    "industry": "化學工業",
+    "factors": {
+     "quality": 70.3215,
+     "growth": 42.8005,
+     "value": 76.1597,
+     "momentum": 63.3479,
+     "trend": 80.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "6894",
+    "name": "衛司特",
+    "rank": 18,
+    "raw_rank": 19,
+    "score": 69.8,
+    "liq": "D",
+    "close": 407.0,
+    "industry": "綠能環保類",
+    "factors": {
+     "quality": 76.2948,
+     "growth": 77.1809,
+     "value": 36.4656,
+     "momentum": 74.3982,
+     "trend": 100.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "2606",
+    "name": "裕民",
+    "rank": 19,
+    "raw_rank": 20,
+    "score": 69.4,
+    "liq": "C",
+    "close": 73.5,
+    "industry": "航運業",
+    "factors": {
+     "quality": 58.7198,
+     "growth": 63.1963,
+     "value": 85.4563,
+     "momentum": 62.2538,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6944",
+    "name": "兆聯實業",
+    "rank": 20,
+    "raw_rank": 21,
+    "score": 69.2,
+    "liq": "B",
+    "close": 780.0,
+    "industry": "綠能環保",
+    "factors": {
+     "quality": 79.336,
+     "growth": 56.4255,
+     "value": 50.6974,
+     "momentum": 71.3348,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   }
+  ],
+  "balanced": [
+   {
+    "stock_id": "2451",
+    "name": "創見",
+    "rank": 1,
+    "raw_rank": 1,
+    "score": 89.0,
+    "liq": "B",
+    "close": 293.5,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 95.1857,
+     "growth": 97.7576,
+     "value": 75.1424,
+     "momentum": 86.4333,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 2,
+    "raw_rank": 2,
+    "score": 82.3,
+    "liq": "C",
+    "close": 35.2,
+    "industry": "航運業",
+    "factors": {
+     "quality": 80.0922,
+     "growth": 83.7457,
+     "value": 92.939,
+     "momentum": 71.5536,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2615",
+    "name": "萬海",
+    "rank": 3,
+    "raw_rank": 3,
+    "score": 79.8,
+    "liq": "A",
+    "close": 118.5,
+    "industry": "航運業",
+    "factors": {
+     "quality": 72.2516,
+     "growth": 79.2405,
+     "value": 90.2376,
+     "momentum": 68.2713,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2851",
+    "name": "中再保",
+    "rank": 4,
+    "raw_rank": 4,
+    "score": 77.9,
+    "liq": "C",
+    "close": 49.05,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 96.875,
+     "growth": 51.9381,
+     "value": 67.6471,
+     "momentum": 82.3851,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5386",
+    "name": "青雲",
+    "rank": 5,
+    "raw_rank": 5,
+    "score": 76.8,
+    "liq": "C",
+    "close": 250.0,
+    "industry": "電腦及週邊設備業",
+    "factors": {
+     "quality": 57.2339,
+     "growth": 97.1443,
+     "value": 72.2976,
+     "momentum": 99.453,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2637",
+    "name": "慧洋-KY",
+    "rank": 6,
+    "raw_rank": 6,
+    "score": 76.5,
+    "liq": "C",
+    "close": 100.0,
+    "industry": "航運業",
+    "factors": {
+     "quality": 69.0087,
+     "growth": 70.5859,
+     "value": 85.3633,
+     "momentum": 73.523,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2059",
+    "name": "川湖",
+    "rank": 7,
+    "raw_rank": 7,
+    "score": 76.4,
+    "liq": "A",
+    "close": 10150.0,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 94.8832,
+     "growth": 93.4392,
+     "value": 22.5475,
+     "momentum": 93.6543,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "4967",
+    "name": "十銓",
+    "rank": 8,
+    "raw_rank": 9,
+    "score": 75.0,
+    "liq": "B",
+    "close": 279.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 64.2212,
+     "growth": 96.3792,
+     "value": 53.1969,
+     "momentum": 86.7615,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6532",
+    "name": "瑞耘",
+    "rank": 9,
+    "raw_rank": 11,
+    "score": 74.0,
+    "liq": "C",
+    "close": 119.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 82.4201,
+     "growth": 77.7383,
+     "value": 44.2737,
+     "momentum": 73.3042,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3081",
+    "name": "聯亞",
+    "rank": 10,
+    "raw_rank": 12,
+    "score": 73.5,
+    "liq": "A",
+    "close": 2580.0,
+    "industry": "通信網路業",
+    "factors": {
+     "quality": 89.2962,
+     "growth": 90.9406,
+     "value": 15.0821,
+     "momentum": 99.5624,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6531",
+    "name": "愛普*",
+    "rank": 11,
+    "raw_rank": 13,
+    "score": 73.2,
+    "liq": "A",
+    "close": 843.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 88.7137,
+     "growth": 88.4771,
+     "value": 28.3018,
+     "momentum": 85.558,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "8299",
+    "name": "群聯",
+    "rank": 12,
+    "raw_rank": 14,
+    "score": 73.2,
+    "liq": "A",
+    "close": 2040.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 67.6692,
+     "growth": 97.9037,
+     "value": 46.7362,
+     "momentum": 87.4179,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2855",
+    "name": "統一證",
+    "rank": 13,
+    "raw_rank": 15,
+    "score": 73.1,
+    "liq": "C",
+    "close": 55.9,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 59.1912,
+     "growth": 92.9177,
+     "value": 55.8824,
+     "momentum": 86.5427,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5864",
+    "name": "致和證",
+    "rank": 14,
+    "raw_rank": 16,
+    "score": 73.0,
+    "liq": "C",
+    "close": 37.0,
+    "industry": "金融業",
+    "factors": {
+     "quality": 68.6275,
+     "growth": 66.642,
+     "value": 81.6176,
+     "momentum": 89.4967,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6419",
+    "name": "京晨科",
+    "rank": 15,
+    "raw_rank": 17,
+    "score": 72.7,
+    "liq": "D",
+    "close": 146.5,
+    "industry": "光電業",
+    "factors": {
+     "quality": 59.4937,
+     "growth": 92.3327,
+     "value": 51.1358,
+     "momentum": 90.5908,
+     "trend": 80.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "5274",
+    "name": "信驊",
+    "rank": 16,
+    "raw_rank": 18,
+    "score": 72.5,
+    "liq": "A",
+    "close": 17295.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 88.1358,
+     "growth": 80.1704,
+     "value": 17.7218,
+     "momentum": 96.2801,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3498",
+    "name": "陽程",
+    "rank": 17,
+    "raw_rank": 19,
+    "score": 72.4,
+    "liq": "A",
+    "close": 263.5,
+    "industry": "其他電子類",
+    "factors": {
+     "quality": 57.8521,
+     "growth": 93.0195,
+     "value": 36.3278,
+     "momentum": 96.8271,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3356",
+    "name": "奇偶",
+    "rank": 18,
+    "raw_rank": 20,
+    "score": 72.3,
+    "liq": "D",
+    "close": 71.3,
+    "industry": "光電業",
+    "factors": {
+     "quality": 66.1578,
+     "growth": 69.7491,
+     "value": 79.2769,
+     "momentum": 61.2691,
+     "trend": 100.0
+    },
+    "rec": "capped"
+   },
+   {
+    "stock_id": "3147",
+    "name": "大綜",
+    "rank": 19,
+    "raw_rank": 21,
+    "score": 72.1,
+    "liq": "B",
+    "close": 316.0,
+    "industry": "資訊服務業",
+    "factors": {
+     "quality": 62.2551,
+     "growth": 95.1424,
+     "value": 54.72,
+     "momentum": 57.7681,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "4973",
+    "name": "廣穎",
+    "rank": 20,
+    "raw_rank": 22,
+    "score": 72.1,
+    "liq": "D",
+    "close": 140.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 62.5254,
+     "growth": 97.9499,
+     "value": 51.9618,
+     "momentum": 96.6083,
+     "trend": 40.0
+    },
+    "rec": "capped"
+   }
+  ],
+  "aggressive": [
+   {
+    "stock_id": "2451",
+    "name": "創見",
+    "rank": 1,
+    "raw_rank": 1,
+    "score": 90.2,
+    "liq": "B",
+    "close": 293.5,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 95.1857,
+     "growth": 97.7576,
+     "value": 75.1424,
+     "momentum": 86.4333,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3498",
+    "name": "陽程",
+    "rank": 2,
+    "raw_rank": 2,
+    "score": 87.1,
+    "liq": "A",
+    "close": 263.5,
+    "industry": "其他電子類",
+    "factors": {
+     "quality": 57.8521,
+     "growth": 93.0195,
+     "value": 36.3278,
+     "momentum": 96.8271,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3167",
+    "name": "大量",
+    "rank": 3,
+    "raw_rank": 3,
+    "score": 86.3,
+    "liq": "A",
+    "close": 1030.0,
+    "industry": "電機機械",
+    "factors": {
+     "quality": 66.3828,
+     "growth": 88.1756,
+     "value": 19.9679,
+     "momentum": 98.2495,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2305",
+    "name": "全友",
+    "rank": 4,
+    "raw_rank": 4,
+    "score": 84.9,
+    "liq": "B",
+    "close": 54.0,
+    "industry": "電腦及週邊設備業",
+    "factors": {
+     "quality": 51.4944,
+     "growth": 97.218,
+     "value": 31.0875,
+     "momentum": 98.6871,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "4967",
+    "name": "十銓",
+    "rank": 5,
+    "raw_rank": 5,
+    "score": 84.1,
+    "liq": "B",
+    "close": 279.5,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 64.2212,
+     "growth": 96.3792,
+     "value": 53.1969,
+     "momentum": 86.7615,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "5274",
+    "name": "信驊",
+    "rank": 6,
+    "raw_rank": 6,
+    "score": 83.1,
+    "liq": "A",
+    "close": 17295.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 88.1358,
+     "growth": 80.1704,
+     "value": 17.7218,
+     "momentum": 96.2801,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6672",
+    "name": "騰輝電子-KY",
+    "rank": 7,
+    "raw_rank": 7,
+    "score": 82.9,
+    "liq": "A",
+    "close": 562.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 59.0977,
+     "growth": 86.0767,
+     "value": 17.3845,
+     "momentum": 93.4354,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3443",
+    "name": "創意",
+    "rank": 8,
+    "raw_rank": 8,
+    "score": 82.5,
+    "liq": "A",
+    "close": 8170.0,
+    "industry": "電子工業",
+    "factors": {
+     "quality": 66.7024,
+     "growth": 77.3113,
+     "value": 14.3777,
+     "momentum": 98.9059,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2855",
+    "name": "統一證",
+    "rank": 9,
+    "raw_rank": 9,
+    "score": 82.2,
+    "liq": "C",
+    "close": 55.9,
+    "industry": "金融保險",
+    "factors": {
+     "quality": 59.1912,
+     "growth": 92.9177,
+     "value": 55.8824,
+     "momentum": 86.5427,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "8299",
+    "name": "群聯",
+    "rank": 10,
+    "raw_rank": 10,
+    "score": 82.0,
+    "liq": "A",
+    "close": 2040.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 67.6692,
+     "growth": 97.9037,
+     "value": 46.7362,
+     "momentum": 87.4179,
+     "trend": 60.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "1303",
+    "name": "南亞",
+    "rank": 11,
+    "raw_rank": 11,
+    "score": 81.9,
+    "liq": "A",
+    "close": 319.0,
+    "industry": "塑膠工業",
+    "factors": {
+     "quality": 47.6406,
+     "growth": 82.5029,
+     "value": 24.2944,
+     "momentum": 98.7965,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3037",
+    "name": "欣興",
+    "rank": 12,
+    "raw_rank": 12,
+    "score": 81.5,
+    "liq": "A",
+    "close": 1100.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 51.4166,
+     "growth": 88.2164,
+     "value": 19.2279,
+     "momentum": 99.7812,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6834",
+    "name": "天二科技",
+    "rank": 13,
+    "raw_rank": 13,
+    "score": 81.1,
+    "liq": "A",
+    "close": 125.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 48.4899,
+     "growth": 92.0255,
+     "value": 22.4403,
+     "momentum": 95.0766,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "8046",
+    "name": "南電",
+    "rank": 14,
+    "raw_rank": 14,
+    "score": 80.8,
+    "liq": "A",
+    "close": 1300.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 64.7537,
+     "growth": 82.9078,
+     "value": 16.6386,
+     "momentum": 97.4836,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6213",
+    "name": "聯茂",
+    "rank": 15,
+    "raw_rank": 15,
+    "score": 80.7,
+    "liq": "A",
+    "close": 778.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 39.5487,
+     "growth": 83.9314,
+     "value": 16.2878,
+     "momentum": 98.4683,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6173",
+    "name": "信昌電",
+    "rank": 16,
+    "raw_rank": 16,
+    "score": 80.6,
+    "liq": "A",
+    "close": 289.5,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 67.8041,
+     "growth": 77.7928,
+     "value": 31.6701,
+     "momentum": 98.5777,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "6187",
+    "name": "萬潤",
+    "rank": 17,
+    "raw_rank": 17,
+    "score": 80.4,
+    "liq": "A",
+    "close": 1345.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 83.4034,
+     "growth": 76.9428,
+     "value": 21.3065,
+     "momentum": 92.9978,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 18,
+    "raw_rank": 18,
+    "score": 79.4,
+    "liq": "C",
+    "close": 35.2,
+    "industry": "航運業",
+    "factors": {
+     "quality": 80.0922,
+     "growth": 83.7457,
+     "value": 92.939,
+     "momentum": 71.5536,
+     "trend": 80.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "1815",
+    "name": "富喬",
+    "rank": 19,
+    "raw_rank": 19,
+    "score": 79.2,
+    "liq": "A",
+    "close": 144.0,
+    "industry": "電子零組件業",
+    "factors": {
+     "quality": 68.6406,
+     "growth": 85.8338,
+     "value": 21.9997,
+     "momentum": 75.8206,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   },
+   {
+    "stock_id": "3189",
+    "name": "景碩",
+    "rank": 20,
+    "raw_rank": 20,
+    "score": 79.0,
+    "liq": "A",
+    "close": 1035.0,
+    "industry": "半導體業",
+    "factors": {
+     "quality": 47.1482,
+     "growth": 74.682,
+     "value": 17.0698,
+     "momentum": 99.6718,
+     "trend": 100.0
+    },
+    "rec": "normal"
+   }
+  ]
+ },
+ "lists_note": {
+  "picks": "原始模型排名（研究與績效追蹤用，包含流動性不合格、不列入正式精選的股票，見各股 rec 欄位）",
+  "rec_picks": "預設 AI 精選＝正式推薦名單（排除流動性 E／F 級與資料不足，D 級不進前 10 名）"
+ },
+ "reasons": [
+  "名單",
+  "因子分數"
+ ]
+}
