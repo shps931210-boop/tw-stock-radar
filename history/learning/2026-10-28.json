@@ -1,0 +1,475 @@
+{
+ "schema_version": 1,
+ "date": "2026-10-28",
+ "generated_at": "2026-10-28T21:54:32",
+ "seconds": 22,
+ "summary": "今天新增 1 份到期對帳（745 筆股票結果）。沒有重新訓練：沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型",
+ "data": {
+  "ok": true,
+  "prices": "2026-10-28",
+  "why": null
+ },
+ "sealed": {
+  "today": true,
+  "on_time": true,
+  "model_version": "2026-10-22-4c675d40be",
+  "n": 744
+ },
+ "matured_today": [
+  {
+   "signal_date": "2026-10-16",
+   "horizon": "5",
+   "stocks": 745,
+   "model_version": null
+  }
+ ],
+ "matured_stocks_today": 745,
+ "live": {
+  "sealed_days": 7,
+  "matured": {
+   "5": 1,
+   "20": 0,
+   "60": 0
+  }
+ },
+ "candidate": {
+  "retrained": false,
+  "reason": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型",
+  "new_signals": [],
+  "new_labels": {
+   "5": 0,
+   "20": 0,
+   "60": 0
+  },
+  "labeled_through": {
+   "5": "2026-10-14",
+   "20": "2026-09-11",
+   "60": "2026-07-17"
+  },
+  "panel_rows": 127266
+ },
+ "champion": {
+  "id": "v21",
+  "name": "V21 固定權重",
+  "role": "正式排行榜"
+ },
+ "challenger": "2026-10-22-4c675d40be",
+ "gate": {
+  "status": "accumulating",
+  "label": "累積中",
+  "days": 0,
+  "need": 60,
+  "live": null,
+  "challenger_name": "LightGBM",
+  "criteria": []
+ },
+ "acceptance": "未全部通過：正式排行榜維持 V21，候選模型繼續影子追蹤",
+ "promotion_ok": false,
+ "auto_promote": false,
+ "model_drift": {
+  "status": "accumulating",
+  "label": "樣本不足（0／20 天）",
+  "recent_ic": null,
+  "research_ic": 0.0292
+ },
+ "feature_drift": {
+  "status": "accumulating",
+  "label": "特徵快照累積中（2／5 天）"
+ },
+ "feature_effect": {
+  "dates": 0,
+  "label": "還沒有可以評估的到期樣本（特徵快照從 V31 開始累積）",
+  "rows": [],
+  "hypotheses": []
+ },
+ "errors": {
+  "dates": 0,
+  "note": "還沒有到期的 20 日預測"
+ },
+ "risks": [],
+ "needs_human": false,
+ "human_why": [],
+ "steps": [
+  "到期對帳：新增 1 份"
+ ],
+ "skipped": [],
+ "limits": [
+  "每天跑學習流程不代表每天變準；是否變好只看到期的真實預測與樣本外比賽",
+  "20 日預測要 20 個交易日後才知道對錯，真實樣本累積很慢",
+  "資料庫沒有法人、融資券等籌碼資料，也沒有歷史處置股、全額交割紀錄"
+ ],
+ "first_run_at": "2026-10-28T21:54:32",
+ "runs": 1,
+ "evolution": {
+  "mission": {
+   "version": 1,
+   "hash": "94eeefb77003",
+   "status": "unchanged",
+   "alert": false
+  },
+  "new_experiments": [],
+  "reflection": {
+   "q1_new_errors": {
+    "items": [],
+    "evidence": null,
+    "text": "今天沒有新到期的 20 日預測，沒有新的錯誤證據"
+   },
+   "q2_recurring": {
+    "items": [],
+    "evidence": "history/learning/research_queue.json",
+    "text": "還沒有重複出現 3 次以上的問題"
+   },
+   "q3_degrading": {
+    "status": "accumulating",
+    "text": "已到期的 20 日訊號日只有 0 個（至少要 20 個才判斷變好或變差）",
+    "evidence": "history/learning/live_ledger.json"
+   },
+   "q4_hypotheses": {
+    "items": [],
+    "status": "待驗證假設",
+    "text": "以下是根據統計提出的待驗證假設，不是已確認的原因"
+   },
+   "q5_outcome": [
+    {
+     "kind": "新增資料",
+     "done": true,
+     "evidence": "到期對帳 745 筆、新訓練標籤 0 筆"
+    },
+    {
+     "kind": "完成分析",
+     "done": false,
+     "evidence": "沒有到期的 20 日預測可以分析"
+    },
+    {
+     "kind": "完成實驗",
+     "done": false,
+     "evidence": "今天沒有新的實驗"
+    },
+    {
+     "kind": "訓練候選模型",
+     "done": false,
+     "evidence": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型"
+    },
+    {
+     "kind": "驗證候選模型改善",
+     "done": false,
+     "evidence": "累積中"
+    }
+   ],
+   "supervised_learning": true,
+   "supervised_text": "今天有新的真實結果可以學習"
+  },
+  "tasks": {
+   "open": 24,
+   "top": [
+    {
+     "id": "RT-20261022-016",
+     "key": "tpl:big_loss:vol_1y",
+     "created": "2026-10-22",
+     "status": "待研究",
+     "question": "重大損失的持股一年波動百分位平均 51.2（其他 38.3，t 3.58）：事先排除這類股票能不能降低虧損又不傷報酬？",
+     "goal": "G4",
+     "goal_text": "G4（P0）降低重大虧損",
+     "hypothesis": "待驗證假設：重大損失的持股有共同特徵，事先排除可以降低尾端虧損又不傷報酬",
+     "metric": "重大損失比例、最大回撤（主要）；扣成本超額不能變差",
+     "data_needed": "前 10 名持股的 20 日結果＋選股當天的特徵百分位",
+     "design": "比較落後 0050 超過 10% 的持股和其他持股的特徵差異；有顯著差異的特徵再做「排除規則」的組合研究",
+     "oos": "排除規則事先固定，用 walk-forward 檢查",
+     "budget": "每週回測內 5 分鐘",
+     "stop_rule": "排除後最大回撤沒改善或超額報酬變差就否定",
+     "action": "portfolio_rule",
+     "allowed": true,
+     "needs_human": false,
+     "template": "big_loss",
+     "last_seen": "2026-10-28",
+     "priority": 7.2,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-017",
+     "key": "sel:trend_growth_weights",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "趨勢（前 10% 每期 +1.09%，t 3.81）和成長（+0.77%，t 2.69）是五大因子裡唯二穩定有效的；品質沒有預測力（-0.31%）。調整模式權重能不能改善前 10 名扣成本超額？",
+     "goal": "G1",
+     "hypothesis": "趨勢（前 10% 每期 +1.09%，t 3.81）和成長（+0.77%，t 2.69）是五大因子裡唯二穩定有效的；品質沒有預測力（-0.31%）。調整模式權重能不能改善前 10 名扣成本超額？",
+     "metric": "20 日前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/selection.json 同一套 87 期資料",
+     "design": "事前登記規則，Bonferroni 校正",
+     "oos": "權重要在新一段開發期決定，用 2025-01 之後的保留期只看一次；不能用 selection.json 的保留期結果挑權重",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "開發期 t 未達門檻或保留期變差就否定",
+     "action": "model_weights",
+     "allowed": true,
+     "needs_human": true,
+     "template": "selection",
+     "last_seen": "2026-10-28",
+     "priority": 8.5,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-018",
+     "key": "sel:benchmark_structure",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "可排名股票等權平均每 20 日落後 0050 約 0.85%：用市值加權、或以 0050 為核心＋AI 衛星部位，能不能在不冒充選股能力的前提下縮小落後？",
+     "goal": "G1",
+     "hypothesis": "可排名股票等權平均每 20 日落後 0050 約 0.85%：用市值加權、或以 0050 為核心＋AI 衛星部位，能不能在不冒充選股能力的前提下縮小落後？",
+     "metric": "20 日前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/selection.json 同一套 87 期資料",
+     "design": "事前登記規則，Bonferroni 校正",
+     "oos": "分開報告「資金配置效果」和「選股能力」；最大回撤不能比原版差超過 5 個百分點",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "開發期 t 未達門檻或保留期變差就否定",
+     "action": "portfolio_rule",
+     "allowed": true,
+     "needs_human": false,
+     "template": "selection",
+     "last_seen": "2026-10-28",
+     "priority": 8.0,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-020",
+     "key": "acad:msurge_forward",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "均衡型＋MSURGE 的前瞻影子紀錄累積到 12 批 20 日到期後，是否仍贏同一天的均衡型原始前 10 名？（E3 驗證）",
+     "goal": "G1",
+     "hypothesis": "均衡型＋MSURGE 的前瞻影子紀錄累積到 12 批 20 日到期後，是否仍贏同一天的均衡型原始前 10 名？（E3 驗證）",
+     "metric": "前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/academic.json、history/predictions/academic/",
+     "design": "事前登記規則",
+     "oos": "只用 2026-10-28 之後封存的新資料；規則不改",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "未達門檻就否定",
+     "action": "model_weights",
+     "allowed": true,
+     "needs_human": true,
+     "template": "academic",
+     "last_seen": "2026-10-28",
+     "priority": 9.0,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-021",
+     "key": "acad:rev_mom_negative",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "營收月增率在台股是負向（前 10% 每期 -0.59%，t -3.54）：目前成長分數是否用到月增率而拖累排序？",
+     "goal": "G1",
+     "hypothesis": "營收月增率在台股是負向（前 10% 每期 -0.59%，t -3.54）：目前成長分數是否用到月增率而拖累排序？",
+     "metric": "前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/academic.json、history/predictions/academic/",
+     "design": "事前登記規則",
+     "oos": "先查 snapshot 成長因子組成，再事前登記移除或改用 MSURGE 的比較",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "未達門檻就否定",
+     "action": "model_weights",
+     "allowed": true,
+     "needs_human": true,
+     "template": "academic",
+     "last_seen": "2026-10-28",
+     "priority": 8.0,
+     "prior_failed_experiments": 0
+    }
+   ]
+  },
+  "governance": {
+   "tiers": {
+    "champion": "V21 固定權重（正式推薦）",
+    "challenger": "2026-10-22-4c675d40be",
+    "research": "lgbm_study、portfolio_study 的變體（只做研究）"
+   },
+   "gates": [
+    {
+     "gate": "資料正確",
+     "ok": true,
+     "value": "資料稽核 6/6 項通過"
+    },
+    {
+     "gate": "排序改善",
+     "ok": false,
+     "value": "樣本不足"
+    },
+    {
+     "gate": "策略改善",
+     "ok": false,
+     "value": "樣本不足"
+    },
+    {
+     "gate": "風險合理",
+     "ok": false,
+     "value": "樣本不足"
+    },
+    {
+     "gate": "前瞻驗證",
+     "ok": false,
+     "value": "已到期的真實預測 0／60 天"
+    }
+   ],
+   "recommend": false,
+   "human_approval": true,
+   "label": "未通過：排序改善、策略改善、風險合理、前瞻驗證。正式模型維持 V21"
+  },
+  "acceptance": [
+   {
+    "q": "今天有學到新資料嗎？",
+    "answer": "新增 745 筆到期結果、0 筆研究訓練標籤",
+    "evidence": "history/learning/matured/、candidate.new_labels",
+    "yes": true
+   },
+   {
+    "q": "今天發現什麼問題？",
+    "answer": "沒有新的到期結果，所以沒有新的錯誤統計",
+    "evidence": "history/learning/research_queue.json",
+    "yes": false
+   },
+   {
+    "q": "今天研究什麼？",
+    "answer": "RT-20261022-001、RT-20261022-002、RT-20261022-003、RT-20261022-004、RT-20261022-005、RT-20261022-006、RT-20261022-007、RT-20261022-008（新增 8 項）",
+    "evidence": "history/research/research_tasks.json",
+    "yes": true
+   },
+   {
+    "q": "今天做了什麼實驗？",
+    "answer": "沒有新的實驗（實驗在每週回測執行）",
+    "evidence": "history/research/experiments.json auto",
+    "yes": false
+   },
+   {
+    "q": "新模型變好了嗎？",
+    "answer": "還不知道：同期到期的真實預測只有 0／60 天",
+    "evidence": "history/predictions/scorecard.json",
+    "yes": null
+   },
+   {
+    "q": "是否值得升級？",
+    "answer": "未通過：排序改善、策略改善、風險合理、前瞻驗證。正式模型維持 V21",
+    "evidence": "五道晉升關卡",
+    "yes": false
+   },
+   {
+    "q": "哪些地方仍沒改善？",
+    "answer": "沒通過的關卡：排序改善、策略改善、風險合理、前瞻驗證",
+    "evidence": "晉升關卡、實驗記憶、真實前瞻帳本",
+    "yes": null
+   }
+  ],
+  "memory": {
+   "prediction": {
+    "n": 7,
+    "last": "2026-10-28",
+    "path": "history/predictions/",
+    "rule": "開盤前封存，不可覆寫"
+   },
+   "outcome": {
+    "n": 0,
+    "last": null,
+    "path": "history/learning/matured/",
+    "rule": "到期才對帳，只寫一次"
+   },
+   "error": {
+    "n": 0,
+    "path": "history/learning/research_queue.json",
+    "rule": "只增不刪"
+   },
+   "experiment": {
+    "n": 34,
+    "auto": 20,
+    "decisions": 14,
+    "path": "history/research/experiments.json",
+    "rule": "失敗也記，不刪除"
+   },
+   "mission": {
+    "version": 1,
+    "hash": "94eeefb77003",
+    "goals": 10,
+    "path": "config/ai_mission.yaml",
+    "rule": "程式只讀，人工改版"
+   }
+  },
+  "steps": [
+   {
+    "step": "目標檢查",
+    "status": "success"
+   },
+   {
+    "step": "登記新實驗",
+    "status": "success"
+   },
+   {
+    "step": "反省",
+    "status": "success"
+   },
+   {
+    "step": "更新研究任務",
+    "status": "success"
+   },
+   {
+    "step": "晉升把關",
+    "status": "success"
+   },
+   {
+    "step": "成果驗收",
+    "status": "success"
+   },
+   {
+    "step": "記憶盤點",
+    "status": "success"
+   }
+  ]
+ },
+ "pipeline": [
+  {
+   "step": "資料品質檢查",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "預測封存",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "成熟標籤對帳",
+   "status": "success",
+   "why": "新增 1 份"
+  },
+  {
+   "step": "錯誤分析",
+   "status": "skipped",
+   "why": "還沒有到期的 20 日預測"
+  },
+  {
+   "step": "特徵漂移分析",
+   "status": "success",
+   "why": "特徵快照累積中（2／5 天）"
+  },
+  {
+   "step": "研究任務更新",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "候選模型訓練",
+   "status": "skipped",
+   "why": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型"
+  },
+  {
+   "step": "模型競賽",
+   "status": "success",
+   "why": "累積中"
+  },
+  {
+   "step": "晉升資格評估",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "學習日誌保存",
+   "status": "success",
+   "why": "history/learning/2026-10-28.json"
+  }
+ ]
+}
