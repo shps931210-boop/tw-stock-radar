@@ -56,26 +56,58 @@ def _cohort(D: dict, ids: list[str], entry: str, exit_: str, bench: float | None
             "worst": sorted(ok, key=lambda x: x["net"])[:3]}
 
 
+def _taiex(D: dict, sig: str, h: str) -> dict:
+    """加權指數（只有收盤價）：訊號日收盤 → 出場前一天收盤；附 0050 同一段收盤報酬。
+    2026-10-28 更正：之前只寫加權指數，卻和 0050 開盤到開盤並列，兩者期間不同不能直接比。"""
+    from . import pit_backtest as pb
+    dates = D["dates"]
+    if sig not in dates or dates.index(sig) + int(h) >= len(dates):
+        return {"taiex": None, "window": None, "bench_0050_close": None}
+    last = dates[dates.index(sig) + int(h)]
+    idx = D.get("idx_s")
+    tx = round(float(idx[last] / idx[sig] - 1) * 100, 2) if idx is not None and sig in idx.index and last in idx.index else None
+    c = pb.close_return(D, pb.BENCH, sig, last)
+    return {"taiex": tx, "window": [sig, last], "bench_0050_close": None if c is None else round(c * 100, 2)}
+
+
+def corrections(D: dict, out: Path = OUT) -> list[dict]:
+    """已封存的到期檔不改；缺少 0050 收盤口徑的舊檔，補一筆更正紀錄到 corrections.json（只新增）。"""
+    f = out / "corrections.json"
+    C = json.loads(f.read_text("utf-8")) if f.exists() else {"note": "到期對帳檔寫過就不改；發現口徑問題時在這裡附加更正，原檔保留。", "items": []}
+    done = {(x["file"], x["code"]) for x in C["items"]}
+    added = []
+    for p in sorted(out.glob("????-??-??_h*.json")):
+        r = json.loads(p.read_text("utf-8"))
+        if "bench_0050_close" in r or (p.name, "taiex_window") in done:
+            continue
+        t = _taiex(D, r["signal_date"], str(r["horizon"]))
+        added.append({"file": p.name, "code": "taiex_window", "at": config.now().isoformat(timespec="seconds"),
+                      "issue": "加權指數是「訊號日收盤→出場前一天收盤」，0050 是「進場日開盤→出場日開盤」，期間不同卻並列。",
+                      "original": {"taiex": r.get("taiex"), "bench_0050": r.get("bench_0050")},
+                      "added": {"taiex_window": t["window"], "bench_0050_close": t["bench_0050_close"]},
+                      "effect": "選股的成本後報酬、相對 0050 超額都不受影響；只有「和加權指數比較」要改用同一段收盤口徑。"})
+    if added:
+        C["items"] += added
+        f.write_text(json.dumps(C, ensure_ascii=False, indent=1), "utf-8")
+    return C["items"]
+
+
 def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS) -> dict | None:
     """一批（訊號日 sig、期間 h）到期了就回傳對帳明細；還沒到期回傳 None。"""
     from . import pit_backtest as pb
     dates = D["dates"]
-    if sig not in dates:
+    w = pb.window(dates, sig, h)
+    if w is None:
         return None
-    i = dates.index(sig)
-    if i + 1 + int(h) >= len(dates):
-        return None
-    entry, exit_ = dates[i + 1], dates[i + 1 + int(h)]
+    entry, exit_ = w
     b = pb._bench(D, entry, exit_)
-    idx = D.get("idx_s")
-    tx = None
-    if idx is not None and sig in idx.index and dates[i + int(h)] in idx.index:
-        tx = round(float(idx[dates[i + int(h)]] / idx[sig] - 1) * 100, 2)
+    tx = _taiex(D, sig, h)
     names = {k: (v or {}).get("name") for k, v in (D.get("info") or {}).items()}
     out = {"schema_version": 1, "signal_date": sig, "horizon": int(h), "entry": entry, "exit": exit_,
-           "bench_0050": None if b is None else round(b * 100, 2), "taiex": tx, "cost_pct": round(COST * 100, 3),
+           "bench_0050": None if b is None else round(b * 100, 2), "taiex": tx["taiex"], "taiex_window": tx["window"],
+           "bench_0050_close": tx["bench_0050_close"], "cost_pct": round(COST * 100, 3),
            "rule": "訊號日收盤後封存，隔一個交易日開盤買，第 h 個交易日後開盤賣（還原除權息），扣成本 0.585%。0050 同一段期間（開盤到開盤）；"
-                   "加權指數用訊號日收盤到出場前一天收盤近似。買不到的不算進平均。",
+                   "加權指數只有收盤價，用訊號日收盤到出場前一天收盤，並附上 0050 同一段收盤口徑，兩者才能互相比較。買不到的不算進平均。",
            "created_at": config.now().isoformat(timespec="seconds")}
     # 1. 影子預測
     pf = pred / f"{sig}.json"
@@ -134,13 +166,16 @@ def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: 
                 with open(f, "x", encoding="utf-8") as fh:
                     json.dump(r, fh, ensure_ascii=False, indent=1)
                 new.append(f.name)
+    fixes = {x["file"]: x["added"] for x in corrections(D, out) if x["code"] == "taiex_window"}
     idx = []
     for f in sorted(out.glob("????-??-??_h*.json")):
         r = json.loads(f.read_text("utf-8"))
+        r = {**r, **fixes.get(f.name, {})}
         sh = (r.get("shadow") or {}).get("models") or {}
         of = (r.get("official") or {}).get("modes") or {}
         idx.append({"file": f.name, "signal_date": r["signal_date"], "horizon": r["horizon"], "exit": r["exit"],
-                    "bench_0050": r["bench_0050"], "taiex": r["taiex"],
+                    "bench_0050": r["bench_0050"], "taiex": r["taiex"], "taiex_window": r.get("taiex_window"),
+                    "bench_0050_close": r.get("bench_0050_close"), "corrected": f.name in fixes,
                     "shadow": {m: {k: v.get(k) for k in ("ic", "mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in sh.items()},
                     "shadow_on_time": (r.get("shadow") or {}).get("on_time"), "shadow_model": (r.get("shadow") or {}).get("model_hash"),
                     "official": {m: {k: v.get(k) for k in ("mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in of.items()},

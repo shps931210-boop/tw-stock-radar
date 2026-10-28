@@ -219,7 +219,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
     D = D or pb.load(dbname)
     dates = D["dates"]
     pos = {d: i for i, d in enumerate(dates)}
-    acc = {h: {m: {"ic": [], "top": [], "hit": [], "brier": [], "brier_base": []} for m in MODELS} for h in map(str, ml.HORIZONS)}
+    acc = {h: {m: {"ic": [], "top": [], "top10": [], "hit": [], "brier": [], "brier_base": []} for m in MODELS} for h in map(str, ml.HORIZONS)}
     counts = {h: 0 for h in acc}
     daily = []
     on_time = 0
@@ -236,9 +236,10 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
         if sig not in pos or pos[sig] + 1 >= len(dates):
             continue
         for h in acc:
-            e = pos[sig] + 1 + int(h)
-            if e >= len(dates):
+            w = pb.window(dates, sig, h)   # 和到期對帳、回測同一個持有期定義
+            if w is None:
                 continue  # 還沒到期
+            e = pos[w[1]]
             b = pb._bench(D, entry, dates[e])
             if b is None:
                 continue
@@ -260,6 +261,8 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
                 A = acc[h][m]
                 A["ic"].append(float(p.rank().corr(Y.rank())))
                 A["top"].append(float(Y[p.nlargest(ml.TOP).index].mean()))
+                # 和到期對帳明細（maturity_report）同一口徑：前 10 名、扣一次來回成本
+                A["top10"].append(float(Y[p.nlargest(10).index].mean()) - pb.COST)
                 day["ic"][m], day["top"][m] = round(A["ic"][-1], 4), round(A["top"][-1], 5)
                 if m == "logit":
                     w = (Y > 0).astype(float)
@@ -273,11 +276,14 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
             if not A["ic"]:
                 continue
             out[h][m] = {"ic": round(float(np.mean(A["ic"])), 3), "ic_pos": round(float(np.mean([x > 0 for x in A["ic"]])) * 100, 1),
-                         "top_excess": round(float(np.mean(A["top"])) * 100, 2), "n": len(A["ic"])}
+                         "top_excess": round(float(np.mean(A["top"])) * 100, 2), "top_n": ml.TOP, "top_basis": "未扣成本",
+                         "top10_net_excess": round(float(np.mean(A["top10"])) * 100, 2), "n": len(A["ic"])}
             if A["brier"]:
                 out[h][m].update(hit=round(float(np.mean(A["hit"])) * 100, 1), brier=round(float(np.mean(A["brier"])), 4),
                                  brier_base=round(float(np.mean(A["brier_base"])), 4))
     return {"generated_at": config.now().isoformat(timespec="seconds"), "days": len(files), "on_time": on_time,
+            "definitions": {"top_excess": f"前 {ml.TOP} 名平均相對 0050 超額，未扣成本（研究排序能力）",
+                            "top10_net_excess": f"前 10 名平均相對 0050 超額，扣成本 {pb.COST * 100:.3f}%（和到期對帳明細同一口徑）"},
             "first": files[0].stem, "last": files[-1].stem, "horizons": out, "daily": daily}
 
 

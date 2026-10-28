@@ -213,6 +213,25 @@ def _limit_up(prev_close: float) -> float:
     return limits(prev_close)[0]
 
 
+def window(dates: list[str], sig: str, h: int) -> tuple[str, str] | None:
+    """唯一的持有期定義：訊號日 sig 收盤後 → 下一個交易日開盤進場 → 進場後第 h 個交易日開盤出場。
+    dates 是真正有行情的交易日（休市、颱風停市都不在裡面），所以 h 一律以實際交易日計算。還沒到期回傳 None。"""
+    if sig not in dates:
+        return None
+    i = dates.index(sig)
+    if i + 1 + int(h) >= len(dates):
+        return None
+    return dates[i + 1], dates[i + 1 + int(h)]
+
+
+def close_return(D: dict, sid: str, a: str, b: str) -> float | None:
+    """a 收盤到 b 收盤的還原報酬（和只有收盤價的加權指數比較時用，兩邊同一段期間）。"""
+    x = D["adj"].get(sid)
+    if x is None or a not in x.index or b not in x.index or not x.at[a, "close"]:
+        return None
+    return float(x.at[b, "close"] / x.at[a, "close"] - 1)
+
+
 def hold_return(D: dict, sid: str, entry: str, exit_: str) -> tuple[float | None, str]:
     """進場日開盤 → 出場日開盤的還原報酬。回傳 (報酬, 狀態)；None 代表買不到。"""
     a = D["adj"].get(sid)

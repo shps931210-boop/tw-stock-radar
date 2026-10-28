@@ -1574,11 +1574,11 @@ async function loadPredSc() {
   if (!S || !S.days) { el.innerHTML = `<div class="card-h"><h2>每日 AI 預測對帳（影子模式）</h2></div><p class="muted small" style="margin:0">每天完整更新後，最新訓練的模型會對全部可排名股票產生 5／20／60 日相對 0050 的預測，並在隔天開盤前封存。第一份預測產生後，這裡會顯示到期後的實際對帳結果。</p>`; return; }
   el.innerHTML = `<div class="card-h"><h2>每日 AI 預測對帳（影子模式）</h2><span class="muted small">${esc(S.first)}～${esc(S.last)}・已封存 ${S.days} 天（${S.on_time} 天在開盤前封存）</span></div>
     ${["5", "20", "60"].map((h) => { const H = S.horizons?.[h] || {}; return `<h3 style="margin:10px 0 6px">${h} 個交易日<span class="faint small">・已到期 ${H.matured || 0} 天</span></h3>
-      ${H.matured ? `<div class="tbl"><table><thead><tr><th>模型</th><th class="r">平均 Rank IC</th><th class="r">IC 為正</th><th class="r">前 20 名平均超額</th><th class="r">方向命中／Brier</th></tr></thead><tbody>
-        ${Object.entries(names).filter(([k]) => H[k]).map(([k, n]) => `<tr><td>${n}</td><td class="r num">${fmtNum(H[k].ic, 3)}</td><td class="r num">${fmtNum(H[k].ic_pos, 0)}%</td><td class="r num ${signCls(H[k].top_excess)}">${pctTxt(H[k].top_excess)}</td>
+      ${H.matured ? `<div class="tbl"><table><thead><tr><th>模型</th><th class="r">平均 Rank IC</th><th class="r">IC 為正</th><th class="r">前 20 名超額<br><span class="faint small">未扣成本</span></th><th class="r">前 10 名超額<br><span class="faint small">扣成本</span></th><th class="r">方向命中／Brier</th></tr></thead><tbody>
+        ${Object.entries(names).filter(([k]) => H[k]).map(([k, n]) => `<tr><td>${n}</td><td class="r num">${fmtNum(H[k].ic, 3)}</td><td class="r num">${fmtNum(H[k].ic_pos, 0)}%</td><td class="r num ${signCls(H[k].top_excess)}">${pctTxt(H[k].top_excess)}</td><td class="r num ${signCls(H[k].top10_net_excess)}">${H[k].top10_net_excess == null ? "—" : pctTxt(H[k].top10_net_excess)}</td>
           <td class="r num">${H[k].brier != null ? `${fmtNum(H[k].hit, 1)}%／${fmtNum(H[k].brier, 3)}<br><span class="faint small">只猜平均 ${fmtNum(H[k].brier_base, 3)}</span>` : "—"}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted small" style="margin:0">還沒有到期的預測。</p>`}`; }).join("")}
     <div id="sealCal"></div>
-    <p class="faint small" style="margin:8px 0 0">規則和歷史研究完全相同：訊號日隔天開盤進場、第 h 個交易日後開盤出場、減去同期間 0050，未扣成本。每天的預測檔在 <a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/predictions" target="_blank" rel="noopener">GitHub</a> 公開，不會事後修改。到期天數少於 20 天前，差異多半只是運氣；新模型沒有在這裡持續勝過 V21 之前，不會取代正式排行榜。</p>`;
+    <p class="faint small" style="margin:8px 0 0">規則和歷史研究完全相同：訊號日隔天開盤進場、第 h 個交易日後開盤出場、減去同期間 0050。「前 20 名」未扣成本，用來看排序能力；「前 10 名」扣成本，和下方到期對帳明細同一個數字。每天的預測檔在 <a href="https://github.com/shps931210-boop/tw-stock-radar/tree/main/history/predictions" target="_blank" rel="noopener">GitHub</a> 公開，不會事後修改。到期天數少於 20 天前，差異多半只是運氣；新模型沒有在這裡持續勝過 V21 之前，不會取代正式排行榜。</p>`;
   loadSealCal();
 }
 // V20.1 預測封存日曆：每個應有預測的交易日、休市原因、到期日、對帳統計是否跟上（history/audit/seal_calendar.json）
@@ -1942,7 +1942,7 @@ async function loadMature() {
   el.hidden = false;
   el.innerHTML = `<div class="card-h"><h2>到期對帳明細</h2><span class="muted small">每一批到期後只寫一次</span></div>
     <select id="matSel" style="margin-bottom:8px">${B.map((b) => `<option value="${esc(b.file)}"${b.file === cur.file ? " selected" : ""}>${esc(b.signal_date)} 的名單・${b.horizon} 日（${esc(b.exit)} 出場）</option>`).join("")}</select>
-    <p class="small" style="margin:0 0 8px">${esc(R.entry)} 開盤買、${esc(R.exit)} 開盤賣。同期 0050 ${pc(R.bench_0050)}、加權指數 ${pc(R.taiex)}。</p>
+    <p class="small" style="margin:0 0 8px">${esc(R.entry)} 開盤買、${esc(R.exit)} 開盤賣。同期 0050 ${pc(R.bench_0050)}（開盤到開盤）。${(() => { const tw = R.taiex_window || cur.taiex_window, c = R.bench_0050_close ?? cur.bench_0050_close; return tw ? `加權指數 ${pc(R.taiex)}、0050 ${pc(c)}（都是 ${esc(tw[0])} 收盤到 ${esc(tw[1])} 收盤，可以互相比較）${cur.corrected ? '<br><span class="faint">更正：這批原本把不同期間的加權指數和 0050 並列，已補上同一段收盤口徑，原始檔保留。</span>' : ""}` : `加權指數 ${pc(R.taiex)}（收盤口徑，期間和 0050 不同）`; })()}</p>
     ${O ? `<h3 style="margin:10px 0 6px">AI 精選（${esc(O.list_kind)}）</h3><p class="faint small" style="margin:0 0 4px">${esc(O.file)}・${esc(twTime(O.generated_at))} 產生${O.on_time ? "（開盤前）" : O.on_time === false ? "（開盤後，不計入）" : ""}・模型 ${esc(O.model_version || "—")}（${esc((O.model_hash || "").slice(0, 10))}）</p>
       ${tbl(Object.entries(O.modes), (k, x) => x.name + "前 10 名")}${Object.values(O.modes).map((x) => det(x, x.name)).join("")}` : ""}
     ${S && Object.keys(S.models).length ? `<h3 style="margin:14px 0 6px">影子預測（研究用，不影響正式排行榜）</h3><p class="faint small" style="margin:0 0 4px">${esc(S.file)}・${esc(twTime(S.generated_at))} 封存${S.on_time ? "（開盤前）" : ""}・模型 ${esc(S.model_hash || "—")}・全部 ${fmtNum(S.n, 0)} 檔的 Rank IC：${Object.values(S.models).map((m) => `${esc(m.name.split("（")[0])} ${m.ic == null ? "—" : m.ic.toFixed(3)}`).join("、")}</p>

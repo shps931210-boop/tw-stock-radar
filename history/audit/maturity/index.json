@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-28T17:17:04",
+ "generated_at": "2026-10-28T19:10:51",
  "new": [],
  "batches": [
   {
@@ -9,6 +9,12 @@
    "exit": "2026-10-28",
    "bench_0050": 0.84,
    "taiex": -2.15,
+   "taiex_window": [
+    "2026-10-16",
+    "2026-10-27"
+   ],
+   "bench_0050_close": -2.2,
+   "corrected": true,
    "shadow": {
     "v21": {
      "ic": 0.078,
@@ -70,6 +76,12 @@
    "exit": "2026-10-27",
    "bench_0050": -2.15,
    "taiex": -1.98,
+   "taiex_window": [
+    "2026-10-15",
+    "2026-10-22"
+   ],
+   "bench_0050_close": -1.84,
+   "corrected": true,
    "shadow": {},
    "shadow_on_time": null,
    "shadow_model": null,
@@ -106,6 +118,12 @@
    "exit": "2026-10-22",
    "bench_0050": -1.09,
    "taiex": -3.57,
+   "taiex_window": [
+    "2026-10-14",
+    "2026-10-21"
+   ],
+   "bench_0050_close": -4.29,
+   "corrected": true,
    "shadow": {},
    "shadow_on_time": null,
    "shadow_model": null,
@@ -142,6 +160,12 @@
    "exit": "2026-10-21",
    "bench_0050": -3.72,
    "taiex": -4.24,
+   "taiex_window": [
+    "2026-10-13",
+    "2026-10-20"
+   ],
+   "bench_0050_close": -4.58,
+   "corrected": true,
    "shadow": {},
    "shadow_on_time": null,
    "shadow_model": null,
@@ -178,6 +202,12 @@
    "exit": "2026-10-20",
    "bench_0050": -4.35,
    "taiex": -5.03,
+   "taiex_window": [
+    "2026-10-12",
+    "2026-10-19"
+   ],
+   "bench_0050_close": -5.79,
+   "corrected": true,
    "shadow": {},
    "shadow_on_time": null,
    "shadow_model": null,
@@ -214,6 +244,12 @@
    "exit": "2026-10-19",
    "bench_0050": -5.91,
    "taiex": -4.47,
+   "taiex_window": [
+    "2026-10-08",
+    "2026-10-16"
+   ],
+   "bench_0050_close": -5.18,
+   "corrected": true,
    "shadow": {},
    "shadow_on_time": null,
    "shadow_model": null,
