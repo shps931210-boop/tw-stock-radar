@@ -1948,7 +1948,8 @@ async function loadMature() {
     ${S && Object.keys(S.models).length ? `<h3 style="margin:14px 0 6px">影子預測（研究用，不影響正式排行榜）</h3><p class="faint small" style="margin:0 0 4px">${esc(S.file)}・${esc(twTime(S.generated_at))} 封存${S.on_time ? "（開盤前）" : ""}・模型 ${esc(S.model_hash || "—")}・全部 ${fmtNum(S.n, 0)} 檔的 Rank IC：${Object.values(S.models).map((m) => `${esc(m.name.split("（")[0])} ${m.ic == null ? "—" : m.ic.toFixed(3)}`).join("、")}</p>
       ${tbl(Object.entries(S.models), (k, x) => x.name + "前 10 名")}${Object.values(S.models).map((x) => det(x, x.name.split("（")[0])).join("")}` : '<p class="faint small">這一天還沒有影子預測（10/16 起才開始封存）。</p>'}
     <p class="faint small" style="margin:8px 0 0">${esc(R.rule)}<br>${esc(MATI.note)}</p>`;
-  $("#matSel").onchange = (e) => { store.set("matFile", e.target.value); loadMature(); };
+  const ms = el.querySelector("#matSel");   // 載入途中切換頁面時，卡片已不在畫面上
+  if (ms) ms.onchange = (e) => { store.set("matFile", e.target.value); loadMature(); };
 }
 // V20.3 AI 模擬交易（只模擬、不下單）與 AI 預測回放（data/paper/）
 let PAPER = null, REPLAY = null;
@@ -2031,7 +2032,8 @@ function renderReplay() {
       <td class="small">${esc(r.status)}${r.as_of ? `<span class="faint">（到 ${esc(r.as_of)}）</span>` : ""}</td><td class="r">${pc(r.net_ret)}</td><td class="r">${pc(r.bench_ret)}</td><td class="r">${pc(r.taiex_ret)}</td></tr>`).join("")}</tbody></table></div>
     <h3 style="margin:14px 0 6px">所有封存名單的結果統計（${PMODES[o.m]}前 10 名）</h3>${oddsHtml(R.odds[o.m], "檔次")}
     <p class="faint small" style="margin:8px 0 0">${esc(R.rule)}<br>${esc(R.note)}</p>`;
-  $("#rpd").onchange = (e) => { store.set("replay", { ...o, d: e.target.value }); renderReplay(); };
+  const rp = $("#rpd");
+  if (rp) rp.onchange = (e) => { store.set("replay", { ...o, d: e.target.value }); renderReplay(); };
   el.querySelectorAll("#rpm button").forEach((b) => (b.onclick = () => { store.set("replay", { ...o, m: b.dataset.k }); renderReplay(); }));
 }
 // V14 三本帳：真實前瞻、樣本外比較、歷史研究分開計算、分開顯示（data/predictions/ledgers.json）
