@@ -28,7 +28,9 @@ PM_DIR = ROOT / "history" / "premarket"
 PRE_DIR = ROOT / "history" / "predictions" / "pre_open"
 HOLIDAYS = PM_DIR / "holidays.json"
 CLOSE = "13:30"               # 台股收盤
-SEAL_FROM, PUBLISH_BY, OPEN = "07:45", "08:40", "09:00"
+# V20.4：封存最早時間從 07:45 提早到 06:00（美股 04:00～05:00 台北時間收盤後）。GitHub 排程常晚 30～40 分鐘，
+# 06:20 那次（實際約 06:50）就能封存，07:35、08:15 兩次當備援；封存後才出現的事件照舊寫進當天的 alerts 檔，不改封存內容
+SEAL_FROM, PUBLISH_BY, OPEN = "06:00", "08:40", "09:00"
 HOLIDAY_URL = "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule"
 SEMI = ("半導體業", "電子零組件業", "電腦及週邊設備業", "其他電子業", "光電業", "通信網路業", "電子通路業", "資訊服務業")
 
