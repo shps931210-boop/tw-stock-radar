@@ -1,16 +1,18 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-28T07:13:27",
+ "generated_at": "2026-10-28T15:10:04",
  "summary": {
   "first": "2026-10-16",
-  "last_data": "2026-10-27",
+  "last_data": "2026-10-28",
   "today": "2026-10-28",
-  "expected": 6,
-  "sealed": 6,
-  "on_time": 6,
+  "expected": 7,
+  "sealed": 7,
+  "on_time": 7,
   "missing": [],
-  "picks": 6,
-  "pre_open": 0,
+  "picks": 7,
+  "pre_open": 1,
+  "pre_open_on_time": 1,
+  "pre_open_note": "盤前版＝盤前情報：開盤前依隔夜國際市場與收盤後公告更新風險標示，AI 分數沿用前一天收盤後封存的正式預測（還沒有驗證過的事件模型不改分數）。正式前瞻預測是收盤後封存、隔天開盤前就已存在的那一份。",
   "closed": [
    {
     "date": "2026-10-23",
@@ -22,22 +24,22 @@
    }
   ],
   "matured": {
-   "5": 0,
+   "5": 1,
    "20": 0,
    "60": 0
   },
   "scorecard": {
-   "generated_at": "2026-10-27T15:34:02",
-   "days": 6,
-   "last": "2026-10-27",
+   "generated_at": "2026-10-28T15:07:14",
+   "days": 7,
+   "last": "2026-10-28",
    "matured": {
-    "5": 0,
+    "5": 1,
     "20": 0,
     "60": 0
    }
   },
   "next_due": {
-   "date": "2026-10-28",
+   "date": "2026-10-29",
    "horizon": "5"
   },
   "scorecard_lag": {},
@@ -60,7 +62,7 @@
    "maturity": {
     "5": {
      "due": "2026-10-28",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-11-18",
@@ -199,7 +201,10 @@
    "trading": true,
    "entry": "2026-10-28",
    "picks": true,
-   "pre_open": false,
+   "pre_open": true,
+   "pre_open_at": "2026-10-28T08:02:29",
+   "pre_open_on_time": true,
+   "pre_open_scores_changed": false,
    "sealed": true,
    "generated_at": "2026-10-27T15:33:35",
    "on_time": true,
@@ -226,10 +231,15 @@
    "date": "2026-10-28",
    "trading": true,
    "entry": "2026-10-29",
-   "picks": false,
+   "picks": true,
    "pre_open": false,
-   "sealed": false,
-   "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
+   "sealed": true,
+   "generated_at": "2026-10-28T15:06:43",
+   "on_time": true,
+   "model_version": "2026-10-22-4c675d40be",
+   "n": 744,
+   "status": "experimental",
+   "data_ok": true,
    "maturity": {
     "5": {
      "due": "2026-11-05",
