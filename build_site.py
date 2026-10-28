@@ -163,6 +163,8 @@ for _src, _dst in (("site.json", "paper.json"), ("replay.json", "replay.json")):
     if (config.ROOT / "history" / "paper" / _src).exists():
         (out / "data" / "paper").mkdir(parents=True, exist_ok=True)
         shutil.copy(config.ROOT / "history" / "paper" / _src, out / "data" / "paper" / _dst)
+if (config.DATA_DIR / "twolayer.json").exists():  # V21.2 投資價值 × 進場機會（app/shadow_academic.py，研究中）
+    shutil.copy(config.DATA_DIR / "twolayer.json", out / "data" / "twolayer.json")
 if (config.DATA_DIR / "coverage.json").exists():  # 個股研究資料覆蓋率（app/coverage.py）
     shutil.copy(config.DATA_DIR / "coverage.json", out / "data" / "coverage.json")
 try:  # 每日影子預測（app/ml_predict.py）：最新一天的百分位與到期對帳成績

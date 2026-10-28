@@ -138,6 +138,16 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
         a = json.loads(af.read_text("utf-8"))
         out["academic"] = {"file": af.name, "generated_at": a.get("generated_at"), "on_time": track.on_time(a, entry),
                            "rule": a.get("rule"), "overlap": a.get("overlap"), "lists": {}}
+        if a.get("layers") and b is not None:   # 兩層分數的前瞻 Rank IC（全部可排名股票）
+            y = {}
+            for sid in a["layers"]:
+                r, _ = pb.hold_return(D, sid, entry, exit_)
+                if r is not None:
+                    y[sid] = r - b
+            Y = pd.Series(y, dtype=float)
+            for j, k in enumerate(("V", "E")):
+                p = pd.Series({sid: v[j] for sid, v in a["layers"].items()}, dtype=float).reindex(Y.index).dropna()
+                out["academic"][f"ic_{k}"] = round(float(p.rank().corr(Y.reindex(p.index).rank())), 3) if len(p) >= 30 else None
         for k, rows in (a.get("lists") or {}).items():
             ext = {c["stock_id"]: {"rank": c.get("rank"), "score": c.get("balanced_score")} for c in rows}
             out["academic"]["lists"][k] = {"name": a.get("label") if k != "balanced" else "均衡型原始前 10 名（同一天）",

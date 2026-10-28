@@ -112,3 +112,19 @@ class Shadow(unittest.TestCase):
         self.assertEqual(rec["universe_n"], 30)
         self.assertEqual(len(rec["lists"][sa.CANDIDATE]), 10)
         self.assertEqual(rec["status"], "shadow")
+
+
+class Layers(unittest.TestCase):
+    def test_site_and_seal_layers(self):
+        from app import shadow_academic as sa
+        rows = [{"stock_id": f"s{i}", "name": f"n{i}", "score_quality": i, "score_growth": i, "score_value": i, "score_trend": 30 - i,
+                 "ret_20d": i, "ai": {"modes": {"balanced": {"score": 90 - i, "rank": i + 1}}}} for i in range(30)]
+        with tempfile.TemporaryDirectory() as t:
+            out = sa.site(rows, {}, "2026-06-11", Path(t) / "tl.json")
+            v29, e29 = out["stocks"]["s29"]
+            v0, e0 = out["stocks"]["s0"]
+            self.assertGreater(v29, v0)      # 品質、成長、價值都最高
+            self.assertLess(e29, e0)         # 趨勢最低、近 20 日漲最多（沒有回檔）
+            self.assertIn("研究中", out["status"])
+        rec = sa.build(rows, {}, "2026-06-11")
+        self.assertEqual(len(rec["layers"]), 30)

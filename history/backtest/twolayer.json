@@ -1,0 +1,238 @@
+{
+ "ic": {
+  "V": {
+   "5": {
+    "mean": 0.0531,
+    "t": 6.33,
+    "n": 87
+   },
+   "20": {
+    "mean": 0.0508,
+    "t": 5.57,
+    "n": 87
+   },
+   "60": {
+    "mean": 0.0767,
+    "t": 8.47,
+    "n": 85
+   }
+  },
+  "E": {
+   "5": {
+    "mean": 0.0532,
+    "t": 4.16,
+    "n": 87
+   },
+   "20": {
+    "mean": 0.046,
+    "t": 4.03,
+    "n": 87
+   },
+   "60": {
+    "mean": 0.0377,
+    "t": 3.42,
+    "n": 85
+   }
+  }
+ },
+ "timing": {
+  "5": {
+   "high_minus_low": 0.21,
+   "t": 1.53,
+   "n": 87,
+   "first_half": 0.15,
+   "second_half": 0.26
+  },
+  "20": {
+   "high_minus_low": 0.27,
+   "t": 1.1,
+   "n": 87,
+   "first_half": 0.15,
+   "second_half": 0.38
+  }
+ },
+ "portfolio": {
+  "A": {
+   "rule": "均衡型原版前 10 名",
+   "periods": 87,
+   "total": 180.75,
+   "bench_total": 564.05,
+   "avg_excess": -0.96,
+   "t_excess": -1.12,
+   "beat_0050": 47.1,
+   "mdd": -32.69,
+   "big_loss": 4.6,
+   "dev": {
+    "periods": 67,
+    "total": 131.34,
+    "bench_total": 188.49,
+    "avg_excess": -0.25,
+    "t_excess": -0.26,
+    "beat_0050": 50.7,
+    "mdd": -32.69,
+    "big_loss": 4.5
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 21.36,
+    "bench_total": 130.18,
+    "avg_excess": -3.37,
+    "t_excess": -1.7,
+    "beat_0050": 35.0,
+    "mdd": -16.91,
+    "big_loss": 5.0
+   }
+  },
+  "B": {
+   "rule": "只看投資價值 V 前 10 名",
+   "periods": 87,
+   "total": 313.26,
+   "bench_total": 564.05,
+   "avg_excess": -0.52,
+   "t_excess": -0.67,
+   "beat_0050": 46.0,
+   "mdd": -25.36,
+   "big_loss": 4.6,
+   "dev": {
+    "periods": 67,
+    "total": 207.58,
+    "bench_total": 188.49,
+    "avg_excess": 0.14,
+    "t_excess": 0.18,
+    "beat_0050": 47.8,
+    "mdd": -25.36,
+    "big_loss": 4.5
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 34.36,
+    "bench_total": 130.18,
+    "avg_excess": -2.75,
+    "t_excess": -1.27,
+    "beat_0050": 40.0,
+    "mdd": -16.67,
+    "big_loss": 5.0
+   }
+  },
+  "C": {
+   "rule": "V 前 30% 裡進場機會 E 最高 10 檔",
+   "periods": 87,
+   "total": 413.33,
+   "bench_total": 564.05,
+   "avg_excess": -0.14,
+   "t_excess": -0.19,
+   "beat_0050": 42.5,
+   "mdd": -31.86,
+   "big_loss": 4.6,
+   "dev": {
+    "periods": 67,
+    "total": 164.74,
+    "bench_total": 188.49,
+    "avg_excess": -0.03,
+    "t_excess": -0.03,
+    "beat_0050": 43.3,
+    "mdd": -31.86,
+    "big_loss": 4.5
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 93.9,
+    "bench_total": 130.18,
+    "avg_excess": -0.52,
+    "t_excess": -0.27,
+    "beat_0050": 40.0,
+    "mdd": -26.22,
+    "big_loss": 5.0
+   }
+  },
+  "C_vs_A": {
+   "dev_diff": 0.22,
+   "dev_t": 0.29,
+   "first_half": 0.25,
+   "second_half": 0.2,
+   "holdout_diff": 2.85,
+   "mdd_gap": 0.83,
+   "passed": false
+  },
+  "C_vs_B": {
+   "dev_diff": -0.17,
+   "dev_t": -0.25,
+   "first_half": -0.54,
+   "second_half": 0.2,
+   "holdout_diff": 2.23,
+   "mdd_gap": -6.5,
+   "passed": false
+  },
+  "B_vs_A": {
+   "dev_diff": 0.39,
+   "dev_t": 0.78,
+   "first_half": 0.79,
+   "second_half": -0.0,
+   "holdout_diff": 0.62,
+   "mdd_gap": 7.33,
+   "passed": false
+  }
+ },
+ "size": {
+  "大型": {
+   "V": {
+    "ic": 0.0643,
+    "t": 4.87
+   },
+   "E": {
+    "ic": 0.0436,
+    "t": 3.44
+   }
+  },
+  "中型": {
+   "V": {
+    "ic": 0.0353,
+    "t": 2.79
+   },
+   "E": {
+    "ic": 0.0414,
+    "t": 2.86
+   }
+  },
+  "小型": {
+   "V": {
+    "ic": 0.0504,
+    "t": 4.07
+   },
+   "E": {
+    "ic": 0.0509,
+    "t": 4.57
+   }
+  }
+ },
+ "big50": {
+  "universe": 99.1,
+  "A": 11.5,
+  "B": 11.7,
+  "C": 5.4,
+  "note": "沒有歷史 0050 成分股名單，以訊號日市值前 50 大近似；universe 是前 50 大中有多少在可排名母體"
+ },
+ "periods": 87,
+ "first": "2019-07-31",
+ "last": "2026-08-27",
+ "schema_version": 1,
+ "study_version": "2026-10-28",
+ "generated_at": "2026-10-28T20:15:46+08:00",
+ "v_parts": [
+  "quality",
+  "growth",
+  "value",
+  "msurge"
+ ],
+ "e_parts": [
+  "trend",
+  "st_reversal"
+ ],
+ "top_v": 0.3,
+ "t_need": 2.4,
+ "mdd_gap": 5.0,
+ "holdout_from": "2025-01-01",
+ "cost_pct": 0.585,
+ "seconds": 3,
+ "note": "歷史回測（研究）；兩層分數通過才放上個股頁當說明，正式排行榜不因本研究自動改變。"
+}

@@ -4212,7 +4212,26 @@ function facCards(s) {   // 六個面向的全市場百分位（50＝中位數�
   return `<section class="card"><div class="card-h"><h2>各面向評分</h2><span class="faint small">全市場排名百分位，50＝中位數</span></div><div class="fcs">${RAX.map(([k, l]) => {
     const v = s["score_" + k]; return `<div class="fc"><span>${l}</span><b class="num">${v == null ? "—" : Math.round(v)}</b><i><em style="width:${v == null ? 0 : Math.max(2, Math.min(100, v))}%"></em></i></div>`; }).join("")}</div></section>`;
 }
+// V21.2 投資價值 × 進場機會（研究中）：兩層分數分開看；歷史驗證排序有效，前瞻驗證累積中，不是買賣訊號
+let TL = null;
+async function loadTL(s) {
+  if (TL === null) TL = await fetch("data/twolayer.json?t=" + Date.now()).then((r) => (r.ok ? r.json() : false)).catch(() => false);
+  const el = $("#tl"); if (!el || !TL) return;
+  const x = TL.stocks?.[s.stock_id]; if (!x) return;
+  const [v, e] = x, E = TL.evidence || {};
+  const lv = (n) => n == null ? "—" : n >= 70 ? "高" : n >= 40 ? "中" : "低";
+  const read = v == null ? "資料不足" : v >= 70 && e >= 70 ? "公司條件好，近期走勢與回檔條件也比較有利" : v >= 70 && e != null && e < 40 ? "公司條件好，但現在的走勢或價位條件還沒到位，可以先觀察" : v >= 70 ? "公司條件好，進場條件普通" : v < 40 ? "公司條件在可評分股票中偏弱" : "公司條件中等";
+  const bar = (n) => `<i style="display:block;height:6px;border-radius:3px;background:var(--line)"><em style="display:block;height:6px;border-radius:3px;background:var(--accent);width:${n == null ? 0 : Math.max(2, n)}%"></em></i>`;
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>投資價值 × 進場機會</h2><span class="pill">研究中</span></div>
+    <div class="qj-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div><span>投資價值（${esc((TL.v_parts || []).join("、"))}）</span><b class="num">${v ?? "—"}<small>/100・${lv(v)}</small></b>${bar(v)}</div>
+      <div><span>進場機會（${esc((TL.e_parts || []).join("、"))}）</span><b class="num">${e ?? "—"}<small>/100・${lv(e)}</small></b>${bar(e)}</div></div>
+    <p style="margin:8px 0 4px">${esc(read)}。</p>
+    <p class="faint small" style="margin:0">${esc(TL.status)}。歷史 ${E.periods ?? "—"} 期驗證：投資價值與 20 日超額報酬的排序相關 ${E.ic_v?.mean ?? "—"}（t ${E.ic_v?.t ?? "—"}）、進場機會 ${E.ic_e?.mean ?? "—"}（t ${E.ic_e?.t ?? "—"}）；但在高投資價值的股票裡，用進場機會挑時機的效果還不顯著（t ${E.timing20?.t ?? "—"}）。分數是可評分股票中的排名百分位（${esc(TL.date)} 收盤）。</p>`;
+}
 function quickCard(s, d) {
+  queueMicrotask(() => loadTL(s));
   const g = rating(s), D = d.decision || {}, st = D.strategy || {}, bt = SNAP.strategy_bt?.modes?.swing;
   const lv = !D.blocked && st.ready && st.swing && st.swing.state !== "na" ? st.swing : null;
   const zone = lv && bt?.n && bt.excess > 0 ? { main: `${fmtNum(lv.stop)} ～ ${fmtNum(lv.target)}`, sub: `波段規則停損到停利，回測勝過 0050` }
@@ -4261,6 +4280,7 @@ async function pageStock(id) {
     ${s.base_ok && !s.complete ? `<div class="banner warn">排行榜資料不完整，暫不列入完整綜合排名：${(s.missing_detail || s.missing_factors || []).map(esc).join("；")}</div>` : ""}
     ${(s.stale_notes || []).length ? `<div class="banner warn">資料過期，不列入計分：${s.stale_notes.map(esc).join("；")}</div>` : ""}
     ${quickCard(s, d)}
+    <section class="card" id="tl" hidden></section>
     ${pfHeld(id)}
     <div class="actbar stabs" role="tablist" aria-label="個股研究分頁"><button class="btn sm ghost" role="tab" data-t="ov">總覽</button><button class="btn sm ghost" role="tab" data-t="trend">走勢</button><button class="btn sm ghost" role="tab" data-t="fin">財報籌碼</button><button class="btn sm ghost" role="tab" data-t="ai">AI 紀錄</button></div>
     <div class="tabp" data-t="ov">
