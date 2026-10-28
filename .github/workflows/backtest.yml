@@ -96,6 +96,18 @@ jobs:
         continue-on-error: true
         timeout-minutes: 60
         run: python -m app.selection_study
+      # V21.1 學術假說的台股驗證（2026-10-28 事前登記）：用上一步存下的同一份樣本，不重算分數
+      - name: 學術假說驗證
+        id: acad
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python -m app.academic_study
+      # 學術證據庫 DOI 核對（Crossref 免費 API）
+      - name: 文獻 DOI 核對
+        id: doi
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python -m app.literature
       # V15 實驗記憶：把這次每個研究變體登記到 history/research/experiments.json（已登記的不重複）
       - name: 登記實驗
         id: ingest
@@ -110,7 +122,7 @@ jobs:
         run: >-
           python -m app.step_log "風險規則檢驗=${{ steps.risk.outcome }}" "資料與回測稽核=${{ steps.leak.outcome }}"
           "組合風險研究=${{ steps.port.outcome }}" "預測模型研究=${{ steps.mlr.outcome }}" "上傳研究資料集=${{ steps.panel.outcome }}"
-          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}" "選股品質總檢討=${{ steps.sel.outcome }}"
+          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}" "選股品質總檢討=${{ steps.sel.outcome }}" "學術假說驗證=${{ steps.acad.outcome }}" "文獻核對=${{ steps.doi.outcome }}"
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"

@@ -336,9 +336,17 @@ def run_rule_n(periods: list[dict], mode: str, n: int) -> list[float]:
     return _net(periods, picks)
 
 
+CACHE = config.DATA_DIR / "selection_periods.pkl"   # 給 academic_study 共用同一份樣本（不進 git）
+
+
 def run(dbname: str = "stocks.db", log=print) -> dict:
     t0 = time.time()
     periods = collect(dbname, log=log)
+    try:
+        import pickle
+        CACHE.write_bytes(pickle.dumps(periods))
+    except OSError as e:
+        log(f"樣本快取寫入失敗：{e}")
     res = analyse(periods)
     res.update({"schema_version": 1, "study_version": STUDY_VERSION, "generated_at": config.now().isoformat(timespec="seconds") + "+08:00",
                 "step": STEP, "holdout_from": HOLDOUT_FROM, "t_need": T_NEED, "mdd_gap": MDD_GAP, "cost_pct": round(pb.COST * 100, 3),
