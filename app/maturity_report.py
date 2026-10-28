@@ -25,6 +25,7 @@ from . import config, track
 
 PRED = config.ROOT / "history" / "predictions"
 PICKS = config.ROOT / "history" / "picks"
+ACAD = config.ROOT / "history" / "predictions" / "academic"
 OUT = config.ROOT / "history" / "audit" / "maturity"
 COST = track.COST
 TOP = 10
@@ -131,6 +132,16 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
             ic = float(q.rank().corr(Y.reindex(q.index).rank())) if len(q) >= 30 else None
             out["shadow"]["models"][m] = {"name": label, "ic": None if ic is None else round(ic, 3), "ic_n": len(q),
                                           **_cohort(D, top, entry, exit_, b, names, ext)}
+    # 1b. 學術候選影子紀錄（均衡型＋月營收驚喜，同一天的均衡型原始前 10 名一起對帳）
+    af = ACAD / f"{sig}.json"
+    if af.exists():
+        a = json.loads(af.read_text("utf-8"))
+        out["academic"] = {"file": af.name, "generated_at": a.get("generated_at"), "on_time": track.on_time(a, entry),
+                           "rule": a.get("rule"), "overlap": a.get("overlap"), "lists": {}}
+        for k, rows in (a.get("lists") or {}).items():
+            ext = {c["stock_id"]: {"rank": c.get("rank"), "score": c.get("balanced_score")} for c in rows}
+            out["academic"]["lists"][k] = {"name": a.get("label") if k != "balanced" else "均衡型原始前 10 名（同一天）",
+                                           **_cohort(D, [c["stock_id"] for c in rows], entry, exit_, b, names, ext)}
     # 2. 正式 AI 精選（首次發布版）
     kf = picks / f"{sig}.json"
     if kf.exists():
@@ -154,7 +165,8 @@ def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: 
     from . import pit_backtest as pb
     D = D or pb.load(dbname)
     out.mkdir(parents=True, exist_ok=True)
-    sigs = sorted({f.stem for f in pred.glob("????-??-??.json")} | {f.stem for f in picks.glob("????-??-??.json")})
+    sigs = sorted({f.stem for f in pred.glob("????-??-??.json")} | {f.stem for f in picks.glob("????-??-??.json")}
+                  | {f.stem for f in ACAD.glob("????-??-??.json")})
     new = []
     for sig in sigs:
         for h in HORIZONS:
@@ -179,6 +191,7 @@ def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: 
                     "shadow": {m: {k: v.get(k) for k in ("ic", "mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in sh.items()},
                     "shadow_on_time": (r.get("shadow") or {}).get("on_time"), "shadow_model": (r.get("shadow") or {}).get("model_hash"),
                     "official": {m: {k: v.get(k) for k in ("mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in of.items()},
+                    "academic": {k: {kk: v.get(kk) for kk in ("mean_net", "mean_excess", "beat_0050", "filled")} for k, v in ((r.get("academic") or {}).get("lists") or {}).items()},
                     "official_kind": (r.get("official") or {}).get("list_kind"), "official_on_time": (r.get("official") or {}).get("on_time")})
     I = {"generated_at": config.now().isoformat(timespec="seconds"), "new": new, "batches": idx[::-1],
          "note": "每一批到期後只寫一次，不會事後修改。同一個期間的相鄰批次持有期重疊，不是獨立樣本；一兩批的短期結果不能代表模型長期有沒有優勢。"}

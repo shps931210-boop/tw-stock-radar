@@ -99,3 +99,16 @@ class Doi(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Shadow(unittest.TestCase):
+    def test_build_blend_and_base(self):
+        from app import shadow_academic as sa
+        rows = [{"stock_id": f"s{i}", "name": f"n{i}", "ai": {"modes": {"balanced": {"score": 90 - i, "rank": i + 1}}}} for i in range(30)]
+        rows.append({"stock_id": "x", "ai": {"modes": {"balanced": {"score": None, "rank": None}}}})   # 不可排名的不算
+        rev = {"s29": _rev(30, bump="2026-05")}   # 排最後但營收大驚喜
+        rec = sa.build(rows, rev, "2026-06-11")
+        self.assertEqual([r["stock_id"] for r in rec["lists"]["balanced"]], [f"s{i}" for i in range(10)])
+        self.assertEqual(rec["universe_n"], 30)
+        self.assertEqual(len(rec["lists"][sa.CANDIDATE]), 10)
+        self.assertEqual(rec["status"], "shadow")

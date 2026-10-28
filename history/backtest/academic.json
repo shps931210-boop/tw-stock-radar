@@ -1,0 +1,1496 @@
+{
+ "factors": {
+  "msurge": {
+   "hypothesis": "H01",
+   "name": "月營收驚喜（MSURGE）",
+   "ref": "P022",
+   "direction": "本月營收年增額相對過去 12 個月年增額的標準化偏離，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0382,
+     "t": 3.91,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0393,
+     "t": 4.89,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0664,
+     "t": 7.24,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0369,
+   "inc_ic_t": 4.57,
+   "top10pct_net": 0.68,
+   "dev_net": 0.61,
+   "dev_t": 3.32,
+   "first_half": 0.87,
+   "second_half": 0.36,
+   "holdout_net": 0.91,
+   "inc_ic_vs_yoy": 0.0365,
+   "inc_ic_vs_yoy_t": 5.07,
+   "e2_factor": true
+  },
+  "rev_yoy": {
+   "hypothesis": "H01",
+   "name": "營收年增率（現行基準）",
+   "ref": "P022",
+   "direction": "對照組：目前成長分數用的營收年增率",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0358,
+     "t": 3.25,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0222,
+     "t": 2.3,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0333,
+     "t": 3.29,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0142,
+   "inc_ic_t": 1.67,
+   "top10pct_net": 0.56,
+   "dev_net": 0.5,
+   "dev_t": 1.93,
+   "first_half": 0.62,
+   "second_half": 0.38,
+   "holdout_net": 0.77,
+   "e2_factor": false
+  },
+  "rev_mom": {
+   "hypothesis": "H01",
+   "name": "營收月增率（現行基準）",
+   "ref": "P022",
+   "direction": "對照組：營收月增率",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0011,
+     "t": 0.17,
+     "n": 87
+    },
+    "20": {
+     "mean": -0.0024,
+     "t": -0.39,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0247,
+     "t": 3.9,
+     "n": 85
+    }
+   },
+   "inc_ic": -0.0038,
+   "inc_ic_t": -0.64,
+   "top10pct_net": -0.81,
+   "dev_net": -0.59,
+   "dev_t": -3.54,
+   "first_half": -0.76,
+   "second_half": -0.42,
+   "holdout_net": -1.57,
+   "e2_factor": false
+  },
+  "ind_mom": {
+   "hypothesis": "H02",
+   "name": "產業動能",
+   "ref": "P005",
+   "direction": "同產業股票過去 6 個月（跳過最近 1 個月）平均報酬，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0074,
+     "t": 0.43,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0068,
+     "t": 0.43,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0116,
+     "t": 0.73,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0035,
+   "inc_ic_t": 0.22,
+   "top10pct_net": -0.13,
+   "dev_net": -0.18,
+   "dev_t": -0.45,
+   "first_half": -0.53,
+   "second_half": 0.15,
+   "holdout_net": 0.04,
+   "e2_factor": false
+  },
+  "rel_ind_mom": {
+   "hypothesis": "H02",
+   "name": "相對產業動能",
+   "ref": "P002",
+   "direction": "個股 6-1 個月報酬減產業平均，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": -0.0032,
+     "t": -0.27,
+     "n": 87
+    },
+    "20": {
+     "mean": -0.0021,
+     "t": -0.22,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0053,
+     "t": 0.55,
+     "n": 85
+    }
+   },
+   "inc_ic": -0.0128,
+   "inc_ic_t": -1.58,
+   "top10pct_net": 0.49,
+   "dev_net": 0.14,
+   "dev_t": 0.4,
+   "first_half": -0.14,
+   "second_half": 0.42,
+   "holdout_net": 1.64,
+   "e2_factor": false
+  },
+  "hi52": {
+   "hypothesis": "H02",
+   "name": "接近 52 週高點",
+   "ref": "P004",
+   "direction": "收盤價除以過去 252 日最高價，越接近越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": -0.0185,
+     "t": -0.86,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0357,
+     "t": 1.83,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0835,
+     "t": 5.24,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0288,
+   "inc_ic_t": 1.49,
+   "top10pct_net": -0.17,
+   "dev_net": -0.06,
+   "dev_t": -0.19,
+   "first_half": -0.19,
+   "second_half": 0.07,
+   "holdout_net": -0.54,
+   "e2_factor": false
+  },
+  "st_reversal": {
+   "hypothesis": "H02",
+   "name": "短期反轉",
+   "ref": "P003",
+   "direction": "過去 20 日報酬取負號，跌越多越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0645,
+     "t": 3.68,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0332,
+     "t": 2.16,
+     "n": 87
+    },
+    "60": {
+     "mean": -0.0036,
+     "t": -0.29,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0343,
+   "inc_ic_t": 2.29,
+   "top10pct_net": -0.7,
+   "dev_net": -0.68,
+   "dev_t": -2.27,
+   "first_half": -0.88,
+   "second_half": -0.49,
+   "holdout_net": -0.75,
+   "e2_factor": false
+  },
+  "gp_assets": {
+   "hypothesis": "H04",
+   "name": "毛利／總資產",
+   "ref": "P007",
+   "direction": "近四季毛利除以總資產，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0128,
+     "t": 1.03,
+     "n": 87
+    },
+    "20": {
+     "mean": -0.0095,
+     "t": -0.85,
+     "n": 87
+    },
+    "60": {
+     "mean": -0.0101,
+     "t": -0.87,
+     "n": 85
+    }
+   },
+   "inc_ic": -0.0186,
+   "inc_ic_t": -1.65,
+   "top10pct_net": -0.78,
+   "dev_net": -0.75,
+   "dev_t": -2.77,
+   "first_half": -0.92,
+   "second_half": -0.58,
+   "holdout_net": -0.9,
+   "e2_factor": false
+  },
+  "ocf_ni": {
+   "hypothesis": "H04",
+   "name": "現金流／淨利",
+   "ref": "P008",
+   "direction": "近四季營業現金流除以淨利（淨利 > 0），越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0045,
+     "t": 0.69,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0096,
+     "t": 1.54,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0148,
+     "t": 2.3,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0115,
+   "inc_ic_t": 1.92,
+   "top10pct_net": 0.15,
+   "dev_net": 0.22,
+   "dev_t": 0.83,
+   "first_half": 0.37,
+   "second_half": 0.07,
+   "holdout_net": -0.06,
+   "e2_factor": false
+  },
+  "low_accruals": {
+   "hypothesis": "H04",
+   "name": "低應計項目",
+   "ref": "P008",
+   "direction": "－（近四季淨利－營業現金流）÷平均總資產，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.014,
+     "t": 2.41,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0174,
+     "t": 3.19,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0275,
+     "t": 5.47,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0141,
+   "inc_ic_t": 2.4,
+   "top10pct_net": 0.27,
+   "dev_net": 0.22,
+   "dev_t": 1.18,
+   "first_half": 0.27,
+   "second_half": 0.17,
+   "holdout_net": 0.46,
+   "e2_factor": false
+  },
+  "low_asset_growth": {
+   "hypothesis": "H04",
+   "name": "低資產成長",
+   "ref": "P006",
+   "direction": "－總資產年增率，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": -0.0141,
+     "t": -1.47,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.0154,
+     "t": 1.64,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0355,
+     "t": 3.53,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0217,
+   "inc_ic_t": 2.55,
+   "top10pct_net": -0.16,
+   "dev_net": -0.0,
+   "dev_t": -0.01,
+   "first_half": -0.31,
+   "second_half": 0.3,
+   "holdout_net": -0.69,
+   "e2_factor": false
+  },
+  "illiq": {
+   "hypothesis": "H05",
+   "name": "Amihud 非流動性",
+   "ref": "P011",
+   "direction": "過去 20 日 |報酬|÷成交金額平均，論文預期越高報酬越高（但較難成交）",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": -0.0442,
+     "t": -3.42,
+     "n": 87
+    },
+    "20": {
+     "mean": -0.022,
+     "t": -1.99,
+     "n": 87
+    },
+    "60": {
+     "mean": -0.028,
+     "t": -2.49,
+     "n": 85
+    }
+   },
+   "inc_ic": -0.0184,
+   "inc_ic_t": -1.78,
+   "top10pct_net": -0.14,
+   "dev_net": 0.05,
+   "dev_t": 0.23,
+   "first_half": 0.01,
+   "second_half": 0.1,
+   "holdout_net": -0.81,
+   "e2_factor": false
+  },
+  "low_max": {
+   "hypothesis": "H05",
+   "name": "低極端漲幅（MAX）",
+   "ref": "P012",
+   "direction": "－過去 20 日最大單日報酬，越高越好",
+   "periods": 87,
+   "ic": {
+    "5": {
+     "mean": 0.0247,
+     "t": 1.18,
+     "n": 87
+    },
+    "20": {
+     "mean": 0.056,
+     "t": 3.06,
+     "n": 87
+    },
+    "60": {
+     "mean": 0.0616,
+     "t": 3.79,
+     "n": 85
+    }
+   },
+   "inc_ic": 0.0575,
+   "inc_ic_t": 3.2,
+   "top10pct_net": -1.02,
+   "dev_net": -0.69,
+   "dev_t": -1.96,
+   "first_half": -0.68,
+   "second_half": -0.7,
+   "holdout_net": -2.14,
+   "e2_factor": false
+  }
+ },
+ "coverage_pct": {
+  "msurge": 99.5,
+  "rev_yoy": 99.9,
+  "rev_mom": 99.9,
+  "ind_mom": 98.7,
+  "rel_ind_mom": 98.7,
+  "hi52": 100.0,
+  "st_reversal": 100.0,
+  "gp_assets": 96.2,
+  "ocf_ni": 96.2,
+  "low_accruals": 96.1,
+  "low_asset_growth": 96.1,
+  "illiq": 100.0,
+  "low_max": 100.0,
+  "low_dvol": 100.0
+ },
+ "modes": {
+  "stable": {
+   "base": {
+    "periods": 87,
+    "total": 132.56,
+    "bench_total": 564.05,
+    "avg_excess": -1.27,
+    "t_excess": -2.04,
+    "beat_0050": 41.4,
+    "mdd": -28.9,
+    "big_loss": 4.6
+   },
+   "blend": {
+    "msurge": {
+     "periods": 87,
+     "total": 209.99,
+     "bench_total": 564.05,
+     "avg_excess": -0.88,
+     "t_excess": -1.39,
+     "beat_0050": 42.5,
+     "mdd": -33.05,
+     "big_loss": 5.7,
+     "vs_base": {
+      "dev_diff": 0.07,
+      "dev_t": 0.17,
+      "first_half": -0.14,
+      "second_half": 0.28,
+      "holdout_diff": 1.45,
+      "mdd_gap": -4.15,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "rev_yoy": {
+     "periods": 87,
+     "total": 70.96,
+     "bench_total": 564.05,
+     "avg_excess": -1.59,
+     "t_excess": -2.42,
+     "beat_0050": 40.2,
+     "mdd": -40.34,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -0.53,
+      "dev_t": -1.68,
+      "first_half": -0.76,
+      "second_half": -0.31,
+      "holdout_diff": 0.38,
+      "mdd_gap": -11.44,
+      "big_loss_gap": 2.3,
+      "e2_model": false
+     }
+    },
+    "rev_mom": {
+     "periods": 87,
+     "total": 50.36,
+     "bench_total": 564.05,
+     "avg_excess": -1.76,
+     "t_excess": -2.75,
+     "beat_0050": 36.8,
+     "mdd": -29.9,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -0.39,
+      "dev_t": -0.89,
+      "first_half": 0.11,
+      "second_half": -0.87,
+      "holdout_diff": -0.83,
+      "mdd_gap": -1.0,
+      "big_loss_gap": 2.3,
+      "e2_model": false
+     }
+    },
+    "ind_mom": {
+     "periods": 87,
+     "total": 189.11,
+     "bench_total": 564.05,
+     "avg_excess": -0.93,
+     "t_excess": -1.41,
+     "beat_0050": 42.5,
+     "mdd": -30.07,
+     "big_loss": 8.0,
+     "vs_base": {
+      "dev_diff": 0.44,
+      "dev_t": 0.87,
+      "first_half": 0.61,
+      "second_half": 0.28,
+      "holdout_diff": -0.01,
+      "mdd_gap": -1.17,
+      "big_loss_gap": 3.4,
+      "e2_model": false
+     }
+    },
+    "rel_ind_mom": {
+     "periods": 87,
+     "total": 68.42,
+     "bench_total": 564.05,
+     "avg_excess": -1.62,
+     "t_excess": -2.58,
+     "beat_0050": 34.5,
+     "mdd": -29.3,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": -0.25,
+      "dev_t": -0.68,
+      "first_half": -0.14,
+      "second_half": -0.36,
+      "holdout_diff": -0.67,
+      "mdd_gap": -0.4,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "hi52": {
+     "periods": 87,
+     "total": 121.06,
+     "bench_total": 564.05,
+     "avg_excess": -1.26,
+     "t_excess": -2.04,
+     "beat_0050": 39.1,
+     "mdd": -33.56,
+     "big_loss": 8.0,
+     "vs_base": {
+      "dev_diff": -0.1,
+      "dev_t": -0.25,
+      "first_half": 0.25,
+      "second_half": -0.45,
+      "holdout_diff": 0.38,
+      "mdd_gap": -4.66,
+      "big_loss_gap": 3.4,
+      "e2_model": false
+     }
+    },
+    "st_reversal": {
+     "periods": 87,
+     "total": 154.86,
+     "bench_total": 564.05,
+     "avg_excess": -1.14,
+     "t_excess": -1.79,
+     "beat_0050": 40.2,
+     "mdd": -27.57,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": -0.18,
+      "dev_t": -0.4,
+      "first_half": -0.63,
+      "second_half": 0.25,
+      "holdout_diff": 1.21,
+      "mdd_gap": 1.33,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "gp_assets": {
+     "periods": 87,
+     "total": 193.17,
+     "bench_total": 564.05,
+     "avg_excess": -0.93,
+     "t_excess": -1.34,
+     "beat_0050": 39.1,
+     "mdd": -30.03,
+     "big_loss": 5.7,
+     "vs_base": {
+      "dev_diff": 0.91,
+      "dev_t": 2.3,
+      "first_half": 1.5,
+      "second_half": 0.33,
+      "holdout_diff": -1.56,
+      "mdd_gap": -1.13,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "ocf_ni": {
+     "periods": 87,
+     "total": 262.8,
+     "bench_total": 564.05,
+     "avg_excess": -0.69,
+     "t_excess": -1.08,
+     "beat_0050": 46.0,
+     "mdd": -29.76,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": 0.2,
+      "dev_t": 0.49,
+      "first_half": 0.19,
+      "second_half": 0.21,
+      "holdout_diff": 1.85,
+      "mdd_gap": -0.86,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_accruals": {
+     "periods": 87,
+     "total": 259.87,
+     "bench_total": 564.05,
+     "avg_excess": -0.68,
+     "t_excess": -1.07,
+     "beat_0050": 44.8,
+     "mdd": -30.37,
+     "big_loss": 5.7,
+     "vs_base": {
+      "dev_diff": 0.44,
+      "dev_t": 1.0,
+      "first_half": 0.73,
+      "second_half": 0.16,
+      "holdout_diff": 1.09,
+      "mdd_gap": -1.47,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "low_asset_growth": {
+     "periods": 87,
+     "total": 228.0,
+     "bench_total": 564.05,
+     "avg_excess": -0.84,
+     "t_excess": -1.13,
+     "beat_0050": 40.2,
+     "mdd": -28.42,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": 0.36,
+      "dev_t": 0.78,
+      "first_half": 0.4,
+      "second_half": 0.33,
+      "holdout_diff": 0.67,
+      "mdd_gap": 0.48,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "illiq": {
+     "periods": 87,
+     "total": 68.47,
+     "bench_total": 564.05,
+     "avg_excess": -1.62,
+     "t_excess": -2.41,
+     "beat_0050": 41.4,
+     "mdd": -29.24,
+     "big_loss": 5.7,
+     "vs_base": {
+      "dev_diff": -0.25,
+      "dev_t": -0.58,
+      "first_half": 0.31,
+      "second_half": -0.79,
+      "holdout_diff": -0.67,
+      "mdd_gap": -0.34,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "low_max": {
+     "periods": 87,
+     "total": 180.79,
+     "bench_total": 564.05,
+     "avg_excess": -1.06,
+     "t_excess": -1.74,
+     "beat_0050": 41.4,
+     "mdd": -20.78,
+     "big_loss": 3.4,
+     "vs_base": {
+      "dev_diff": -0.0,
+      "dev_t": -0.01,
+      "first_half": 0.14,
+      "second_half": -0.15,
+      "holdout_diff": 0.94,
+      "mdd_gap": 8.12,
+      "big_loss_gap": -1.2,
+      "e2_model": false
+     }
+    }
+   },
+   "risk_exclude": {
+    "illiq": {
+     "periods": 87,
+     "total": 101.94,
+     "bench_total": 564.05,
+     "avg_excess": -1.43,
+     "t_excess": -2.3,
+     "beat_0050": 39.1,
+     "mdd": -34.38,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": -0.18,
+      "dev_t": -0.84,
+      "first_half": -0.27,
+      "second_half": -0.1,
+      "holdout_diff": -0.06,
+      "mdd_gap": -5.48,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_max": {
+     "periods": 87,
+     "total": 172.36,
+     "bench_total": 564.05,
+     "avg_excess": -1.08,
+     "t_excess": -1.7,
+     "beat_0050": 42.5,
+     "mdd": -29.61,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": 0.17,
+      "dev_t": 1.16,
+      "first_half": 0.19,
+      "second_half": 0.15,
+      "holdout_diff": 0.28,
+      "mdd_gap": -0.71,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_dvol": {
+     "periods": 87,
+     "total": 123.02,
+     "bench_total": 564.05,
+     "avg_excess": -1.32,
+     "t_excess": -2.06,
+     "beat_0050": 42.5,
+     "mdd": -31.68,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": -0.06,
+      "dev_t": -0.19,
+      "first_half": -0.04,
+      "second_half": -0.07,
+      "holdout_diff": -0.03,
+      "mdd_gap": -2.78,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    }
+   }
+  },
+  "balanced": {
+   "base": {
+    "periods": 87,
+    "total": 170.71,
+    "bench_total": 564.05,
+    "avg_excess": -1.02,
+    "t_excess": -1.18,
+    "beat_0050": 46.0,
+    "mdd": -32.21,
+    "big_loss": 3.4
+   },
+   "blend": {
+    "msurge": {
+     "periods": 87,
+     "total": 1346.46,
+     "bench_total": 564.05,
+     "avg_excess": 1.13,
+     "t_excess": 1.27,
+     "beat_0050": 46.0,
+     "mdd": -30.37,
+     "big_loss": 10.3,
+     "vs_base": {
+      "dev_diff": 1.62,
+      "dev_t": 2.17,
+      "first_half": 1.89,
+      "second_half": 1.36,
+      "holdout_diff": 3.93,
+      "mdd_gap": 1.84,
+      "big_loss_gap": 6.9,
+      "e2_model": false
+     }
+    },
+    "rev_yoy": {
+     "periods": 87,
+     "total": 267.56,
+     "bench_total": 564.05,
+     "avg_excess": -0.5,
+     "t_excess": -0.51,
+     "beat_0050": 47.1,
+     "mdd": -38.74,
+     "big_loss": 9.2,
+     "vs_base": {
+      "dev_diff": 0.36,
+      "dev_t": 0.62,
+      "first_half": -0.11,
+      "second_half": 0.81,
+      "holdout_diff": 1.06,
+      "mdd_gap": -6.53,
+      "big_loss_gap": 5.8,
+      "e2_model": false
+     }
+    },
+    "rev_mom": {
+     "periods": 87,
+     "total": 132.92,
+     "bench_total": 564.05,
+     "avg_excess": -1.1,
+     "t_excess": -1.44,
+     "beat_0050": 39.1,
+     "mdd": -45.64,
+     "big_loss": 10.3,
+     "vs_base": {
+      "dev_diff": -0.67,
+      "dev_t": -1.03,
+      "first_half": -0.44,
+      "second_half": -0.9,
+      "holdout_diff": 1.9,
+      "mdd_gap": -13.43,
+      "big_loss_gap": 6.9,
+      "e2_model": false
+     }
+    },
+    "ind_mom": {
+     "periods": 87,
+     "total": 287.29,
+     "bench_total": 564.05,
+     "avg_excess": -0.35,
+     "t_excess": -0.32,
+     "beat_0050": 42.5,
+     "mdd": -32.41,
+     "big_loss": 9.2,
+     "vs_base": {
+      "dev_diff": 1.08,
+      "dev_t": 1.39,
+      "first_half": 0.8,
+      "second_half": 1.36,
+      "holdout_diff": -0.7,
+      "mdd_gap": -0.2,
+      "big_loss_gap": 5.8,
+      "e2_model": false
+     }
+    },
+    "rel_ind_mom": {
+     "periods": 87,
+     "total": 391.93,
+     "bench_total": 564.05,
+     "avg_excess": -0.2,
+     "t_excess": -0.23,
+     "beat_0050": 47.1,
+     "mdd": -44.39,
+     "big_loss": 5.7,
+     "vs_base": {
+      "dev_diff": 0.17,
+      "dev_t": 0.31,
+      "first_half": -0.25,
+      "second_half": 0.58,
+      "holdout_diff": 3.0,
+      "mdd_gap": -12.18,
+      "big_loss_gap": 2.3,
+      "e2_model": false
+     }
+    },
+    "hi52": {
+     "periods": 87,
+     "total": 225.58,
+     "bench_total": 564.05,
+     "avg_excess": -0.81,
+     "t_excess": -1.11,
+     "beat_0050": 48.3,
+     "mdd": -35.29,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -0.02,
+      "dev_t": -0.03,
+      "first_half": 0.24,
+      "second_half": -0.28,
+      "holdout_diff": 0.99,
+      "mdd_gap": -3.08,
+      "big_loss_gap": 3.5,
+      "e2_model": false
+     }
+    },
+    "st_reversal": {
+     "periods": 87,
+     "total": 89.45,
+     "bench_total": 564.05,
+     "avg_excess": -1.35,
+     "t_excess": -1.64,
+     "beat_0050": 40.2,
+     "mdd": -47.51,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -1.25,
+      "dev_t": -2.11,
+      "first_half": -1.93,
+      "second_half": -0.58,
+      "holdout_diff": 2.73,
+      "mdd_gap": -15.3,
+      "big_loss_gap": 3.5,
+      "e2_model": false
+     }
+    },
+    "gp_assets": {
+     "periods": 87,
+     "total": 250.17,
+     "bench_total": 564.05,
+     "avg_excess": -0.6,
+     "t_excess": -0.68,
+     "beat_0050": 43.7,
+     "mdd": -48.87,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -0.18,
+      "dev_t": -0.29,
+      "first_half": -0.89,
+      "second_half": 0.51,
+      "holdout_diff": 2.42,
+      "mdd_gap": -16.66,
+      "big_loss_gap": 3.5,
+      "e2_model": false
+     }
+    },
+    "ocf_ni": {
+     "periods": 87,
+     "total": 551.02,
+     "bench_total": 564.05,
+     "avg_excess": 0.07,
+     "t_excess": 0.1,
+     "beat_0050": 42.5,
+     "mdd": -36.52,
+     "big_loss": 3.4,
+     "vs_base": {
+      "dev_diff": 0.75,
+      "dev_t": 1.09,
+      "first_half": 1.18,
+      "second_half": 0.34,
+      "holdout_diff": 2.23,
+      "mdd_gap": -4.31,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_accruals": {
+     "periods": 87,
+     "total": 302.78,
+     "bench_total": 564.05,
+     "avg_excess": -0.46,
+     "t_excess": -0.6,
+     "beat_0050": 43.7,
+     "mdd": -45.71,
+     "big_loss": 8.0,
+     "vs_base": {
+      "dev_diff": -0.15,
+      "dev_t": -0.25,
+      "first_half": -0.17,
+      "second_half": -0.14,
+      "holdout_diff": 2.94,
+      "mdd_gap": -13.5,
+      "big_loss_gap": 4.6,
+      "e2_model": false
+     }
+    },
+    "low_asset_growth": {
+     "periods": 87,
+     "total": 298.17,
+     "bench_total": 564.05,
+     "avg_excess": -0.54,
+     "t_excess": -0.65,
+     "beat_0050": 43.7,
+     "mdd": -24.19,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": 0.34,
+      "dev_t": 0.52,
+      "first_half": 1.36,
+      "second_half": -0.65,
+      "holdout_diff": 0.96,
+      "mdd_gap": 8.02,
+      "big_loss_gap": 3.5,
+      "e2_model": false
+     }
+    },
+    "illiq": {
+     "periods": 87,
+     "total": 193.72,
+     "bench_total": 564.05,
+     "avg_excess": -0.9,
+     "t_excess": -1.03,
+     "beat_0050": 43.7,
+     "mdd": -27.58,
+     "big_loss": 4.6,
+     "vs_base": {
+      "dev_diff": 0.16,
+      "dev_t": 0.23,
+      "first_half": 0.5,
+      "second_half": -0.18,
+      "holdout_diff": -0.01,
+      "mdd_gap": 4.63,
+      "big_loss_gap": 1.2,
+      "e2_model": false
+     }
+    },
+    "low_max": {
+     "periods": 87,
+     "total": 160.72,
+     "bench_total": 564.05,
+     "avg_excess": -1.18,
+     "t_excess": -1.8,
+     "beat_0050": 41.4,
+     "mdd": -23.21,
+     "big_loss": 2.3,
+     "vs_base": {
+      "dev_diff": -0.29,
+      "dev_t": -0.42,
+      "first_half": -0.11,
+      "second_half": -0.46,
+      "holdout_diff": 0.27,
+      "mdd_gap": 9.0,
+      "big_loss_gap": -1.1,
+      "e2_model": false
+     }
+    }
+   },
+   "risk_exclude": {
+    "illiq": {
+     "periods": 87,
+     "total": 220.57,
+     "bench_total": 564.05,
+     "avg_excess": -0.81,
+     "t_excess": -0.94,
+     "beat_0050": 40.2,
+     "mdd": -37.0,
+     "big_loss": 3.4,
+     "vs_base": {
+      "dev_diff": 0.1,
+      "dev_t": 0.67,
+      "first_half": 0.24,
+      "second_half": -0.04,
+      "holdout_diff": 0.6,
+      "mdd_gap": -4.79,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_max": {
+     "periods": 87,
+     "total": 235.87,
+     "bench_total": 564.05,
+     "avg_excess": -0.77,
+     "t_excess": -0.89,
+     "beat_0050": 42.5,
+     "mdd": -29.17,
+     "big_loss": 3.4,
+     "vs_base": {
+      "dev_diff": 0.22,
+      "dev_t": 0.57,
+      "first_half": 0.35,
+      "second_half": 0.09,
+      "holdout_diff": 0.38,
+      "mdd_gap": 3.04,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_dvol": {
+     "periods": 87,
+     "total": 203.58,
+     "bench_total": 564.05,
+     "avg_excess": -0.95,
+     "t_excess": -1.29,
+     "beat_0050": 44.8,
+     "mdd": -34.73,
+     "big_loss": 2.3,
+     "vs_base": {
+      "dev_diff": -0.19,
+      "dev_t": -0.35,
+      "first_half": -0.35,
+      "second_half": -0.04,
+      "holdout_diff": 0.98,
+      "mdd_gap": -2.52,
+      "big_loss_gap": -1.1,
+      "e2_model": false
+     }
+    }
+   }
+  },
+  "aggressive": {
+   "base": {
+    "periods": 87,
+    "total": 578.06,
+    "bench_total": 564.05,
+    "avg_excess": 0.43,
+    "t_excess": 0.41,
+    "beat_0050": 48.3,
+    "mdd": -42.76,
+    "big_loss": 9.2
+   },
+   "blend": {
+    "msurge": {
+     "periods": 87,
+     "total": 1071.0,
+     "bench_total": 564.05,
+     "avg_excess": 1.15,
+     "t_excess": 1.0,
+     "beat_0050": 47.1,
+     "mdd": -33.3,
+     "big_loss": 12.6,
+     "vs_base": {
+      "dev_diff": 0.33,
+      "dev_t": 0.52,
+      "first_half": 1.21,
+      "second_half": -0.52,
+      "holdout_diff": 2.05,
+      "mdd_gap": 9.46,
+      "big_loss_gap": 3.4,
+      "e2_model": false
+     }
+    },
+    "rev_yoy": {
+     "periods": 87,
+     "total": 752.44,
+     "bench_total": 564.05,
+     "avg_excess": 0.69,
+     "t_excess": 0.64,
+     "beat_0050": 49.4,
+     "mdd": -37.95,
+     "big_loss": 10.3,
+     "vs_base": {
+      "dev_diff": 0.21,
+      "dev_t": 0.62,
+      "first_half": 0.77,
+      "second_half": -0.33,
+      "holdout_diff": 0.45,
+      "mdd_gap": 4.81,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "rev_mom": {
+     "periods": 87,
+     "total": 297.31,
+     "bench_total": 564.05,
+     "avg_excess": -0.26,
+     "t_excess": -0.26,
+     "beat_0050": 42.5,
+     "mdd": -38.75,
+     "big_loss": 12.6,
+     "vs_base": {
+      "dev_diff": -1.23,
+      "dev_t": -2.78,
+      "first_half": -0.45,
+      "second_half": -1.98,
+      "holdout_diff": 1.12,
+      "mdd_gap": 4.01,
+      "big_loss_gap": 3.4,
+      "e2_model": false
+     }
+    },
+    "ind_mom": {
+     "periods": 87,
+     "total": 337.18,
+     "bench_total": 564.05,
+     "avg_excess": -0.07,
+     "t_excess": -0.06,
+     "beat_0050": 44.8,
+     "mdd": -39.57,
+     "big_loss": 11.5,
+     "vs_base": {
+      "dev_diff": -0.42,
+      "dev_t": -0.59,
+      "first_half": 0.18,
+      "second_half": -1.01,
+      "holdout_diff": -0.75,
+      "mdd_gap": 3.19,
+      "big_loss_gap": 2.3,
+      "e2_model": false
+     }
+    },
+    "rel_ind_mom": {
+     "periods": 87,
+     "total": 486.38,
+     "bench_total": 564.05,
+     "avg_excess": 0.24,
+     "t_excess": 0.24,
+     "beat_0050": 49.4,
+     "mdd": -42.12,
+     "big_loss": 13.8,
+     "vs_base": {
+      "dev_diff": -0.17,
+      "dev_t": -0.35,
+      "first_half": -0.34,
+      "second_half": -0.01,
+      "holdout_diff": -0.23,
+      "mdd_gap": 0.64,
+      "big_loss_gap": 4.6,
+      "e2_model": false
+     }
+    },
+    "hi52": {
+     "periods": 87,
+     "total": 620.74,
+     "bench_total": 564.05,
+     "avg_excess": 0.37,
+     "t_excess": 0.42,
+     "beat_0050": 47.1,
+     "mdd": -40.52,
+     "big_loss": 8.0,
+     "vs_base": {
+      "dev_diff": 0.03,
+      "dev_t": 0.06,
+      "first_half": -0.08,
+      "second_half": 0.15,
+      "holdout_diff": -0.36,
+      "mdd_gap": 2.24,
+      "big_loss_gap": -1.2,
+      "e2_model": false
+     }
+    },
+    "st_reversal": {
+     "periods": 87,
+     "total": 459.56,
+     "bench_total": 564.05,
+     "avg_excess": 0.04,
+     "t_excess": 0.04,
+     "beat_0050": 44.8,
+     "mdd": -31.53,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -0.62,
+      "dev_t": -0.88,
+      "first_half": -0.42,
+      "second_half": -0.82,
+      "holdout_diff": 0.38,
+      "mdd_gap": 11.23,
+      "big_loss_gap": -2.3,
+      "e2_model": false
+     }
+    },
+    "gp_assets": {
+     "periods": 87,
+     "total": 731.33,
+     "bench_total": 564.05,
+     "avg_excess": 0.66,
+     "t_excess": 0.63,
+     "beat_0050": 46.0,
+     "mdd": -40.48,
+     "big_loss": 12.6,
+     "vs_base": {
+      "dev_diff": -0.25,
+      "dev_t": -0.46,
+      "first_half": -0.41,
+      "second_half": -0.1,
+      "holdout_diff": 1.85,
+      "mdd_gap": 2.28,
+      "big_loss_gap": 3.4,
+      "e2_model": false
+     }
+    },
+    "ocf_ni": {
+     "periods": 87,
+     "total": 693.45,
+     "bench_total": 564.05,
+     "avg_excess": 0.48,
+     "t_excess": 0.55,
+     "beat_0050": 48.3,
+     "mdd": -31.97,
+     "big_loss": 11.5,
+     "vs_base": {
+      "dev_diff": 0.18,
+      "dev_t": 0.31,
+      "first_half": 0.6,
+      "second_half": -0.23,
+      "holdout_diff": -0.35,
+      "mdd_gap": 10.79,
+      "big_loss_gap": 2.3,
+      "e2_model": false
+     }
+    },
+    "low_accruals": {
+     "periods": 87,
+     "total": 817.73,
+     "bench_total": 564.05,
+     "avg_excess": 0.59,
+     "t_excess": 0.7,
+     "beat_0050": 46.0,
+     "mdd": -37.68,
+     "big_loss": 10.3,
+     "vs_base": {
+      "dev_diff": 0.1,
+      "dev_t": 0.19,
+      "first_half": 0.0,
+      "second_half": 0.19,
+      "holdout_diff": 0.38,
+      "mdd_gap": 5.08,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "low_asset_growth": {
+     "periods": 87,
+     "total": 574.63,
+     "bench_total": 564.05,
+     "avg_excess": 0.32,
+     "t_excess": 0.33,
+     "beat_0050": 43.7,
+     "mdd": -32.7,
+     "big_loss": 8.0,
+     "vs_base": {
+      "dev_diff": -0.28,
+      "dev_t": -0.34,
+      "first_half": 1.5,
+      "second_half": -2.02,
+      "holdout_diff": 0.49,
+      "mdd_gap": 10.06,
+      "big_loss_gap": -1.2,
+      "e2_model": false
+     }
+    },
+    "illiq": {
+     "periods": 87,
+     "total": 121.17,
+     "bench_total": 564.05,
+     "avg_excess": -1.02,
+     "t_excess": -1.03,
+     "beat_0050": 43.7,
+     "mdd": -40.83,
+     "big_loss": 9.2,
+     "vs_base": {
+      "dev_diff": -1.28,
+      "dev_t": -1.85,
+      "first_half": -1.38,
+      "second_half": -1.19,
+      "holdout_diff": -2.01,
+      "mdd_gap": 1.93,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    },
+    "low_max": {
+     "periods": 87,
+     "total": 445.65,
+     "bench_total": 564.05,
+     "avg_excess": -0.1,
+     "t_excess": -0.13,
+     "beat_0050": 36.8,
+     "mdd": -23.19,
+     "big_loss": 6.9,
+     "vs_base": {
+      "dev_diff": -0.79,
+      "dev_t": -1.13,
+      "first_half": -0.6,
+      "second_half": -0.97,
+      "holdout_diff": 0.34,
+      "mdd_gap": 19.57,
+      "big_loss_gap": -2.3,
+      "e2_model": false
+     }
+    }
+   },
+   "risk_exclude": {
+    "illiq": {
+     "periods": 87,
+     "total": 579.32,
+     "bench_total": 564.05,
+     "avg_excess": 0.41,
+     "t_excess": 0.4,
+     "beat_0050": 43.7,
+     "mdd": -42.76,
+     "big_loss": 10.3,
+     "vs_base": {
+      "dev_diff": -0.14,
+      "dev_t": -0.65,
+      "first_half": 0.07,
+      "second_half": -0.35,
+      "holdout_diff": 0.41,
+      "mdd_gap": 0.0,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "low_max": {
+     "periods": 87,
+     "total": 514.47,
+     "bench_total": 564.05,
+     "avg_excess": 0.28,
+     "t_excess": 0.27,
+     "beat_0050": 44.8,
+     "mdd": -40.57,
+     "big_loss": 10.3,
+     "vs_base": {
+      "dev_diff": -0.55,
+      "dev_t": -1.19,
+      "first_half": -0.21,
+      "second_half": -0.88,
+      "holdout_diff": 1.19,
+      "mdd_gap": 2.19,
+      "big_loss_gap": 1.1,
+      "e2_model": false
+     }
+    },
+    "low_dvol": {
+     "periods": 87,
+     "total": 561.26,
+     "bench_total": 564.05,
+     "avg_excess": 0.21,
+     "t_excess": 0.23,
+     "beat_0050": 49.4,
+     "mdd": -37.31,
+     "big_loss": 9.2,
+     "vs_base": {
+      "dev_diff": -0.56,
+      "dev_t": -0.9,
+      "first_half": 0.3,
+      "second_half": -1.41,
+      "holdout_diff": 0.95,
+      "mdd_gap": 5.45,
+      "big_loss_gap": 0.0,
+      "e2_model": false
+     }
+    }
+   }
+  }
+ },
+ "simple": {
+  "universe_ew": {
+   "periods": 87,
+   "total": 226.34,
+   "bench_total": 564.05,
+   "avg_excess": -0.85,
+   "t_excess": -1.6,
+   "beat_0050": 40.2,
+   "mdd": -25.29,
+   "big_loss": 4.6
+  }
+ },
+ "e2_factor": [
+  "msurge"
+ ],
+ "e2_model": [],
+ "periods": 87,
+ "first": "2019-07-31",
+ "last": "2026-08-27",
+ "schema_version": 1,
+ "study_version": "2026-10-28",
+ "generated_at": "2026-10-28T19:58:57+08:00",
+ "holdout_from": "2025-01-01",
+ "blend_weight": 0.25,
+ "t_factor": 2.7,
+ "t_model": 2.9,
+ "mdd_gap": 5.0,
+ "cost_pct": 0.585,
+ "data_end": "2026-10-28",
+ "seconds": 437,
+ "gaps": {
+  "H03": "法人買賣超資料只從 2026-08 開始，歷史不足，本次未測"
+ },
+ "run_by": "本機（和 GitHub 同一份資料庫備份）；之後每週回測自動重跑",
+ "note": "歷史回測（研究），最多只能給到 E2；正式模型不因本研究自動改變。"
+}

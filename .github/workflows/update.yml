@@ -137,6 +137,14 @@ jobs:
           pip install -q lightgbm==4.5.0
           python -m app.ml_predict
 
+      # V21.1 學術候選影子紀錄（均衡型＋月營收驚喜）：行情齊全後每天封存一次，只做前瞻驗證，不影響正式排行榜
+      - name: 學術候選影子紀錄
+        id: acad
+        if: env.MODE != 'premarket'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python -m app.shadow_academic
+
       # V20.4 到期對帳明細：每一批封存的預測（影子預測、正式精選）到期後逐檔列出結果，只寫一次（history/audit/maturity/）
       - name: 到期對帳明細
         id: mature
@@ -218,7 +226,7 @@ jobs:
         run: >-
           python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
-          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}"
 
       - name: 備份資料庫到 GitHub Release
         id: backup

@@ -48,7 +48,12 @@
    "used_by": [
     "rel_ind_mom"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P003",
@@ -66,7 +71,12 @@
    "used_by": [
     "st_reversal"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P004",
@@ -84,7 +94,12 @@
    "used_by": [
     "hi52"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P005",
@@ -102,7 +117,12 @@
    "used_by": [
     "ind_mom"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P006",
@@ -120,7 +140,12 @@
    "used_by": [
     "low_asset_growth"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P007",
@@ -138,7 +163,12 @@
    "used_by": [
     "gp_assets"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P008",
@@ -157,7 +187,12 @@
     "ocf_ni",
     "low_accruals"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P009",
@@ -207,7 +242,12 @@
    "used_by": [
     "illiq"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P012",
@@ -225,7 +265,12 @@
    "used_by": [
     "low_max"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E1（台股未通過）",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28"
+   }
   },
   {
    "id": "P013",
@@ -395,7 +440,15 @@
     "rev_yoy",
     "rev_mom"
    ],
-   "doi_check": null
+   "doi_check": null,
+   "tw_result": {
+    "level": "E2",
+    "factor": "msurge",
+    "summary": "台股 87 期：20 日 IC 0.039（t 4.89），增量 IC 0.037（t 4.57），前 10% 扣成本 +0.61%／20 日；模型層級未過門檻",
+    "source": "history/backtest/academic.json",
+    "date": "2026-10-28",
+    "formula_note": "本系統採 SUE 式定義：本月年增額相對過去 12 個月年增額的標準化偏離；原論文公式未核對全文"
+   }
   },
   {
    "id": "P023",

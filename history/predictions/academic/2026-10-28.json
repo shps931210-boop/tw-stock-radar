@@ -1,0 +1,159 @@
+{
+ "schema_version": 1,
+ "signal_date": "2026-10-28",
+ "generated_at": "2026-10-28T20:06:50",
+ "status": "shadow",
+ "candidate": "balanced_msurge",
+ "label": "均衡型＋月營收驚喜（學術候選，影子）",
+ "study": "history/backtest/academic.json（事前登記 2026-10-28）",
+ "rule": "0.75×均衡型分數百分位＋0.25×MSURGE 百分位；沒有 MSURGE 的股票給中位數",
+ "universe_n": 743,
+ "msurge_coverage": 98.3,
+ "lists": {
+  "balanced": [
+   {
+    "stock_id": "2451",
+    "name": "創見",
+    "rank": 1,
+    "balanced_score": 89.0,
+    "msurge": 0.711
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 2,
+    "balanced_score": 82.3,
+    "msurge": 1.659
+   },
+   {
+    "stock_id": "2615",
+    "name": "萬海",
+    "rank": 3,
+    "balanced_score": 79.8,
+    "msurge": 2.662
+   },
+   {
+    "stock_id": "2851",
+    "name": "中再保",
+    "rank": 4,
+    "balanced_score": 77.9,
+    "msurge": -0.446
+   },
+   {
+    "stock_id": "5386",
+    "name": "青雲",
+    "rank": 5,
+    "balanced_score": 77.1,
+    "msurge": 0.419
+   },
+   {
+    "stock_id": "2637",
+    "name": "慧洋-KY",
+    "rank": 6,
+    "balanced_score": 76.4,
+    "msurge": 0.249
+   },
+   {
+    "stock_id": "2059",
+    "name": "川湖",
+    "rank": 7,
+    "balanced_score": 76.3,
+    "msurge": 0.71
+   },
+   {
+    "stock_id": "6651",
+    "name": "全宇昕",
+    "rank": 8,
+    "balanced_score": 75.8,
+    "msurge": 0.97
+   },
+   {
+    "stock_id": "4967",
+    "name": "十銓",
+    "rank": 9,
+    "balanced_score": 75.0,
+    "msurge": 0.899
+   },
+   {
+    "stock_id": "6532",
+    "name": "瑞耘",
+    "rank": 10,
+    "balanced_score": 74.2,
+    "msurge": 1.529
+   }
+  ],
+  "balanced_msurge": [
+   {
+    "stock_id": "2615",
+    "name": "萬海",
+    "rank": 1,
+    "balanced_score": 79.8,
+    "msurge": 2.662
+   },
+   {
+    "stock_id": "4973",
+    "name": "廣穎",
+    "rank": 2,
+    "balanced_score": 72.3,
+    "msurge": 2.346
+   },
+   {
+    "stock_id": "2360",
+    "name": "致茂",
+    "rank": 3,
+    "balanced_score": 70.8,
+    "msurge": 2.684
+   },
+   {
+    "stock_id": "3081",
+    "name": "聯亞",
+    "rank": 4,
+    "balanced_score": 73.3,
+    "msurge": 2.049
+   },
+   {
+    "stock_id": "3356",
+    "name": "奇偶",
+    "rank": 5,
+    "balanced_score": 72.3,
+    "msurge": 2.231
+   },
+   {
+    "stock_id": "2605",
+    "name": "新興",
+    "rank": 6,
+    "balanced_score": 82.3,
+    "msurge": 1.659
+   },
+   {
+    "stock_id": "3167",
+    "name": "大量",
+    "rank": 7,
+    "balanced_score": 70.7,
+    "msurge": 2.061
+   },
+   {
+    "stock_id": "8299",
+    "name": "群聯",
+    "rank": 8,
+    "balanced_score": 73.4,
+    "msurge": 1.721
+   },
+   {
+    "stock_id": "6532",
+    "name": "瑞耘",
+    "rank": 9,
+    "balanced_score": 74.2,
+    "msurge": 1.529
+   },
+   {
+    "stock_id": "3624",
+    "name": "光頡",
+    "rank": 10,
+    "balanced_score": 68.0,
+    "msurge": 2.276
+   }
+  ]
+ },
+ "overlap": 3
+}
