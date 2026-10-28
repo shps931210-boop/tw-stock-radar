@@ -102,6 +102,12 @@ jobs:
         continue-on-error: true
         timeout-minutes: 60
         run: python -m app.academic_study
+      # V21.2 投資價值 × 進場機會兩層分數研究（2026-10-28 事前登記）：用上一步的特徵快取
+      - name: 兩層分數研究
+        id: twol
+        continue-on-error: true
+        timeout-minutes: 30
+        run: python -m app.twolayer_study
       # 學術證據庫 DOI 核對（Crossref 免費 API）
       - name: 文獻 DOI 核對
         id: doi
@@ -122,7 +128,7 @@ jobs:
         run: >-
           python -m app.step_log "風險規則檢驗=${{ steps.risk.outcome }}" "資料與回測稽核=${{ steps.leak.outcome }}"
           "組合風險研究=${{ steps.port.outcome }}" "預測模型研究=${{ steps.mlr.outcome }}" "上傳研究資料集=${{ steps.panel.outcome }}"
-          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}" "選股品質總檢討=${{ steps.sel.outcome }}" "學術假說驗證=${{ steps.acad.outcome }}" "文獻核對=${{ steps.doi.outcome }}"
+          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}" "選股品質總檢討=${{ steps.sel.outcome }}" "學術假說驗證=${{ steps.acad.outcome }}" "文獻核對=${{ steps.doi.outcome }}" "兩層分數研究=${{ steps.twol.outcome }}"
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"

@@ -273,6 +273,10 @@ def analyse(D: dict, periods: list[dict], log=print) -> dict:
     t0 = time.time()
     FS = [(P, features(D, P)) for P in periods]
     log(f"特徵 {time.time() - t0:.0f} 秒")
+    try:   # 給 twolayer_study 共用（data/ 不進 git）
+        (config.DATA_DIR / "academic_features.pkl").write_bytes(pickle.dumps(FS))
+    except OSError as e:
+        log(f"特徵快取寫入失敗：{e}")
     cov = {f: round(float(np.mean([X[f].notna().mean() if f in X else 0 for _, X in FS])) * 100, 1) for f in list(FACTORS) + ["low_dvol"]}
     res = {"factors": {}, "coverage_pct": cov, "modes": {}}
     for f, (hyp, name, ref, desc) in FACTORS.items():
