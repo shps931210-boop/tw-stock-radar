@@ -13,7 +13,7 @@ from app import literature
 
 def _rev(n=30, start="2024-01", bump=None):
     ym = [str(p) for p in pd.period_range(start, periods=n, freq="M")]
-    rev = [100.0 + i for i in range(n)]
+    rev = [100.0 + i + (i % 5) for i in range(n)]   # 每個月年增額略有起伏
     if bump:
         rev[ym.index(bump)] += 50
     return pd.DataFrame({"stock_id": "x", "ym": ym, "revenue": rev})
@@ -24,13 +24,13 @@ class Revenue(unittest.TestCase):
         R = _rev(30, bump="2026-05")
         a = ac._rev_feats(R, "2026-06-10")   # 5 月營收 6/11 才能用
         b = ac._rev_feats(R, "2026-06-11")
-        self.assertIsNone(a.get("msurge"))   # 6/10 只看得到 4 月營收，5 月的驚喜還不能用
+        self.assertLess(a["msurge"], 3)   # 6/10 只看得到 4 月營收，5 月的驚喜還不能用
         self.assertGreater(b["msurge"], 3)
 
     def test_yoy_and_steady_surprise(self):
         f = ac._rev_feats(_rev(30), "2026-06-11")
-        self.assertAlmostEqual(f["rev_yoy"], (100 + 28) / (100 + 16) - 1)
-        self.assertNotIn("msurge", f)   # 年增額完全不變 → 標準差 0，不硬算
+        self.assertAlmostEqual(f["rev_yoy"], (100 + 28 + 3) / (100 + 16 + 1) - 1)
+        self.assertLess(abs(f["msurge"]), 3)   # 沒有異常的月份 → 驚喜不大
 
     def test_stale_revenue_ignored(self):
         self.assertEqual(ac._rev_feats(_rev(20), "2026-06-11"), {})
