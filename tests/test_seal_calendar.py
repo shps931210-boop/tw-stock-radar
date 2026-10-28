@@ -48,6 +48,22 @@ class Calendar(unittest.TestCase):
         self.assertIn("2026-10-27", c["summary"]["missing"])  # 有行情但沒封存
 
 
+class PreOpen(unittest.TestCase):
+    def test_pre_open_matched_by_target_day(self):
+        """盤前版用目標交易日命名：10/27 收盤後的預測，對應 10/28 開盤前的盤前版。"""
+        with tempfile.TemporaryDirectory() as t:
+            r = Path(t)
+            pred, picks = r / "pred", r / "picks"
+            (pred / "pre_open").mkdir(parents=True); picks.mkdir()
+            (pred / "2026-10-27.json").write_text(json.dumps({"generated_at": "2026-10-27T15:33:00"}))
+            (pred / "pre_open" / "2026-10-28.json").write_text(json.dumps({"created_at": "2026-10-28T08:02:29", "scores_changed": False}))
+            (r / "h.json").write_text("{}"); (r / "n.json").write_text("{}")
+            c = seal_calendar.build(today=date(2026, 10, 28), data_days=["2026-10-27"], pred=pred, picks=picks, hol=r / "h.json", notes=r / "n.json")
+            d = {x["date"]: x for x in c["days"]}["2026-10-27"]
+            self.assertTrue(d["pre_open"] and d["pre_open_on_time"])
+            self.assertEqual(c["summary"]["pre_open"], 1)
+
+
 class LearningNewData(unittest.TestCase):
     def test_success_without_new_trading_day_is_labelled(self):
         with tempfile.TemporaryDirectory() as t:
@@ -65,6 +81,7 @@ class LearningNewData(unittest.TestCase):
 
 
 class Export(unittest.TestCase):
+    @unittest.skipUnless((Path(__file__).resolve().parents[1] / ".git").exists(), "這個測試只在 Git 工作樹執行；解壓後的 zip 用 test_unpacked_zip_verifies")
     def test_zip_has_audit_results_and_manifest(self):
         from app import export
         fs = export.files()
@@ -73,3 +90,34 @@ class Export(unittest.TestCase):
         m = export.manifest(fs[:3] + ["app/export.py"], {f: b"x" for f in fs[:3] + ["app/export.py"]})
         self.assertTrue(m["commit"] and m["code_sha256"])
         self.assertIn("last_data_date", m["data"])
+
+    def test_unpacked_zip_verifies(self):
+        """解壓後沒有 .git 也能檢查：MANIFEST 的檔案都在、雜湊相同；改掉一個檔案要被抓到。"""
+        import zipfile
+        from app import export
+        with tempfile.TemporaryDirectory() as t:
+            T = Path(t)
+            root = T / "x"
+            for f in export.REQUIRED + ("README.md",):
+                (root / f).parent.mkdir(parents=True, exist_ok=True)
+                (root / f).write_text("{}")
+            (root / "data").mkdir()
+            (root / "data" / "stocks.db").write_text("db")
+            fs = export.files(root)
+            self.assertIn("history/audit/coverage.json", fs)
+            self.assertNotIn("data/stocks.db", fs)
+            blobs = {f: (root / f).read_bytes() for f in fs}
+            m = export.manifest(fs, blobs)
+            z = T / "a.zip"
+            with zipfile.ZipFile(z, "w") as zf:
+                zf.writestr("tw-stock-screener/MANIFEST.json", json.dumps(m))
+                for f in fs:
+                    zf.writestr("tw-stock-screener/" + f, blobs[f])
+            zipfile.ZipFile(z).extractall(T / "out")
+            out = T / "out" / "tw-stock-screener"
+            self.assertTrue(export.verify(out)["ok"])
+            self.assertEqual(sorted(export.files(out)), sorted(fs))
+            (out / "README.md").write_text("changed")
+            v = export.verify(out)
+            self.assertFalse(v["ok"])
+            self.assertEqual(v["changed"], ["README.md"])

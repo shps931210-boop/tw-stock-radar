@@ -277,6 +277,13 @@ def score_frame(df: pd.DataFrame, cfg: dict, today) -> tuple[pd.DataFrame, dict]
     df.loc[small, ["industry_rank", "industry_n"]] = np.nan
     df["market_rank_pct"] = df["composite"].rank(pct=True) * 100
     df["ref_scores"] = _ref_scores(df, S_in, base)
+    # V20.4 母體外綜合分數：沒進正式排名母體、但五個參考分項都算得出來的股票，用和正式綜合分數完全相同的權重加總。
+    # 只給個股研究和覆蓋率統計用；不進排行榜、不進 AI 精選，正式分數與名次不動
+    df["ref_composite"] = [round(sum(d[k] * v for k, v in w.items()) / sum(w.values()), 1) if isinstance(d, dict) and all(k in d for k in w) else None
+                           for d in df["ref_scores"]]
+    # V20.4 每個因子缺什麼（看資料本身）：miss 缺資料、stale 過期、na 去年同期虧損不適用、loss 近四季虧損不適用、hist 歷史不足
+    df["factor_gaps"] = [sorted({f"{k}:{g[0] if isinstance(g, tuple) else 'hist'}" for k in w for g in (gaps[k][pos[ix]] or [])})
+                         for ix in df.index]
     if "earnings_yield" in df and "roa" in df:
         ok = base & ~df["is_financial"] & df["earnings_yield"].notna() & df["roa"].notna()
         combo = df["earnings_yield"].where(ok).rank(ascending=False) + df["roa"].where(ok).rank(ascending=False)
@@ -446,7 +453,7 @@ def build(demo: bool = False) -> dict:
         try:  # V19：新財報同步後的改分紀錄、全市場資料完整性稽核
             from . import coverage, fin_watch
             with db.connect(dbname) as con:
-                fin_watch.after_snapshot(con)
+                fin_watch.after_snapshot(con, rows=rows)
                 au = coverage.audit(con, rows, decision)
                 (config.DATA_DIR / "coverage_audit.json").write_text(json.dumps(au, ensure_ascii=False, separators=(",", ":")), "utf-8")
                 # V20.1：總表（不含逐檔）也存進 repository，正式資料庫的覆蓋率每次更新都留下紀錄，不必另外下載資料庫
@@ -529,6 +536,9 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
         M["ai"] = {"status": "partial" if have else "missing_source", "why": why + (f"；缺：{'、'.join(miss)}" if miss else "")}
         if have:
             M["ai"]["label"] = "參考分項，不排名"  # 和正式 AI 排名分開：沒有綜合分數、不進排行榜
+        if r.get("ref_composite") is not None:
+            M["ai"]["label"] = "母體外綜合分數，不排名"
+            M["ai"]["why"] = why + f"；五個因子都算得出來，同一套權重的綜合分數 {r['ref_composite']}（只供研究，不進排行榜與 AI 精選）"
     for m in M.values():
         m.setdefault("label", STATUS_TXT.get(m["status"], m["status"]))
     return M

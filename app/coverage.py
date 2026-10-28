@@ -100,6 +100,12 @@ def _months(end: str, n: int) -> list[str]:
     return out
 
 
+SCORE_CAT = {"miss": "資料缺失", "stale": "資料過期（財報、營收或本益比沒更新到應有的期別）",
+             "na": "財務指標不適用（去年同期虧損，年增率沒有意義）", "loss": "財務指標不適用（近四季虧損，本益比沒有意義）",
+             "hist": "股價歷史不足（新上市或停牌）"}
+FLABEL = {"quality": "財務品質", "growth": "成長能力", "value": "估值合理性", "momentum": "股價動能", "trend": "趨勢確認"}
+
+
 def audit(con, rows: list[dict], decision: dict, today=None) -> dict:
     from . import config
     from .snapshot import expected_fin_end, expected_rev_ym
@@ -117,6 +123,15 @@ def audit(con, rows: list[dict], decision: dict, today=None) -> dict:
     q32 = _quarters(fin_end, 32)
     for sid, p in con.execute("SELECT stock_id, period FROM financials WHERE (revenue IS NOT NULL OR eps IS NOT NULL) AND period >= ?", (q32[-1],)):
         fin_set.setdefault(sid, set()).add(p)
+    # V20.4 財報完整率分層：有紀錄 → 必要指標（營收、淨利、EPS）→ 主要科目（再加資產、負債、權益、營業現金流；一般業再加營業利益）
+    fin_req, fin_main = {}, {}
+    for row in con.execute("SELECT stock_id, period, revenue, operating_income, net_income, eps, total_assets, total_liabilities, equity, ocf "
+                           "FROM financials WHERE period >= ?", (_quarters(fin_end, 4)[-1],)):
+        sid, p, rev, op, ni, eps, ta, tl, eq, ocf = row
+        if None not in (rev, ni, eps):
+            fin_req.setdefault(sid, set()).add(p)
+        if None not in (ni, eps, ta, tl, eq, ocf):
+            fin_main.setdefault(sid, {})[p] = (rev is not None and op is not None)
     last_day = max((v[1] for v in px.values()), default=None)
     recent = [d for (d,) in con.execute("SELECT DISTINCT date FROM prices ORDER BY date DESC LIMIT 5")]
     chip_cut = recent[-1] if recent else None
@@ -129,6 +144,7 @@ def audit(con, rows: list[dict], decision: dict, today=None) -> dict:
         ann = {}
 
     per_stock, gaps = [], Counter()
+    score_cat, score_fac, score_ex = Counter(), Counter(), {}
     gap_ex: dict = {}
     C = Counter()
     for r in common:
@@ -139,6 +155,11 @@ def audit(con, rows: list[dict], decision: dict, today=None) -> dict:
         rev12 = len(m12 & rev_set.get(sid, set()))
         have_q = fin_set.get(sid, set())
         fin4 = q4 <= have_q
+        fin_req4 = q4 <= fin_req.get(sid, set())
+        fm = fin_main.get(sid, {})
+        fin_main4 = fin_req4 and q4 <= set(fm) and (bool(r.get("is_financial")) or all(fm[q] for q in q4))   # 分層：主要科目包含必要指標
+        ref = (decision[sid].get("ref_scores") or {}) if not r.get("base_ok") else {f: r.get(f"score_{f}") for f in ("quality", "growth", "value") if r.get(f"score_{f}") is not None}
+        fin_factor = all(f in ref for f in ("quality", "growth", "value"))
         fin_years = {y: len(set(q32[:4 * y]) & have_q) >= 4 * y - 1 for y in FIN_YEARS}
         inst_ok = bool(i and chip_cut and i[1] >= chip_cut)
         mg_ok = bool(m and chip_cut and m[1] >= chip_cut)
@@ -154,6 +175,23 @@ def audit(con, rows: list[dict], decision: dict, today=None) -> dict:
             C[f"px{d}"] += n_px >= d
         C["rev12"] += rev12 == 12
         C["fin4"] += fin4
+        C["fin_req4"] += fin_req4
+        C["fin_main4"] += fin_main4
+        C["fin_factor"] += fin_factor
+        ai_ref_full = not ai_off and r.get("ref_composite") is not None
+        C["ai_ref_full"] += ai_ref_full
+        C["ai_full"] += ai_off or ai_ref_full
+        if not (ai_off or ai_ref_full):   # 沒有完整綜合分數（正式或母體外）：拆成缺哪個因子、什麼原因
+            kinds = {g.split(":")[1] for g in r.get("factor_gaps") or []}
+            cats = {SCORE_CAT[k] for k in kinds} or {"必要項目數不夠（有部分資料，但不足以計分）"}
+            if not ai_any:
+                cats.add("完全無法評分")
+            for c_ in cats:
+                score_cat[c_] += 1
+                score_ex.setdefault(c_, []).append(sid) if len(score_ex.get(c_, [])) < 8 else None
+            for g in r.get("factor_gaps") or []:
+                f_, k_ = g.split(":")
+                score_fac[f"{FLABEL.get(f_, f_)}：{SCORE_CAT[k_]}"] += 1
         for y in FIN_YEARS:
             C[f"fin{y}y"] += fin_years[y]
         C["inst"] += inst_ok
@@ -220,16 +258,29 @@ def audit(con, rows: list[dict], decision: dict, today=None) -> dict:
         "schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds"),
         "source": "正式資料庫 data/stocks.db（證交所、櫃買中心、FinMind）；不含示範資料",
         "as_of": {"prices": last_day, "expected_fin_quarter": _quarters(fin_end, 1)[0], "expected_rev_ym": rev_ym, "chip_cut": chip_cut},
-        "universe": {"common": n, "twse": mk.get("twse", 0), "tpex": mk.get("tpex", 0)},
+        "universe": {"common": n, "twse": mk.get("twse", 0), "tpex": mk.get("tpex", 0),
+                     "other": [{"id": r["stock_id"], "name": r.get("name"), "market": r.get("market")} for r in common if r.get("market") not in ("twse", "tpex")],
+                     "note": "分母＝這次快照裡的普通股（ETF、特別股、存託憑證不算）。上市＋上櫃以外的是股票清單市場別還是「emerging（興櫃）」的股票，"
+                             "多半是剛從興櫃轉上市櫃、已經有正式行情；股票清單每週更新時會改正市場別。"},
         "summary": [rowsum("quote", "有最新行情"), *[rowsum(f"px{d}", f"至少 {d} 個交易日行情") for d in PX_DAYS],
-                    rowsum("rev12", "近 12 個月月營收完整"), rowsum("fin4", "近四季財報完整"),
+                    rowsum("rev12", "近 12 個月月營收完整"), rowsum("fin4", "近四季都有財報紀錄（營收或 EPS）"),
+                    rowsum("fin_req4", "近四季必要指標齊全（營收、淨利、EPS）"), rowsum("fin_main4", "近四季主要科目齊全（再加資產、負債、權益、營業現金流）"),
+                    rowsum("fin_factor", "可計算基本面因子（品質、成長、估值都算得出來）"),
                     *[rowsum(f"fin{y}y", f"有 {y} 年財報歷史") for y in FIN_YEARS],
                     rowsum("inst", "有最新法人買賣資料"), rowsum("margin", "有最新融資融券資料"), rowsum("val", "可計算有效估值"),
-                    rowsum("ai_any", "可計算 AI 評分（含參考分數）"), rowsum("ai_official", "有正式 AI 綜合分數"),
+                    rowsum("ai_any", "可計算 AI 評分（含參考分數）"), rowsum("ai_official", "有正式 AI 綜合分數（推薦母體內，參與排名）"),
+                    rowsum("ai_ref_full", "有母體外綜合分數（同一套公式，不排名）"), rowsum("ai_full", "有完整綜合分數（正式＋母體外）"),
                     rowsum("eligible", "可納入正式推薦")],
         "overall": {STATUS8[k[8:]]: v for k, v in C.items() if k.startswith("overall_")},
         "gaps": [{"why": w, "stocks": c, "examples": gap_ex.get(w, [])} for w, c in gaps.most_common(40)],
+        # V20.4 正式評分與推薦資格分開：「評分」看五個因子算不算得出來；「推薦資格」另外看流動性、處置、長期虧損
+        "score_tiers": {"official": C["ai_official"], "ref_full": C["ai_ref_full"], "partial": C["ai_any"] - C["ai_official"] - C["ai_ref_full"],
+                        "none": n - C["ai_any"], "eligible": C["eligible"],
+                        "rule": "正式綜合分數只在推薦母體內排名（成交金額、交易日數、長期虧損、處置股的門檻沒有放寬）；"
+                                "母體外但五個因子都算得出來的股票，用同一套權重算綜合分數，只給個股研究參考，不排名、不進 AI 精選。"},
+        "score_gaps": [{"why": w, "stocks": c, "examples": score_ex.get(w, [])} for w, c in score_cat.most_common()],
+        "score_gaps_by_factor": [{"why": w, "stocks": c} for w, c in score_fac.most_common(20)],
         "stocks": per_stock,
         "notes": ["「不符合正式推薦資格」只代表不進 AI 精選（例如成交金額過低），不等於沒有資料；個股研究資訊照常可用。",
-                  "財報完整以「有營收或 EPS」計；N 年歷史＝最近 4N 季至少有 4N-1 季。法人、融資融券只從 2026-08 起有資料，不能假設和股價一樣長。"],
+                  "財報分四層：有紀錄、必要指標、主要科目、可計算基本面因子；「有紀錄」不代表所有科目都完整。N 年歷史＝最近 4N 季至少有 4N-1 季。法人、融資融券只從 2026-08 起有資料，不能假設和股價一樣長。"],
     }

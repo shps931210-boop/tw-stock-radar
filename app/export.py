@@ -14,19 +14,56 @@ import json
 import subprocess
 import sys
 import zipfile
+from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
 from . import config
 
 HIST = ("history/backtest/", "history/models/", "history/predictions/", "history/premarket/", "history/research/", "history/learning/",
         "history/audit/", "history/fin/", "history/paper/")
+REQUIRED = ("history/audit/coverage.json", "history/audit/seal_calendar.json", "history/fin/updates.json", "app/export.py")   # 打包一定要有的成果檔
 SKIP = ("data/.gitkeep", "package-lock.json", "history/backtest/joint_trades.json")
 CODE = ("app/", "static/", "tests/", "worker/", "supabase/", ".github/", "build_site.py", "build_demo.py", "requirements.txt", "config", "docs/", "README.md")
 
 
-def files() -> list[str]:
-    fs = subprocess.run(["git", "ls-files"], capture_output=True, text=True, cwd=config.ROOT).stdout.split()
+IGNORE_DIRS = {".git", "data", "site", "__pycache__", "node_modules", ".pytest_cache"}
+
+
+def _walk(root: Path) -> list[str]:
+    """沒有 .git 的環境（例如解壓後的 zip）：直接列出檔案，排除和 .gitignore 相同的目錄（資料庫、網站輸出、快取）。"""
+    out = []
+    for p in sorted(root.rglob("*")):
+        rel = p.relative_to(root)
+        if p.is_file() and not (set(rel.parts[:-1]) & IGNORE_DIRS) and rel.parts[0] not in IGNORE_DIRS and p.name != "MANIFEST.json" \
+                and not p.name.endswith(".pyc"):
+            out.append(rel.as_posix())
+    return out
+
+
+def files(root: Path | None = None) -> list[str]:
+    """要打包的檔案。Git 工作樹用 git ls-files（只包已納入版本控制的檔案）；沒有 .git 時改成直接列目錄，兩種環境都能驗證（V20.4）。"""
+    root = Path(root or config.ROOT)
+    if (root / ".git").exists():
+        fs = subprocess.run(["git", "ls-files"], capture_output=True, text=True, cwd=root).stdout.split()
+    else:
+        fs = _walk(root)
     return [f for f in fs if (not f.startswith("history/") or f.startswith(HIST)) and f not in SKIP and not f.startswith("history/premarket/events/")]
+
+
+def verify(root: Path) -> dict:
+    """解壓後的內容檢查：MANIFEST.json 列的每個檔案都要存在、SHA-256 前 16 碼相同，必要的成果檔都要在。不需要 .git。"""
+    root = Path(root)
+    m = json.loads((root / "MANIFEST.json").read_text("utf-8"))
+    missing, changed = [], []
+    for f, h in m["files"].items():
+        p = root / f
+        if not p.exists():
+            missing.append(f)
+        elif hashlib.sha256(p.read_bytes()).hexdigest()[:16] != h:
+            changed.append(f)
+    need = [f for f in REQUIRED if f not in m["files"]]
+    return {"ok": not (missing or changed or need), "files": len(m["files"]), "missing": missing, "changed": changed, "required_missing": need,
+            "commit": m.get("commit")}
 
 
 def _git(*a) -> str:

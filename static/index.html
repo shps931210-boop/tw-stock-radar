@@ -1908,6 +1908,7 @@ function pagePerformance() {
     <section><div class="eyebrow">真實紀錄，不是回測</div><h1>績效中心</h1>
       <p class="lead">AI 名單每天開盤前存檔，之後照固定規則算成績：隔天開盤買、扣交易成本，和 0050 比。</p></section>
     <div id="pfsum">${perfTable()}</div>
+    <section class="card" id="mature" hidden></section>
     <section class="card" id="paper" hidden></section>
     <section class="card" id="replay" hidden></section>
     <section class="card" id="ledg" hidden></section>
@@ -1920,6 +1921,34 @@ function pagePerformance() {
   loadWeekly().then(() => { const el = $("#pfsum"); if (el) el.innerHTML = perfTable(); });
   loadLedgers();
   loadPaper();
+  loadMature();
+}
+// V20.4 到期對帳明細：每一批封存的預測到期後逐檔列出（data/predictions/maturity/）
+let MATI = null;
+async function loadMature() {
+  if (!SITE) return;
+  const q = (p) => `data/predictions/maturity/${p}${verQ("predictions/maturity/" + p) || "?t=" + Date.now()}`;
+  if (!MATI) MATI = await fetch(q("index.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const el = $("#mature"); if (!el || !MATI?.batches?.length) return;
+  const B = MATI.batches, cur = B.find((b) => b.file === store.get("matFile")) || B[0];
+  const R = await fetch(q(cur.file)).then((r) => (r.ok ? r.json() : null)).catch(() => null); if (!R) return;
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`, pp = (v) => v == null ? "—" : fmtNum(v, 0) + "%";
+  const tbl = (rows, nameOf) => `<div class="tbl"><table class="wrap"><thead><tr><th>名單</th><th class="r">買得到</th><th class="r">扣成本平均</th><th class="r">相對 0050</th><th class="r">上漲比例</th><th class="r">跑贏 0050 比例</th><th>拖累最多</th></tr></thead><tbody>
+    ${rows.map(([k, x]) => `<tr><td>${esc(nameOf(k, x))}</td><td class="r num">${x.filled}／${x.n}</td><td class="r">${pc(x.mean_net)}</td><td class="r">${pc(x.mean_excess)}</td><td class="r num">${pp(x.up_hit)}</td><td class="r num">${pp(x.beat_0050)}</td>
+      <td class="small">${(x.worst || []).map((w) => `${esc(w.name || w.id)} ${pctTxt(w.net)}`).join("、")}${x.unfilled.length ? `<br><span class="faint">買不到：${esc(x.unfilled.join("、"))}</span>` : ""}</td></tr>`).join("")}</tbody></table></div>`;
+  const det = (x, title) => `<details class="small" style="margin-top:4px"><summary>${esc(title)}逐檔明細</summary><div class="tbl"><table><thead><tr><th class="r">名次</th><th>股票</th><th class="r">報酬</th><th class="r">扣成本</th><th class="r">相對 0050</th><th>狀態</th></tr></thead><tbody>
+    ${x.stocks.map((s) => `<tr><td class="r num">${s.rank ?? ""}</td><td>${esc(s.name || "")} <span class="faint num">${esc(s.id)}</span></td><td class="r">${pc(s.ret)}</td><td class="r">${pc(s.net)}</td><td class="r">${pc(s.excess)}</td><td class="small">${esc(s.status_text)}</td></tr>`).join("")}</tbody></table></div></details>`;
+  const O = R.official, S = R.shadow;
+  el.hidden = false;
+  el.innerHTML = `<div class="card-h"><h2>到期對帳明細</h2><span class="muted small">每一批到期後只寫一次</span></div>
+    <select id="matSel" style="margin-bottom:8px">${B.map((b) => `<option value="${esc(b.file)}"${b.file === cur.file ? " selected" : ""}>${esc(b.signal_date)} 的名單・${b.horizon} 日（${esc(b.exit)} 出場）</option>`).join("")}</select>
+    <p class="small" style="margin:0 0 8px">${esc(R.entry)} 開盤買、${esc(R.exit)} 開盤賣。同期 0050 ${pc(R.bench_0050)}、加權指數 ${pc(R.taiex)}。</p>
+    ${O ? `<h3 style="margin:10px 0 6px">AI 精選（${esc(O.list_kind)}）</h3><p class="faint small" style="margin:0 0 4px">${esc(O.file)}・${esc(twTime(O.generated_at))} 產生${O.on_time ? "（開盤前）" : O.on_time === false ? "（開盤後，不計入）" : ""}・模型 ${esc(O.model_version || "—")}（${esc((O.model_hash || "").slice(0, 10))}）</p>
+      ${tbl(Object.entries(O.modes), (k, x) => x.name + "前 10 名")}${Object.values(O.modes).map((x) => det(x, x.name)).join("")}` : ""}
+    ${S && Object.keys(S.models).length ? `<h3 style="margin:14px 0 6px">影子預測（研究用，不影響正式排行榜）</h3><p class="faint small" style="margin:0 0 4px">${esc(S.file)}・${esc(twTime(S.generated_at))} 封存${S.on_time ? "（開盤前）" : ""}・模型 ${esc(S.model_hash || "—")}・全部 ${fmtNum(S.n, 0)} 檔的 Rank IC：${Object.values(S.models).map((m) => `${esc(m.name.split("（")[0])} ${m.ic == null ? "—" : m.ic.toFixed(3)}`).join("、")}</p>
+      ${tbl(Object.entries(S.models), (k, x) => x.name + "前 10 名")}${Object.values(S.models).map((x) => det(x, x.name.split("（")[0])).join("")}` : '<p class="faint small">這一天還沒有影子預測（10/16 起才開始封存）。</p>'}
+    <p class="faint small" style="margin:8px 0 0">${esc(R.rule)}<br>${esc(MATI.note)}</p>`;
+  $("#matSel").onchange = (e) => { store.set("matFile", e.target.value); loadMature(); };
 }
 // V20.3 AI 模擬交易（只模擬、不下單）與 AI 預測回放（data/paper/）
 let PAPER = null, REPLAY = null;
@@ -2205,11 +2234,20 @@ async function loadDQ() {
   const A = await fetch("data/coverage_audit.json" + verQ("coverage_audit.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   if (!A) return;
   el.hidden = false;
-  el.innerHTML = `<div class="card-h"><h2>全市場資料完整性</h2><span class="muted small">${A.universe.common} 檔普通股（上市 ${A.universe.twse}・上櫃 ${A.universe.tpex}）・股價資料日 ${esc(A.as_of.prices || "—")}</span></div>
+  el.innerHTML = `<div class="card-h"><h2>全市場資料完整性</h2><span class="muted small">${A.universe.common} 檔普通股（上市 ${A.universe.twse}・上櫃 ${A.universe.tpex}${A.universe.other?.length ? `・其他 ${A.universe.other.length}` : ""}）・股價資料日 ${esc(A.as_of.prices || "—")}</span></div>
     <p class="small" style="margin:0 0 10px">直接查正式資料庫逐檔統計。「不符合正式推薦資格」只代表不進 AI 精選（例如成交金額太低），<b>不等於沒有資料</b>；這些股票的研究資訊照常可看。</p>
     <div class="tbl"><table><thead><tr><th>項目</th><th class="r">股票數</th><th class="r">比例</th></tr></thead><tbody>
       ${A.summary.map((x) => `<tr><td>${esc(x.label)}</td><td class="r num">${fmtNum(x.stocks, 0)}</td><td class="r num"><b>${x.pct ?? "—"}%</b></td></tr>`).join("")}</tbody></table></div>
     <p class="small" style="margin:10px 0 4px">整體狀態：${Object.entries(A.overall || {}).map(([k, v]) => `${esc(k)} <b class="num">${fmtNum(v, 0)}</b> 檔`).join("・")}</p>
+    ${A.score_tiers ? `<h3 style="margin:14px 0 6px">AI 評分和推薦資格分開看</h3>
+      <div class="kpis"><div class="kpi"><span>正式綜合分數（參與排名）</span><b class="num">${fmtNum(A.score_tiers.official, 0)}</b></div>
+        <div class="kpi"><span>母體外綜合分數（不排名）</span><b class="num">${fmtNum(A.score_tiers.ref_full, 0)}</b></div>
+        <div class="kpi"><span>只有部分因子</span><b class="num">${fmtNum(A.score_tiers.partial, 0)}</b></div>
+        <div class="kpi"><span>無法評分</span><b class="num">${fmtNum(A.score_tiers.none, 0)}</b></div>
+        <div class="kpi"><span>可納入正式推薦</span><b class="num">${fmtNum(A.score_tiers.eligible, 0)}</b></div></div>
+      <p class="faint small" style="margin:6px 0 0">${esc(A.score_tiers.rule)}</p>
+      ${(A.score_gaps || []).length ? `<div class="tbl" style="margin-top:6px"><table class="wrap"><thead><tr><th>沒有完整綜合分數的原因（一檔可有多個）</th><th class="r">檔數</th></tr></thead><tbody>${A.score_gaps.map((g) => `<tr><td>${esc(g.why)}<div class="faint small">例：${g.examples.slice(0, 4).map((x) => `<a href="#/stock/${esc(x)}">${esc(x)}</a>`).join("、")}</div></td><td class="r num">${fmtNum(g.stocks, 0)}</td></tr>`).join("")}</tbody></table></div>` : ""}` : ""}
+    ${A.universe.other?.length ? `<p class="faint small" style="margin:8px 0 0">分母說明：${esc(A.universe.note || "")}這次有 ${A.universe.other.length} 檔：${A.universe.other.map((x) => `<a href="#/stock/${esc(x.id)}">${esc(x.id)} ${esc(x.name || "")}</a>`).join("、")}。</p>` : ""}
     <h3 style="margin:14px 0 6px">資料缺口排行（影響檔數）</h3>
     <div class="tbl"><table class="wrap"><tbody>${A.gaps.slice(0, 16).map((g) => `<tr><td>${esc(g.why)}<div class="faint small">例：${g.examples.slice(0, 4).map((x) => `<a href="#/stock/${esc(x)}">${esc(x)}</a>`).join("、")}</div></td><td class="r num">${fmtNum(g.stocks, 0)}</td></tr>`).join("")}</tbody></table></div>
     <p class="faint small" style="margin:8px 0 0">${(A.notes || []).map(esc).join(" ")} 每檔股票的起迄日期與筆數在個股頁最下方「資料來源與完整度」。</p>`;
@@ -2231,7 +2269,7 @@ async function loadFinWatch() {
     ${F.waiting_list?.length ? `<details style="margin-top:8px"><summary class="small">等待資料來源同步或修正（${F.waiting_list.length} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>季度</th><th>偵測時間</th><th class="r">官方 EPS</th><th class="r">嘗試</th><th>原因</th></tr></thead><tbody>
       ${F.waiting_list.map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period || "")}</td><td class="num">${t(x.first_seen)}</td><td class="r num">${x.eps == null ? "—" : fmtNum(x.eps, 2)}</td><td class="r num">${x.attempts}</td><td class="small">${esc(x.note || "資料來源尚未收錄這一季")}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
     ${F.rescored?.length ? `<details style="margin-top:8px"><summary class="small">新財報入庫後的 AI 均衡型分數變化（最近 ${Math.min(F.rescored.length, 30)} 檔）</summary><div class="tbl"><table><thead><tr><th>股票</th><th>季度</th><th>偵測公告</th><th>入庫</th><th>重新評分</th><th class="r">之前</th><th class="r">之後</th></tr></thead><tbody>
-      ${F.rescored.slice(0, 30).map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period)}</td><td class="num">${t(x.first_seen)}</td><td class="num">${t(x.synced_at)}</td><td class="num">${x.rescored_at ? t(x.rescored_at) : "待重算"}</td><td class="r num">${x.before == null ? "—" : fmtNum(x.before, 1)}</td><td class="r num">${x.after == null ? "—" : fmtNum(x.after, 1)}</td></tr>`).join("")}</tbody></table></div></details>` : ""}
+      ${F.rescored.slice(0, 30).map((x) => `<tr><td><a href="#/stock/${esc(x.stock_id)}">${esc(x.stock_id)} ${esc(x.name || "")}</a></td><td>${esc(x.period)}</td><td class="num">${t(x.first_seen)}</td><td class="num">${t(x.synced_at)}</td><td class="num">${x.rescored_at ? t(x.rescored_at) : "待重算"}</td><td class="r num">${x.before == null ? "—" : fmtNum(x.before, 1)}</td><td class="r num">${x.after == null ? "—" : fmtNum(x.after, 1)}</td></tr>${x.after == null && x.check?.why ? `<tr><td colspan="7" class="faint small" style="border-top:0;padding-top:0">沒有新分數的原因：${esc(x.check.why)}（財報入庫 ${x.check.fin_in_db ? "是" : "否"}・因子重算 ${x.check.factors_recomputed ? "是" : "否"}・推薦資格 ${x.check.eligible ? "有" : "沒有"}）</td></tr>` : ""}`).join("")}</tbody></table></div></details>` : ""}
     ${F.checks ? `<p class="small" style="margin:8px 0 0">更正與一致性檢查：${esc(F.checks)}。${F.mismatch ? `目前 <b>${F.mismatch}</b> 檔資料庫和官方對不上，已排進重抓。` : ""}</p>` : ""}
     ${F.revisions?.length ? `<p class="faint small" style="margin:8px 0 0">最近偵測到 ${F.revisions.length} 筆財報數字更正或拒絕寫入紀錄，已保留。</p>` : ""}
     <p class="faint small" style="margin:8px 0 0">${esc(F.note)}</p>`;
@@ -3971,6 +4009,7 @@ function partScores(s, D) {
   if (!Object.keys(sc).length) return "";
   return `<div class="dbt" style="margin-top:12px"><b>${s.base_ok ? "已取得的分項分數" : "參考分項分數"}</b><span class="muted small">　${s.base_ok ? "五個因子沒有全部算得出來，所以沒有完整綜合分數與排名" : "沒有進排行榜的股票，拿自己的指標和排行榜股票比較，算出在全市場的相對位置；不計算綜合分數、不排名"}</span>
     <div class="pbars">${ks.map((f) => `<div class="pbar"><span>${FNAME[f]}</span>${sc[f] == null ? '<i class="na"></i><small class="faint">還不能算</small>' : `<i><em style="width:${Math.max(2, sc[f])}%"></em></i><small class="num">${fmtNum(sc[f], 0)}</small>`}</div>`).join("")}</div>
+    ${!s.base_ok && s.ref_composite != null ? `<p class="small" style="margin:8px 0 0"><b>母體外綜合分數 <span class="num">${fmtNum(s.ref_composite, 1)}</span></b>　<span class="muted">五個因子都算得出來，用和正式分數相同的權重加總；這檔不在正式排名母體（${esc((s.exclude_reasons || []).join("、"))}），所以不排名、不進 AI 精選。</span></p>` : ""}
     <p class="faint small" style="margin:6px 0 0">分數 0～100，50 是中間。缺的因子不當作 0 分，也不用其他因子補。</p></div>`;
 }
 // 個股的高分主因，這項因子過去到底有沒有預測力（因子有效性檢驗 factors.json）

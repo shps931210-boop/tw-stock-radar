@@ -78,8 +78,13 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
         elif not why:
             rec = sealed.get(s)
             entry = trading_after(d, 1)
-            r = {"date": s, "trading": True, "entry": entry.isoformat(), "picks": s in pk,
-                 "pre_open": (pred / "pre_open" / f"{s}.json").exists()}  # 這一天開盤前有沒有封存盤前版（V26）
+            po = _read(pred / "pre_open" / f"{entry.isoformat()}.json")  # 盤前版用「進場日（目標交易日）」命名（V26）；V20.4 修正原本用訊號日對應
+            r = {"date": s, "trading": True, "entry": entry.isoformat(), "picks": s in pk, "pre_open": bool(po)}
+            if po:
+                pt = po.get("created_at") or ""
+                r["pre_open_at"] = pt
+                r["pre_open_on_time"] = bool(pt) and pt[:16] < f"{entry.isoformat()}T{OPEN_AT}"
+                r["pre_open_scores_changed"] = po.get("scores_changed")
             if rec:
                 g = rec.get("generated_at") or ""
                 r.update(sealed=True, generated_at=g, on_time=g[:16] < f"{entry.isoformat()}T{OPEN_AT}" if g else None,
@@ -104,6 +109,9 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
         "missing": [r["date"] for r in tr if not r.get("sealed")],
         "picks": sum(bool(r.get("picks")) for r in tr),
         "pre_open": sum(bool(r.get("pre_open")) for r in tr),
+        "pre_open_on_time": sum(bool(r.get("pre_open_on_time")) for r in tr),
+        "pre_open_note": "盤前版＝盤前情報：開盤前依隔夜國際市場與收盤後公告更新風險標示，AI 分數沿用前一天收盤後封存的正式預測（還沒有驗證過的事件模型不改分數）。"
+                         "正式前瞻預測是收盤後封存、隔天開盤前就已存在的那一份。",
         "closed": [{"date": r["date"], "reason": r["reason"]} for r in rows if not r["trading"]],
         "matured": {str(h): sum(1 for r in tr if r.get("maturity", {}).get(str(h), {}).get("matured")) for h in HORIZONS},
         "scorecard": {"generated_at": sc.get("generated_at"), "days": sc.get("days"), "last": sc.get("last"),

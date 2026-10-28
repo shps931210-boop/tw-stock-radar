@@ -156,6 +156,9 @@ _cal = config.ROOT / "history" / "audit" / "seal_calendar.json"
 if _cal.exists():  # V20.1 預測封存日曆（app/seal_calendar.py）
     (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
     shutil.copy(_cal, out / "data" / "predictions" / "calendar.json")
+_mat = config.ROOT / "history" / "audit" / "maturity"
+if _mat.exists():  # V20.4 到期對帳明細（app/maturity_report.py）
+    shutil.copytree(_mat, out / "data" / "predictions" / "maturity", dirs_exist_ok=True)
 for _src, _dst in (("site.json", "paper.json"), ("replay.json", "replay.json")):  # V20.3 AI 模擬交易與預測回放（app/paper.py）
     if (config.ROOT / "history" / "paper" / _src).exists():
         (out / "data" / "paper").mkdir(parents=True, exist_ok=True)

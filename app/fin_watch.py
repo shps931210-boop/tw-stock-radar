@@ -58,7 +58,7 @@ SLOW_HOURS = 72        # 低頻追蹤：每 3 天再試一次，直到資料來�
 def ensure(con) -> None:
     con.executescript(SCHEMA)
     have = {r[1] for r in con.execute("PRAGMA table_info(fin_announce)")}
-    for c in ("corrected_at", "official", "rescored_at", "note"):
+    for c in ("corrected_at", "official", "rescored_at", "note", "rescore_check"):
         if c not in have:
             con.execute(f"ALTER TABLE fin_announce ADD COLUMN {c} TEXT")
 
@@ -450,7 +450,8 @@ def summary(con, today: date | None = None) -> dict:
                for r in pend]
     changed = [{"stock_id": r["stock_id"], "name": names.get(r["stock_id"]), "period": r["period"], "synced_at": r["synced_at"],
                 "before": r["score_before"], "after": r["score_after"], "latency_h": _hours(r["first_seen"], r["synced_at"]),
-                "first_seen": r["first_seen"], "fetched_at": r["last_try"], "rescored_at": _s(r.get("rescored_at")), "corrected_at": _s(r.get("corrected_at"))}
+                "first_seen": r["first_seen"], "fetched_at": r["last_try"], "rescored_at": _s(r.get("rescored_at")), "corrected_at": _s(r.get("corrected_at")),
+                "check": _j(r.get("rescore_check"))}
                for r in db.read(con, "SELECT * FROM fin_announce WHERE status='synced' ORDER BY synced_at DESC LIMIT 200").to_dict("records")]
     revs = [{"stock_id": a, "period": b, "detected_at": c, "fields": json.loads(d)}
             for a, b, c, d in con.execute("SELECT * FROM fin_revision ORDER BY detected_at DESC LIMIT 50")]
@@ -475,14 +476,50 @@ def summary(con, today: date | None = None) -> dict:
     }
 
 
-def after_snapshot(con, out_dir=None) -> dict:
-    """快照重算後呼叫：補上同步後的 AI 分數，寫出網站資料 data/fin_watch.json 與 history/fin/updates.json。"""
+def _j(x):
+    try:
+        return json.loads(x) if isinstance(x, str) and x else None
+    except ValueError:
+        return None
+
+
+def rescore_check(row: dict | None, period: str, sc: float | None) -> dict:
+    """同步後的財報有沒有真的進到 AI 評分：逐項記錄（V20.4）。沒有正式分數時寫清楚原因，不留沒有解釋的空值。"""
+    r = row or {}
+    in_db = bool(r.get("fin_period")) and str(r.get("fin_period")) >= period
+    ex = r.get("exclude_reasons") or []
+    miss = r.get("missing_factors") or []
+    elig = ((((r.get("ai") or {}).get("rec") or {}).get("balanced") or {}).get("recommendation_eligibility"))
+    if sc is not None:
+        why = "已產生新的正式 AI 綜合分數"
+    elif not row:
+        why = "這次快照沒有這檔股票（可能不是普通股或已下市）"
+    elif ex:
+        why = f"財報已入庫、因子已重算，但不在正式排名母體（{'、'.join(ex)}），依規則不產生正式綜合分數" + \
+              (f"；同一套公式的母體外綜合分數 {r['ref_composite']}" if r.get("ref_composite") is not None else "")
+    elif miss:
+        why = f"財報已入庫，但還缺 {'、'.join(miss)}，五個因子沒有全部算出，不產生綜合分數"
+    else:
+        why = "財報已入庫，但沒有取得分數（需要檢查）"
+    return {"fin_in_db": in_db, "fin_period": r.get("fin_period"), "factors_recomputed": bool(row), "in_rank_universe": bool(r.get("base_ok")),
+            "complete": bool(r.get("complete")), "score": sc, "ref_composite": r.get("ref_composite"),
+            "eligible": elig == "normal" and bool(r.get("base_ok")) and bool(r.get("complete")), "site_updated": bool(row), "why": why}
+
+
+def after_snapshot(con, out_dir=None, rows: list[dict] | None = None) -> dict:
+    """快照重算後呼叫：補上同步後的 AI 分數，寫出網站資料 data/fin_watch.json 與 history/fin/updates.json。
+    rows：這次快照的股票（有傳就逐項記錄財報有沒有進到評分、沒有分數的原因）。"""
     ensure(con)
     ts = config.now().isoformat(timespec="seconds")
-    for sid, per in con.execute("SELECT stock_id, period FROM fin_announce WHERE status='synced' AND score_after IS NULL").fetchall():
+    R = {r["stock_id"]: r for r in rows or []}
+    for sid, per in con.execute("SELECT stock_id, period FROM fin_announce WHERE status='synced' AND (score_after IS NULL OR rescore_check IS NULL)").fetchall():
         sc = score_now(con, sid)
         if sc is not None:
             con.execute("UPDATE fin_announce SET score_after=?, rescored_at=? WHERE stock_id=? AND period=?", (sc, ts, sid, per))
+        if rows is not None:
+            chk = rescore_check(R.get(sid), per, sc)
+            con.execute("UPDATE fin_announce SET rescore_check=?, rescored_at=COALESCE(rescored_at, ?) WHERE stock_id=? AND period=?",
+                        (json.dumps(chk, ensure_ascii=False), ts if chk["factors_recomputed"] else None, sid, per))
     con.commit()
     s = summary(con)
     (config.DATA_DIR / "fin_watch.json").write_text(json.dumps(s, ensure_ascii=False, separators=(",", ":")), "utf-8")

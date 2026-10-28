@@ -382,7 +382,7 @@ def update_fundamentals(cfg: dict, progress=None, errors: list | None = None) ->
             try:
                 for r in fm.stock_info():
                     con.execute("INSERT INTO stocks VALUES (?,?,?,?) ON CONFLICT(stock_id) DO UPDATE SET "
-                                "industry=excluded.industry, name=excluded.name", (r["stock_id"], r["name"], r["market"], r["industry"]))
+                                "industry=excluded.industry, name=excluded.name, market=COALESCE(NULLIF(excluded.market, ''), stocks.market)", (r["stock_id"], r["name"], r["market"], r["industry"]))
                 db.log_fetch(con, "finmind_info", "all")
             except Exception as e:
                 errors.append(f"股票清單: {http.describe(e)}")
