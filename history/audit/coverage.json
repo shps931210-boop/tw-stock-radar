@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-29T19:50:24",
+ "generated_at": "2026-10-29T21:59:04",
  "source": "正式資料庫 data/stocks.db（證交所、櫃買中心、FinMind）；不含示範資料",
  "as_of": {
   "prices": "2026-10-29",
@@ -10,40 +10,9 @@
  },
  "universe": {
   "common": 2006,
-  "twse": 1095,
-  "tpex": 905,
-  "other": [
-   {
-    "id": "2249",
-    "name": "湧盛",
-    "market": "emerging"
-   },
-   {
-    "id": "6467",
-    "name": "泰合",
-    "market": "emerging"
-   },
-   {
-    "id": "6898",
-    "name": "程曦資訊",
-    "market": "emerging"
-   },
-   {
-    "id": "6938",
-    "name": "藍新資訊",
-    "market": "emerging"
-   },
-   {
-    "id": "7710",
-    "name": "東擎科技",
-    "market": "emerging"
-   },
-   {
-    "id": "7806",
-    "name": "精華生醫",
-    "market": "emerging"
-   }
-  ],
+  "twse": 1098,
+  "tpex": 908,
+  "other": [],
   "note": "分母＝這次快照裡的普通股（ETF、特別股、存託憑證不算）。上市＋上櫃以外的是股票清單市場別還是「emerging（興櫃）」的股票，多半是剛從興櫃轉上市櫃、已經有正式行情；股票清單每週更新時會改正市場別。"
  },
  "summary": [
