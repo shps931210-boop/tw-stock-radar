@@ -90,6 +90,9 @@ def mature(D: dict, src: Path = PRED, dst: Path = MAT, horizons=("5", "20", "60"
                 continue   # 已經對帳過，或還沒到期（未到期的標籤絕對不用）
             rec = rec or json.loads(f.read_text("utf-8"))
             entry, exit_ = dates[pos[sig] + 1], dates[e]
+            from . import track
+            if not track.perf_eligible(rec, entry)[0]:
+                continue   # V21.2：開盤後才封存的預測不進學習與錯誤分析
             b = pb._bench(D, entry, exit_)
             if b is None:
                 continue

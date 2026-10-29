@@ -1929,7 +1929,9 @@ async function loadMature() {
   if (!SITE) return;
   const q = (p) => `data/predictions/maturity/${p}${verQ("predictions/maturity/" + p) || "?t=" + Date.now()}`;
   if (!MATI) MATI = await fetch(q("index.json")).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  const el = $("#mature"); if (!el || !MATI?.batches?.length) return;
+  const el = $("#mature");
+  if (el && MATI?.blocked) { el.hidden = false; el.innerHTML = `<div class="card-h"><h2>到期對帳明細</h2></div><p class="small">${esc(MATI.why)}（${esc(twTime(MATI.checked_at))} 檢查）。對帳修好之前不顯示到期績效。</p>`; return; }
+  if (!el || !MATI?.batches?.length) return;
   const B = MATI.batches, cur = B.find((b) => b.file === store.get("matFile")) || B[0];
   const R = await fetch(q(cur.file)).then((r) => (r.ok ? r.json() : null)).catch(() => null); if (!R) return;
   const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`, pp = (v) => v == null ? "—" : fmtNum(v, 0) + "%";
@@ -1943,9 +1945,9 @@ async function loadMature() {
   el.innerHTML = `<div class="card-h"><h2>到期對帳明細</h2><span class="muted small">每一批到期後只寫一次</span></div>
     <select id="matSel" style="margin-bottom:8px">${B.map((b) => `<option value="${esc(b.file)}"${b.file === cur.file ? " selected" : ""}>${esc(b.signal_date)} 的名單・${b.horizon} 日（${esc(b.exit)} 出場）</option>`).join("")}</select>
     <p class="small" style="margin:0 0 8px">${esc(R.entry)} 開盤買、${esc(R.exit)} 開盤賣。同期 0050 ${pc(R.bench_0050)}（開盤到開盤）。${(() => { const tw = R.taiex_window || cur.taiex_window, c = R.bench_0050_close ?? cur.bench_0050_close; return tw ? `加權指數 ${pc(R.taiex)}、0050 ${pc(c)}（都是 ${esc(tw[0])} 收盤到 ${esc(tw[1])} 收盤，可以互相比較）${cur.corrected ? '<br><span class="faint">更正：這批原本把不同期間的加權指數和 0050 並列，已補上同一段收盤口徑，原始檔保留。</span>' : ""}` : `加權指數 ${pc(R.taiex)}（收盤口徑，期間和 0050 不同）`; })()}</p>
-    ${O ? `<h3 style="margin:10px 0 6px">AI 精選（${esc(O.list_kind)}）</h3><p class="faint small" style="margin:0 0 4px">${esc(O.file)}・${esc(twTime(O.generated_at))} 產生${O.on_time ? "（開盤前）" : O.on_time === false ? "（開盤後，不計入）" : ""}・模型 ${esc(O.model_version || "—")}（${esc((O.model_hash || "").slice(0, 10))}）</p>
+    ${O ? `<h3 style="margin:10px 0 6px">AI 精選（${esc(O.list_kind)}）</h3><p class="faint small" style="margin:0 0 4px">${esc(O.file)}・${esc(twTime(O.generated_at))} 產生${O.eligible === false ? `（不合格，不計入：${esc(O.excluded_why || "")}）` : O.on_time ? "（開盤前）" : ""}・模型 ${esc(O.model_version || "—")}（${esc((O.model_hash || "").slice(0, 10))}）</p>
       ${tbl(Object.entries(O.modes), (k, x) => x.name + "前 10 名")}${Object.values(O.modes).map((x) => det(x, x.name)).join("")}` : ""}
-    ${S && Object.keys(S.models).length ? `<h3 style="margin:14px 0 6px">影子預測（研究用，不影響正式排行榜）</h3><p class="faint small" style="margin:0 0 4px">${esc(S.file)}・${esc(twTime(S.generated_at))} 封存${S.on_time ? "（開盤前）" : ""}・模型 ${esc(S.model_hash || "—")}・全部 ${fmtNum(S.n, 0)} 檔的 Rank IC：${Object.values(S.models).map((m) => `${esc(m.name.split("（")[0])} ${m.ic == null ? "—" : m.ic.toFixed(3)}`).join("、")}</p>
+    ${S && Object.keys(S.models).length ? `<h3 style="margin:14px 0 6px">影子預測（研究用，不影響正式排行榜）</h3><p class="faint small" style="margin:0 0 4px">${esc(S.file)}・${esc(twTime(S.generated_at))} 封存${S.eligible === false ? `（不合格，不計入：${esc(S.excluded_why || "")}）` : S.on_time ? "（開盤前）" : ""}・模型 ${esc(S.model_hash || "—")}・全部 ${fmtNum(S.n, 0)} 檔的 Rank IC：${Object.values(S.models).map((m) => `${esc(m.name.split("（")[0])} ${m.ic == null ? "—" : m.ic.toFixed(3)}`).join("、")}</p>
       ${tbl(Object.entries(S.models), (k, x) => x.name + "前 10 名")}${Object.values(S.models).map((x) => det(x, x.name.split("（")[0])).join("")}` : '<p class="faint small">這一天還沒有影子預測（10/16 起才開始封存）。</p>'}
     <p class="faint small" style="margin:8px 0 0">${esc(R.rule)}<br>${esc(MATI.note)}</p>`;
   const ms = el.querySelector("#matSel");   // 載入途中切換頁面時，卡片已不在畫面上
@@ -2010,6 +2012,7 @@ function renderPaper() {
     ${B.review.length ? `<h3 style="margin:14px 0 6px">虧損交易檢討</h3><div class="tbl"><table class="wrap"><thead><tr><th>交易</th><th class="r">扣成本</th><th>出問題的環節</th></tr></thead><tbody>
       ${B.review.map((r) => `<tr><td>${esc(r.id)} ${st(r)}</td><td class="r">${pc(r.net_ret)}</td><td class="small">${r.labels.map(esc).join("<br>") || "找不到明確原因"}${Object.values(r.notes || {}).map((x) => `<br><span class="faint">${esc(x)}</span>`).join("")}</td></tr>`).join("")}</tbody></table></div>
       <p class="faint small" style="margin:4px 0 0">同一個原因累積 3 筆以上，會列進 AI 研究清單當作待驗證的假設；不會自動修改正式策略。</p>` : ""}
+    ${P.first_published ? `<p class="small" style="margin:12px 0 0">另一本帳只用「首次發布」的名單（和正式績效同一份）：${Object.entries(P.first_published.books).map(([m, b]) => `${esc(PMODES[m])} <span class="num ${signCls(b.kpi.ret)}">${pctTxt(b.kpi.ret)}</span>`).join("、")}。兩本帳並列，不互相取代。</p>` : ""}
     <p class="faint small" style="margin:12px 0 0">規則（${esc(P.rules_version)} 版，事先固定）：${esc(P.rules)}<br>
       可重算檢查：每次執行都從頭重算整本帳，已記錄 ${P.integrity.days_recorded} 天的結果指紋，${P.integrity.n_mismatch ? `<b class="ckw">有 ${P.integrity.n_mismatch} 次重算和當天紀錄不同</b>（多半是官方修正價格）` : "重算和當天紀錄一致"}。
       真實下單：${P.live_trading ? "開啟" : "永久關閉（券商下單只有預留介面，不存放任何帳號、密碼或憑證）"}。成本：${esc(P.cost)}</p>`;

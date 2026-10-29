@@ -98,6 +98,22 @@ def on_time(log: dict, entry: str | None) -> bool | None:
     return g[:19] < f"{entry}T{OPEN_AT}"
 
 
+def perf_eligible(log: dict, entry: str | None) -> tuple[bool, str | None]:
+    """正式績效的唯一資格條件（V21.2，2026-10-29）：名單要在進場日開盤前產生，資料日要等於訊號日。
+    不符合的到期結果照樣保存（不刪、不改），但不准進任何平均、成績單或學習統計。回傳（是否合格, 不合格原因）。"""
+    ot = on_time(log, entry)
+    if ot is None:
+        return False, "沒有產生時間，無法證明在開盤前封存"
+    if not ot:
+        return False, f"名單在 {entry} 開盤後才產生（{(log.get('generated_at') or '')[:16]}）"
+    dd = log.get("data_dates")
+    px = dd.get("prices") if isinstance(dd, dict) else dd
+    sig = log.get("signal_date") or log.get("date")
+    if px and sig and px != sig:
+        return False, f"資料日 {px} 和訊號日 {sig} 不同"
+    return True, None
+
+
 def _snapshot_picks(snap: dict) -> tuple[dict, list]:
     st = [s for s in snap["stocks"] if s.get("is_common")]
     picks = {}
@@ -340,8 +356,8 @@ def _card(rows: list[dict], names: list[str]) -> dict:
         card[name] = {}
         for h in HORIZONS:
             done = [(r, r["fixed"][name][h]) for r in rows if (r["fixed"].get(name) or {}).get(h) and r["fixed"][name][h].get("priced")]
-            late = [(r, x) for r, x in done if r.get("on_time") is False]
-            timely = [(r, x) for r, x in done if r.get("on_time") is not False]
+            late = [(r, x) for r, x in done if r.get("on_time") is not True]   # V21.2：無法證明準時的也不算（舊版只排除確定晚的）
+            timely = [(r, x) for r, x in done if r.get("on_time") is True]
             cs = [(r, x) for r, x in timely if x["basis"] == BENCH_ID]
             no_bench = len(timely) - len(cs)
             if not cs:
@@ -449,7 +465,7 @@ def _by_industry(logs: list[dict], rows: list[dict]) -> dict:
         acc = {}
         for L, r in zip(logs, rows):
             c = (r["fixed"].get("balanced") or {}).get(h)
-            if not c or not c.get("priced") or c["basis"] != BENCH_ID or r.get("on_time") is False:
+            if not c or not c.get("priced") or c["basis"] != BENCH_ID or r.get("on_time") is not True:
                 continue
             ind = {p["stock_id"]: p.get("industry") for p in L["picks"].get("balanced", [])}
             for sid, ret in c["_per"].items():

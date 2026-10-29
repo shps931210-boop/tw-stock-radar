@@ -62,3 +62,28 @@ class Reconcile(unittest.TestCase):
 
     def test_definitions_separate_every_kind(self):
         self.assertTrue({"official", "shadow", "backtest", "paper", "factor", "taiex"} <= set(pr.DEFINITIONS))
+
+
+class Eligibility(unittest.TestCase):
+    """V21.2（10/29 驗收 P0）：開盤後才產生、沒有產生時間、資料日不對的名單，不准進任何績效統計。"""
+    def test_eligible_rules(self):
+        from app import track
+        ok = {"signal_date": "2026-10-16", "generated_at": "2026-10-16T14:52:57", "data_dates": {"prices": "2026-10-16"}}
+        self.assertEqual(track.perf_eligible(ok, "2026-10-19"), (True, None))
+        self.assertFalse(track.perf_eligible({**ok, "generated_at": "2026-10-19T09:00:01"}, "2026-10-19")[0])
+        self.assertFalse(track.perf_eligible({**ok, "generated_at": None}, "2026-10-19")[0])
+        self.assertFalse(track.perf_eligible({**ok, "data_dates": {"prices": "2026-10-15"}}, "2026-10-19")[0])
+
+    def test_gate_clears_stats_and_violations_zero(self):
+        from app import maturity_report as mr
+        r = {"official": {"on_time": False, "modes": {"stable": {"mean_excess": -3.6, "mean_net": -2.8, "stocks": [1]}}},
+             "shadow": {"eligible": True, "models": {"v21": {"mean_excess": 0.47, "ic": 0.08}}}}
+        g = mr.gate(r)
+        self.assertIsNone(g["official"]["modes"]["stable"]["mean_excess"])
+        self.assertEqual(g["official"]["modes"]["stable"]["stocks"], [1])          # 明細保留供查核
+        self.assertEqual(r["official"]["modes"]["stable"]["mean_excess"], -3.6)    # 原檔不改
+        self.assertEqual(g["shadow"]["models"]["v21"]["mean_excess"], 0.47)
+        idx = [{"eligible": {"official": False}, "official": {"stable": {"mean_excess": -3.6}}}]
+        self.assertEqual(mr.violations(idx), 1)
+        idx = [{"eligible": {"official": False}, "official": g["official"]["modes"]}]
+        self.assertEqual(mr.violations(idx), 0)

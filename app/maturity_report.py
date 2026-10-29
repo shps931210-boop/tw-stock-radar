@@ -116,6 +116,7 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
         rec = json.loads(pf.read_text("utf-8"))
         out["shadow"] = {"file": pf.name, "generated_at": rec.get("generated_at"), "model_hash": rec.get("model_hash"),
                          "model_version": rec.get("model_version"), "on_time": track.on_time(rec, entry), "n": rec.get("n"), "models": {}}
+        out["shadow"]["eligible"], out["shadow"]["excluded_why"] = track.perf_eligible(rec, entry)
         y = {}
         for s in rec["stocks"]:
             r, _ = pb.hold_return(D, s["id"], entry, exit_)
@@ -136,7 +137,8 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
     af = ACAD / f"{sig}.json"
     if af.exists():
         a = json.loads(af.read_text("utf-8"))
-        out["academic"] = {"file": af.name, "generated_at": a.get("generated_at"), "on_time": track.on_time(a, entry),
+        ok, why = track.perf_eligible(a, entry)
+        out["academic"] = {"file": af.name, "generated_at": a.get("generated_at"), "on_time": track.on_time(a, entry), "eligible": ok, "excluded_why": why,
                            "rule": a.get("rule"), "overlap": a.get("overlap"), "lists": {}}
         if a.get("layers") and b is not None:   # 兩層分數的前瞻 Rank IC（全部可排名股票）
             y = {}
@@ -160,6 +162,7 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
         lists = x.get("rec_picks") or x.get("picks") or {}
         out["official"] = {"file": kf.name, "generated_at": x.get("generated_at"), "model_version": x.get("model_version"),
                            "model_hash": x.get("model_hash"), "on_time": track.on_time(x, entry),
+                           **dict(zip(("eligible", "excluded_why"), track.perf_eligible({**x, "signal_date": sig}, entry))),
                            "list_kind": "正式精選" if official else "原始排名（當時還沒有正式精選）", "modes": {}}
         for m, label in MODES.items():
             rows = (lists.get(m) or [])[:TOP]
@@ -168,6 +171,35 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
             ext = {c["stock_id"]: {"rank": c.get("rank"), "score": c.get("score")} for c in rows}
             out["official"]["modes"][m] = {"name": label, **_cohort(D, [c["stock_id"] for c in rows], entry, exit_, b, names, ext)}
     return out
+
+
+def gate(r: dict) -> dict:
+    """到期檔原檔不改；讀進來後依資格把不合格部分的統計清空（列表保留供查核）。舊檔沒有 eligible 欄位時用 on_time 判斷。"""
+    r = json.loads(json.dumps(r))
+    for k, sub in (("shadow", "models"), ("official", "modes"), ("academic", "lists")):
+        part = r.get(k)
+        if not part:
+            continue
+        if "eligible" not in part:
+            part["eligible"] = part.get("on_time") is True
+            part["excluded_why"] = None if part["eligible"] else "無法證明名單在進場日開盤前產生"
+        if not part["eligible"]:
+            for c in (part.get(sub) or {}).values():
+                for key in ("mean_net", "mean_excess", "up_hit", "beat_0050", "ic"):
+                    if key in c:
+                        c[key] = None
+                c["excluded"] = True
+    return r
+
+
+def violations(idx: list[dict]) -> int:
+    """不合格批次卻還有統計數字的個數；必須是 0（perf_reconcile 與測試都檢查）。"""
+    n = 0
+    for b in idx:
+        for k in ("shadow", "official", "academic"):
+            if (b.get("eligible") or {}).get(k) is False:
+                n += sum(1 for v in (b.get(k) or {}).values() if v.get("mean_excess") is not None or v.get("ic") is not None)
+    return n
 
 
 def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: Path = OUT, D: dict | None = None) -> dict:
@@ -189,10 +221,13 @@ def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: 
                     json.dump(r, fh, ensure_ascii=False, indent=1)
                 new.append(f.name)
     fixes = {x["file"]: x["added"] for x in corrections(D, out) if x["code"] == "taiex_window"}
-    idx = []
+    idx, excluded = [], []
     for f in sorted(out.glob("????-??-??_h*.json")):
         r = json.loads(f.read_text("utf-8"))
         r = {**r, **fixes.get(f.name, {})}
+        r = gate(r)
+        excluded += [{"file": f.name, "part": k, "why": r[k].get("excluded_why")} for k in ("shadow", "official", "academic")
+                     if r.get(k) and r[k].get("eligible") is False]
         sh = (r.get("shadow") or {}).get("models") or {}
         of = (r.get("official") or {}).get("modes") or {}
         idx.append({"file": f.name, "signal_date": r["signal_date"], "horizon": r["horizon"], "exit": r["exit"],
@@ -202,8 +237,11 @@ def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: 
                     "shadow_on_time": (r.get("shadow") or {}).get("on_time"), "shadow_model": (r.get("shadow") or {}).get("model_hash"),
                     "official": {m: {k: v.get(k) for k in ("mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in of.items()},
                     "academic": {k: {kk: v.get(kk) for kk in ("mean_net", "mean_excess", "beat_0050", "filled")} for k, v in ((r.get("academic") or {}).get("lists") or {}).items()},
-                    "official_kind": (r.get("official") or {}).get("list_kind"), "official_on_time": (r.get("official") or {}).get("on_time")})
-    I = {"generated_at": config.now().isoformat(timespec="seconds"), "new": new, "batches": idx[::-1],
+                    "official_kind": (r.get("official") or {}).get("list_kind"), "official_on_time": (r.get("official") or {}).get("on_time"),
+                    "eligible": {k: (r.get(k) or {}).get("eligible") for k in ("shadow", "official", "academic") if r.get(k)}})
+    I = {"generated_at": config.now().isoformat(timespec="seconds"), "new": new, "batches": idx[::-1], "excluded": excluded,
+         "violations": violations(idx),
+         "eligibility": "名單要在進場日 09:00 前產生、資料日等於訊號日（track.perf_eligible）；不符合的批次保留原檔但不進任何平均",
          "note": "每一批到期後只寫一次，不會事後修改。同一個期間的相鄰批次持有期重疊，不是獨立樣本；一兩批的短期結果不能代表模型長期有沒有優勢。"}
     (out / "index.json").write_text(json.dumps(I, ensure_ascii=False, indent=1), "utf-8")
     return I

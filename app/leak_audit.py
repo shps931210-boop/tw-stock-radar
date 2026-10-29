@@ -124,14 +124,17 @@ def universe(D: dict) -> dict:
             "note": f"資料庫有 {len(gone)} 檔期間內停止交易的普通股，回測會把它們算進當時的母體；但無法確認是否包含所有下市股票（下市股票的歷史若沒補到，仍有部分存活者偏誤）" if gone else "資料庫只有目前仍在交易的股票：回測有存活者偏誤（下市股票被排除，報酬可能被高估）"}
 
 
-def sealed() -> dict:
+def sealed(dates: list[str] | None = None) -> dict:
+    """進場日優先用實際交易日曆（資料庫裡訊號日之後的第一個交易日）；還沒有資料時才用休市日曆推估。
+    2026-10-29 更正：10/25 的稽核把 10/22 的進場日推成 10/23，但 10/23 颱風臨時休市（休市日曆沒有），實際是 10/27。"""
     files = sorted(PRED_DIR.glob("????-??-??.json")) if PRED_DIR.exists() else []
     from . import premarket, track
     H = premarket.holidays()
     rows = []
     for f in files:
         r = json.loads(f.read_text("utf-8"))
-        entry = str(premarket.next_trading_day(date.fromisoformat(r["signal_date"]), H))
+        nxt = [d for d in (dates or []) if d > r["signal_date"]]
+        entry = nxt[0] if nxt else str(premarket.next_trading_day(date.fromisoformat(r["signal_date"]), H))
         ok = track.on_time({"generated_at": r.get("generated_at")}, entry)
         rows.append({"signal": r["signal_date"], "generated_at": r.get("generated_at"), "entry": entry, "on_time": ok,
                      "trained_before_signal": (r.get("time_check") or {}).get("trained_before_signal")})
@@ -157,7 +160,7 @@ def run(dbname: str = "stocks.db", log=print) -> dict:
         {"id": "purge", "name": "walk-forward 訓練標籤都在測試日之前到期", "ok": None, "detail": [purge_check(sigs, D["dates"], h, ml.MIN_TRAIN) for h in ml.HORIZONS]},
         {"id": "selection", "name": "特徵百分位用標籤篩選前的當日母體（METHOD ≥ 2）", "ok": ml.METHOD >= 2, "detail": {"method": ml.METHOD}},
         {"id": "universe", "name": "母體包含期間內下市或停止交易的股票", "ok": None, "detail": universe(D)},
-        {"id": "sealed", "name": "每日封存預測都在進場日開盤前產生、訓練資料早於訊號日", "ok": None, "detail": sealed()},
+        {"id": "sealed", "name": "每日封存預測都在進場日開盤前產生、訓練資料早於訊號日", "ok": None, "detail": sealed(D.get("dates"))},
     ]
     checks[2]["ok"] = all(x["ok"] for x in checks[2]["detail"])
     checks[4]["ok"] = checks[4]["detail"]["ok"]

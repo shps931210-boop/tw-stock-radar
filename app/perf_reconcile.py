@@ -96,6 +96,12 @@ def check_file(D: dict, r: dict, picks_dir: Path = PICKS) -> list[str]:
             bad.append(f"{label} 平均超額 {c['mean_excess']}，重算 {np.mean(ex):.2f}")
         return round(float(np.mean(ex)), 2) if ex else None
 
+    for k in ("official", "shadow", "academic"):   # 準時資格獨立重算：產生時間要早於進場日 09:00
+        part = r.get(k)
+        if part and part.get("generated_at") is not None and part.get("on_time") is not None:
+            want = part["generated_at"][:19] < f"{entry}T09:00:00"
+            if want != part["on_time"]:
+                bad.append(f"{k} 準時標記 {part['on_time']}，依產生時間應為 {want}")
     off = r.get("official") or {}
     kf = picks_dir / (off.get("file") or f"{sig}.json")
     if off and kf.exists():   # 名單要和首次發布版的前 10 名完全一樣、順序一樣
@@ -149,9 +155,16 @@ def run(dbname: str = "stocks.db", D: dict | None = None, mat_dir: Path = MAT, p
         summ = {m: c.get("mean_excess") for m, c in ((r.get("official") or {}).get("modes") or {}).items()}
         summ.update({f"shadow_{m}": c.get("mean_excess") for m, c in ((r.get("shadow") or {}).get("models") or {}).items()})
         files.append({"file": p.name, "entry": r["entry"], "exit": r["exit"], "ok": not bad, "problems": bad, "mean_excess": summ})
-    res = {"schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds"),
+    from . import maturity_report as mr
+    idx = []
+    for p in sorted(mat_dir.glob("????-??-??_h*.json")):
+        g = mr.gate(json.loads(p.read_text("utf-8")))
+        idx.append({"eligible": {k: g[k].get("eligible") for k in ("shadow", "official", "academic") if g.get(k)},
+                    **{k: (g.get(k) or {}).get({"shadow": "models", "official": "modes", "academic": "lists"}[k]) or {} for k in ("shadow", "official", "academic")}})
+    viol = mr.violations(idx)
+    res = {"schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds"), "violations": viol,
            "method": "不經過 maturity_report／pit_backtest 的報酬函式，直接用還原後開盤價重算報酬、扣成本、0050 超額與名單（首次發布版前 10 名）",
-           "tolerance_pp": TOL, "files": files, "all_ok": all(f["ok"] for f in files), "cross_sources": cross_sources(mat_dir),
+           "tolerance_pp": TOL, "files": files, "all_ok": all(f["ok"] for f in files) and viol == 0, "cross_sources": cross_sources(mat_dir),
            "definitions": DEFINITIONS}
     return res
 

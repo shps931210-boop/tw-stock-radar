@@ -248,7 +248,8 @@ class Tracking(unittest.TestCase):
             o = con.execute("SELECT open FROM prices WHERE stock_id='2330' AND date=?", (entry,)).fetchone()[0]
             c1 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (last,)).fetchone()[0]
             c5 = con.execute("SELECT close FROM prices WHERE stock_id='2330' AND date=?", (days[5],)).fetchone()[0]
-        log = {"date": d0, "model_version": "test", "picks": {"balanced": [{"stock_id": "2330"}]}, "signals": []}
+        # V21.2：沒有產生時間的名單無法證明開盤前封存，不計入成績單；這裡給訊號日 15:00 產生
+        log = {"date": d0, "model_version": "test", "generated_at": f"{d0}T15:00:00", "picks": {"balanced": [{"stock_id": "2330"}]}, "signals": []}
         (track.HISTORY / f"{d0}.json").write_text(json.dumps(log), "utf-8")
         perf = track.performance("demo.db")
         row = perf["logs"][0]

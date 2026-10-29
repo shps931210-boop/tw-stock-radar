@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-29T17:20:48",
+ "generated_at": "2026-10-29T19:28:28",
  "new": [],
  "batches": [
   {
@@ -68,7 +68,11 @@
    },
    "academic": {},
    "official_kind": "正式精選",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true
+   }
   },
   {
    "file": "2026-10-16_h5.json",
@@ -136,7 +140,11 @@
    },
    "academic": {},
    "official_kind": "原始排名（當時還沒有正式精選）",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true
+   }
   },
   {
    "file": "2026-10-15_h5.json",
@@ -179,7 +187,10 @@
    },
    "academic": {},
    "official_kind": "原始排名（當時還沒有正式精選）",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
   },
   {
    "file": "2026-10-14_h5.json",
@@ -222,7 +233,10 @@
    },
    "academic": {},
    "official_kind": "原始排名（當時還沒有正式精選）",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
   },
   {
    "file": "2026-10-13_h5.json",
@@ -265,7 +279,10 @@
    },
    "academic": {},
    "official_kind": "原始排名（當時還沒有正式精選）",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
   },
   {
    "file": "2026-10-12_h5.json",
@@ -308,7 +325,10 @@
    },
    "academic": {},
    "official_kind": "原始排名（當時還沒有正式精選）",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
   },
   {
    "file": "2026-10-08_h5.json",
@@ -351,8 +371,14 @@
    },
    "academic": {},
    "official_kind": "原始排名（當時還沒有正式精選）",
-   "official_on_time": true
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
   }
  ],
+ "excluded": [],
+ "violations": 0,
+ "eligibility": "名單要在進場日 09:00 前產生、資料日等於訊號日（track.eligible）；不符合的批次保留原檔但不進任何平均",
  "note": "每一批到期後只寫一次，不會事後修改。同一個期間的相鄰批次持有期重疊，不是獨立樣本；一兩批的短期結果不能代表模型長期有沒有優勢。"
 }

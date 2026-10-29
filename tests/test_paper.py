@@ -45,10 +45,27 @@ class Engine(unittest.TestCase):
         self.assertIn("漲停", B["orders"][0]["why"])
         self.assertEqual(B["cash"], paper.CASH0)
 
+    def test_open_fill_ignores_same_day_high_low_volume(self):
+        """10/29 修正前視偏誤：當天的最高、最低、收盤、成交量開盤時還不知道，改掉它們不能影響開盤成交。"""
+        base = {"1101": bars([100] * 6, vol=10_000)}
+        A = paper.simulate("stable", DAYS[:6], base, {DAYS[0]: sig("1101")})
+        alt = {"1101": dict(base["1101"])}
+        o = alt["1101"][DAYS[1]][0]
+        alt["1101"][DAYS[1]] = (o, o * 1.5, o * 0.5, o, 1)   # 只改當天高、低、量
+        B = paper.simulate("stable", DAYS[:6], alt, {DAYS[0]: sig("1101")})
+        self.assertEqual(A["orders"][0], B["orders"][0])
+        self.assertEqual(A["positions"][0]["entry_price"], B["positions"][0]["entry_price"])
+
+    def test_open_at_limit_up_not_filled_even_if_it_opens_later(self):
+        px = {"1101": bars([100] * 5)}
+        px["1101"][DAYS[1]] = (110.0, 110.0, 103.0, 104.0, 1_000_000)   # 開盤漲停、之後打開：開盤當下仍買不到
+        B = paper.simulate("stable", DAYS[:5], px, {DAYS[0]: sig("1101")})
+        self.assertEqual(B["orders"][0]["status"], "unfilled")
+
     def test_volume_cap_partial(self):
         px = {"1101": bars([100] * 5, vol=10_000)}
         B = paper.simulate("stable", DAYS[:5], px, {DAYS[0]: sig("1101")})
-        self.assertEqual(B["positions"][0]["shares"], 500)   # 成交量 5%
+        self.assertEqual(B["positions"][0]["shares"], 500)   # 前一個交易日成交量的 5%
         self.assertEqual(B["orders"][0]["status"], "partial")
 
     def test_no_trade_unfilled(self):
@@ -60,7 +77,7 @@ class Engine(unittest.TestCase):
     def test_stop_then_limit_down_retry(self):
         c = [100, 100, 89, 80.1, 75, 76, 77]
         px = {"1101": bars(c)}
-        px["1101"][DAYS[3]] = (80.1, 80.1, 80.1, 80.1, 1000)   # 跌停鎖死：賣不掉
+        px["1101"][DAYS[3]] = (80.1, 80.1, 80.1, 80.1, 1_000_000)   # 開盤就在跌停價：賣不掉
         B = paper.simulate("stable", DAYS[:7], px, {DAYS[0]: sig("1101")})
         t = B["trades"][0]
         self.assertEqual(t["exit_kind"], "stop")
@@ -189,3 +206,13 @@ class Safety(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FirstPublished(unittest.TestCase):
+    def test_first_only_uses_first_file(self):
+        tmp = Path(tempfile.mkdtemp())
+        lists = {"rec_picks": {"stable": [{"stock_id": "1101", "rank": 1}]}}
+        (tmp / "2026-10-27.json").write_text(json.dumps({**lists, "generated_at": "2026-10-27T15:00:00"}), "utf-8")
+        (tmp / "2026-10-27.v4.json").write_text(json.dumps({**lists, "generated_at": "2026-10-27T22:00:00"}), "utf-8")
+        self.assertEqual(paper.signal_for("2026-10-27", "2026-10-28", tmp)["file"], "2026-10-27.v4.json")
+        self.assertEqual(paper.signal_for("2026-10-27", "2026-10-28", tmp, first_only=True)["file"], "2026-10-27.json")

@@ -9,11 +9,13 @@
 - 名單：訊號日的「預設 AI 精選」（rec_picks），用在進場日 09:00 以前產生的最新一版；沒有就那天不下單。
   依排名順序挑還沒持有的股票，補滿空出來的位置。
 - 進場：訊號日隔一個交易日的開盤價 ×（1＋0.1% 滑價），不會用訊號日當天或更早的價格。
-  買不到（當天沒成交、停牌、漲停鎖死＝開高低同價且漲幅 ≥ 9.5%）就取消，現金留著，原因記下來。
-  成交股數最多是當天成交量的 5%，超過的部分算沒成交（部分成交），零股照實記。
+  買不到（當天沒成交、停牌、開盤就在漲停價＝開盤漲幅 ≥ 9.5%）就取消，現金留著，原因記下來。
+  成交股數最多是「前一個交易日」成交量的 5%（開盤時只知道前一天的量），超過的部分算沒成交（部分成交），零股照實記。
+  2026-10-29 更正（RULES_VERSION 2026-10-29）：舊版用「開高低同價」判斷鎖死、用當天成交量算上限、用當天最高／最低價夾住成交價，
+  這些在 09:00 開盤時都還不知道（前視偏誤）。現在只用開盤價、前一天收盤（或除權息參考價）與前一天成交量。
 - 出場（收盤後判斷，隔一個交易日開盤賣）：收盤價 ≤ 買進價 −10% 停損；收盤價 ≥ 買進價 +20% 停利；持有滿 20 個交易日（進場日算第 1 天）到期。
   只用收盤價判斷，同一天不可能同時碰到停損和停利；盤中高低點不看。
-  賣不掉（沒成交、跌停鎖死）就隔天再賣；成交量 5% 上限賣不完的部分隔天繼續賣。
+  賣不掉（沒成交、開盤就在跌停價）就隔天再賣；成交量 5% 上限賣不完的部分隔天繼續賣。
 - 成本：手續費 0.1425%（整股最低 20 元、零股最低 1 元），賣出證交稅股票 0.3%、ETF 0.1%，滑價買賣各 0.1%。
 - 除權息：持有到除權息日，依交易所公告的參考價差（前一天收盤－參考價）×股數記為現金（近似，股票股利也當現金算）。
 - 比較：同樣 100 萬元在第一個進場日開盤買 0050 放著；加權指數用收盤價換算。
@@ -34,7 +36,7 @@ from pathlib import Path
 
 from . import broker, config
 
-RULES_VERSION = "2026-10-27"
+RULES_VERSION = "2026-10-29"   # 10/29：開盤成交只用開盤時已知的資訊（見 open_view）；舊版 2026-10-27 用了當天最高、最低價與成交量
 START_SIGNAL = "2026-10-27"
 MODES = ("stable", "balanced", "aggressive")
 MODE_NAMES = {"stable": "穩健型", "balanced": "均衡型", "aggressive": "積極型"}
@@ -59,11 +61,11 @@ HOL = config.ROOT / "history" / "premarket" / "holidays.json"
 NOTES = config.ROOT / "history" / "audit" / "closure_notes.json"
 
 REASONS = {"stop": "停損（收盤跌破買進價 10%）", "target": "停利（收盤漲超過買進價 20%）", "expiry": "持有滿 20 個交易日"}
-UNFILLED = {"no_trade": "當天沒有成交（停牌或沒有交易）", "limit_up": "漲停鎖死買不到", "limit_down": "跌停鎖死賣不掉",
-            "volume": "成交量太少（超過當天成交量 5% 的部分）", "cash": "現金不夠買 1 股", "no_price": "沒有價格資料"}
+UNFILLED = {"no_trade": "當天沒有成交（停牌或沒有交易）", "limit_up": "開盤就在漲停價，買不到", "limit_down": "開盤就在跌停價，賣不掉",
+            "volume": "成交量太少（超過前一個交易日成交量 5% 的部分）", "cash": "現金不夠買 1 股", "no_price": "沒有價格資料"}
 RULES_TEXT = ("訊號日收盤後的正式 AI 精選，隔一個交易日開盤買（＋0.1% 滑價）；收盤跌 10% 停損、漲 20% 停利、滿 20 個交易日到期，"
-              "都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃當天 5%，"
-              "漲停買不到、跌停賣不掉照實記。只模擬，不會送出任何真實委託。")
+              "都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃前一個交易日的 5%，"
+              "開盤就漲停買不到、開盤就跌停賣不掉照實記；開盤成交只用開盤時已知的資訊。只模擬，不會送出任何真實委託。")
 
 
 def _read(p: Path):
@@ -105,10 +107,11 @@ def _enrich(x: dict, key: str = "rec_picks") -> dict:
                 for c in rows] for m, rows in (x.get(key) or {}).items()}
 
 
-def signal_for(d: str, entry: str, picks: Path = PICKS) -> dict | None:
-    """訊號日 d 在進場日 09:00 以前產生的最新一版名單。之後才產生的版本一律不用（避免用到開盤後的資訊）。"""
+def signal_for(d: str, entry: str, picks: Path = PICKS, first_only: bool = False) -> dict | None:
+    """訊號日 d 在進場日 09:00 以前產生的最新一版名單。之後才產生的版本一律不用（避免用到開盤後的資訊）。
+    first_only：只用首次發布版（{d}.json），和正式績效同一份名單（V21.2 分帳：10/28 主帳用的是 10/27.v4）。"""
     best = None
-    for f in sorted(picks.glob(f"{d}*.json")) if picks.exists() else []:
+    for f in sorted(picks.glob(f"{d}.json" if first_only else f"{d}*.json")) if picks.exists() else []:
         x = _read(f) or {}
         g = x.get("generated_at") or ""
         if not x.get("rec_picks") or not g or g >= f"{entry}T{OPEN_AT}":
@@ -131,6 +134,17 @@ def _prev_close(px, sid, d, exr):
     rows = px.get(sid) or {}
     ks = [k for k in rows if k < d]
     return rows[max(ks)][3] if ks else None
+
+
+def open_view(px, sid, d, exr):
+    """09:00 開盤當下看得到的資訊：開盤價、前一天收盤（除權息日用參考價）、前一個交易日成交量。
+    當天的最高、最低、收盤、成交量要收盤後才知道，開盤成交不能用（2026-10-29 修正前視偏誤）。"""
+    b = _bar(px, sid, d)
+    if not b or not b[0]:   # 當天沒有開盤價（停牌或沒有交易）：買賣都不成立
+        return None
+    rows = px.get(sid) or {}
+    ks = [k for k in rows if k < d and rows[k][4]]
+    return {"open": b[0], "prev_close": _prev_close(px, sid, d, exr), "prev_volume": rows[max(ks)][4] if ks else None}
 
 
 def _last_close(px, sid, d):
@@ -162,21 +176,22 @@ def simulate(mode: str, days: list[str], px: dict, signals: dict, exr: dict | No
         # 2. 開盤先賣
         for sid in list(sell_q):
             p, why = pos[sid], sell_q[sid]
-            b = _bar(px, sid, d)
             o = {"date": d, "side": "sell", "sid": sid, "name": p["name"], "want": p["shares"], "reason": REASONS[why]}
-            if not b or not b[4]:
+            v = open_view(px, sid, d, exr)
+            if not v:
                 orders.append({**o, "filled": 0, "status": "unfilled", "why": UNFILLED["no_trade"]})
                 continue
-            op, hi, lo, cl, vol = b
-            pc = _prev_close(px, sid, d, exr)
-            if op == hi == lo and pc and op <= pc * (1 - LIMIT):
+            op, pc = v["open"], v["prev_close"]
+            if pc and op <= pc * (1 - LIMIT):
                 orders.append({**o, "filled": 0, "status": "unfilled", "why": UNFILLED["limit_down"]})
                 continue
-            q = min(p["shares"], int(vol * VOL_CAP))
+            q = min(p["shares"], int((v["prev_volume"] or 0) * VOL_CAP))
             if q <= 0:
                 orders.append({**o, "filled": 0, "status": "unfilled", "why": UNFILLED["volume"]})
                 continue
-            price = max(lo, round(op * (1 - SLIP), 4))
+            price = round(op * (1 - SLIP), 4)
+            if pc:
+                price = max(price, round(pc * 0.9, 4))   # 不會低於跌停價（跌停價開盤前就知道）
             val = q * price
             f, t = fee(val, q), tax(val, sid)
             cash += val - f - t
@@ -211,21 +226,22 @@ def simulate(mode: str, days: list[str], px: dict, signals: dict, exr: dict | No
             for c in cands:
                 sid = c["stock_id"]
                 o = {"date": d, "side": "buy", "sid": sid, "name": c.get("name"), "signal_date": prev, "rank": c.get("rank")}
-                b = _bar(px, sid, d)
-                if not b or not b[4]:
+                v = open_view(px, sid, d, exr)
+                if not v:
                     orders.append({**o, "want": None, "filled": 0, "status": "unfilled", "why": UNFILLED["no_trade"]})
                     continue
-                op, hi, lo, cl, vol = b
-                pc = _prev_close(px, sid, d, exr)
-                if op == hi == lo and pc and op >= pc * (1 + LIMIT):
+                op, pc = v["open"], v["prev_close"]
+                if pc and op >= pc * (1 + LIMIT):
                     orders.append({**o, "want": None, "filled": 0, "status": "unfilled", "why": UNFILLED["limit_up"]})
                     continue
-                price = min(hi, round(op * (1 + SLIP), 4))
+                price = round(op * (1 + SLIP), 4)
+                if pc:
+                    price = min(price, round(pc * 1.1, 4))   # 不會高於漲停價
                 budget = min(prev_eq / MAX_POS, cash)
                 want = int(budget / (price * (1 + FEE)))
                 while want > 0 and want * price + fee(want * price, want) > cash:
                     want -= 1
-                q = min(want, int(vol * VOL_CAP))
+                q = min(want, int((v["prev_volume"] or 0) * VOL_CAP))
                 if want <= 0:
                     orders.append({**o, "want": 0, "filled": 0, "status": "unfilled", "why": UNFILLED["cash"]})
                     continue
@@ -622,12 +638,12 @@ def holidays() -> set[str]:
     return set((_read(HOL) or {}).get("dates", [])) | set((_read(NOTES) or {}).keys())
 
 
-def signals_from(days: list[str], hol: set[str], picks: Path = PICKS, names: dict | None = None) -> dict:
+def signals_from(days: list[str], hol: set[str], picks: Path = PICKS, names: dict | None = None, first_only: bool = False) -> dict:
     out = {}
     for d in days:
         if d < START_SIGNAL:
             continue
-        s = signal_for(d, next_trading(d, days, hol), picks)
+        s = signal_for(d, next_trading(d, days, hol), picks, first_only)
         if s:
             for rows in s["lists"].values():
                 for c in rows:
@@ -645,7 +661,7 @@ def site(L: dict, R: dict, D: dict) -> dict:
                     "curve": B["curve"], "pending_sells": B["pending_sells"]}
     return {"generated_at": config.now().isoformat(timespec="seconds"), "rules_version": L["rules_version"], "rules": L["rules"],
             "live_trading": L["live_trading"], "last_data": L["last_data"], "first_entry": L["first_entry"], "start_signal": L["start_signal"],
-            "books": books, "bench": L["bench"], "plan": L["plan"], "note": L["note"],
+            "books": books, "bench": L["bench"], "plan": L["plan"], "note": L["note"], "first_published": L.get("first_published"),
             "integrity": {"days_recorded": len(D["days"]), "mismatches": D["mismatches"][-20:], "n_mismatch": len(D["mismatches"])},
             "cost": "全部在 GitHub Actions 免費額度內執行（每次幾秒），不使用付費資料或服務，每月 NT$0。"}
 
@@ -657,6 +673,12 @@ def run(dbname: str = "stocks.db", out: Path = OUT, site_dir: Path | None = None
     hol = holidays()
     sig = signals_from(days, hol, names=names)
     L = build(days, px, sig, exr, idx, hol)
+    # V21.2 分帳：另一本只用首次發布版名單（和正式績效同一份），兩本並列，不互相取代
+    L1 = build(days, px, signals_from(days, hol, names=names, first_only=True), exr, idx, hol)
+    L["first_published"] = {"rule": "只用訊號日首次發布的名單（{訊號日}.json），和正式績效、到期對帳同一份名單；主帳用進場日 09:00 前最新一版",
+                            "books": {m: {"kpi": B["kpi"], "files": sorted({p.get("pick_file") for p in B["positions"]} | {t.get("pick_file") for t in B["trades"]})}
+                                      for m, B in L1["books"].items()},
+                            "same_lists": {d: sig[d]["file"] for d in sig}}
     R = replay(days, px, idx, hol=hol, names=names)
     out.mkdir(parents=True, exist_ok=True)
     (out / "ledger.json").write_text(json.dumps(L, ensure_ascii=False, indent=1), "utf-8")

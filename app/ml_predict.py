@@ -223,6 +223,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
     counts = {h: 0 for h in acc}
     daily = []
     on_time = 0
+    excluded = []
     for f in files:
         rec = json.loads(f.read_text("utf-8"))
         sig = rec["signal_date"]
@@ -233,6 +234,10 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
             from . import premarket
             entry = premarket.next_trading_day(_d.fromisoformat(sig), premarket.holidays(refresh=False)).isoformat()
         on_time += bool(track.on_time(rec, entry))
+        ok, why = track.perf_eligible(rec, entry)
+        if not ok:   # V21.2：不合格（開盤後才封存、資料日不對）的不進成績單，只列出來
+            excluded.append({"signal_date": sig, "why": why})
+            continue
         if sig not in pos or pos[sig] + 1 >= len(dates):
             continue
         for h in acc:
@@ -284,7 +289,8 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
     return {"generated_at": config.now().isoformat(timespec="seconds"), "days": len(files), "on_time": on_time,
             "definitions": {"top_excess": f"前 {ml.TOP} 名平均相對 0050 超額，未扣成本（研究排序能力）",
                             "top10_net_excess": f"前 10 名平均相對 0050 超額，扣成本 {pb.COST * 100:.3f}%（和到期對帳明細同一口徑）"},
-            "first": files[0].stem, "last": files[-1].stem, "horizons": out, "daily": daily}
+            "first": files[0].stem, "last": files[-1].stem, "horizons": out, "daily": daily, "excluded": excluded,
+            "eligibility": "只計入進場日 09:00 前封存、資料日等於訊號日的預測（track.perf_eligible）"}
 
 
 def latest(src: Path = PRED_DIR) -> dict | None:

@@ -158,7 +158,26 @@ if _cal.exists():  # V20.1 預測封存日曆（app/seal_calendar.py）
     shutil.copy(_cal, out / "data" / "predictions" / "calendar.json")
 _mat = config.ROOT / "history" / "audit" / "maturity"
 if _mat.exists():  # V20.4 到期對帳明細（app/maturity_report.py）
-    shutil.copytree(_mat, out / "data" / "predictions" / "maturity", dirs_exist_ok=True)
+    # V21.2 品質閘門：獨立對帳（app/perf_reconcile.py）沒通過就不發布到期績效；不合格批次（開盤後才產生等）只發布清空統計後的版本
+    from app import maturity_report as _mr
+    _rc = config.ROOT / "history" / "audit" / "reconcile.json"
+    _rcj = json.loads(_rc.read_text("utf-8")) if _rc.exists() else None
+    _md = out / "data" / "predictions" / "maturity"
+    _md.mkdir(parents=True, exist_ok=True)
+    _mi = _mat / "index.json"
+    _stale = _rcj is not None and _mi.exists() and (_rcj.get("generated_at") or "") < (json.loads(_mi.read_text("utf-8")).get("generated_at") or "")
+    if _stale:   # 對帳步驟本身當掉、沒有重新產生：比到期索引舊的對帳結果不能當作通過
+        _rcj = {**_rcj, "all_ok": False, "files": [{"file": "reconcile.json（比到期索引舊，這次對帳沒有完成）", "ok": False}]}
+    if _rcj is not None and not _rcj.get("all_ok"):
+        bad = [f["file"] for f in _rcj.get("files", []) if not f.get("ok")]
+        (_md / "index.json").write_text(json.dumps({"blocked": True, "batches": [], "why": "獨立對帳沒有通過，暫停發布到期績效",
+                                                     "files": bad, "checked_at": _rcj.get("generated_at")}, ensure_ascii=False), "utf-8")
+    else:
+        for _f in _mat.glob("*.json"):
+            _j = json.loads(_f.read_text("utf-8"))
+            if _f.name not in ("index.json", "corrections.json"):
+                _j = _mr.gate(_j)
+            (_md / _f.name).write_text(json.dumps(_j, ensure_ascii=False, separators=(",", ":")), "utf-8")
 for _src, _dst in (("site.json", "paper.json"), ("replay.json", "replay.json")):  # V20.3 AI 模擬交易與預測回放（app/paper.py）
     if (config.ROOT / "history" / "paper" / _src).exists():
         (out / "data" / "paper").mkdir(parents=True, exist_ok=True)
