@@ -153,6 +153,14 @@ jobs:
         timeout-minutes: 10
         run: python -m app.maturity_report
 
+      # V21.2 正式績效對帳：用另一套寫法重算每份到期對帳檔（報酬、成本、0050、名單），不一致就讓這一步失敗並記錄
+      - name: 正式績效對帳
+        id: recon
+        if: always() && env.MODE != 'premarket'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python -m app.perf_reconcile
+
       # V31 每日自主學習：到期對帳、錯誤分析、特徵漂移；研究資料集有新到期標籤才重新訓練候選模型（通過上線檢查才換版）
       # 正式排行榜不受影響；失敗不影響網站。時間上限 30 分鐘，程式內另有運算時間預算，不夠就跳過訓練
       - name: 每日自主學習
@@ -226,7 +234,7 @@ jobs:
         run: >-
           python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
-          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}"
 
       - name: 備份資料庫到 GitHub Release
         id: backup

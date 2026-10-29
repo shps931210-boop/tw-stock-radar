@@ -1,0 +1,136 @@
+{
+ "schema_version": 1,
+ "generated_at": "2026-10-29T10:51:21",
+ "method": "不經過 maturity_report／pit_backtest 的報酬函式，直接用還原後開盤價重算報酬、扣成本、0050 超額與名單（首次發布版前 10 名）",
+ "tolerance_pp": 0.011,
+ "files": [
+  {
+   "file": "2026-10-08_h5.json",
+   "entry": "2026-10-12",
+   "exit": "2026-10-19",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 3.75,
+    "balanced": -1.84,
+    "aggressive": -5.32
+   }
+  },
+  {
+   "file": "2026-10-12_h5.json",
+   "entry": "2026-10-13",
+   "exit": "2026-10-20",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 3.8,
+    "balanced": -1.36,
+    "aggressive": -6.45
+   }
+  },
+  {
+   "file": "2026-10-13_h5.json",
+   "entry": "2026-10-14",
+   "exit": "2026-10-21",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 1.02,
+    "balanced": 0.65,
+    "aggressive": -4.2
+   }
+  },
+  {
+   "file": "2026-10-14_h5.json",
+   "entry": "2026-10-15",
+   "exit": "2026-10-22",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -1.73,
+    "balanced": -0.89,
+    "aggressive": -0.69
+   }
+  },
+  {
+   "file": "2026-10-15_h5.json",
+   "entry": "2026-10-16",
+   "exit": "2026-10-27",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -0.1,
+    "balanced": -1.32,
+    "aggressive": -3.58
+   }
+  },
+  {
+   "file": "2026-10-16_h5.json",
+   "entry": "2026-10-19",
+   "exit": "2026-10-28",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -3.64,
+    "balanced": 0.33,
+    "aggressive": -2.05,
+    "shadow_v21": 0.47,
+    "shadow_ridge": -2.57,
+    "shadow_lgbm": -1.72
+   }
+  }
+ ],
+ "all_ok": true,
+ "cross_sources": [
+  {
+   "batch": "2026-10-16_h5",
+   "maturity_v21_top10_net": 0.47,
+   "scorecard_top20_gross": 0.73,
+   "scorecard_top10_net": null,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）"
+  }
+ ],
+ "definitions": {
+  "official": {
+   "name": "正式推薦績效",
+   "source": "history/picks/（首次發布版）→ history/audit/maturity/ 的 official",
+   "rule": "訊號日收盤後封存；隔一個交易日開盤買、第 h 個交易日後開盤賣（還原除權息）；扣來回成本 0.585%；前 10 名等權；買不到的不算",
+   "bench": "0050 同一段開盤到開盤（還原除權息）"
+  },
+  "shadow": {
+   "name": "影子模型績效",
+   "source": "history/predictions/ → maturity 的 shadow／academic",
+   "rule": "和正式推薦相同的進出場與成本，名單是候選模型分數的前 10 名",
+   "bench": "同上"
+  },
+  "scorecard": {
+   "name": "影子預測成績單",
+   "source": "history/predictions/scorecard.json",
+   "rule": "top_excess＝前 20 名、未扣成本；top10_net_excess＝前 10 名、扣成本（和到期對帳同口徑）",
+   "bench": "0050 開盤到開盤"
+  },
+  "backtest": {
+   "name": "歷史回測",
+   "source": "history/backtest/",
+   "rule": "用當時已公布的資料重建；20 日不重疊期間；不是前瞻績效",
+   "bench": "0050 開盤到開盤"
+  },
+  "paper": {
+   "name": "AI 模擬交易",
+   "source": "history/paper/",
+   "rule": "每本帳 100 萬、最多 5 檔；開盤＋0.1% 滑價；停損 −10%、停利 +20%、最長 20 日；實際手續費與證交稅",
+   "bench": "0050 同期間；持有期間與名單規則都和正式推薦不同，不能直接比"
+  },
+  "factor": {
+   "name": "因子研究",
+   "source": "history/backtest/selection.json、academic.json、twolayer.json",
+   "rule": "單因子十分位或 Rank IC；有的未扣成本（會註明）",
+   "bench": "0050 或全體可排名股票"
+  },
+  "taiex": {
+   "name": "加權指數",
+   "rule": "只有收盤價：訊號日收盤 → 出場前一天收盤；要和 0050 比時用 bench_0050_close（同一段收盤）",
+   "note": "和 0050 開盤到開盤的期間不同，不能直接相減"
+  }
+ }
+}

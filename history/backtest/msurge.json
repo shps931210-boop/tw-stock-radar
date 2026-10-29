@@ -1,0 +1,405 @@
+{
+ "schema_version": 1,
+ "study_version": "2026-10-29",
+ "generated_at": "2026-10-29T11:00:28",
+ "periods": 87,
+ "first": "2019-07-31",
+ "last": "2026-08-27",
+ "t_need": 2.58,
+ "mdd_gap": 5.0,
+ "holdout_from": "2025-01-01",
+ "portfolios": {
+  "A": {
+   "rule": "均衡型原版前 10 名",
+   "periods": 87,
+   "total": 180.75,
+   "bench_total": 564.05,
+   "avg_excess": -0.96,
+   "t_excess": -1.12,
+   "beat_0050": 47.1,
+   "mdd": -32.69,
+   "big_loss": 4.6,
+   "dev": {
+    "periods": 67,
+    "total": 131.34,
+    "bench_total": 188.49,
+    "avg_excess": -0.25,
+    "t_excess": -0.26,
+    "beat_0050": 50.7,
+    "mdd": -32.69,
+    "big_loss": 4.5
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 21.36,
+    "bench_total": 130.18,
+    "avg_excess": -3.37,
+    "t_excess": -1.7,
+    "beat_0050": 35.0,
+    "mdd": -16.91,
+    "big_loss": 5.0
+   }
+  },
+  "B": {
+   "rule": "0.75×均衡型＋0.25×MSURGE",
+   "periods": 87,
+   "total": 1349.52,
+   "bench_total": 564.05,
+   "avg_excess": 1.13,
+   "t_excess": 1.28,
+   "beat_0050": 46.0,
+   "mdd": -30.37,
+   "big_loss": 10.3,
+   "dev": {
+    "periods": 67,
+    "total": 523.09,
+    "bench_total": 188.49,
+    "avg_excess": 1.38,
+    "t_excess": 1.4,
+    "beat_0050": 47.8,
+    "mdd": -30.37,
+    "big_loss": 10.4
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 132.64,
+    "bench_total": 130.18,
+    "avg_excess": 0.31,
+    "t_excess": 0.15,
+    "beat_0050": 40.0,
+    "mdd": -20.16,
+    "big_loss": 10.0
+   }
+  },
+  "C": {
+   "rule": "MSURGE＋營收年增（等權）",
+   "periods": 87,
+   "total": 616.73,
+   "bench_total": 564.05,
+   "avg_excess": 0.26,
+   "t_excess": 0.3,
+   "beat_0050": 46.0,
+   "mdd": -34.33,
+   "big_loss": 5.7,
+   "dev": {
+    "periods": 67,
+    "total": 407.48,
+    "bench_total": 188.49,
+    "avg_excess": 1.04,
+    "t_excess": 1.09,
+    "beat_0050": 49.3,
+    "mdd": -20.38,
+    "big_loss": 4.5
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 41.23,
+    "bench_total": 130.18,
+    "avg_excess": -2.35,
+    "t_excess": -1.22,
+    "beat_0050": 35.0,
+    "mdd": -21.85,
+    "big_loss": 10.0
+   }
+  },
+  "D": {
+   "rule": "MSURGE＋獲利品質（營業現金流／淨利、低應計）",
+   "periods": 87,
+   "total": 742.43,
+   "bench_total": 564.05,
+   "avg_excess": 0.47,
+   "t_excess": 0.56,
+   "beat_0050": 44.8,
+   "mdd": -23.68,
+   "big_loss": 8.0,
+   "dev": {
+    "periods": 67,
+    "total": 472.71,
+    "bench_total": 188.49,
+    "avg_excess": 1.26,
+    "t_excess": 1.43,
+    "beat_0050": 41.8,
+    "mdd": -23.68,
+    "big_loss": 7.5
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 47.1,
+    "bench_total": 130.18,
+    "avg_excess": -2.17,
+    "t_excess": -1.0,
+    "beat_0050": 55.0,
+    "mdd": -21.03,
+    "big_loss": 10.0
+   }
+  },
+  "E": {
+   "rule": "MSURGE＋產業動能",
+   "periods": 87,
+   "total": 228.66,
+   "bench_total": 564.05,
+   "avg_excess": -0.56,
+   "t_excess": -0.61,
+   "beat_0050": 47.1,
+   "mdd": -45.82,
+   "big_loss": 11.5,
+   "dev": {
+    "periods": 67,
+    "total": 185.41,
+    "bench_total": 188.49,
+    "avg_excess": 0.23,
+    "t_excess": 0.23,
+    "beat_0050": 49.3,
+    "mdd": -31.07,
+    "big_loss": 10.4
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 15.15,
+    "bench_total": 130.18,
+    "avg_excess": -3.23,
+    "t_excess": -1.53,
+    "beat_0050": 40.0,
+    "mdd": -30.74,
+    "big_loss": 15.0
+   }
+  },
+  "F": {
+   "rule": "B 的前 30 名裡進場機會最高 10 檔",
+   "periods": 87,
+   "total": 526.28,
+   "bench_total": 564.05,
+   "avg_excess": 0.06,
+   "t_excess": 0.08,
+   "beat_0050": 50.6,
+   "mdd": -37.73,
+   "big_loss": 9.2,
+   "dev": {
+    "periods": 67,
+    "total": 184.23,
+    "bench_total": 188.49,
+    "avg_excess": 0.08,
+    "t_excess": 0.09,
+    "beat_0050": 50.7,
+    "mdd": -37.73,
+    "big_loss": 10.4
+   },
+   "holdout": {
+    "periods": 20,
+    "total": 120.34,
+    "bench_total": 130.18,
+    "avg_excess": 0.02,
+    "t_excess": 0.01,
+    "beat_0050": 50.0,
+    "mdd": -24.76,
+    "big_loss": 5.0
+   }
+  }
+ },
+ "compare": {
+  "B_vs_A": {
+   "dev_diff": 1.62,
+   "dev_t": 2.16,
+   "first_half": 1.95,
+   "second_half": 1.3,
+   "holdout_diff": 3.67,
+   "mdd_gap": 2.32,
+   "passed": false
+  },
+  "C_vs_A": {
+   "dev_diff": 1.29,
+   "dev_t": 1.49,
+   "first_half": 1.56,
+   "second_half": 1.02,
+   "holdout_diff": 1.02,
+   "mdd_gap": -1.64,
+   "passed": false
+  },
+  "D_vs_A": {
+   "dev_diff": 1.51,
+   "dev_t": 1.58,
+   "first_half": 2.49,
+   "second_half": 0.56,
+   "holdout_diff": 1.2,
+   "mdd_gap": 9.01,
+   "passed": false
+  },
+  "E_vs_A": {
+   "dev_diff": 0.48,
+   "dev_t": 0.55,
+   "first_half": 1.05,
+   "second_half": -0.07,
+   "holdout_diff": 0.13,
+   "mdd_gap": -13.13,
+   "passed": false
+  },
+  "F_vs_A": {
+   "dev_diff": 0.32,
+   "dev_t": 0.43,
+   "first_half": 0.15,
+   "second_half": 0.49,
+   "holdout_diff": 3.39,
+   "mdd_gap": -5.04,
+   "passed": false
+  }
+ },
+ "overlap_with_A": {
+  "B": 3.1,
+  "C": 0.4,
+  "D": 0.1,
+  "E": 0.4,
+  "F": 1.9
+ },
+ "passed": [],
+ "side": {
+  "already_priced": {
+   "pre_up_half": {
+    "mean_pct": 0.26,
+    "t": 0.4,
+    "n": 87
+   },
+   "pre_down_half": {
+    "mean_pct": 0.25,
+    "t": 0.42,
+    "n": 87
+   },
+   "note": "MSURGE 前十分位，依訊號前 20 日漲跌分兩半，20 日超額（未扣成本）"
+  },
+  "season": {
+   "jan_mar_signals": {
+    "mean": 0.032,
+    "t": 2.08,
+    "n": 19
+   },
+   "other_months": {
+    "mean": 0.0414,
+    "t": 4.41,
+    "n": 68
+   },
+   "note": "1～3 月訊號會用到 12、1 月營收（農曆年月份），季節性最強"
+  },
+  "size": {
+   "大型": {
+    "mean": 0.0441,
+    "t": 3.99,
+    "n": 87
+   },
+   "中型": {
+    "mean": 0.0346,
+    "t": 2.99,
+    "n": 87
+   },
+   "小型": {
+    "mean": 0.0363,
+    "t": 3.45,
+    "n": 87
+   }
+  },
+  "industry": [
+   {
+    "industry": "半導體業",
+    "periods": 87,
+    "ic": 0.059,
+    "pos_pct": 57.5
+   },
+   {
+    "industry": "電腦及週邊設備業",
+    "periods": 87,
+    "ic": 0.053,
+    "pos_pct": 40.2
+   },
+   {
+    "industry": "電子工業",
+    "periods": 87,
+    "ic": 0.051,
+    "pos_pct": 63.2
+   },
+   {
+    "industry": "電子零組件業",
+    "periods": 87,
+    "ic": 0.046,
+    "pos_pct": 64.4
+   },
+   {
+    "industry": "光電業",
+    "periods": 69,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "其他",
+    "periods": 82,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "化學生技醫療",
+    "periods": 76,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "建材營造",
+    "periods": 81,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "汽車工業",
+    "periods": 63,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "生技醫療業",
+    "periods": 87,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "通信網路業",
+    "periods": 84,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "金融保險",
+    "periods": 83,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "電機機械",
+    "periods": 87,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "航運業",
+    "periods": 75,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "電子通路業",
+    "periods": 52,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "其他電子類",
+    "periods": 53,
+    "ic": null,
+    "pos_pct": 0.0
+   },
+   {
+    "industry": "鋼鐵工業",
+    "periods": 43,
+    "ic": null,
+    "pos_pct": 0.0
+   }
+  ]
+ },
+ "pit": "近似 PIT：月營收以次月 11 日起可用，沒有實際公告時間與更正紀錄",
+ "note": "歷史回測（研究）；保留段 10/28 已看過一次，屬重複使用。通過也只進影子紀錄，正式模型不變。"
+}

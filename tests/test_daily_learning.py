@@ -184,3 +184,27 @@ class Queue(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LabelFlow(unittest.TestCase):
+    """V21.2：10/28 第二次執行把摘要寫成「沒有預測到期」，但當天已有 745 筆到期結果。摘要與狀態要用今天累計。"""
+    def test_summary_uses_today_cumulative(self):
+        m = [{"signal_date": "2026-10-16", "horizon": "5", "stocks": 745, "model_version": None}]
+        s = dl.summarize(m, 745, 0, {"retrained": False, "reason": "沒有新到期的訓練標籤"})
+        self.assertNotIn("沒有預測到期", s)
+        self.assertIn("745", s)
+        self.assertIn("訓練標籤 0 筆", s)
+        self.assertIn("沒有預測到期", dl.summarize([], 0, 0, {"reason": "x"}))
+
+    def test_non_panel_signal_is_not_a_training_label_but_is_observed(self):
+        dates = [f"2026-01-{i + 1:02d}" for i in range(30)]
+        sigs = ml.signal_dates(dates, dates[0])
+        m = [{"signal_date": dates[3], "horizon": "5", "stocks": 100}, {"signal_date": sigs[1], "horizon": "5", "stocks": 50}]
+        f = dl.label_flow(m, {"panel_start": dates[0], "new_labels": {"5": 50}}, dates, {"dates": 2}, {"dates": 0})
+        self.assertEqual((f["batches"], f["stocks"]), (2, 150))
+        self.assertEqual(f["B_training"]["eligible_stocks"], 50)
+        self.assertEqual(f["B_training"]["unused_stocks"], 100)
+        self.assertFalse(f["rows"][0]["train_eligible"])
+        self.assertIn("不是研究資料集的訊號日", f["rows"][0]["why_not"])
+        self.assertFalse(f["E_improved"]["proven"])
+        self.assertFalse(f["changes_conclusion"])

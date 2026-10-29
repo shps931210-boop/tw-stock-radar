@@ -252,7 +252,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
                 continue
             counts[h] += 1
             Y = pd.Series(y)
-            day = {"sig": sig, "h": h, "ver": rec.get("model_version") or rec.get("model_hash"), "ic": {}, "top": {}}
+            day = {"sig": sig, "h": h, "ver": rec.get("model_version") or rec.get("model_hash"), "ic": {}, "top": {}, "top10": {}}
             daily.append(day)
             for m in MODELS:
                 p = pd.Series({s["id"]: (s.get(h) or {}).get(m) for s in rec["stocks"]}, dtype=float).reindex(Y.index)
@@ -263,7 +263,7 @@ def scorecard(dbname: str = "stocks.db", src: Path = PRED_DIR, D: dict | None = 
                 A["top"].append(float(Y[p.nlargest(ml.TOP).index].mean()))
                 # 和到期對帳明細（maturity_report）同一口徑：前 10 名、扣一次來回成本
                 A["top10"].append(float(Y[p.nlargest(10).index].mean()) - pb.COST)
-                day["ic"][m], day["top"][m] = round(A["ic"][-1], 4), round(A["top"][-1], 5)
+                day["ic"][m], day["top"][m], day["top10"][m] = round(A["ic"][-1], 4), round(A["top"][-1], 5), round(A["top10"][-1], 5)
                 if m == "logit":
                     w = (Y > 0).astype(float)
                     A["hit"].append(float(((p > 0.5) == (w > 0.5)).mean()))

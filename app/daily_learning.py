@@ -305,7 +305,7 @@ def candidate(D: dict, cfg: dict, t0: float, budget: float, log=print, panel_pat
     reg = learning.load_registry(root / "registry.json")
     act = next((v for v in reg["versions"] if v["version"] == reg.get("active")), None)
     need, why = retrain_decision(thr, act)
-    out = {"retrained": False, "reason": why, **info, "labeled_through": thr, "panel_rows": int(len(panel)),
+    out = {"retrained": False, "reason": why, **info, "labeled_through": thr, "panel_rows": int(len(panel)), "panel_start": str(panel["date"].min()),
            "research_ic": research_ic(panel)}
     if not need:
         return out
@@ -389,11 +389,8 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     human = [x for x in ([st["gate"]["label"]] if st["gate"].get("status") == "passed" else []) + risks if x]
     matured_new = sum(x["stocks"] for x in new)
     labels_new = sum((cand.get("new_labels") or {}).values())
-    summary = ("今天沒有新的學習資料：沒有預測到期、也沒有新的訓練標籤。" if not new and not labels_new else
-               f"今天新增 {len(new)} 份到期對帳（{matured_new} 筆股票結果）" + (f"、{labels_new} 筆研究訓練標籤" if labels_new else "") + "。")
-    summary += "重新訓練了候選模型。" if cand.get("retrained") else "沒有重新訓練：" + cand.get("reason", "")
     rep = {"schema_version": 1, "date": day, "generated_at": config.now().isoformat(timespec="seconds"), "seconds": round(time.time() - t0),
-           "summary": summary,
+           "summary": "",
            "data": {"ok": bool(comp.get("ok")), "prices": last, "why": comp.get("why")},
            "sealed": {"today": bool(sealed), "on_time": on_time, "model_version": (sealed or {}).get("model_version"), "n": (sealed or {}).get("n")},
            "matured_today": new, "matured_stocks_today": matured_new,
@@ -419,6 +416,13 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
             rep["candidate"] = {**rep["candidate"], "retrained_earlier_today": old["candidate"].get("version")}
     else:
         rep["first_run_at"], rep["runs"] = rep["generated_at"], 1
+    # V21.2：摘要和狀態都用「今天累計」：10/28 第二次執行沒有新到期，摘要就寫成「沒有預測到期」，和 matured_today 矛盾
+    errs5 = guard("短期錯誤觀察", lambda: errors(load_matured("5")), {"dates": 0})
+    rep["label_flow"] = label_flow(rep["matured_today"], cand, D["dates"], errs5, err)
+    rep["errors_5d"] = errs5
+    rep["summary"] = summary = summarize(rep["matured_today"], rep["matured_stocks_today"], labels_new, cand)
+    steps[steps.index(f"到期對帳：新增 {len(new)} 份")] = f"到期對帳：這次新增 {len(new)} 份，今天累計 {len(rep['matured_today'])} 份"
+    rep["steps"] = steps
     p.write_text(json.dumps(rep, ensure_ascii=False, indent=1, default=str), "utf-8")
     try:  # V14 真實前瞻帳本：每天一行
         from . import ledgers
@@ -441,6 +445,45 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     p.write_text(json.dumps(rep, ensure_ascii=False, indent=1, default=str), "utf-8")
     log(summary)
     return rep
+
+
+def summarize(matured: list[dict], stocks: int, labels_new: int, cand: dict) -> str:
+    """今天（累計）的學習摘要。到期對帳、訓練標籤、重新訓練是三件不同的事，分開寫。"""
+    if not matured and not labels_new:
+        s = "今天沒有新的學習資料：沒有預測到期、也沒有新的訓練標籤。"
+    else:
+        s = (f"今天有 {len(matured)} 批預測到期（{stocks} 筆股票結果，已寫入到期對帳與錯誤觀察）" if matured else "今天沒有預測到期") + \
+            (f"；新增 {labels_new} 筆研究訓練標籤。" if labels_new else "；新增的研究訓練標籤 0 筆（原因見 label_flow）。")
+    return s + ("重新訓練了候選模型。" if cand.get("retrained") else "沒有重新訓練：" + cand.get("reason", ""))
+
+
+def label_flow(matured: list[dict], cand: dict, dates: list[str], errs5: dict, errs20: dict) -> dict:
+    """V21.2：今天到期的真實結果流到哪裡（A 前瞻績效、B 訓練標籤、C 錯誤觀察、D 要不要訓練、E 有沒有改善）。
+
+    每日封存的預測是「每個交易日」一份；研究資料集（ml_panel）的訊號日是「每 10 個交易日」一個，
+    所以不是研究訊號日的到期批次不會變成訓練標籤，避免高度重疊的樣本被重複計入訓練。這是設計，不是遺漏。"""
+    start = cand.get("panel_start") or pb.START
+    panel_sigs = set(ml.signal_dates(dates, start)) if dates and any(d >= start for d in dates) else set()
+    rows = []
+    for m in matured:
+        ok = m["signal_date"] in panel_sigs
+        rows.append({**m, "train_eligible": ok,
+                     "why_not": None if ok else f"{m['signal_date']} 不是研究資料集的訊號日（每 {ml.STEP} 個交易日一個）；同一期間的標籤由最近的研究訊號日提供"})
+    elig = sum(r["stocks"] for r in rows if r["train_eligible"])
+    lbl = sum((cand.get("new_labels") or {}).values())
+    return {
+        "batches": len(rows), "stocks": sum(r["stocks"] for r in rows), "rows": rows,
+        "A_forward": {"stocks": sum(r["stocks"] for r in rows), "where": "history/learning/matured/、history/audit/maturity/（前瞻績效）"},
+        "B_training": {"eligible_stocks": elig, "new_labels": lbl,
+                       "unused_stocks": sum(r["stocks"] for r in rows) - elig,
+                       "note": "訓練標籤只來自研究訊號日；今天到期的批次如果不是研究訊號日，結果只進前瞻績效與錯誤觀察"},
+        "C_errors": {"h5_dates": errs5.get("dates", 0), "h20_dates": errs20.get("dates", 0),
+                     "note": "5 日只當觀察（樣本重疊、雜訊大）；正式錯誤分析看 20 日"},
+        "D_retrain": {"retrained": bool(cand.get("retrained")), "why": cand.get("reason")},
+        "E_improved": {"proven": False, "why": "模型是否改善只看樣本外比賽與成熟的前瞻成績，不看今天有沒有訓練"},
+        "changes_conclusion": False if (errs5.get("dates", 0) + errs20.get("dates", 0)) < 20 else None,
+        "conclusion_note": "到期的訊號日不到 20 個，不足以改變既有研究結論" if (errs5.get("dates", 0) + errs20.get("dates", 0)) < 20 else "見錯誤分析",
+    }
 
 
 def pipeline(rep: dict, fails: dict, evo: dict, train: bool) -> list[dict]:

@@ -1,0 +1,1181 @@
+{
+ "factors": {
+  "quality": {
+   "ic": {
+    "5": {
+     "mean": 0.0229,
+     "t": 1.92,
+     "n": 86,
+     "dev": {
+      "mean": 0.0218,
+      "t": 1.57,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0269,
+      "t": 1.13,
+      "n": 19
+     },
+     "passed": false
+    },
+    "20": {
+     "mean": 0.0014,
+     "t": 0.12,
+     "n": 87,
+     "dev": {
+      "mean": -0.004,
+      "t": -0.29,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0195,
+      "t": 1.03,
+      "n": 20
+     },
+     "passed": false
+    },
+    "60": {
+     "mean": 0.0007,
+     "t": 0.06,
+     "n": 85,
+     "dev": {
+      "mean": -0.0114,
+      "t": -0.74,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0458,
+      "t": 3.64,
+      "n": 18
+     },
+     "passed": false
+    }
+   },
+   "deciles": [
+    -0.87,
+    -0.86,
+    -0.55,
+    -0.84,
+    -0.88,
+    -0.61,
+    -0.89,
+    -0.89,
+    -0.91,
+    -1.16
+   ],
+   "top10_net": {
+    "mean_pct": -1.58,
+    "t": -2.38,
+    "n": 87,
+    "dev": {
+     "mean_pct": -1.51,
+     "t": -2.15,
+     "n": 67
+    },
+    "holdout": {
+     "mean_pct": -1.81,
+     "t": -1.05,
+     "n": 20
+    }
+   },
+   "regime": {
+    "bull": {
+     "mean": 0.0001,
+     "t": 0.01,
+     "n": 64
+    },
+    "bear": {
+     "mean": 0.005,
+     "t": 0.15,
+     "n": 23
+    }
+   },
+   "size": {
+    "大型": {
+     "mean": 0.0054,
+     "t": 0.31,
+     "n": 87
+    },
+    "中型": {
+     "mean": -0.0154,
+     "t": -1.14,
+     "n": 87
+    },
+    "小型": {
+     "mean": 0.0054,
+     "t": 0.46,
+     "n": 87
+    }
+   },
+   "industry": [
+    {
+     "industry": "電子工業",
+     "periods": 87,
+     "pos_pct": 57.5,
+     "ic": 0.033
+    },
+    {
+     "industry": "電子零組件業",
+     "periods": 87,
+     "pos_pct": 52.9,
+     "ic": 0.019
+    },
+    {
+     "industry": "電腦及週邊設備業",
+     "periods": 87,
+     "pos_pct": 32.2,
+     "ic": 0.016
+    },
+    {
+     "industry": "光電業",
+     "periods": 69,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他",
+     "periods": 82,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "化學生技醫療",
+     "periods": 76,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "建材營造",
+     "periods": 81,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "汽車工業",
+     "periods": 64,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "生技醫療業",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "通信網路業",
+     "periods": 84,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "金融保險",
+     "periods": 83,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電機機械",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "航運業",
+     "periods": 75,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電子通路業",
+     "periods": 52,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他電子類",
+     "periods": 53,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "鋼鐵工業",
+     "periods": 43,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "半導體業",
+     "periods": 87,
+     "pos_pct": 44.8,
+     "ic": -0.004
+    }
+   ],
+   "tail": {
+    "top_decile_big_loss_pct": 18.97,
+    "bottom_decile_big_loss_pct": 17.91
+   },
+   "incremental": {
+    "mean": -0.016,
+    "t": -1.31,
+    "n": 87
+   },
+   "top_minus_bottom": {
+    "mean_pct": -0.29,
+    "t": -0.71,
+    "n": 87
+   }
+  },
+  "growth": {
+   "ic": {
+    "5": {
+     "mean": 0.0326,
+     "t": 2.8,
+     "n": 86,
+     "dev": {
+      "mean": 0.0254,
+      "t": 1.91,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0579,
+      "t": 2.46,
+      "n": 19
+     },
+     "passed": false
+    },
+    "20": {
+     "mean": 0.0184,
+     "t": 1.72,
+     "n": 87,
+     "dev": {
+      "mean": 0.0113,
+      "t": 0.9,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0424,
+      "t": 2.18,
+      "n": 20
+     },
+     "passed": false
+    },
+    "60": {
+     "mean": 0.0203,
+     "t": 1.94,
+     "n": 85,
+     "dev": {
+      "mean": 0.0059,
+      "t": 0.5,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0736,
+      "t": 3.92,
+      "n": 18
+     },
+     "passed": false
+    }
+   },
+   "deciles": [
+    -1.89,
+    -1.41,
+    -1.33,
+    -0.76,
+    -0.96,
+    -0.86,
+    -0.52,
+    -0.31,
+    -0.35,
+    -0.06
+   ],
+   "top10_net": {
+    "mean_pct": -0.55,
+    "t": -0.59,
+    "n": 87,
+    "dev": {
+     "mean_pct": 0.06,
+     "t": 0.06,
+     "n": 67
+    },
+    "holdout": {
+     "mean_pct": -2.62,
+     "t": -1.14,
+     "n": 20
+    }
+   },
+   "regime": {
+    "bull": {
+     "mean": 0.0159,
+     "t": 1.25,
+     "n": 64
+    },
+    "bear": {
+     "mean": 0.0256,
+     "t": 1.26,
+     "n": 23
+    }
+   },
+   "size": {
+    "大型": {
+     "mean": 0.0341,
+     "t": 2.13,
+     "n": 87
+    },
+    "中型": {
+     "mean": 0.0064,
+     "t": 0.48,
+     "n": 87
+    },
+    "小型": {
+     "mean": 0.0107,
+     "t": 0.93,
+     "n": 87
+    }
+   },
+   "industry": [
+    {
+     "industry": "半導體業",
+     "periods": 87,
+     "pos_pct": 54.0,
+     "ic": 0.055
+    },
+    {
+     "industry": "電子工業",
+     "periods": 87,
+     "pos_pct": 60.9,
+     "ic": 0.04
+    },
+    {
+     "industry": "電腦及週邊設備業",
+     "periods": 87,
+     "pos_pct": 31.0,
+     "ic": 0.034
+    },
+    {
+     "industry": "電子零組件業",
+     "periods": 87,
+     "pos_pct": 56.3,
+     "ic": 0.024
+    },
+    {
+     "industry": "光電業",
+     "periods": 69,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他",
+     "periods": 82,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "化學生技醫療",
+     "periods": 76,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "建材營造",
+     "periods": 81,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "汽車工業",
+     "periods": 64,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "生技醫療業",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "通信網路業",
+     "periods": 84,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "金融保險",
+     "periods": 83,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電機機械",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "航運業",
+     "periods": 75,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電子通路業",
+     "periods": 52,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他電子類",
+     "periods": 53,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "鋼鐵工業",
+     "periods": 43,
+     "pos_pct": 0.0,
+     "ic": null
+    }
+   ],
+   "tail": {
+    "top_decile_big_loss_pct": 22.73,
+    "bottom_decile_big_loss_pct": 19.36
+   },
+   "incremental": {
+    "mean": 0.0048,
+    "t": 0.55,
+    "n": 87
+   },
+   "top_minus_bottom": {
+    "mean_pct": 1.83,
+    "t": 4.28,
+    "n": 87
+   }
+  },
+  "value": {
+   "ic": {
+    "5": {
+     "mean": 0.0149,
+     "t": 1.08,
+     "n": 86,
+     "dev": {
+      "mean": 0.0237,
+      "t": 1.69,
+      "n": 67
+     },
+     "holdout": {
+      "mean": -0.0161,
+      "t": -0.43,
+      "n": 19
+     },
+     "passed": false
+    },
+    "20": {
+     "mean": 0.0423,
+     "t": 2.74,
+     "n": 87,
+     "dev": {
+      "mean": 0.0546,
+      "t": 3.93,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0011,
+      "t": 0.02,
+      "n": 20
+     },
+     "passed": false
+    },
+    "60": {
+     "mean": 0.068,
+     "t": 4.73,
+     "n": 85,
+     "dev": {
+      "mean": 0.0892,
+      "t": 7.12,
+      "n": 67
+     },
+     "holdout": {
+      "mean": -0.0111,
+      "t": -0.24,
+      "n": 18
+     },
+     "passed": true
+    }
+   },
+   "deciles": [
+    -0.58,
+    -0.69,
+    -0.72,
+    -0.92,
+    -1.04,
+    -0.89,
+    -1.15,
+    -0.78,
+    -0.87,
+    -0.82
+   ],
+   "top10_net": {
+    "mean_pct": -1.54,
+    "t": -2.06,
+    "n": 87,
+    "dev": {
+     "mean_pct": -1.05,
+     "t": -1.43,
+     "n": 67
+    },
+    "holdout": {
+     "mean_pct": -3.19,
+     "t": -1.49,
+     "n": 20
+    }
+   },
+   "regime": {
+    "bull": {
+     "mean": 0.0584,
+     "t": 3.05,
+     "n": 64
+    },
+    "bear": {
+     "mean": -0.0025,
+     "t": -0.11,
+     "n": 23
+    }
+   },
+   "size": {
+    "大型": {
+     "mean": 0.0293,
+     "t": 1.6,
+     "n": 87
+    },
+    "中型": {
+     "mean": 0.0498,
+     "t": 2.63,
+     "n": 87
+    },
+    "小型": {
+     "mean": 0.0544,
+     "t": 3.56,
+     "n": 87
+    }
+   },
+   "industry": [
+    {
+     "industry": "電腦及週邊設備業",
+     "periods": 87,
+     "pos_pct": 36.8,
+     "ic": 0.08
+    },
+    {
+     "industry": "電子工業",
+     "periods": 87,
+     "pos_pct": 56.3,
+     "ic": 0.036
+    },
+    {
+     "industry": "半導體業",
+     "periods": 87,
+     "pos_pct": 46.0,
+     "ic": 0.03
+    },
+    {
+     "industry": "電子零組件業",
+     "periods": 87,
+     "pos_pct": 60.9,
+     "ic": 0.03
+    },
+    {
+     "industry": "光電業",
+     "periods": 69,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他",
+     "periods": 82,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "化學生技醫療",
+     "periods": 76,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "建材營造",
+     "periods": 81,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "汽車工業",
+     "periods": 64,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "生技醫療業",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "通信網路業",
+     "periods": 84,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "金融保險",
+     "periods": 83,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電機機械",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "航運業",
+     "periods": 75,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電子通路業",
+     "periods": 52,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他電子類",
+     "periods": 53,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "鋼鐵工業",
+     "periods": 43,
+     "pos_pct": 0.0,
+     "ic": null
+    }
+   ],
+   "tail": {
+    "top_decile_big_loss_pct": 13.83,
+    "bottom_decile_big_loss_pct": 24.63
+   },
+   "incremental": {
+    "mean": 0.0395,
+    "t": 2.55,
+    "n": 87
+   },
+   "top_minus_bottom": {
+    "mean_pct": -0.24,
+    "t": -0.35,
+    "n": 87
+   }
+  },
+  "momentum": {
+   "ic": {
+    "5": {
+     "mean": 0.0167,
+     "t": 0.93,
+     "n": 86,
+     "dev": {
+      "mean": 0.0159,
+      "t": 0.8,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0196,
+      "t": 0.46,
+      "n": 19
+     },
+     "passed": false
+    },
+    "20": {
+     "mean": -0.0019,
+     "t": -0.12,
+     "n": 87,
+     "dev": {
+      "mean": -0.0081,
+      "t": -0.51,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.019,
+      "t": 0.44,
+      "n": 20
+     },
+     "passed": false
+    },
+    "60": {
+     "mean": -0.0238,
+     "t": -1.79,
+     "n": 85,
+     "dev": {
+      "mean": -0.0305,
+      "t": -2.15,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0012,
+      "t": 0.04,
+      "n": 18
+     },
+     "passed": false
+    }
+   },
+   "deciles": [
+    -1.88,
+    -1.16,
+    -1.05,
+    -0.76,
+    -0.77,
+    -0.9,
+    -0.52,
+    -0.54,
+    -0.47,
+    -0.38
+   ],
+   "top10_net": {
+    "mean_pct": -0.61,
+    "t": -0.51,
+    "n": 87,
+    "dev": {
+     "mean_pct": -0.01,
+     "t": -0.01,
+     "n": 67
+    },
+    "holdout": {
+     "mean_pct": -2.63,
+     "t": -0.98,
+     "n": 20
+    }
+   },
+   "regime": {
+    "bull": {
+     "mean": 0.0041,
+     "t": 0.22,
+     "n": 64
+    },
+    "bear": {
+     "mean": -0.0185,
+     "t": -0.67,
+     "n": 23
+    }
+   },
+   "size": {
+    "大型": {
+     "mean": 0.024,
+     "t": 1.13,
+     "n": 87
+    },
+    "中型": {
+     "mean": -0.0076,
+     "t": -0.42,
+     "n": 87
+    },
+    "小型": {
+     "mean": -0.0206,
+     "t": -1.41,
+     "n": 87
+    }
+   },
+   "industry": [
+    {
+     "industry": "半導體業",
+     "periods": 87,
+     "pos_pct": 48.3,
+     "ic": 0.027
+    },
+    {
+     "industry": "電子工業",
+     "periods": 87,
+     "pos_pct": 52.9,
+     "ic": 0.024
+    },
+    {
+     "industry": "光電業",
+     "periods": 69,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他",
+     "periods": 82,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "化學生技醫療",
+     "periods": 76,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "建材營造",
+     "periods": 81,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "汽車工業",
+     "periods": 64,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "生技醫療業",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "通信網路業",
+     "periods": 84,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "金融保險",
+     "periods": 83,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電機機械",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "航運業",
+     "periods": 75,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電子通路業",
+     "periods": 52,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他電子類",
+     "periods": 53,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "鋼鐵工業",
+     "periods": 43,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電腦及週邊設備業",
+     "periods": 87,
+     "pos_pct": 26.4,
+     "ic": -0.018
+    },
+    {
+     "industry": "電子零組件業",
+     "periods": 87,
+     "pos_pct": 48.3,
+     "ic": -0.019
+    }
+   ],
+   "tail": {
+    "top_decile_big_loss_pct": 26.92,
+    "bottom_decile_big_loss_pct": 19.37
+   },
+   "incremental": {
+    "mean": -0.0226,
+    "t": -1.52,
+    "n": 87
+   },
+   "top_minus_bottom": {
+    "mean_pct": 1.5,
+    "t": 2.12,
+    "n": 87
+   }
+  },
+  "trend": {
+   "ic": {
+    "5": {
+     "mean": -0.0149,
+     "t": -1.0,
+     "n": 86,
+     "dev": {
+      "mean": -0.0073,
+      "t": -0.45,
+      "n": 67
+     },
+     "holdout": {
+      "mean": -0.0414,
+      "t": -1.19,
+      "n": 19
+     },
+     "passed": false
+    },
+    "20": {
+     "mean": 0.0119,
+     "t": 0.91,
+     "n": 87,
+     "dev": {
+      "mean": 0.0166,
+      "t": 1.22,
+      "n": 67
+     },
+     "holdout": {
+      "mean": -0.0037,
+      "t": -0.11,
+      "n": 20
+     },
+     "passed": false
+    },
+    "60": {
+     "mean": 0.0402,
+     "t": 3.01,
+     "n": 85,
+     "dev": {
+      "mean": 0.043,
+      "t": 3.07,
+      "n": 67
+     },
+     "holdout": {
+      "mean": 0.0298,
+      "t": 0.82,
+      "n": 18
+     },
+     "passed": true
+    }
+   },
+   "deciles": [
+    -1.85,
+    -1.57,
+    -1.32,
+    -1.29,
+    -1.05,
+    -0.36,
+    -0.37,
+    -0.43,
+    -0.15,
+    -0.06
+   ],
+   "top10_net": {
+    "mean_pct": -1.19,
+    "t": -1.67,
+    "n": 87,
+    "dev": {
+     "mean_pct": -0.53,
+     "t": -0.65,
+     "n": 67
+    },
+    "holdout": {
+     "mean_pct": -3.42,
+     "t": -2.31,
+     "n": 20
+    }
+   },
+   "regime": {
+    "bull": {
+     "mean": 0.0184,
+     "t": 1.3,
+     "n": 64
+    },
+    "bear": {
+     "mean": -0.0061,
+     "t": -0.2,
+     "n": 23
+    }
+   },
+   "size": {
+    "大型": {
+     "mean": 0.0212,
+     "t": 1.33,
+     "n": 87
+    },
+    "中型": {
+     "mean": 0.0136,
+     "t": 0.89,
+     "n": 87
+    },
+    "小型": {
+     "mean": 0.0066,
+     "t": 0.5,
+     "n": 87
+    }
+   },
+   "industry": [
+    {
+     "industry": "半導體業",
+     "periods": 87,
+     "pos_pct": 44.8,
+     "ic": 0.031
+    },
+    {
+     "industry": "電子工業",
+     "periods": 87,
+     "pos_pct": 60.9,
+     "ic": 0.026
+    },
+    {
+     "industry": "電子零組件業",
+     "periods": 87,
+     "pos_pct": 56.3,
+     "ic": 0.017
+    },
+    {
+     "industry": "光電業",
+     "periods": 69,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他",
+     "periods": 82,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "化學生技醫療",
+     "periods": 76,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "建材營造",
+     "periods": 81,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "汽車工業",
+     "periods": 64,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "生技醫療業",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "通信網路業",
+     "periods": 84,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "金融保險",
+     "periods": 83,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電機機械",
+     "periods": 87,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "航運業",
+     "periods": 75,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電子通路業",
+     "periods": 52,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "其他電子類",
+     "periods": 53,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "鋼鐵工業",
+     "periods": 43,
+     "pos_pct": 0.0,
+     "ic": null
+    },
+    {
+     "industry": "電腦及週邊設備業",
+     "periods": 87,
+     "pos_pct": 29.9,
+     "ic": -0.005
+    }
+   ],
+   "tail": {
+    "top_decile_big_loss_pct": 22.51,
+    "bottom_decile_big_loss_pct": 15.7
+   },
+   "incremental": {
+    "mean": 0.0018,
+    "t": 0.14,
+    "n": 87
+   },
+   "top_minus_bottom": {
+    "mean_pct": 1.79,
+    "t": 3.45,
+    "n": 87
+   }
+  }
+ },
+ "corr": {
+  "quality": {
+   "quality": 1.0,
+   "growth": 0.1,
+   "value": 0.07,
+   "momentum": 0.1,
+   "trend": -0.01
+  },
+  "growth": {
+   "quality": 0.1,
+   "growth": 1.0,
+   "value": -0.18,
+   "momentum": 0.5,
+   "trend": 0.27
+  },
+  "value": {
+   "quality": 0.07,
+   "growth": -0.18,
+   "value": 1.0,
+   "momentum": -0.19,
+   "trend": -0.11
+  },
+  "momentum": {
+   "quality": 0.1,
+   "growth": 0.5,
+   "value": -0.19,
+   "momentum": 1.0,
+   "trend": 0.35
+  },
+  "trend": {
+   "quality": -0.01,
+   "growth": 0.27,
+   "value": -0.11,
+   "momentum": 0.35,
+   "trend": 1.0
+  }
+ },
+ "schema_version": 1,
+ "study_version": "2026-10-29",
+ "generated_at": "2026-10-29T11:00:26",
+ "periods": 87,
+ "first": "2019-07-31",
+ "last": "2026-08-27",
+ "t_need": 2.94,
+ "holdout_from": "2025-01-01",
+ "pit": "近似 PIT（月營收次月 11 日、財報法定期限＋緩衝）",
+ "note": "只做診斷，不改正式權重；保留段 10/28 已看過一次，屬重複使用。"
+}

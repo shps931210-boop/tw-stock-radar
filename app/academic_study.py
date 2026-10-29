@@ -162,9 +162,17 @@ def features(D: dict, P: dict) -> pd.DataFrame:
         if i + h < len(D["dates"]):
             ex = D["dates"][i + h]
             b = pb._bench(D, P["entry"], ex)
-            out[f"ex{h}"] = [(pb.hold_return(D, s, P["entry"], ex)[0] or np.nan) - (b or 0) for s in out.index]
+            out[f"ex{h}"] = [excess(pb.hold_return(D, s, P["entry"], ex)[0], b) for s in out.index]
     out["ex20"] = out["ret"] - P["bench"]
     return out
+
+
+def excess(r, b) -> float:
+    """個股報酬減基準。V21.2 修正：原本寫成 `r or np.nan`、`b or 0`，報酬剛好 0 會被當成缺值，缺 0050 價格時又把基準當成 0。
+    現在只有 None／NaN 才算缺值，缺基準就整筆不算。"""
+    if r is None or b is None or (isinstance(r, float) and np.isnan(r)) or (isinstance(b, float) and np.isnan(b)):
+        return np.nan
+    return float(r) - float(b)
 
 
 # ---------------- 統計 ----------------

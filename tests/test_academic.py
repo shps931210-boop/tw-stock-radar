@@ -128,3 +128,14 @@ class Layers(unittest.TestCase):
             self.assertIn("研究中", out["status"])
         rec = sa.build(rows, {}, "2026-06-11")
         self.assertEqual(len(rec["layers"]), 30)
+
+
+class Excess(unittest.TestCase):
+    """V21.2：報酬剛好 0 不能被當成缺值；缺 0050 基準不能當成 0。"""
+    def test_zero_negative_missing(self):
+        self.assertEqual(ac.excess(0.0, 0.01), -0.01)
+        self.assertAlmostEqual(ac.excess(-0.05, -0.02), -0.03)
+        self.assertEqual(ac.excess(0.03, 0.0), 0.03)
+        self.assertTrue(np.isnan(ac.excess(None, 0.01)))      # 停牌、買不到
+        self.assertTrue(np.isnan(ac.excess(0.02, None)))      # 缺基準價格
+        self.assertTrue(np.isnan(ac.excess(float("nan"), 0.01)))
