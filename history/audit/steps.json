@@ -922,35 +922,54 @@
     "學術候選影子紀錄": "success",
     "正式績效對帳": "success"
    }
+  },
+  {
+   "at": "2026-10-29T19:51:33",
+   "run_id": "40867910662",
+   "mode": "fast",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "success",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "success",
+    "整合測試": "skipped",
+    "AI 模擬交易": "success",
+    "到期對帳明細": "success",
+    "學術候選影子紀錄": "success",
+    "正式績效對帳": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 45,
+   "runs": 46,
    "fails": 0
   },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 31,
+   "runs": 32,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 31,
+   "runs": 32,
    "fails": 0
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 43,
+   "runs": 44,
    "fails": 0
   },
   "連線診斷": {
@@ -983,30 +1002,30 @@
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 28,
+   "runs": 29,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 20,
+   "runs": 21,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 17,
+   "runs": 18,
    "fails": 0
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-10-29T17:21:29",
+   "last_ok": "2026-10-29T19:51:33",
    "last": "success",
-   "runs": 4,
+   "runs": 5,
    "fails": 0
   }
  }
