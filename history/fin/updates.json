@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-10-30T12:15:01",
+ "generated_at": "2026-10-30T15:06:44",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
- "waiting": 0,
+ "waiting": 1,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
@@ -14,7 +14,21 @@
   "median": null,
   "max": null
  },
- "waiting_list": [],
+ "waiting_list": [
+  {
+   "stock_id": "6825",
+   "name": "和暢科技",
+   "period": "2026-Q2",
+   "first_seen": "2026-10-30T15:02:08",
+   "attempts": 0,
+   "eps": 0.78,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  }
+ ],
  "rescored": [
   {
    "stock_id": "6938",
@@ -670,11 +684,11 @@
   }
  ],
  "detect": {
-  "at": "2026-10-30T07:12:44",
+  "at": "2026-10-30T15:02:08",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 1982,
-  "new": 0,
+  "stocks": 1983,
+  "new": 1,
   "corrected": 0,
   "mismatch": 0
  },
@@ -737,9 +751,9 @@
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
    "ok": true,
-   "stocks": 888,
+   "stocks": 889,
    "error": null,
-   "rows": 888,
+   "rows": 889,
    "empty": null
   },
   {

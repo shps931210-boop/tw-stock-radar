@@ -1,63 +1,63 @@
 {
- "generated_at": "2026-10-29T15:07:38",
- "days": 8,
- "on_time": 8,
+ "generated_at": "2026-10-30T15:08:32",
+ "days": 9,
+ "on_time": 9,
  "definitions": {
   "top_excess": "前 20 名平均相對 0050 超額，未扣成本（研究排序能力）",
   "top10_net_excess": "前 10 名平均相對 0050 超額，扣成本 0.585%（和到期對帳明細同一口徑）"
  },
  "first": "2026-10-16",
- "last": "2026-10-29",
+ "last": "2026-10-30",
  "horizons": {
   "5": {
-   "matured": 2,
+   "matured": 3,
    "v21": {
-    "ic": 0.054,
-    "ic_pos": 100.0,
-    "top_excess": 1.43,
+    "ic": 0.013,
+    "ic_pos": 66.7,
+    "top_excess": 1.12,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": 1.27,
-    "n": 2
+    "top10_net_excess": 1.1,
+    "n": 3
    },
    "ridge": {
-    "ic": 0.09,
+    "ic": 0.171,
     "ic_pos": 100.0,
-    "top_excess": -0.01,
+    "top_excess": 1.0,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -1.77,
-    "n": 2
+    "top10_net_excess": 0.0,
+    "n": 3
    },
    "lgbm": {
-    "ic": 0.003,
-    "ic_pos": 50.0,
-    "top_excess": -0.69,
+    "ic": 0.099,
+    "ic_pos": 66.7,
+    "top_excess": 0.06,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -0.5,
-    "n": 2
+    "top10_net_excess": -0.23,
+    "n": 3
    },
    "ens": {
-    "ic": 0.032,
+    "ic": 0.093,
     "ic_pos": 100.0,
-    "top_excess": -0.55,
+    "top_excess": -1.09,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -2.85,
-    "n": 1
+    "top10_net_excess": -2.29,
+    "n": 2
    },
    "logit": {
-    "ic": 0.081,
-    "ic_pos": 100.0,
-    "top_excess": -0.7,
+    "ic": 0.014,
+    "ic_pos": 66.7,
+    "top_excess": -2.07,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -0.93,
-    "n": 2,
-    "hit": 63.9,
-    "brier": 0.2325,
-    "brier_base": 0.2275
+    "top10_net_excess": -2.87,
+    "n": 3,
+    "hit": 58.1,
+    "brier": 0.2454,
+    "brier_base": 0.2346
    }
   },
   "20": {
@@ -116,6 +116,34 @@
     "ens": -0.0285,
     "logit": -0.01343
    }
+  },
+  {
+   "sig": "2026-10-20",
+   "h": "5",
+   "ver": "2026-10-17-7e79ede630",
+   "ic": {
+    "v21": -0.0699,
+    "ridge": 0.3336,
+    "lgbm": 0.2916,
+    "ens": 0.1543,
+    "logit": -0.1201
+   },
+   "top": {
+    "v21": 0.00492,
+    "ridge": 0.03012,
+    "lgbm": 0.01552,
+    "ens": -0.01623,
+    "logit": -0.04799
+   },
+   "top10": {
+    "v21": 0.00759,
+    "ridge": 0.03559,
+    "lgbm": 0.003,
+    "ens": -0.01738,
+    "logit": -0.06747
+   }
   }
- ]
+ ],
+ "excluded": [],
+ "eligibility": "只計入進場日 09:00 前封存、資料日等於訊號日的預測（track.perf_eligible）"
 }
