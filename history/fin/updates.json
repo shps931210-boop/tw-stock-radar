@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-10-30T17:18:50",
+ "generated_at": "2026-10-30T21:55:36",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
- "waiting": 1,
+ "waiting": 0,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
@@ -14,22 +14,33 @@
   "median": null,
   "max": null
  },
- "waiting_list": [
+ "waiting_list": [],
+ "rescored": [
   {
    "stock_id": "6825",
    "name": "和暢科技",
    "period": "2026-Q2",
+   "synced_at": "2026-10-30T21:54:34",
+   "before": null,
+   "after": null,
+   "latency_h": 6.9,
    "first_seen": "2026-10-30T15:02:08",
-   "attempts": 0,
-   "eps": 0.78,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
+   "fetched_at": "2026-10-30T21:54:34",
+   "rescored_at": "2026-10-30T21:55:36",
    "corrected_at": null,
-   "note": null
-  }
- ],
- "rescored": [
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q2",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（交易日數不足），依規則不產生正式綜合分數"
+   }
+  },
   {
    "stock_id": "6938",
    "name": "藍新資訊",
@@ -684,7 +695,7 @@
   }
  ],
  "detect": {
-  "at": "2026-10-30T17:14:50",
+  "at": "2026-10-30T21:54:30",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 1983,
