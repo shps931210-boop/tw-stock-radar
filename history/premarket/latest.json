@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-30T07:00:29",
+ "generated_at": "2026-10-30T08:05:54",
  "quality": {
-  "checked_at": "2026-10-30T07:00:29",
+  "checked_at": "2026-10-30T08:05:54",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -16,12 +16,12 @@
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-10-30T07:00:22"
+    "detail": "2026-10-30T08:05:48"
    },
    "global": {
     "label": "國際市場",
     "ok": false,
-    "detail": "費城半導體只到 2026-10-28、台積電 ADR只到 2026-10-28、那斯達克只到 2026-10-28、WTI 原油只到 2026-10-20已過期"
+    "detail": "WTI 原油只到 2026-10-20已過期"
    }
   },
   "source_ok": "3/4",
@@ -36,22 +36,21 @@
  "calendar_ok": true,
  "last_close": "2026-10-29",
  "status": {
-  "mode": "sealed",
+  "mode": "already_sealed",
   "target_date": "2026-10-30",
   "since": "2026-10-29T13:30:00",
   "events": 311,
   "high": 25
  },
  "risk": {
-  "level": "中性",
-  "score": 1,
+  "level": "高",
+  "score": 3,
   "reasons": [
+   "台積電 ADR -1.75%（2026-10-29）下跌",
+   "那斯達克 -1.38%（2026-10-29）下跌",
    "收盤後有 4 則高重要性負面公告"
   ],
   "stale": [
-   "費城半導體只到 2026-10-28",
-   "台積電 ADR只到 2026-10-28",
-   "那斯達克只到 2026-10-28",
    "WTI 原油只到 2026-10-20"
   ],
   "us_session_expected": "2026-10-29",
@@ -265,7 +264,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T13:35:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T13:35:00",
    "affected_tickers": [
     "3257"
@@ -287,7 +286,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T13:37:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T13:37:00",
    "affected_tickers": [
     "4766"
@@ -309,7 +308,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T15:27:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T15:27:00",
    "affected_tickers": [
     "6108"
@@ -331,7 +330,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T15:28:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T15:28:00",
    "affected_tickers": [
     "2481"
@@ -353,7 +352,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T15:34:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T15:34:00",
    "affected_tickers": [
     "2481"
@@ -375,7 +374,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T16:21:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T16:21:00",
    "affected_tickers": [
     "6799"
@@ -397,7 +396,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T16:42:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T16:42:00",
    "affected_tickers": [
     "2887"
@@ -419,7 +418,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:03:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:03:00",
    "affected_tickers": [
     "3231"
@@ -441,7 +440,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:04:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:04:00",
    "affected_tickers": [
     "1414"
@@ -463,7 +462,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:06:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:06:00",
    "affected_tickers": [
     "2062"
@@ -485,7 +484,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:24:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:24:00",
    "affected_tickers": [
     "2439"
@@ -507,7 +506,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:30:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:30:00",
    "affected_tickers": [
     "9944"
@@ -529,7 +528,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:35:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:35:00",
    "affected_tickers": [
     "2342"
@@ -551,7 +550,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:52:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:52:00",
    "affected_tickers": [
     "2354"
@@ -573,7 +572,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T17:56:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T17:56:00",
    "affected_tickers": [
     "6141"
@@ -595,7 +594,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-29T18:43:00",
    "first_seen_at": "2026-10-30T06:58:05",
-   "fetched_at": "2026-10-30T07:00:29",
+   "fetched_at": "2026-10-30T08:05:55",
    "data_asof": "2026-10-29T18:43:00",
    "affected_tickers": [
     "2881"
@@ -949,24 +948,20 @@
    "price": 107.89,
    "chg_pct": -1.93
   },
-  "generated_at": "2026-10-30T07:00:29+08:00",
+  "generated_at": "2026-10-30T08:05:54+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
    {
     "symbol": "^SOX",
     "name": "費城半導體指數",
-    "date": "2026-10-28",
-    "close": 11684.0,
-    "prev_close": 11482.5,
-    "chg_pct": 1.75,
-    "streak": 4,
-    "ret_5d": 1.55,
+    "date": "2026-10-29",
+    "close": 11518.2,
+    "prev_close": 11684.0,
+    "chg_pct": -1.42,
+    "streak": -1,
+    "ret_5d": 7.33,
     "recent": [
-     [
-      "2026-10-21",
-      11505.56
-     ],
      [
       "2026-10-22",
       10731.98
@@ -986,23 +981,23 @@
      [
       "2026-10-28",
       11684.0
+     ],
+     [
+      "2026-10-29",
+      11518.2
      ]
     ]
    },
    {
     "symbol": "^IXIC",
     "name": "那斯達克綜合指數",
-    "date": "2026-10-28",
-    "close": 26549.85,
-    "prev_close": 26477.81,
-    "chg_pct": 0.27,
-    "streak": 3,
-    "ret_5d": -0.57,
+    "date": "2026-10-29",
+    "close": 26184.72,
+    "prev_close": 26549.85,
+    "chg_pct": -1.38,
+    "streak": -1,
+    "ret_5d": 0.68,
     "recent": [
-     [
-      "2026-10-21",
-      26702.86
-     ],
      [
       "2026-10-22",
       26008.86
@@ -1022,23 +1017,23 @@
      [
       "2026-10-28",
       26549.85
+     ],
+     [
+      "2026-10-29",
+      26184.72
      ]
     ]
    },
    {
     "symbol": "^GSPC",
     "name": "S&P 500 指數",
-    "date": "2026-10-28",
-    "close": 7743.98,
-    "prev_close": 7722.6,
-    "chg_pct": 0.28,
-    "streak": 3,
-    "ret_5d": -0.17,
+    "date": "2026-10-29",
+    "close": 7720.39,
+    "prev_close": 7743.98,
+    "chg_pct": -0.3,
+    "streak": -1,
+    "ret_5d": 0.74,
     "recent": [
-     [
-      "2026-10-21",
-      7757.17
-     ],
      [
       "2026-10-22",
       7663.43
@@ -1058,23 +1053,23 @@
      [
       "2026-10-28",
       7743.98
+     ],
+     [
+      "2026-10-29",
+      7720.39
      ]
     ]
    },
    {
     "symbol": "^DJI",
     "name": "道瓊工業指數",
-    "date": "2026-10-28",
-    "close": 52475.1,
-    "prev_close": 52377.57,
-    "chg_pct": 0.19,
-    "streak": 3,
-    "ret_5d": -0.72,
+    "date": "2026-10-29",
+    "close": 52342.56,
+    "prev_close": 52475.1,
+    "chg_pct": -0.25,
+    "streak": -1,
+    "ret_5d": -0.99,
     "recent": [
-     [
-      "2026-10-21",
-      52856.09
-     ],
      [
       "2026-10-22",
       52867.98
@@ -1094,23 +1089,23 @@
      [
       "2026-10-28",
       52475.1
+     ],
+     [
+      "2026-10-29",
+      52342.56
      ]
     ]
    },
    {
     "symbol": "TSM",
     "name": "台積電 ADR（美股）",
-    "date": "2026-10-28",
-    "close": 439.51,
-    "prev_close": 436.87,
-    "chg_pct": 0.6,
-    "streak": 4,
-    "ret_5d": 1.76,
+    "date": "2026-10-29",
+    "close": 431.81,
+    "prev_close": 439.51,
+    "chg_pct": -1.75,
+    "streak": -1,
+    "ret_5d": 4.72,
     "recent": [
-     [
-      "2026-10-21",
-      431.89
-     ],
      [
       "2026-10-22",
       412.35
@@ -1130,6 +1125,10 @@
      [
       "2026-10-28",
       439.51
+     ],
+     [
+      "2026-10-29",
+      431.81
      ]
     ]
    }

@@ -1150,6 +1150,25 @@
     "學術候選影子紀錄": "success",
     "正式績效對帳": "success"
    }
+  },
+  {
+   "at": "2026-10-30T08:05:55",
+   "run_id": "40977116799",
+   "mode": "premarket",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "skipped",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "success",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "skipped",
+    "整合測試": "skipped",
+    "AI 模擬交易": "skipped",
+    "到期對帳明細": "skipped",
+    "學術候選影子紀錄": "skipped",
+    "正式績效對帳": "skipped"
+   }
   }
  ],
  "status": {
@@ -1162,16 +1181,16 @@
   },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-10-30T07:00:30",
+   "last_ok": "2026-10-30T08:05:55",
    "last": "success",
-   "runs": 34,
+   "runs": 35,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-10-30T07:00:30",
+   "last_ok": "2026-10-30T08:05:55",
    "last": "success",
-   "runs": 34,
+   "runs": 35,
    "fails": 0
   },
   "預測封存日曆": {
@@ -1204,9 +1223,9 @@
   },
   "盤前情報": {
    "streak": 0,
-   "last_ok": "2026-10-30T07:00:30",
+   "last_ok": "2026-10-30T08:05:55",
    "last": "success",
-   "runs": 12,
+   "runs": 13,
    "fails": 0
   },
   "AI 模擬交易": {
