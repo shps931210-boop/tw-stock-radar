@@ -1435,14 +1435,33 @@
     "學術候選影子紀錄": "success",
     "正式績效對帳": "success"
    }
+  },
+  {
+   "at": "2026-10-31T06:08:58",
+   "run_id": "41135697937",
+   "mode": "backfill",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "success",
+    "新聞與公告": "skipped",
+    "國際市場": "skipped",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "success",
+    "整合測試": "skipped",
+    "AI 模擬交易": "success",
+    "到期對帳明細": "success",
+    "學術候選影子紀錄": "success",
+    "正式績效對帳": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-10-31T05:16:47",
+   "last_ok": "2026-10-31T06:08:58",
    "last": "success",
-   "runs": 68,
+   "runs": 69,
    "fails": 0
   },
   "新聞與公告": {
@@ -1461,9 +1480,9 @@
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-10-31T05:16:47",
+   "last_ok": "2026-10-31T06:08:58",
    "last": "success",
-   "runs": 66,
+   "runs": 67,
    "fails": 0
   },
   "連線診斷": {
@@ -1496,30 +1515,30 @@
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-10-31T05:16:47",
+   "last_ok": "2026-10-31T06:08:58",
    "last": "success",
-   "runs": 51,
+   "runs": 52,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-10-31T05:16:47",
+   "last_ok": "2026-10-31T06:08:58",
    "last": "success",
-   "runs": 43,
+   "runs": 44,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-10-31T05:16:47",
+   "last_ok": "2026-10-31T06:08:58",
    "last": "success",
-   "runs": 40,
+   "runs": 41,
    "fails": 0
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-10-31T05:16:47",
+   "last_ok": "2026-10-31T06:08:58",
    "last": "success",
-   "runs": 27,
+   "runs": 28,
    "fails": 0
   }
  }
