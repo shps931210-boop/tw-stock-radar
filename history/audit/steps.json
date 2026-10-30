@@ -1283,56 +1283,75 @@
     "學術候選影子紀錄": "success",
     "正式績效對帳": "success"
    }
+  },
+  {
+   "at": "2026-10-30T23:12:41",
+   "run_id": "41077326648",
+   "mode": "full",
+   "steps": {
+    "連線診斷": "success",
+    "影子預測封存": "success",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "success",
+    "預測封存日曆": "success",
+    "整合測試": "success",
+    "AI 模擬交易": "success",
+    "到期對帳明細": "success",
+    "學術候選影子紀錄": "success",
+    "正式績效對帳": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 60,
+   "runs": 61,
    "fails": 0
   },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 41,
+   "runs": 42,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 41,
+   "runs": 42,
    "fails": 0
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 58,
+   "runs": 59,
    "fails": 0
   },
   "連線診斷": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 7,
+   "runs": 8,
    "fails": 0
   },
   "盤前情報對帳": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 7,
+   "runs": 8,
    "fails": 0
   },
   "整合測試": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 7,
+   "runs": 8,
    "fails": 0
   },
   "盤前情報": {
@@ -1344,30 +1363,30 @@
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 43,
+   "runs": 44,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 35,
+   "runs": 36,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 32,
+   "runs": 33,
    "fails": 0
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-10-30T21:59:51",
+   "last_ok": "2026-10-30T23:12:41",
    "last": "success",
-   "runs": 19,
+   "runs": 20,
    "fails": 0
   }
  }
