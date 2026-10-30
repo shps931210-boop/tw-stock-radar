@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-30T15:06:46",
+ "generated_at": "2026-10-30T15:44:06",
  "source": "正式資料庫 data/stocks.db（證交所、櫃買中心、FinMind）；不含示範資料",
  "as_of": {
   "prices": "2026-10-30",
@@ -108,8 +108,8 @@
   {
    "key": "inst",
    "label": "有最新法人買賣資料",
-   "stocks": 1937,
-   "pct": 96.5
+   "stocks": 1947,
+   "pct": 97.0
   },
   {
    "key": "margin",
@@ -289,7 +289,7 @@
   },
   {
    "why": "近 5 個交易日官方法人名單沒有這檔（官方名單只列有買賣的股票，通常代表法人沒有交易）",
-   "stocks": 71,
+   "stocks": 61,
    "examples": [
     "1213",
     "1589",
