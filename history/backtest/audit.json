@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-29T19:40:45",
- "data_end": "2026-10-29",
+ "generated_at": "2026-10-31T11:03:35",
+ "data_end": "2026-10-30",
  "checks": [
   {
    "id": "future_invariance",
@@ -118,7 +118,7 @@
    "name": "母體包含期間內下市或停止交易的股票",
    "ok": true,
    "detail": {
-    "stocks_with_prices": 2092,
+    "stocks_with_prices": 2094,
     "stopped_trading_in_period": 106,
     "examples": [
      "1258",
@@ -141,7 +141,7 @@
    "name": "每日封存預測都在進場日開盤前產生、訓練資料早於訊號日",
    "ok": true,
    "detail": {
-    "files": 8,
+    "files": 9,
     "late_or_leaky": [],
     "ok": true,
     "rows": [
@@ -200,6 +200,13 @@
       "entry": "2026-10-30",
       "on_time": true,
       "trained_before_signal": true
+     },
+     {
+      "signal": "2026-10-30",
+      "generated_at": "2026-10-30T15:08:05",
+      "entry": "2026-11-02",
+      "on_time": true,
+      "trained_before_signal": true
      }
     ]
    }
@@ -234,5 +241,5 @@
    "status": "未解決"
   }
  ],
- "seconds": 454
+ "seconds": 169
 }

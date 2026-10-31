@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
  "method": 2,
- "generated_at": "2026-10-25T23:30:53",
+ "generated_at": "2026-10-31T11:41:22",
  "shadow": true,
  "start": "2019-08-01",
  "end": "2026-10-14",
@@ -135,9 +135,9 @@
    "all": {
     "v21": {
      "ic": 0.0273,
-     "ic_t": 3.46,
-     "ic_pos": 60.5,
-     "ic_sd": 0.1047,
+     "ic_t": 3.45,
+     "ic_pos": 61.1,
+     "ic_sd": 0.1048,
      "top_excess": 0.6,
      "top_vs_all": 0.54,
      "top_hit": 60.5,
@@ -145,11 +145,11 @@
     },
     "ridge": {
      "ic": 0.0746,
-     "ic_t": 9.22,
+     "ic_t": 9.21,
      "ic_pos": 77.8,
      "ic_sd": 0.116,
-     "top_excess": 0.56,
-     "top_vs_all": 0.5,
+     "top_excess": 0.57,
+     "top_vs_all": 0.51,
      "top_hit": 61.1,
      "dates": 167
     },
@@ -164,23 +164,23 @@
      "dates": 167
     },
     "lgbm": {
-     "ic": 0.0705,
-     "ic_t": 9.13,
-     "ic_pos": 76.6,
+     "ic": 0.0723,
+     "ic_t": 9.22,
+     "ic_pos": 77.8,
      "ic_sd": 0.1064,
-     "top_excess": 0.67,
-     "top_vs_all": 0.61,
-     "top_hit": 54.5,
+     "top_excess": 0.73,
+     "top_vs_all": 0.67,
+     "top_hit": 56.9,
      "dates": 167
     },
     "ens": {
-     "ic": 0.0609,
+     "ic": 0.0619,
      "ic_t": 7.72,
-     "ic_pos": 71.3,
-     "ic_sd": 0.1077,
-     "top_excess": 0.55,
-     "top_vs_all": 0.49,
-     "top_hit": 57.5,
+     "ic_pos": 72.5,
+     "ic_sd": 0.1087,
+     "top_excess": 0.56,
+     "top_vs_all": 0.5,
+     "top_hit": 60.5,
      "dates": 167
     },
     "prob": {
@@ -199,27 +199,27 @@
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 6034,
+       "n": 6029,
        "pred": 37.7,
-       "actual": 44.5
+       "actual": 44.4
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 81037,
+       "n": 81059,
        "pred": 46.0,
        "actual": 45.2
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 33641,
+       "n": 33623,
        "pred": 52.5,
        "actual": 49.1
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 223,
+       "n": 224,
        "pred": 61.4,
-       "actual": 49.8
+       "actual": 50.0
       }
      ]
     }
@@ -228,7 +228,7 @@
     "v21": {
      "ic": 0.0233,
      "ic_t": 2.35,
-     "ic_pos": 59.5,
+     "ic_pos": 60.3,
      "ic_sd": 0.1053,
      "top_excess": 0.84,
      "top_vs_all": 0.53,
@@ -236,7 +236,7 @@
      "dates": 116
     },
     "ridge": {
-     "ic": 0.0696,
+     "ic": 0.0695,
      "ic_t": 6.69,
      "ic_pos": 75.9,
      "ic_sd": 0.1223,
@@ -256,23 +256,23 @@
      "dates": 116
     },
     "lgbm": {
-     "ic": 0.0643,
-     "ic_t": 6.72,
-     "ic_pos": 73.3,
-     "ic_sd": 0.1091,
-     "top_excess": 0.83,
-     "top_vs_all": 0.52,
-     "top_hit": 56.0,
+     "ic": 0.0673,
+     "ic_t": 6.87,
+     "ic_pos": 75.9,
+     "ic_sd": 0.1098,
+     "top_excess": 0.91,
+     "top_vs_all": 0.6,
+     "top_hit": 60.3,
      "dates": 116
     },
     "ens": {
-     "ic": 0.054,
-     "ic_t": 5.25,
-     "ic_pos": 67.2,
-     "ic_sd": 0.1117,
-     "top_excess": 0.72,
-     "top_vs_all": 0.42,
-     "top_hit": 62.9,
+     "ic": 0.056,
+     "ic_t": 5.33,
+     "ic_pos": 69.8,
+     "ic_sd": 0.1131,
+     "top_excess": 0.78,
+     "top_vs_all": 0.47,
+     "top_hit": 60.3,
      "dates": 116
     },
     "prob": {
@@ -291,27 +291,27 @@
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 5071,
+       "n": 5068,
        "pred": 37.6,
-       "actual": 45.6
+       "actual": 45.5
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 51292,
+       "n": 51309,
        "pred": 46.0,
        "actual": 48.1
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 25546,
+       "n": 25531,
        "pred": 52.7,
        "actual": 50.6
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 221,
-       "pred": 61.4,
-       "actual": 50.2
+       "n": 222,
+       "pred": 61.3,
+       "actual": 50.5
       }
      ]
     }
@@ -329,46 +329,46 @@
     },
     "ridge": {
      "ic": 0.0861,
-     "ic_t": 7.4,
+     "ic_t": 7.39,
      "ic_pos": 82.4,
      "ic_sd": 0.1002,
-     "top_excess": 0.07,
-     "top_vs_all": 0.57,
+     "top_excess": 0.08,
+     "top_vs_all": 0.59,
      "top_hit": 49.0,
      "dates": 51
     },
     "logit": {
      "ic": 0.0769,
-     "ic_t": 5.23,
+     "ic_t": 5.22,
      "ic_pos": 76.5,
-     "ic_sd": 0.1274,
+     "ic_sd": 0.1275,
      "top_excess": 0.14,
      "top_vs_all": 0.64,
      "top_hit": 52.9,
      "dates": 51
     },
     "lgbm": {
-     "ic": 0.0846,
-     "ic_t": 6.78,
-     "ic_pos": 84.3,
-     "ic_sd": 0.0997,
+     "ic": 0.0837,
+     "ic_t": 6.67,
+     "ic_pos": 82.4,
+     "ic_sd": 0.0984,
      "top_excess": 0.33,
      "top_vs_all": 0.83,
-     "top_hit": 51.0,
+     "top_hit": 49.0,
      "dates": 51
     },
     "ens": {
-     "ic": 0.0766,
-     "ic_t": 7.38,
-     "ic_pos": 80.4,
-     "ic_sd": 0.0971,
-     "top_excess": 0.17,
-     "top_vs_all": 0.67,
-     "top_hit": 45.1,
+     "ic": 0.0755,
+     "ic_t": 7.19,
+     "ic_pos": 78.4,
+     "ic_sd": 0.0976,
+     "top_excess": 0.06,
+     "top_vs_all": 0.56,
+     "top_hit": 60.8,
      "dates": 51
     },
     "prob": {
-     "hit": 56.7,
+     "hit": 56.8,
      "base_hit": 59.2,
      "win_rate": 40.8,
      "brier": 0.2454,
@@ -377,21 +377,21 @@
      "calibration": [
       {
        "bin": "(0.3, 0.4]",
-       "n": 963,
+       "n": 961,
        "pred": 38.6,
        "actual": 38.5
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 29745,
+       "n": 29750,
        "pred": 46.1,
        "actual": 40.0
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 8095,
+       "n": 8092,
        "pred": 51.9,
-       "actual": 44.2
+       "actual": 44.3
       },
       {
        "bin": "(0.6, 0.7]",
@@ -405,27 +405,27 @@
    "vs_v21": {
     "ridge": {
      "diff": 0.0473,
-     "t": 4.94
+     "t": 4.93
     },
     "logit": {
      "diff": 0.0379,
      "t": 4.39
     },
     "lgbm": {
-     "diff": 0.0432,
-     "t": 4.62
+     "diff": 0.045,
+     "t": 4.87
     },
     "ens": {
-     "diff": 0.0336,
-     "t": 6.89
+     "diff": 0.0347,
+     "t": 7.18
     }
    },
    "sufficiency": {
     "horizon": 5,
     "test_trading_days": 1670,
     "independent_periods": 334.0,
-    "ic_sd": 0.1047,
-    "min_detectable_ic": 0.016,
+    "ic_sd": 0.1048,
+    "min_detectable_ic": 0.0161,
     "periods_needed_for_0.03": 96,
     "years_needed_for_0.03": 2.0,
     "enough": true
@@ -449,12 +449,12 @@
      "dates": 164
     },
     "ridge": {
-     "ic": 0.0947,
+     "ic": 0.0946,
      "ic_t": 8.43,
      "ic_pos": 79.3,
      "ic_sd": 0.1237,
-     "top_excess": 0.43,
-     "top_vs_all": 1.13,
+     "top_excess": 0.42,
+     "top_vs_all": 1.12,
      "top_hit": 55.5,
      "dates": 164
     },
@@ -463,29 +463,29 @@
      "ic_t": 6.04,
      "ic_pos": 72.6,
      "ic_sd": 0.1272,
-     "top_excess": 0.89,
+     "top_excess": 0.9,
      "top_vs_all": 1.59,
      "top_hit": 53.7,
      "dates": 164
     },
     "lgbm": {
-     "ic": 0.0967,
-     "ic_t": 9.35,
-     "ic_pos": 83.5,
-     "ic_sd": 0.113,
-     "top_excess": 0.03,
-     "top_vs_all": 0.73,
-     "top_hit": 55.5,
+     "ic": 0.0961,
+     "ic_t": 9.26,
+     "ic_pos": 81.1,
+     "ic_sd": 0.1131,
+     "top_excess": 0.13,
+     "top_vs_all": 0.83,
+     "top_hit": 52.4,
      "dates": 164
     },
     "ens": {
-     "ic": 0.0804,
-     "ic_t": 8.1,
-     "ic_pos": 79.9,
-     "ic_sd": 0.1074,
-     "top_excess": 0.1,
-     "top_vs_all": 0.8,
-     "top_hit": 50.0,
+     "ic": 0.0799,
+     "ic_t": 7.93,
+     "ic_pos": 79.3,
+     "ic_sd": 0.1085,
+     "top_excess": 0.07,
+     "top_vs_all": 0.77,
+     "top_hit": 51.2,
      "dates": 164
     },
     "prob": {
@@ -498,25 +498,25 @@
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 3783,
+       "n": 3788,
        "pred": 25.7,
        "actual": 48.0
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 33601,
+       "n": 33588,
        "pred": 36.8,
-       "actual": 40.1
+       "actual": 40.0
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 74885,
+       "n": 74890,
        "pred": 44.3,
        "actual": 41.3
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 6809,
+       "n": 6812,
        "pred": 52.0,
        "actual": 46.3
       },
@@ -535,49 +535,49 @@
      "ic_t": 1.91,
      "ic_pos": 60.5,
      "ic_sd": 0.1159,
-     "top_excess": 0.29,
+     "top_excess": 0.3,
      "top_vs_all": 0.22,
      "top_hit": 51.8,
      "dates": 114
     },
     "ridge": {
-     "ic": 0.0949,
+     "ic": 0.0948,
      "ic_t": 7.25,
      "ic_pos": 78.9,
      "ic_sd": 0.1266,
-     "top_excess": 1.12,
+     "top_excess": 1.11,
      "top_vs_all": 1.04,
      "top_hit": 62.3,
      "dates": 114
     },
     "logit": {
      "ic": 0.0653,
-     "ic_t": 4.63,
+     "ic_t": 4.62,
      "ic_pos": 71.9,
      "ic_sd": 0.1321,
      "top_excess": 1.3,
-     "top_vs_all": 1.22,
+     "top_vs_all": 1.23,
      "top_hit": 61.4,
      "dates": 114
     },
     "lgbm": {
-     "ic": 0.0923,
-     "ic_t": 8.42,
-     "ic_pos": 84.2,
-     "ic_sd": 0.1091,
-     "top_excess": 0.55,
-     "top_vs_all": 0.47,
-     "top_hit": 64.0,
+     "ic": 0.0926,
+     "ic_t": 8.31,
+     "ic_pos": 82.5,
+     "ic_sd": 0.1099,
+     "top_excess": 0.67,
+     "top_vs_all": 0.59,
+     "top_hit": 57.0,
      "dates": 114
     },
     "ens": {
-     "ic": 0.0767,
-     "ic_t": 6.21,
+     "ic": 0.0768,
+     "ic_t": 6.09,
      "ic_pos": 77.2,
-     "ic_sd": 0.1148,
-     "top_excess": 0.65,
-     "top_vs_all": 0.57,
-     "top_hit": 55.3,
+     "ic_sd": 0.1162,
+     "top_excess": 0.66,
+     "top_vs_all": 0.58,
+     "top_hit": 57.0,
      "dates": 114
     },
     "prob": {
@@ -590,15 +590,15 @@
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 3737,
+       "n": 3742,
        "pred": 25.6,
        "actual": 48.2
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 23142,
+       "n": 23133,
        "pred": 36.4,
-       "actual": 43.4
+       "actual": 43.3
       },
       {
        "bin": "(0.4, 0.5]",
@@ -608,7 +608,7 @@
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 6042,
+       "n": 6046,
        "pred": 52.0,
        "actual": 47.4
       },
@@ -636,9 +636,9 @@
      "ic": 0.0942,
      "ic_t": 4.38,
      "ic_pos": 80.0,
-     "ic_sd": 0.1179,
-     "top_excess": -1.14,
-     "top_vs_all": 1.32,
+     "ic_sd": 0.118,
+     "top_excess": -1.15,
+     "top_vs_all": 1.31,
      "top_hit": 40.0,
      "dates": 50
     },
@@ -647,28 +647,28 @@
      "ic_t": 4.04,
      "ic_pos": 74.0,
      "ic_sd": 0.1153,
-     "top_excess": -0.03,
+     "top_excess": -0.04,
      "top_vs_all": 2.43,
      "top_hit": 36.0,
      "dates": 50
     },
     "lgbm": {
-     "ic": 0.1067,
-     "ic_t": 4.71,
-     "ic_pos": 82.0,
-     "ic_sd": 0.1222,
-     "top_excess": -1.14,
-     "top_vs_all": 1.33,
-     "top_hit": 36.0,
+     "ic": 0.104,
+     "ic_t": 4.63,
+     "ic_pos": 78.0,
+     "ic_sd": 0.1209,
+     "top_excess": -1.09,
+     "top_vs_all": 1.37,
+     "top_hit": 42.0,
      "dates": 50
     },
     "ens": {
-     "ic": 0.0887,
-     "ic_t": 5.54,
-     "ic_pos": 86.0,
-     "ic_sd": 0.089,
-     "top_excess": -1.16,
-     "top_vs_all": 1.31,
+     "ic": 0.087,
+     "ic_t": 5.41,
+     "ic_pos": 84.0,
+     "ic_sd": 0.0893,
+     "top_excess": -1.27,
+     "top_vs_all": 1.2,
      "top_hit": 38.0,
      "dates": 50
     },
@@ -688,21 +688,21 @@
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 10459,
+       "n": 10455,
        "pred": 37.5,
        "actual": 32.7
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 26773,
+       "n": 26778,
        "pred": 43.9,
        "actual": 34.4
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 767,
+       "n": 766,
        "pred": 51.4,
-       "actual": 38.2
+       "actual": 38.3
       }
      ]
     }
@@ -717,12 +717,12 @@
      "t": 3.56
     },
     "lgbm": {
-     "diff": 0.0675,
-     "t": 4.62
+     "diff": 0.0669,
+     "t": 4.63
     },
     "ens": {
-     "diff": 0.0512,
-     "t": 6.73
+     "diff": 0.0507,
+     "t": 6.7
     }
    },
    "sufficiency": {
@@ -747,20 +747,20 @@
      "ic": 0.0315,
      "ic_t": 1.78,
      "ic_pos": 64.7,
-     "ic_sd": 0.1078,
-     "top_excess": -1.3,
-     "top_vs_all": 1.29,
+     "ic_sd": 0.1077,
+     "top_excess": -1.29,
+     "top_vs_all": 1.3,
      "top_hit": 44.9,
      "dates": 156
     },
     "ridge": {
      "ic": 0.1134,
-     "ic_t": 6.38,
+     "ic_t": 6.37,
      "ic_pos": 85.3,
-     "ic_sd": 0.1266,
-     "top_excess": -0.75,
-     "top_vs_all": 1.84,
-     "top_hit": 51.3,
+     "ic_sd": 0.1267,
+     "top_excess": -0.71,
+     "top_vs_all": 1.88,
+     "top_hit": 51.9,
      "dates": 156
     },
     "logit": {
@@ -768,29 +768,29 @@
      "ic_t": 4.36,
      "ic_pos": 76.9,
      "ic_sd": 0.1263,
-     "top_excess": 0.28,
-     "top_vs_all": 2.87,
+     "top_excess": 0.3,
+     "top_vs_all": 2.89,
      "top_hit": 48.1,
      "dates": 156
     },
     "lgbm": {
-     "ic": 0.1112,
-     "ic_t": 6.67,
+     "ic": 0.1103,
+     "ic_t": 6.68,
      "ic_pos": 85.3,
-     "ic_sd": 0.1143,
-     "top_excess": -0.87,
-     "top_vs_all": 1.72,
-     "top_hit": 43.6,
+     "ic_sd": 0.114,
+     "top_excess": -1.0,
+     "top_vs_all": 1.59,
+     "top_hit": 46.2,
      "dates": 156
     },
     "ens": {
-     "ic": 0.0936,
-     "ic_t": 5.6,
+     "ic": 0.0932,
+     "ic_t": 5.58,
      "ic_pos": 78.8,
-     "ic_sd": 0.1089,
-     "top_excess": -0.36,
-     "top_vs_all": 2.23,
-     "top_hit": 50.0,
+     "ic_sd": 0.109,
+     "top_excess": -0.59,
+     "top_vs_all": 2.0,
+     "top_hit": 47.4,
      "dates": 156
     },
     "prob": {
@@ -803,86 +803,86 @@
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 11971,
+       "n": 11967,
        "pred": 24.8,
        "actual": 38.9
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 48252,
+       "n": 48260,
        "pred": 35.9,
-       "actual": 34.9
+       "actual": 35.0
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 47123,
+       "n": 47119,
        "pred": 44.1,
        "actual": 38.2
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 6376,
+       "n": 6375,
        "pred": 52.6,
-       "actual": 40.5
+       "actual": 40.4
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 56,
+       "n": 57,
        "pred": 61.8,
-       "actual": 60.7
+       "actual": 59.6
       }
      ]
     }
    },
    "rolling": {
     "v21": {
-     "ic": 0.0193,
+     "ic": 0.0194,
      "ic_t": 0.83,
      "ic_pos": 59.6,
-     "ic_sd": 0.1162,
-     "top_excess": -0.29,
-     "top_vs_all": -0.02,
+     "ic_sd": 0.1161,
+     "top_excess": -0.28,
+     "top_vs_all": -0.01,
      "top_hit": 48.6,
      "dates": 109
     },
     "ridge": {
-     "ic": 0.107,
-     "ic_t": 4.99,
+     "ic": 0.1069,
+     "ic_t": 4.98,
      "ic_pos": 86.2,
-     "ic_sd": 0.1259,
-     "top_excess": 1.66,
-     "top_vs_all": 1.94,
-     "top_hit": 59.6,
+     "ic_sd": 0.126,
+     "top_excess": 1.72,
+     "top_vs_all": 1.99,
+     "top_hit": 60.6,
      "dates": 109
     },
     "logit": {
      "ic": 0.0701,
      "ic_t": 2.98,
      "ic_pos": 76.1,
-     "ic_sd": 0.1287,
-     "top_excess": 2.45,
-     "top_vs_all": 2.73,
+     "ic_sd": 0.1288,
+     "top_excess": 2.49,
+     "top_vs_all": 2.77,
      "top_hit": 57.8,
      "dates": 109
     },
     "lgbm": {
-     "ic": 0.1032,
-     "ic_t": 5.58,
-     "ic_pos": 86.2,
-     "ic_sd": 0.1056,
-     "top_excess": 1.25,
-     "top_vs_all": 1.52,
-     "top_hit": 51.4,
+     "ic": 0.1026,
+     "ic_t": 5.59,
+     "ic_pos": 87.2,
+     "ic_sd": 0.1051,
+     "top_excess": 1.19,
+     "top_vs_all": 1.47,
+     "top_hit": 55.0,
      "dates": 109
     },
     "ens": {
      "ic": 0.0819,
-     "ic_t": 3.78,
+     "ic_t": 3.76,
      "ic_pos": 75.2,
-     "ic_sd": 0.1151,
-     "top_excess": 1.84,
-     "top_vs_all": 2.12,
-     "top_hit": 58.7,
+     "ic_sd": 0.1152,
+     "top_excess": 1.5,
+     "top_vs_all": 1.78,
+     "top_hit": 54.1,
      "dates": 109
     },
     "prob": {
@@ -897,31 +897,31 @@
        "bin": "(-0.001, 0.3]",
        "n": 10613,
        "pred": 24.4,
-       "actual": 41.2
+       "actual": 41.1
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 29905,
+       "n": 29911,
        "pred": 35.8,
        "actual": 41.0
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 31435,
+       "n": 31427,
        "pred": 44.3,
        "actual": 42.7
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 5885,
+       "n": 5886,
        "pred": 52.7,
-       "actual": 41.2
+       "actual": 41.1
       },
       {
        "bin": "(0.6, 0.7]",
-       "n": 56,
+       "n": 57,
        "pred": 61.8,
-       "actual": 60.7
+       "actual": 59.6
       }
      ]
     }
@@ -939,9 +939,9 @@
     },
     "ridge": {
      "ic": 0.1283,
-     "ic_t": 4.07,
+     "ic_t": 4.06,
      "ic_pos": 83.0,
-     "ic_sd": 0.1283,
+     "ic_sd": 0.1284,
      "top_excess": -6.33,
      "top_vs_all": 1.63,
      "top_hit": 31.9,
@@ -952,29 +952,29 @@
      "ic_t": 3.95,
      "ic_pos": 78.7,
      "ic_sd": 0.1162,
-     "top_excess": -4.75,
-     "top_vs_all": 3.21,
+     "top_excess": -4.77,
+     "top_vs_all": 3.18,
      "top_hit": 25.5,
      "dates": 47
     },
     "lgbm": {
-     "ic": 0.1299,
-     "ic_t": 3.78,
-     "ic_pos": 83.0,
+     "ic": 0.1284,
+     "ic_t": 3.77,
+     "ic_pos": 80.9,
      "ic_sd": 0.1317,
-     "top_excess": -5.79,
-     "top_vs_all": 2.17,
+     "top_excess": -6.09,
+     "top_vs_all": 1.87,
      "top_hit": 25.5,
      "dates": 47
     },
     "ens": {
-     "ic": 0.1207,
-     "ic_t": 6.0,
+     "ic": 0.1195,
+     "ic_t": 5.98,
      "ic_pos": 87.2,
-     "ic_sd": 0.0882,
-     "top_excess": -5.47,
-     "top_vs_all": 2.49,
-     "top_hit": 29.8,
+     "ic_sd": 0.0887,
+     "top_excess": -5.43,
+     "top_vs_all": 2.53,
+     "top_hit": 31.9,
      "dates": 47
     },
     "prob": {
@@ -987,27 +987,27 @@
      "calibration": [
       {
        "bin": "(-0.001, 0.3]",
-       "n": 1358,
+       "n": 1354,
        "pred": 28.0,
        "actual": 21.6
       },
       {
        "bin": "(0.3, 0.4]",
-       "n": 18347,
+       "n": 18349,
        "pred": 36.1,
        "actual": 25.1
       },
       {
        "bin": "(0.4, 0.5]",
-       "n": 15688,
+       "n": 15692,
        "pred": 43.6,
        "actual": 29.3
       },
       {
        "bin": "(0.5, 0.6]",
-       "n": 491,
+       "n": 489,
        "pred": 51.6,
-       "actual": 32.6
+       "actual": 32.7
       }
      ]
     }
@@ -1015,27 +1015,27 @@
    "vs_v21": {
     "ridge": {
      "diff": 0.0819,
-     "t": 3.36
+     "t": 3.35
     },
     "logit": {
      "diff": 0.0517,
      "t": 3.2
     },
     "lgbm": {
-     "diff": 0.0797,
-     "t": 3.51
+     "diff": 0.0788,
+     "t": 3.49
     },
     "ens": {
-     "diff": 0.0621,
-     "t": 5.16
+     "diff": 0.0617,
+     "t": 5.15
     }
    },
    "sufficiency": {
     "horizon": 60,
     "test_trading_days": 1560,
     "independent_periods": 26.0,
-    "ic_sd": 0.1078,
-    "min_detectable_ic": 0.0592,
+    "ic_sd": 0.1077,
+    "min_detectable_ic": 0.0591,
     "periods_needed_for_0.03": 102,
     "years_needed_for_0.03": 25.0,
     "enough": false
@@ -1045,7 +1045,7 @@
  },
  "main": 20,
  "verdict": "不足",
- "seconds": 2449,
+ "seconds": 1586,
  "errors": {
   "horizon": 20,
   "method": "分組內的 Rank IC（各測試日分別計算再平均，Newey-West t）與模型前 20% 相對同組平均的超額報酬",
@@ -1057,15 +1057,15 @@
     "dates": 122,
     "v21": {
      "ic": 0.0359,
-     "t": 2.69,
+     "t": 2.68,
      "n": 122,
-     "top_vs_bucket": 0.73
+     "top_vs_bucket": 0.74
     },
     "lgbm": {
-     "ic": 0.1027,
-     "t": 8.88,
+     "ic": 0.103,
+     "t": 8.86,
      "n": 122,
-     "top_vs_bucket": 0.57
+     "top_vs_bucket": 0.64
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1075,16 +1075,16 @@
     "rows": 28829,
     "dates": 42,
     "v21": {
-     "ic": 0.0098,
+     "ic": 0.0099,
      "t": 0.56,
      "n": 42,
      "top_vs_bucket": 0.27
     },
     "lgbm": {
-     "ic": 0.0793,
-     "t": 3.95,
+     "ic": 0.0759,
+     "t": 3.77,
      "n": 42,
-     "top_vs_bucket": 0.49
+     "top_vs_bucket": 0.42
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1100,10 +1100,10 @@
      "top_vs_bucket": 0.62
     },
     "lgbm": {
-     "ic": 0.1137,
-     "t": 9.68,
+     "ic": 0.1166,
+     "t": 9.9,
      "n": 164,
-     "top_vs_bucket": 0.76
+     "top_vs_bucket": 0.78
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1119,10 +1119,10 @@
      "top_vs_bucket": 0.57
     },
     "lgbm": {
-     "ic": 0.0775,
-     "t": 7.59,
+     "ic": 0.0753,
+     "t": 7.48,
      "n": 164,
-     "top_vs_bucket": 0.6
+     "top_vs_bucket": 0.67
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1132,16 +1132,16 @@
     "rows": 23787,
     "dates": 164,
     "v21": {
-     "ic": 0.0312,
-     "t": 2.44,
+     "ic": 0.0314,
+     "t": 2.45,
      "n": 164,
      "top_vs_bucket": 0.48
     },
     "lgbm": {
-     "ic": 0.0806,
-     "t": 7.45,
+     "ic": 0.0788,
+     "t": 7.08,
      "n": 164,
-     "top_vs_bucket": 0.5
+     "top_vs_bucket": 0.57
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1154,13 +1154,13 @@
      "ic": 0.0262,
      "t": 1.92,
      "n": 164,
-     "top_vs_bucket": 0.44
+     "top_vs_bucket": 0.43
     },
     "lgbm": {
-     "ic": 0.0667,
-     "t": 7.75,
+     "ic": 0.0651,
+     "t": 7.43,
      "n": 164,
-     "top_vs_bucket": 0.7
+     "top_vs_bucket": 0.48
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1176,10 +1176,10 @@
      "top_vs_bucket": 1.08
     },
     "lgbm": {
-     "ic": 0.0881,
-     "t": 7.81,
+     "ic": 0.0883,
+     "t": 8.01,
      "n": 164,
-     "top_vs_bucket": 1.14
+     "top_vs_bucket": 1.3
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1195,10 +1195,10 @@
      "top_vs_bucket": 0.1
     },
     "lgbm": {
-     "ic": 0.0918,
-     "t": 7.6,
+     "ic": 0.0912,
+     "t": 7.45,
      "n": 164,
-     "top_vs_bucket": 0.92
+     "top_vs_bucket": 0.72
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1209,15 +1209,15 @@
     "dates": 164,
     "v21": {
      "ic": 0.0363,
-     "t": 2.82,
+     "t": 2.83,
      "n": 164,
      "top_vs_bucket": 0.35
     },
     "lgbm": {
-     "ic": 0.1035,
-     "t": 7.46,
+     "ic": 0.1033,
+     "t": 7.4,
      "n": 164,
-     "top_vs_bucket": 0.66
+     "top_vs_bucket": 0.69
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1228,15 +1228,15 @@
     "dates": 164,
     "v21": {
      "ic": 0.0433,
-     "t": 3.2,
+     "t": 3.21,
      "n": 164,
-     "top_vs_bucket": 0.37
+     "top_vs_bucket": 0.36
     },
     "lgbm": {
-     "ic": 0.1013,
-     "t": 7.31,
+     "ic": 0.0982,
+     "t": 6.96,
      "n": 164,
-     "top_vs_bucket": 0.6
+     "top_vs_bucket": 0.58
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1246,16 +1246,16 @@
     "rows": 23784,
     "dates": 164,
     "v21": {
-     "ic": 0.0537,
-     "t": 4.89,
+     "ic": 0.0536,
+     "t": 4.88,
      "n": 164,
-     "top_vs_bucket": 0.42
+     "top_vs_bucket": 0.41
     },
     "lgbm": {
-     "ic": 0.1121,
-     "t": 8.37,
+     "ic": 0.1124,
+     "t": 8.5,
      "n": 164,
-     "top_vs_bucket": 0.72
+     "top_vs_bucket": 0.75
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1271,10 +1271,10 @@
      "top_vs_bucket": 0.7
     },
     "lgbm": {
-     "ic": 0.0786,
-     "t": 7.29,
+     "ic": 0.0781,
+     "t": 7.2,
      "n": 164,
-     "top_vs_bucket": 0.57
+     "top_vs_bucket": 0.51
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1284,16 +1284,16 @@
     "rows": 23881,
     "dates": 164,
     "v21": {
-     "ic": 0.018,
-     "t": 1.1,
+     "ic": 0.0181,
+     "t": 1.11,
      "n": 164,
-     "top_vs_bucket": 1.39
+     "top_vs_bucket": 1.38
     },
     "lgbm": {
-     "ic": 0.0776,
-     "t": 6.83,
+     "ic": 0.0777,
+     "t": 6.68,
      "n": 164,
-     "top_vs_bucket": 1.0
+     "top_vs_bucket": 1.01
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1303,16 +1303,16 @@
     "rows": 23784,
     "dates": 164,
     "v21": {
-     "ic": 0.0085,
+     "ic": 0.0086,
      "t": 0.52,
      "n": 164,
      "top_vs_bucket": 1.02
     },
     "lgbm": {
-     "ic": 0.0717,
-     "t": 7.02,
+     "ic": 0.0657,
+     "t": 6.17,
      "n": 164,
-     "top_vs_bucket": 0.6
+     "top_vs_bucket": 0.51
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1322,16 +1322,16 @@
     "rows": 23787,
     "dates": 164,
     "v21": {
-     "ic": 0.006,
+     "ic": 0.0059,
      "t": 0.38,
      "n": 164,
      "top_vs_bucket": 0.46
     },
     "lgbm": {
-     "ic": 0.0873,
-     "t": 6.86,
+     "ic": 0.0858,
+     "t": 6.7,
      "n": 164,
-     "top_vs_bucket": 0.54
+     "top_vs_bucket": 0.43
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1341,16 +1341,16 @@
     "rows": 23784,
     "dates": 164,
     "v21": {
-     "ic": 0.0124,
+     "ic": 0.0123,
      "t": 1.01,
      "n": 164,
-     "top_vs_bucket": 0.61
+     "top_vs_bucket": 0.6
     },
     "lgbm": {
-     "ic": 0.0978,
-     "t": 7.33,
+     "ic": 0.0976,
+     "t": 7.3,
      "n": 164,
-     "top_vs_bucket": 0.6
+     "top_vs_bucket": 0.57
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1366,10 +1366,10 @@
      "top_vs_bucket": 0.16
     },
     "lgbm": {
-     "ic": 0.1224,
-     "t": 9.0,
+     "ic": 0.1251,
+     "t": 9.38,
      "n": 164,
-     "top_vs_bucket": 0.73
+     "top_vs_bucket": 0.71
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1380,15 +1380,15 @@
     "dates": 164,
     "v21": {
      "ic": 0.0194,
-     "t": 1.72,
+     "t": 1.71,
      "n": 164,
      "top_vs_bucket": 0.22
     },
     "lgbm": {
-     "ic": 0.1059,
-     "t": 8.87,
+     "ic": 0.1033,
+     "t": 8.67,
      "n": 164,
-     "top_vs_bucket": 0.51
+     "top_vs_bucket": 0.35
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1398,16 +1398,16 @@
     "rows": 23784,
     "dates": 164,
     "v21": {
-     "ic": 0.0257,
-     "t": 2.13,
+     "ic": 0.0258,
+     "t": 2.14,
      "n": 164,
-     "top_vs_bucket": 0.33
+     "top_vs_bucket": 0.34
     },
     "lgbm": {
-     "ic": 0.0973,
-     "t": 7.45,
+     "ic": 0.0979,
+     "t": 7.64,
      "n": 164,
-     "top_vs_bucket": 0.55
+     "top_vs_bucket": 0.56
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1417,16 +1417,16 @@
     "rows": 23787,
     "dates": 164,
     "v21": {
-     "ic": 0.0116,
+     "ic": 0.0115,
      "t": 0.88,
      "n": 164,
-     "top_vs_bucket": 0.32
+     "top_vs_bucket": 0.33
     },
     "lgbm": {
-     "ic": 0.1013,
-     "t": 6.86,
+     "ic": 0.1034,
+     "t": 7.07,
      "n": 164,
-     "top_vs_bucket": 0.65
+     "top_vs_bucket": 0.83
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1442,10 +1442,10 @@
      "top_vs_bucket": 0.95
     },
     "lgbm": {
-     "ic": 0.0801,
-     "t": 6.92,
+     "ic": 0.0804,
+     "t": 6.59,
      "n": 164,
-     "top_vs_bucket": 0.77
+     "top_vs_bucket": 0.6
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1455,92 +1455,111 @@
     "rows": 23847,
     "dates": 164,
     "v21": {
-     "ic": 0.04,
-     "t": 2.08,
+     "ic": 0.0398,
+     "t": 2.07,
      "n": 164,
      "top_vs_bucket": 1.05
     },
     "lgbm": {
-     "ic": 0.0619,
-     "t": 4.32,
+     "ic": 0.06,
+     "t": 4.19,
      "n": 164,
-     "top_vs_bucket": 0.3
+     "top_vs_bucket": 0.37
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電子工業",
-    "rows": 19262,
+    "rows": 20620,
     "dates": 164,
     "v21": {
-     "ic": 0.0603,
-     "t": 3.69,
+     "ic": 0.0506,
+     "t": 3.1,
      "n": 164,
-     "top_vs_bucket": 1.01
+     "top_vs_bucket": 0.71
     },
     "lgbm": {
-     "ic": 0.0879,
-     "t": 6.5,
+     "ic": 0.0857,
+     "t": 6.12,
      "n": 164,
-     "top_vs_bucket": 0.72
+     "top_vs_bucket": 0.67
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電子零組件業",
-    "rows": 14675,
+    "rows": 15062,
     "dates": 164,
     "v21": {
-     "ic": 0.029,
-     "t": 1.79,
+     "ic": 0.0317,
+     "t": 2.02,
      "n": 164,
-     "top_vs_bucket": 0.21
+     "top_vs_bucket": 0.28
     },
     "lgbm": {
-     "ic": 0.0867,
-     "t": 5.46,
+     "ic": 0.082,
+     "t": 5.06,
      "n": 164,
-     "top_vs_bucket": 0.41
+     "top_vs_bucket": 0.35
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "半導體業",
-    "rows": 10101,
+    "rows": 9231,
     "dates": 164,
     "v21": {
-     "ic": 0.0418,
-     "t": 2.27,
+     "ic": 0.0456,
+     "t": 2.35,
      "n": 164,
-     "top_vs_bucket": 0.61
+     "top_vs_bucket": 1.01
     },
     "lgbm": {
-     "ic": 0.0776,
-     "t": 4.61,
+     "ic": 0.0813,
+     "t": 4.6,
      "n": 164,
-     "top_vs_bucket": 0.71
+     "top_vs_bucket": 0.85
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
    {
     "dim": "產業",
     "bucket": "電腦及週邊設備業",
-    "rows": 8774,
+    "rows": 8499,
     "dates": 164,
     "v21": {
-     "ic": 0.0065,
-     "t": 0.42,
-     "n": 164,
-     "top_vs_bucket": 0.43
+     "ic": 0.0147,
+     "t": 0.92,
+     "n": 163,
+     "top_vs_bucket": 0.63
     },
     "lgbm": {
-     "ic": 0.0842,
-     "t": 4.95,
-     "n": 164,
-     "top_vs_bucket": 0.52
+     "ic": 0.086,
+     "t": 5.13,
+     "n": 163,
+     "top_vs_bucket": 0.28
+    },
+    "evidence": "IC 估計可靠（|t|≥2）"
+   },
+   {
+    "dim": "產業",
+    "bucket": "生技醫療業",
+    "rows": 5625,
+    "dates": 164,
+    "v21": {
+     "ic": 0.0379,
+     "t": 1.7,
+     "n": 113,
+     "top_vs_bucket": 0.49
+    },
+    "lgbm": {
+     "ic": 0.0993,
+     "t": 3.98,
+     "n": 113,
+     "top_vs_bucket": 0.08
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    },
@@ -1550,35 +1569,16 @@
     "rows": 5171,
     "dates": 164,
     "v21": {
-     "ic": -0.0031,
-     "t": -0.15,
+     "ic": -0.0033,
+     "t": -0.16,
      "n": 95,
      "top_vs_bucket": 0.33
     },
     "lgbm": {
-     "ic": 0.1083,
-     "t": 4.66,
+     "ic": 0.1064,
+     "t": 4.78,
      "n": 95,
-     "top_vs_bucket": 0.32
-    },
-    "evidence": "IC 估計可靠（|t|≥2）"
-   },
-   {
-    "dim": "產業",
-    "bucket": "生技醫療業",
-    "rows": 5113,
-    "dates": 164,
-    "v21": {
-     "ic": 0.0303,
-     "t": 1.24,
-     "n": 84,
-     "top_vs_bucket": 0.04
-    },
-    "lgbm": {
-     "ic": 0.0838,
-     "t": 2.97,
-     "n": 84,
-     "top_vs_bucket": -0.01
+     "top_vs_bucket": 0.63
     },
     "evidence": "IC 估計可靠（|t|≥2）"
    }
@@ -1588,8 +1588,8 @@
    "波動・中高",
    "估值（盈餘殖利率）・偏貴",
    "波動・中低",
-   "估值（盈餘殖利率）・最貴 20%"
+   "市場環境・空頭（加權指數在半年線下）"
   ]
  },
- "registered": "2026-10-22-4c675d40be"
+ "registered": "2026-10-31-57beb6f1f2"
 }
