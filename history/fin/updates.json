@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-01T00:13:19",
+ "generated_at": "2026-11-01T01:18:40",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
@@ -695,10 +695,10 @@
   }
  ],
  "detect": {
-  "at": "2026-11-01T00:02:55",
-  "endpoints_ok": 12,
+  "at": "2026-11-01T01:08:19",
+  "endpoints_ok": 11,
   "endpoints": 12,
-  "stocks": 1984,
+  "stocks": 931,
   "new": 0,
   "corrected": 0,
   "mismatch": 0
@@ -707,10 +707,10 @@
   {
    "market": "twse",
    "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
-   "ok": true,
-   "stocks": 1053,
-   "error": null,
-   "rows": 1053,
+   "ok": false,
+   "stocks": null,
+   "error": "回應格式不符（API 可能改版）：Expecting value: line 1 column 1 (char 0)",
+   "rows": null,
    "empty": null
   },
   {
