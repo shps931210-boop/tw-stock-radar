@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-01T02:03:33",
+ "generated_at": "2026-11-01T03:27:04",
  "quarter": "2026-Q3",
  "announced": 0,
  "synced": 0,
@@ -8,7 +8,7 @@
  "corrected": 0,
  "mismatch": 0,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 33,
+ "db_has_quarter": 42,
  "latency_hours": {
   "n": 0,
   "median": null,
@@ -695,7 +695,7 @@
   }
  ],
  "detect": {
-  "at": "2026-11-01T02:02:07",
+  "at": "2026-11-01T03:16:45",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 1984,
