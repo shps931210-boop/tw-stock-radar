@@ -1789,14 +1789,35 @@
     "加權指數開盤價": "success",
     "同時段公平比較": "success"
    }
+  },
+  {
+   "at": "2026-11-02T02:07:27",
+   "run_id": "41334210017",
+   "mode": "backfill",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "success",
+    "新聞與公告": "skipped",
+    "國際市場": "skipped",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "success",
+    "整合測試": "skipped",
+    "AI 模擬交易": "success",
+    "到期對帳明細": "success",
+    "學術候選影子紀錄": "success",
+    "正式績效對帳": "success",
+    "加權指數開盤價": "success",
+    "同時段公平比較": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 84,
+   "runs": 85,
    "fails": 0
   },
   "新聞與公告": {
@@ -1815,9 +1836,9 @@
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 82,
+   "runs": 83,
    "fails": 0
   },
   "連線診斷": {
@@ -1850,44 +1871,44 @@
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 67,
+   "runs": 68,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 59,
+   "runs": 60,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 56,
+   "runs": 57,
    "fails": 0
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 43,
+   "runs": 44,
    "fails": 0
   },
   "加權指數開盤價": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 5,
+   "runs": 6,
    "fails": 0
   },
   "同時段公平比較": {
    "streak": 0,
-   "last_ok": "2026-11-02T01:19:13",
+   "last_ok": "2026-11-02T02:07:27",
    "last": "success",
-   "runs": 5,
+   "runs": 6,
    "fails": 0
   }
  }
