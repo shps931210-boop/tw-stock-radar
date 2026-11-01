@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-01T15:48:41",
+ "generated_at": "2026-11-01T16:03:14",
  "quarter": "2026-Q3",
  "announced": 84,
  "synced": 71,
@@ -1290,11 +1290,11 @@
   }
  ],
  "detect": {
-  "at": "2026-11-01T15:44:31",
-  "endpoints_ok": 12,
+  "at": "2026-11-01T15:59:24",
+  "endpoints_ok": 6,
   "endpoints": 12,
-  "stocks": 84,
-  "new": 38,
+  "stocks": 46,
+  "new": 0,
   "corrected": 0,
   "mismatch": 0
  },
@@ -1356,56 +1356,56 @@
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
-   "ok": true,
-   "stocks": 37,
-   "error": null,
-   "rows": 37,
+   "ok": false,
+   "stocks": null,
+   "error": "HTTP 403 Forbidden（https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci）",
+   "rows": null,
    "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_basi",
-   "ok": true,
-   "stocks": 0,
-   "error": null,
-   "rows": 1,
-   "empty": true
+   "ok": false,
+   "stocks": null,
+   "error": "HTTP 403 Forbidden（https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_basi）",
+   "rows": null,
+   "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_bd",
-   "ok": true,
-   "stocks": 1,
-   "error": null,
-   "rows": 1,
+   "ok": false,
+   "stocks": null,
+   "error": "HTTP 403 Forbidden（https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_bd）",
+   "rows": null,
    "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_fh",
-   "ok": true,
-   "stocks": 0,
-   "error": null,
-   "rows": 1,
-   "empty": true
+   "ok": false,
+   "stocks": null,
+   "error": "HTTP 403 Forbidden（https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_fh）",
+   "rows": null,
+   "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ins",
-   "ok": true,
-   "stocks": 0,
-   "error": null,
-   "rows": 1,
-   "empty": true
+   "ok": false,
+   "stocks": null,
+   "error": "HTTP 403 Forbidden（https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ins）",
+   "rows": null,
+   "empty": null
   },
   {
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_mim",
-   "ok": true,
-   "stocks": 0,
-   "error": null,
-   "rows": 1,
-   "empty": true
+   "ok": false,
+   "stocks": null,
+   "error": "HTTP 403 Forbidden（https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_mim）",
+   "rows": null,
+   "empty": null
   }
  ]
 }
