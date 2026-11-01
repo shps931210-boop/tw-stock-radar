@@ -1967,8 +1967,8 @@ async function loadMature() {
   if (MATF === null) MATF = await fetch(q("fair.json")).then((r) => (r.ok ? r.json() : false)).catch(() => false);
   const F = MATF && MATF.batches?.find((b) => b.file === cur.file);
   const fair = F ? `<h3 style="margin:10px 0 6px">同時段公平比較</h3><div class="tbl"><table class="wrap"><thead><tr><th>名單・口徑</th><th class="r">扣成本報酬</th><th class="r">0050</th><th class="r">加權指數</th><th class="r">相對 0050</th><th class="r">相對加權</th><th class="r">上漲／贏 0050</th><th class="r">回撤・重大虧損</th></tr></thead><tbody>
-    ${Object.values(F.modes).map((m) => [["open", "開盤到開盤"], ["close", "收盤到收盤"]].map(([k, l]) => { const x = m[k]; return `<tr><td>${esc(m.name)}・${l}</td><td class="r">${pc(x.net)}</td><td class="r">${pc(x.e0050)}</td><td class="r">${x.taiex == null ? '<span class="faint small">沒有開盤價</span>' : pc(x.taiex)}</td><td class="r">${pc(x.ex_0050)}</td><td class="r">${pc(x.ex_taiex)}</td><td class="r num">${pp(x.up_hit)}／${pp(x.beat_0050_hit)}</td><td class="r num small">${x.mdd == null ? "—" : pctTxt(x.mdd)}・${pp(x.big_loss_pct)}</td></tr>`; }).join("")).join("")}</tbody></table></div>
-    <p class="faint small" style="margin:4px 0 0">開盤到開盤：${esc(F.open_window[0])} 開盤 → ${esc(F.open_window[1])} 開盤（正式口徑）。收盤到收盤：${esc(F.close_window[0])} 收盤 → ${esc(F.close_window[1])} 收盤（參考，名單收盤後才產生，實際買不到）。同一列的選股、0050、加權指數都是同一段時間；兩種口徑不能互相混用。</p>` : "";
+    ${Object.values(F.modes).map((m) => [["open", "開盤到開盤"], ["close", "收盤到收盤"]].map(([k, l]) => { const x = m[k]; return `<tr><td>${esc(m.name)}・${l}</td><td class="r">${pc(x.net)}</td><td class="r">${pc(x.e0050)}</td><td class="r">${x.taiex == null ? (x.taiex_open_index == null ? '<span class="faint small">沒有資料</span>' : `<span class="faint small">開盤指數 ${pctTxt(x.taiex_open_index)}（參考）</span>`) : pc(x.taiex)}</td><td class="r">${pc(x.ex_0050)}</td><td class="r">${pc(x.ex_taiex)}</td><td class="r num">${pp(x.up_hit)}／${pp(x.beat_0050_hit)}</td><td class="r num small">${x.mdd == null ? "—" : pctTxt(x.mdd)}・${pp(x.big_loss_pct)}</td></tr>`; }).join("")).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:4px 0 0">開盤到開盤：${esc(F.open_window[0])} 開盤 → ${esc(F.open_window[1])} 開盤（正式口徑，選股和 0050 都是可成交的開盤價；證交所 9:00 開盤指數有很多股票還沒成交，接近前一天收盤，只列參考，不算相對加權）。收盤到收盤：${esc(F.close_window[0])} 收盤 → ${esc(F.close_window[1])} 收盤（參考，名單收盤後才產生，實際買不到）。同一列的選股、0050、加權指數都是同一段時間；兩種口徑不能互相混用。</p>` : "";
   el.hidden = false;
   el.innerHTML = `<div class="card-h"><h2>到期對帳明細</h2><span class="muted small">每一批到期後只寫一次</span></div>
     <select id="matSel" style="margin-bottom:8px">${B.map((b) => `<option value="${esc(b.file)}"${b.file === cur.file ? " selected" : ""}>${esc(b.signal_date)} 的名單・${b.horizon} 日（${esc(b.exit)} 出場）</option>`).join("")}</select>
@@ -2019,7 +2019,7 @@ function renderPaper() {
       <div class="kpi"><span>現金</span><b>${$n(K.cash)}</b><small class="faint">持股 ${K.n_open} 檔</small></div>
       <div class="kpi"><span>已出場</span><b>${K.n_closed} 筆</b><small class="faint">已實現 ${$n(K.realized)} 元</small></div>
       <div class="kpi"><span>同期 0050</span><b>${pc(BN.e0050?.ret)}</b><small class="faint">最大回撤 ${BN.e0050?.mdd == null ? "—" : pctTxt(BN.e0050.mdd)}</small></div>
-      <div class="kpi"><span>同期加權指數</span><b>${pc(BN.taiex?.ret)}</b><small class="faint">${BN.taiex_start === "open" ? "同一個開盤起點" : "前一天收盤起點，只能參考"}・手續費 ${$n(K.fees)}・證交稅 ${$n(K.taxes)}</small></div>
+      <div class="kpi"><span>同期加權指數</span><b>${pc(BN.taiex?.ret)}</b><small class="faint">${BN.taiex_start === "open" ? "從 9:00 開盤指數起算，只能參考" : "前一天收盤起點，只能參考"}・手續費 ${$n(K.fees)}・證交稅 ${$n(K.taxes)}</small></div>
     </div>
     ${plan ? `<h3 style="margin:14px 0 6px">下一個交易日（${esc(plan.entry_date)}）開盤預計</h3>
       <p class="small" style="margin:0">買進：${(plan.buys[m] || []).map((x) => `${st(x)}（第 ${x.rank} 名）`).join("、") || "沒有空位"}${(plan.sells[m] || []).length ? `<br>賣出：${plan.sells[m].map((x) => `${esc(x.sid)}（${esc(x.reason)}）`).join("、")}` : ""}</p>

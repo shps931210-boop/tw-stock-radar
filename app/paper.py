@@ -495,7 +495,7 @@ def _bench_curve(days, px, first, exr, idx, iopen: dict | None = None) -> dict:
         out[k] = {"ret": round((v[-1] / CASH0 - 1) * 100, 3) if v else None, "mdd": mdd(v)}
     out["taiex_start"] = "open" if same else "prev_close"
     out["note"] = "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：" + \
-        ("從第一個進場日的開盤指數換算（和 0050 同一個起點），不含成本。" if same else "還沒有開盤指數，從前一天收盤換算（起點比 0050 早半天，不能嚴格比較），不含成本。")
+        ("從第一個進場日的證交所開盤指數換算，不含成本；開盤指數在 9:00 很多股票還沒成交，接近前一天收盤，和 0050 的可成交開盤價不完全同步，只能參考。" if same else "還沒有開盤指數，從前一天收盤換算（起點比 0050 早半天，不能嚴格比較），不含成本。")
     return out
 
 

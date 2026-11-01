@@ -1,8 +1,10 @@
 """V22 同時段公平比較 → history/audit/fair_compare.json（網站 data/predictions/maturity/fair.json）。
 
 每一批到期的正式名單，用兩種口徑各算一次，同一個口徑裡選股、0050、加權指數用完全相同的時間點：
-1. 開盤到開盤（正式口徑）：進場日開盤 → 出場日開盤。選股與 0050 用還原後開盤價；加權指數用證交所的開盤指數（app/taiex_ohlc.py）。
-   沒有加權指數開盤價的日子照實寫「沒有開盤價」，不拿收盤價代替。
+1. 開盤到開盤（正式口徑）：進場日開盤 → 出場日開盤。選股與 0050 用還原後開盤價（都是實際可成交的價格）。
+   加權指數不列入這個口徑的比較：2026-11-01 抓到證交所開盤指數（app/taiex_ohlc.py）後核對，開盤指數是 9:00 第一次計算，
+   很多股票還沒成交、用前一天收盤代入，和前一天收盤平均只差 0.42%（10/30：加權開盤 −0.49%，0050 開盤 −2.28%）。
+   拿它和可成交的開盤價比會失真，所以只存成 taiex_open_index 當參考，相對加權超額只在收盤口徑計算。
 2. 收盤到收盤（參考口徑）：訊號日收盤 → 出場前一個交易日收盤。選股、0050、加權指數都用收盤價。
    選股是在訊號日收盤後才產生，這個口徑實際上買不到，只用來和只有收盤價的指數對照。
 兩種口徑的選股報酬都扣同樣的來回成本 0.585%；0050、加權指數不扣（基準）。
@@ -72,6 +74,9 @@ def basis(D: dict, ids: list[str], a: str, b: str, kind: str, tx: dict, path_day
         t0 = float(s[a]) if s is not None and a in s.index else t0
         t1 = float(s[b]) if s is not None and b in s.index else t1
     etx = None if not t0 or not t1 else (t1 / t0 - 1) * 100
+    ref = None
+    if kind == "open":   # 證交所開盤指數不是可成交的開盤價：只當參考，不算相對加權超額（見模組說明）
+        ref, etx = etx, None
     v = list(nets.values())
     # 持有期間等權組合（每檔從起點價格算）的每日收盤淨值 → 最大回撤
     mdd = None
@@ -93,7 +98,7 @@ def basis(D: dict, ids: list[str], a: str, b: str, kind: str, tx: dict, path_day
             "beat_taiex_hit": _r(np.mean([x > etx for x in v]) * 100, 1) if v and etx is not None else None,
             "mdd": _r(mdd), "big_loss_pct": _r(np.mean([x <= BIG for x in v]) * 100, 1) if v else None,
             "worst": _r(min(v)) if v else None,
-            "taiex_missing": etx is None}
+            "taiex_open_index": _r(ref), "taiex_missing": etx is None}
 
 
 def batch(D: dict, r: dict, tx: dict) -> dict | None:
@@ -142,7 +147,7 @@ def run(dbname: str = "stocks.db", D: dict | None = None, mat_dir: Path = MAT) -
             bs.append(b)
     return {"schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds"),
             "taiex_open_days": len(tx), "batches": bs[::-1], "average": aggregate(bs),
-            "rule": "開盤到開盤（正式口徑）：進場日開盤→出場日開盤，選股、0050、加權指數同一段；加權指數用證交所開盤指數，沒有就照實寫沒有。"
+            "rule": "開盤到開盤（正式口徑）：進場日開盤→出場日開盤，選股和 0050 都用可成交的開盤價；證交所開盤指數多數股票還沒成交（偏向前一天收盤），只列參考，不算相對加權超額。"
                     "收盤到收盤（參考口徑）：訊號日收盤→出場前一天收盤，三者都用收盤價；選股在收盤後才產生，這個口徑實際上買不到。"
                     "選股都扣來回成本 0.585%，基準不扣。重大虧損＝單檔成本後 ≤ −10%。",
             "note": "相鄰批次持有期重疊（每天一批），平均不是獨立樣本；5 日結果雜訊大，不能代表模型長期能力。"}

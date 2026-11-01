@@ -54,7 +54,9 @@ class FairCompare(unittest.TestCase):
         self.assertAlmostEqual(o["e0050"], round((a.at[d[-1], "open"] / a.at[d[5], "open"] - 1) * 100, 2))
         self.assertAlmostEqual(c["e0050"], round((a.at[d[-2], "close"] / a.at[d[4], "close"] - 1) * 100, 2))
         self.assertLess(o["e0050"], c["e0050"])          # 開盤跳空只影響開盤口徑
-        self.assertEqual(o["taiex"], round((t[d[-1]][0] / t[d[5]][0] - 1) * 100, 2))
+        self.assertIsNone(o["taiex"])                     # 開盤指數不是可成交價格：只列參考，不算相對加權
+        self.assertEqual(o["taiex_open_index"], round((t[d[-1]][0] / t[d[5]][0] - 1) * 100, 2))
+        self.assertIsNotNone(c["ex_taiex"])
         self.assertAlmostEqual(o["ex_0050"], o["net"] - o["e0050"], places=1)
 
     def test_missing_taiex_open_is_not_replaced_by_close(self):
