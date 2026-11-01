@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-10-31T10:44:02",
+ "generated_at": "2026-11-01T20:34:37",
  "quality": {
-  "checked_at": "2026-10-31T10:44:02",
+  "checked_at": "2026-11-01T20:34:37",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,12 +11,12 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 170 則、上櫃 74 則"
+    "detail": "上市 3 則、上櫃 1 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-10-31T10:43:56"
+    "detail": "2026-11-01T20:34:31"
    },
    "global": {
     "label": "國際市場",
@@ -26,12 +26,12 @@
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 22,
-  "latest_event_at": "2026-10-31T01:46:00"
+  "duplicates_removed": 24,
+  "latest_event_at": "2026-11-01T06:25:00"
  },
  "upcoming_holidays": [],
  "target_date": "2026-11-02",
- "today": "2026-10-31",
+ "today": "2026-11-01",
  "today_trading": false,
  "calendar_ok": true,
  "last_close": "2026-10-30",
@@ -39,7 +39,7 @@
   "mode": "collect",
   "target_date": "2026-11-02",
   "since": "2026-10-30T13:30:00",
-  "events": 339,
+  "events": 382,
   "high": 31
  },
  "risk": {
@@ -63,7 +63,7 @@
    "name": "富喬",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 18 名"
+    "積極型第 19 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -76,7 +76,7 @@
    "name": "川湖",
    "industry": "電子零組件業",
    "lists": [
-    "均衡型第 5 名"
+    "均衡型第 6 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -93,7 +93,7 @@
    "name": "全友",
    "industry": "電腦及週邊設備業",
    "lists": [
-    "積極型第 2 名"
+    "積極型第 3 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -106,7 +106,7 @@
    "name": "聯亞",
    "industry": "通信網路業",
    "lists": [
-    "均衡型第 12 名"
+    "均衡型第 18 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -120,7 +120,7 @@
    "industry": "資訊服務業",
    "lists": [
     "均衡型第 17 名",
-    "積極型第 13 名"
+    "積極型第 14 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -146,7 +146,7 @@
    "name": "精材",
    "industry": "半導體業",
    "lists": [
-    "積極型第 16 名"
+    "積極型第 17 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -159,7 +159,7 @@
    "name": "創意",
    "industry": "半導體業",
    "lists": [
-    "積極型第 10 名"
+    "積極型第 8 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -175,7 +175,7 @@
    "name": "光頡",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 14 名"
+    "積極型第 15 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -188,7 +188,7 @@
    "name": "健策",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 9 名"
+    "積極型第 11 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -201,7 +201,7 @@
    "name": "宜鼎",
    "industry": "電腦及週邊設備業",
    "lists": [
-    "均衡型第 18 名"
+    "均衡型第 19 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -227,20 +227,22 @@
    "name": "信昌電",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 7 名"
+    "積極型第 10 名"
    ],
    "flag": "產業風險",
    "reasons": [
     "費半 -7.20%，所屬產業（電子零組件業）受影響機率較高"
    ],
-   "event_ids": []
+   "event_ids": [
+    "19c5220669748147"
+   ]
   },
   {
    "id": "6213",
    "name": "聯茂",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 15 名"
+    "積極型第 16 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -267,8 +269,8 @@
    "industry": "半導體業",
    "lists": [
     "穩健型第 5 名",
-    "均衡型第 10 名",
-    "積極型第 11 名"
+    "均衡型第 11 名",
+    "積極型第 13 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -281,7 +283,7 @@
    "name": "全宇昕",
    "industry": "半導體業",
    "lists": [
-    "均衡型第 6 名"
+    "均衡型第 7 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -294,7 +296,7 @@
    "name": "騰輝電子-KY",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 8 名"
+    "積極型第 9 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -309,7 +311,7 @@
    "name": "天二科技",
    "industry": "電子零組件業",
    "lists": [
-    "積極型第 6 名"
+    "積極型第 7 名"
    ],
    "flag": "產業風險",
    "reasons": [
@@ -692,7 +694,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T13:32:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T13:32:00",
    "affected_tickers": [
     "3018"
@@ -714,7 +716,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T14:02:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T14:02:00",
    "affected_tickers": [
     "2301"
@@ -736,7 +738,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T14:04:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T14:04:00",
    "affected_tickers": [
     "2301"
@@ -758,7 +760,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T15:00:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T15:00:00",
    "affected_tickers": [
     "7730"
@@ -780,7 +782,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T15:00:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T15:00:00",
    "affected_tickers": [
     "2467"
@@ -802,7 +804,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T15:03:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T15:03:00",
    "affected_tickers": [
     "2467"
@@ -824,7 +826,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T15:04:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T15:04:00",
    "affected_tickers": [
     "2352"
@@ -846,7 +848,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T15:37:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T15:37:00",
    "affected_tickers": [
     "3018"
@@ -868,7 +870,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T15:58:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T15:58:00",
    "affected_tickers": [
     "2885"
@@ -890,7 +892,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T16:11:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T16:11:00",
    "affected_tickers": [
     "2231"
@@ -912,7 +914,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T16:18:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T16:18:00",
    "affected_tickers": [
     "4919"
@@ -934,7 +936,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T16:23:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T16:23:00",
    "affected_tickers": [
     "6116"
@@ -956,7 +958,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T17:03:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T17:03:00",
    "affected_tickers": [
     "2454"
@@ -978,7 +980,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T17:36:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T17:36:00",
    "affected_tickers": [
     "7812"
@@ -1000,7 +1002,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-10-30T18:05:00",
    "first_seen_at": "2026-10-31T10:41:45",
-   "fetched_at": "2026-10-31T10:44:02",
+   "fetched_at": "2026-11-01T20:34:38",
    "data_asof": "2026-10-30T18:05:00",
    "affected_tickers": [
     "1218"
@@ -1213,7 +1215,7 @@
    "novel": true
   }
  ],
- "event_count": 339,
+ "event_count": 382,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -1222,7 +1224,7 @@
    "price": 107.89,
    "chg_pct": -1.93
   },
-  "generated_at": "2026-10-31T10:44:02+08:00",
+  "generated_at": "2026-11-01T20:34:37+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
