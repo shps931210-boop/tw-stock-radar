@@ -422,7 +422,7 @@ def research_items(ledger: dict | None = None, path: Path | None = None, min_n: 
 
 # ---------------- 整本重算＋每日指紋 ----------------
 def build(days: list[str], px: dict, signals: dict, exr: dict | None = None, idx: dict | None = None,
-          hol: set[str] | None = None, picks: Path = PICKS) -> dict:
+          hol: set[str] | None = None, picks: Path = PICKS, iopen: dict | None = None) -> dict:
     books = {}
     for m in MODES:
         B = simulate(m, days, px, signals, exr)
@@ -439,7 +439,7 @@ def build(days: list[str], px: dict, signals: dict, exr: dict | None = None, idx
         books[m] = B
     # 基準：同一筆錢在第一次進場日開盤買 0050；加權指數用收盤價換算
     first = min((b["first_entry"] for b in books.values() if b["first_entry"]), default=None)
-    bench = _bench_curve(days, px, first, exr, idx)
+    bench = _bench_curve(days, px, first, exr, idx, iopen)
     last = days[-1] if days else None
     plan = None
     if last and last >= START_SIGNAL:
@@ -465,13 +465,15 @@ def _count(orders):
     return c
 
 
-def _bench_curve(days, px, first, exr, idx) -> dict:
+def _bench_curve(days, px, first, exr, idx, iopen: dict | None = None) -> dict:
     out = {"first": first, "curve": []}
     if not first:
         return out
     r = px.get(BENCH) or {}
     b0 = r.get(first)
-    i0 = (idx or {}).get(days[days.index(first) - 1]) if days.index(first) else None
+    # V22：有證交所開盤指數時，加權指數和 0050 用同一個起點（第一個進場日開盤）；沒有才退回前一天收盤，並照實註明
+    same = bool((iopen or {}).get(first))
+    i0 = iopen[first] if same else ((idx or {}).get(days[days.index(first) - 1]) if days.index(first) else None)
     if b0 and b0[0]:
         price = b0[0] * (1 + SLIP)
         sh = int(CASH0 / (price * (1 + FEE)))
@@ -491,7 +493,9 @@ def _bench_curve(days, px, first, exr, idx) -> dict:
     for k in ("e0050", "taiex"):
         v = [x[k] for x in out["curve"] if x.get(k)]
         out[k] = {"ret": round((v[-1] / CASH0 - 1) * 100, 3) if v else None, "mdd": mdd(v)}
-    out["note"] = "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：從前一天收盤換算，不含成本。"
+    out["taiex_start"] = "open" if same else "prev_close"
+    out["note"] = "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：" + \
+        ("從第一個進場日的開盤指數換算（和 0050 同一個起點），不含成本。" if same else "還沒有開盤指數，從前一天收盤換算（起點比 0050 早半天，不能嚴格比較），不含成本。")
     return out
 
 
@@ -634,6 +638,13 @@ def load(dbname: str = "stocks.db", since: str = "2026-09-01"):
     return days, px, exr, idx, names
 
 
+def index_open(dbname: str = "stocks.db") -> dict:
+    """證交所加權指數開盤（app/taiex_ohlc.py 的 index_ohlc）；還沒有就是空的。"""
+    from . import db
+    with db.connect(dbname) as con:
+        return dict(con.execute("SELECT date, open FROM index_ohlc WHERE open > 0").fetchall())
+
+
 def holidays() -> set[str]:
     return set((_read(HOL) or {}).get("dates", [])) | set((_read(NOTES) or {}).keys())
 
@@ -672,7 +683,8 @@ def run(dbname: str = "stocks.db", out: Path = OUT, site_dir: Path | None = None
     days, px, exr, idx, names = load(dbname)
     hol = holidays()
     sig = signals_from(days, hol, names=names)
-    L = build(days, px, sig, exr, idx, hol)
+    iopen = index_open(dbname)
+    L = build(days, px, sig, exr, idx, hol, iopen=iopen)
     # V21.2 分帳：另一本只用首次發布版名單（和正式績效同一份），兩本並列，不互相取代
     L1 = build(days, px, signals_from(days, hol, names=names, first_only=True), exr, idx, hol)
     L["first_published"] = {"rule": "只用訊號日首次發布的名單（{訊號日}.json），和正式績效、到期對帳同一份名單；主帳用進場日 09:00 前最新一版",

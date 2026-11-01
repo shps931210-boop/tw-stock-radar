@@ -119,6 +119,14 @@ jobs:
         if: env.MODE == 'premarket'
         run: python -c "from app import snapshot; snapshot.build()"
 
+      # V22 加權指數開盤價（證交所 MI_5MINS_HIST）：選股、0050、加權指數才能用同一段開盤到開盤比較；失敗不影響網站
+      - name: 加權指數開盤價
+        id: taiex
+        if: always() && env.MODE != 'premarket'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python -m app.taiex_ohlc
+
       # V20.3 AI 模擬交易（只模擬、不下單）：依封存的正式精選和固定規則整本重算，寫進 history/paper/；失敗不影響網站
       - name: AI 模擬交易
         id: paper
@@ -160,6 +168,14 @@ jobs:
         continue-on-error: true
         timeout-minutes: 5
         run: python -m app.perf_reconcile
+
+      # V22 同時段公平比較：每批到期名單用開盤到開盤、收盤到收盤兩種口徑，和 0050、加權指數同一段時間比
+      - name: 同時段公平比較
+        id: fair
+        if: always() && env.MODE != 'premarket'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python -m app.fair_compare
 
       # V31 每日自主學習：到期對帳、錯誤分析、特徵漂移；研究資料集有新到期標籤才重新訓練候選模型（通過上線檢查才換版）
       # 正式排行榜不受影響；失敗不影響網站。時間上限 30 分鐘，程式內另有運算時間預算，不夠就跳過訓練
@@ -234,7 +250,7 @@ jobs:
         run: >-
           python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
-          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}" "加權指數開盤價=${{ steps.taiex.outcome }}" "同時段公平比較=${{ steps.fair.outcome }}"
 
       - name: 備份資料庫到 GitHub Release
         id: backup

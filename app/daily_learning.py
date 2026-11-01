@@ -423,6 +423,8 @@ def run(dbname: str = "stocks.db", budget: float = BUDGET, log=print, out_dir: P
     errs5 = guard("短期錯誤觀察", lambda: errors(load_matured("5")), {"dates": 0})
     rep["label_flow"] = label_flow(rep["matured_today"], cand, D["dates"], errs5, err)
     rep["errors_5d"] = errs5
+    rep["attribution"] = guard("失準歸因", lambda: attribute(D), {"new": [], "total": 0})
+    rep["label_flow"]["B_training"]["next_label"] = next_label(D["dates"], cand.get("panel_start") or pb.START)
     rep["summary"] = summary = summarize(rep["matured_today"], rep["matured_stocks_today"], labels_new, cand)
     steps[steps.index(f"到期對帳：新增 {len(new)} 份")] = f"到期對帳：這次新增 {len(new)} 份，今天累計 {len(rep['matured_today'])} 份"
     rep["steps"] = steps
@@ -489,6 +491,52 @@ def label_flow(matured: list[dict], cand: dict, dates: list[str], errs5: dict, e
     }
 
 
+ATTR = OUT / "attribution"
+
+
+def attribute(D: dict, mat: Path | None = None, out: Path | None = None) -> dict:
+    """V22：每一份到期的正式名單都做一次逐檔失準歸因（app/miss_deep，寫一次不改）→ history/learning/attribution/。
+    這是每天可追溯的研究紀錄：哪些股票選錯、當時看得到哪些警訊。警訊是否真的有用，只看 app/perf_study 的歷史驗證。"""
+    import sqlite3
+    from . import miss_deep as md
+    mat = mat or md.MAT
+    out = out or ATTR
+    out.mkdir(parents=True, exist_ok=True)
+    dbp = config.DATA_DIR / "stocks.db"
+    con = sqlite3.connect(dbp) if dbp.exists() else None
+    new = []
+    for p in sorted(mat.glob("????-??-??_h*.json")):
+        f = out / p.name
+        if f.exists():
+            continue
+        rec = json.loads(p.read_text("utf-8"))
+        kf = md.PICKS / ((rec.get("official") or {}).get("file") or f"{rec['signal_date']}.json")
+        if not kf.exists() or rec.get("exit") not in D["dates"]:
+            continue
+        x = json.loads(kf.read_text("utf-8"))
+        res = {"schema_version": 1, "file": p.name, "created_at": config.now().isoformat(timespec="seconds"),
+               "modes": {m: md.deep_batch(D, rec, x, con, m) for m in md.MODES}}
+        with open(f, "x", encoding="utf-8") as fh:
+            json.dump(res, fh, ensure_ascii=False, indent=1, default=float)
+        new.append({"file": p.name, **{m: {"mean_net": v["mean_net"], "big_losses": len(v["big_losses"]), "flags": v["flag_counts"]}
+                                        for m, v in res["modes"].items()}})
+    return {"new": new, "total": len(list(out.glob("????-??-??_h*.json"))), "where": "history/learning/attribution/",
+            "note": "逐檔歸因只是描述；要變成規則必須先事前登記，並在 87 期歷史通過門檻（見 history/backtest/perf_v22.json）"}
+
+
+def next_label(dates: list[str], start: str, h: int = 20) -> dict | None:
+    """下一筆 20 日訓練標籤：研究訊號日（每 10 個交易日）裡最早還沒到期的那一天，還要幾個交易日。"""
+    if not dates or not any(d >= start for d in dates):
+        return None
+    for s in ml.signal_dates(dates, start) + [None]:
+        if s is None:
+            break
+        k = dates.index(s) + 1 + h - (len(dates) - 1)
+        if k > 0:
+            return {"signal_date": s, "trading_days_left": k, "note": f"研究訊號日 {s} 的 {h} 日標籤再 {k} 個交易日到期，到期後才會新增訓練標籤"}
+    return None
+
+
 def pipeline(rep: dict, fails: dict, evo: dict, train: bool) -> list[dict]:
     """每日總控流程每一步的狀態：success／failed／skipped，失敗和跳過都寫原因。"""
     S = lambda name, ok, why=None, skip=False: {"step": name, "status": "failed" if name in fails else ("skipped" if skip else ("success" if ok else "failed")),
@@ -502,6 +550,8 @@ def pipeline(rep: dict, fails: dict, evo: dict, train: bool) -> list[dict]:
         S("預測封存", bool(rep["sealed"]["today"]), None if rep["sealed"]["today"] else "今天沒有封存預測", skip=not rep["sealed"]["today"]),
         S("成熟標籤對帳", True, "今天沒有預測到期" if no_mat else f"新增 {len(rep['matured_today'])} 份"),
         S("錯誤分析", True, None if (rep.get("errors") or {}).get("dates") else "還沒有到期的 20 日預測", skip=not (rep.get("errors") or {}).get("dates")),
+        S("失準歸因", True, (f"新增 {len((rep.get('attribution') or {}).get('new') or [])} 份逐檔歸因" if (rep.get("attribution") or {}).get("new")
+                            else "沒有新的到期名單要歸因"), skip=not (rep.get("attribution") or {}).get("new")),
         S("特徵漂移分析", True, (rep.get("feature_drift") or {}).get("label")),
         E("更新研究任務", "研究任務更新"),
         S("候選模型訓練", bool(c.get("retrained")), c.get("reason") or c.get("version"), skip=not c.get("retrained") and "失敗" not in (c.get("reason") or "")),

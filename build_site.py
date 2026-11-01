@@ -110,7 +110,7 @@ pit = root / "history" / "backtest" / "ai_pit.json"
 if pit.exists():  # AI 多因子歷史回測（python -m app.pit_backtest，每週由「AI 歷史回測」執行）
     (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
     shutil.copy(pit, out / "data" / "backtest" / "ai_pit.json")
-for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json", "lgbm_study.json", "portfolio_study.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
+for extra in ("joint.json", "ml.json", "risk.json", "portfolio.json", "race.json", "audit.json", "lgbm_study.json", "portfolio_study.json", "perf_v22.json"):  # 聯合回測、V22 預測模型研究（影子模式）、風險規則逐項檢驗（app.risk_research）
     if (root / "history" / "backtest" / extra).exists():
         (out / "data" / "backtest").mkdir(parents=True, exist_ok=True)
         shutil.copy(root / "history" / "backtest" / extra, out / "data" / "backtest" / extra)
@@ -173,6 +173,9 @@ if _mat.exists():  # V20.4 到期對帳明細（app/maturity_report.py）
         (_md / "index.json").write_text(json.dumps({"blocked": True, "batches": [], "why": "獨立對帳沒有通過，暫停發布到期績效",
                                                      "files": bad, "checked_at": _rcj.get("generated_at")}, ensure_ascii=False), "utf-8")
     else:
+        _fc = config.ROOT / "history" / "audit" / "fair_compare.json"
+        if _fc.exists():   # V22 同時段公平比較（app/fair_compare.py）
+            shutil.copy(_fc, _md / "fair.json")
         for _f in _mat.glob("*.json"):
             _j = json.loads(_f.read_text("utf-8"))
             if _f.name not in ("index.json", "corrections.json"):

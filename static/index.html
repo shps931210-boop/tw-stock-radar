@@ -1332,6 +1332,29 @@ function renderRisk() {
   $("#rkM").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkM", b.dataset.k); renderRisk(); } };
   $("#rkN").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("rkN", b.dataset.k); renderRisk(); } };
 }
+// V22 績效優先候選實驗（app/perf_study.py → data/backtest/perf_v22.json）：每個候選只改一件事，三種模式各和原模型比
+let P22 = null;
+async function loadPerf22() {
+  if (!SITE) return;
+  if (P22 === null) { try { const r = await fetch("data/backtest/perf_v22.json" + (verQ("backtest/perf_v22.json") || "?t=" + Date.now())); P22 = r.ok ? await r.json() : false; } catch (e) { P22 = false; } }
+  const el = $("#perf22"); if (!el || !P22) return;
+  el.hidden = false; renderPerf22();
+}
+function renderPerf22() {
+  const el = $("#perf22"), R = P22, M = { stable: "穩健型", balanced: "均衡型", aggressive: "積極型" };
+  const md = store.get("p22M", "aggressive") in R.results ? store.get("p22M", "aggressive") : "aggressive", X = R.results[md];
+  const pc = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${pctTxt(v)}</span>`, pp = (v) => v == null ? "—" : `<span class="num">${v > 0 ? "+" : ""}${fmtNum(v, 2)}</span>`;
+  el.innerHTML = `<div class="card-h"><h2>績效優先候選實驗</h2><span class="muted small">${esc(R.first)}～${esc(R.last)}・${R.periods} 期 20 日・事前登記 ${esc(R.prereg)}</span></div>
+    <p class="small" style="margin:0 0 8px">每個候選只改一件事，和原模型（A）比。要說「改善」，開發段每期超額差 t ≥ ${R.t_need}（${R.tests} 個檢定一起校正），前後半段都要更好，保留段也要更好。要說「降低尾部風險」，重大虧損比例要顯著下降，而且超額報酬不能少超過 0.2 個百分點。</p>
+    <div class="seg" id="p22M" style="margin-bottom:8px">${Object.entries(M).map(([k, v]) => `<button data-k="${k}" class="${k === md ? "on" : ""}">${v}</button>`).join("")}</div>
+    <div class="tbl"><table class="wrap"><thead><tr><th>候選</th><th class="r">每期平均超額</th><th class="r">單檔重大虧損</th><th class="r">開發段差（t）</th><th class="r">保留段差</th><th class="r">重大虧損差（t）</th><th>結果</th></tr></thead><tbody>
+      ${Object.entries(X).map(([k, v]) => { const c = v.vs_A; return `<tr><td><b>${esc(k)}</b> ${esc(v.rule)}</td><td class="r">${pc(v.avg_excess)}</td><td class="r num">${v.stock_big_loss ?? "—"}%</td>
+        <td class="r">${c ? `${pp(c.dev_diff)}（${c.dev_t ?? "—"}）` : "對照組"}</td><td class="r">${c ? pp(c.holdout_diff) : ""}</td><td class="r">${c ? `${pp(c.big_diff_dev)}（${c.big_t_dev ?? "—"}）` : ""}</td>
+        <td class="small">${c ? (c.return_pass ? '<span class="pill acc">報酬通過</span>' : c.risk_pass ? '<span class="pill acc">風控通過</span>' : '<span class="pill warn">未通過</span>') : ""}</td></tr>`; }).join("")}</tbody></table></div>
+    <p class="small" style="margin:8px 0 0">${R.passed.length ? `通過：${esc(R.passed.join("、"))}（仍要累積前瞻紀錄並經你同意才會上線）。` : "<b>27 個檢定沒有一個通過。</b>正式選股規則不變。"}${Object.values(R.not_run || {}).map((x) => "<br>" + esc(x)).join("")}</p>
+    <p class="faint small" style="margin:4px 0 0">${esc(R.note)}</p>`;
+  $("#p22M").onclick = (e) => { const b = e.target.closest("button"); if (b) { store.set("p22M", b.dataset.k); renderPerf22(); } };
+}
 // V28 選股準確度：20 日模型比賽（race.json）與資料稽核（audit.json），每週六重算
 let RACE = null, LAUD = null;
 async function loadRace() {
@@ -1924,7 +1947,7 @@ function pagePerformance() {
   loadMature();
 }
 // V20.4 到期對帳明細：每一批封存的預測到期後逐檔列出（data/predictions/maturity/）
-let MATI = null;
+let MATI = null, MATF = null;
 async function loadMature() {
   if (!SITE) return;
   const q = (p) => `data/predictions/maturity/${p}${verQ("predictions/maturity/" + p) || "?t=" + Date.now()}`;
@@ -1941,12 +1964,17 @@ async function loadMature() {
   const det = (x, title) => `<details class="small" style="margin-top:4px"><summary>${esc(title)}逐檔明細</summary><div class="tbl"><table><thead><tr><th class="r">名次</th><th>股票</th><th class="r">報酬</th><th class="r">扣成本</th><th class="r">相對 0050</th><th>狀態</th></tr></thead><tbody>
     ${x.stocks.map((s) => `<tr><td class="r num">${s.rank ?? ""}</td><td>${esc(s.name || "")} <span class="faint num">${esc(s.id)}</span></td><td class="r">${pc(s.ret)}</td><td class="r">${pc(s.net)}</td><td class="r">${pc(s.excess)}</td><td class="small">${esc(s.status_text)}</td></tr>`).join("")}</tbody></table></div></details>`;
   const O = R.official, S = R.shadow;
+  if (MATF === null) MATF = await fetch(q("fair.json")).then((r) => (r.ok ? r.json() : false)).catch(() => false);
+  const F = MATF && MATF.batches?.find((b) => b.file === cur.file);
+  const fair = F ? `<h3 style="margin:10px 0 6px">同時段公平比較</h3><div class="tbl"><table class="wrap"><thead><tr><th>名單・口徑</th><th class="r">扣成本報酬</th><th class="r">0050</th><th class="r">加權指數</th><th class="r">相對 0050</th><th class="r">相對加權</th><th class="r">上漲／贏 0050</th><th class="r">回撤・重大虧損</th></tr></thead><tbody>
+    ${Object.values(F.modes).map((m) => [["open", "開盤到開盤"], ["close", "收盤到收盤"]].map(([k, l]) => { const x = m[k]; return `<tr><td>${esc(m.name)}・${l}</td><td class="r">${pc(x.net)}</td><td class="r">${pc(x.e0050)}</td><td class="r">${x.taiex == null ? '<span class="faint small">沒有開盤價</span>' : pc(x.taiex)}</td><td class="r">${pc(x.ex_0050)}</td><td class="r">${pc(x.ex_taiex)}</td><td class="r num">${pp(x.up_hit)}／${pp(x.beat_0050_hit)}</td><td class="r num small">${x.mdd == null ? "—" : pctTxt(x.mdd)}・${pp(x.big_loss_pct)}</td></tr>`; }).join("")).join("")}</tbody></table></div>
+    <p class="faint small" style="margin:4px 0 0">開盤到開盤：${esc(F.open_window[0])} 開盤 → ${esc(F.open_window[1])} 開盤（正式口徑）。收盤到收盤：${esc(F.close_window[0])} 收盤 → ${esc(F.close_window[1])} 收盤（參考，名單收盤後才產生，實際買不到）。同一列的選股、0050、加權指數都是同一段時間；兩種口徑不能互相混用。</p>` : "";
   el.hidden = false;
   el.innerHTML = `<div class="card-h"><h2>到期對帳明細</h2><span class="muted small">每一批到期後只寫一次</span></div>
     <select id="matSel" style="margin-bottom:8px">${B.map((b) => `<option value="${esc(b.file)}"${b.file === cur.file ? " selected" : ""}>${esc(b.signal_date)} 的名單・${b.horizon} 日（${esc(b.exit)} 出場）</option>`).join("")}</select>
     <p class="small" style="margin:0 0 8px">${esc(R.entry)} 開盤買、${esc(R.exit)} 開盤賣。同期 0050 ${pc(R.bench_0050)}（開盤到開盤）。${(() => { const tw = R.taiex_window || cur.taiex_window, c = R.bench_0050_close ?? cur.bench_0050_close; return tw ? `加權指數 ${pc(R.taiex)}、0050 ${pc(c)}（都是 ${esc(tw[0])} 收盤到 ${esc(tw[1])} 收盤，可以互相比較）${cur.corrected ? '<br><span class="faint">更正：這批原本把不同期間的加權指數和 0050 並列，已補上同一段收盤口徑，原始檔保留。</span>' : ""}` : `加權指數 ${pc(R.taiex)}（收盤口徑，期間和 0050 不同）`; })()}</p>
     ${O ? `<h3 style="margin:10px 0 6px">AI 精選（${esc(O.list_kind)}）</h3><p class="faint small" style="margin:0 0 4px">${esc(O.file)}・${esc(twTime(O.generated_at))} 產生${O.eligible === false ? `（不合格，不計入：${esc(O.excluded_why || "")}）` : O.on_time ? "（開盤前）" : ""}・模型 ${esc(O.model_version || "—")}（${esc((O.model_hash || "").slice(0, 10))}）</p>
-      ${tbl(Object.entries(O.modes), (k, x) => x.name + "前 10 名")}${Object.values(O.modes).map((x) => det(x, x.name)).join("")}` : ""}
+      ${tbl(Object.entries(O.modes), (k, x) => x.name + "前 10 名")}${Object.values(O.modes).map((x) => det(x, x.name)).join("")}${fair}` : ""}
     ${S && Object.keys(S.models).length ? `<h3 style="margin:14px 0 6px">影子預測（研究用，不影響正式排行榜）</h3><p class="faint small" style="margin:0 0 4px">${esc(S.file)}・${esc(twTime(S.generated_at))} 封存${S.eligible === false ? `（不合格，不計入：${esc(S.excluded_why || "")}）` : S.on_time ? "（開盤前）" : ""}・模型 ${esc(S.model_hash || "—")}・全部 ${fmtNum(S.n, 0)} 檔的 Rank IC：${Object.values(S.models).map((m) => `${esc(m.name.split("（")[0])} ${m.ic == null ? "—" : m.ic.toFixed(3)}`).join("、")}</p>
       ${tbl(Object.entries(S.models), (k, x) => x.name + "前 10 名")}${Object.values(S.models).map((x) => det(x, x.name.split("（")[0])).join("")}` : '<p class="faint small">這一天還沒有影子預測（10/16 起才開始封存）。</p>'}
     <p class="faint small" style="margin:8px 0 0">${esc(R.rule)}<br>${esc(MATI.note)}</p>`;
@@ -1991,7 +2019,7 @@ function renderPaper() {
       <div class="kpi"><span>現金</span><b>${$n(K.cash)}</b><small class="faint">持股 ${K.n_open} 檔</small></div>
       <div class="kpi"><span>已出場</span><b>${K.n_closed} 筆</b><small class="faint">已實現 ${$n(K.realized)} 元</small></div>
       <div class="kpi"><span>同期 0050</span><b>${pc(BN.e0050?.ret)}</b><small class="faint">最大回撤 ${BN.e0050?.mdd == null ? "—" : pctTxt(BN.e0050.mdd)}</small></div>
-      <div class="kpi"><span>同期加權指數</span><b>${pc(BN.taiex?.ret)}</b><small class="faint">已付手續費 ${$n(K.fees)}・證交稅 ${$n(K.taxes)}</small></div>
+      <div class="kpi"><span>同期加權指數</span><b>${pc(BN.taiex?.ret)}</b><small class="faint">${BN.taiex_start === "open" ? "同一個開盤起點" : "前一天收盤起點，只能參考"}・手續費 ${$n(K.fees)}・證交稅 ${$n(K.taxes)}</small></div>
     </div>
     ${plan ? `<h3 style="margin:14px 0 6px">下一個交易日（${esc(plan.entry_date)}）開盤預計</h3>
       <p class="small" style="margin:0">買進：${(plan.buys[m] || []).map((x) => `${st(x)}（第 ${x.rank} 名）`).join("、") || "沒有空位"}${(plan.sells[m] || []).length ? `<br>賣出：${plan.sells[m].map((x) => `${esc(x.sid)}（${esc(x.reason)}）`).join("、")}` : ""}</p>
@@ -2169,6 +2197,7 @@ function pageResearch() {
       <p class="lead">模型比賽、資料稽核、每日學習紀錄和各種歷史回測。日常選股不需要看這一頁；<a href="#/performance">績效中心</a>有 AI 名單的真實成績。</p></section>
     <section class="card" id="evo" hidden></section>
     <section class="card" id="grow" hidden></section>
+    <section class="card" id="perf22" hidden></section>
     <section class="card" id="race" hidden></section>
     <section class="card" id="lgst" hidden></section>
     <section class="card" id="pst" hidden></section>
@@ -2206,7 +2235,7 @@ function pageResearch() {
     ${attrCard(tr)}
     <p class="faint small">公開資料：<a href="data/performance/summary.json">performance/summary.json</a>・<a href="data/performance/cohorts.json">performance/cohorts.json</a>（網站版才有）</p>`;
   loadPit();
-  loadJoint(); loadML(); loadRisk(); loadPort(); loadRace(); loadLgst(); loadPst(); loadEvo(); loadGrowth(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
+  loadJoint(); loadML(); loadRisk(); loadPort(); loadPerf22(); loadRace(); loadLgst(); loadPst(); loadEvo(); loadGrowth(); loadDL(); loadExpl(); loadLearn(); loadPredSc();
   loadFac();
 }
 

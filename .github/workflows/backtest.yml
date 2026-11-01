@@ -118,6 +118,8 @@ jobs:
           python -m app.msurge_study
           python -m app.entry_study
           python -m app.miss_review
+          python -m app.miss_deep
+          python -m app.perf_study
       # 學術證據庫 DOI 核對（Crossref 免費 API）
       - name: 文獻 DOI 核對
         id: doi
