@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-02T05:18:30",
+ "generated_at": "2026-11-02T06:09:16",
  "source": "正式資料庫 data/stocks.db（證交所、櫃買中心、FinMind）；不含示範資料",
  "as_of": {
   "prices": "2026-10-30",
@@ -473,6 +473,13 @@
    "stocks": 1,
    "examples": [
     "4526"
+   ]
+  },
+  {
+   "why": "新一季財報已公告，資料來源尚未同步",
+   "stocks": 1,
+   "examples": [
+    "4967"
    ]
   }
  ],

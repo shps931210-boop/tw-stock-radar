@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-02T05:18:28",
+ "generated_at": "2026-11-02T06:09:14",
  "quarter": "2026-Q3",
- "announced": 84,
+ "announced": 85,
  "synced": 84,
- "waiting": 0,
+ "waiting": 1,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
@@ -14,7 +14,21 @@
   "median": 1.0,
   "max": 7.4
  },
- "waiting_list": [],
+ "waiting_list": [
+  {
+   "stock_id": "4967",
+   "name": "十銓",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-02T06:07:28",
+   "attempts": 0,
+   "eps": 90.95,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  }
+ ],
  "rescored": [
   {
    "stock_id": "2035",
@@ -1445,11 +1459,11 @@
   }
  ],
  "detect": {
-  "at": "2026-11-02T05:07:20",
+  "at": "2026-11-02T06:07:28",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 84,
-  "new": 0,
+  "stocks": 85,
+  "new": 1,
   "corrected": 0,
   "mismatch": 0
  },
@@ -1458,9 +1472,9 @@
    "market": "twse",
    "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
    "ok": true,
-   "stocks": 46,
+   "stocks": 47,
    "error": null,
-   "rows": 46,
+   "rows": 47,
    "empty": null
   },
   {
