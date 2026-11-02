@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-03T05:28:25",
+ "generated_at": "2026-11-03T06:17:43",
  "quarter": "2026-Q3",
- "announced": 85,
- "synced": 85,
- "waiting": 0,
+ "announced": 91,
+ "synced": 86,
+ "waiting": 5,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
@@ -14,7 +14,73 @@
   "median": 1.0,
   "max": 16.0
  },
- "waiting_list": [],
+ "waiting_list": [
+  {
+   "stock_id": "2498",
+   "name": "宏達電",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-03T06:15:56",
+   "attempts": 0,
+   "eps": -0.36,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3704",
+   "name": "合勤控",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-03T06:15:56",
+   "attempts": 0,
+   "eps": 2.71,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6112",
+   "name": "邁達特",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-03T06:15:56",
+   "attempts": 0,
+   "eps": 1.78,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6278",
+   "name": "台表科",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-03T06:15:56",
+   "attempts": 0,
+   "eps": 8.31,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6908",
+   "name": "宏碁遊戲-創",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-03T06:15:56",
+   "attempts": 0,
+   "eps": -0.35,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  }
+ ],
  "rescored": [
   {
    "stock_id": "4967",
@@ -1482,11 +1548,11 @@
   }
  ],
  "detect": {
-  "at": "2026-11-03T05:17:01",
+  "at": "2026-11-03T06:15:56",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 85,
-  "new": 0,
+  "stocks": 91,
+  "new": 6,
   "corrected": 0,
   "mismatch": 0
  },
@@ -1495,9 +1561,9 @@
    "market": "twse",
    "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
    "ok": true,
-   "stocks": 47,
+   "stocks": 53,
    "error": null,
-   "rows": 47,
+   "rows": 53,
    "empty": null
   },
   {
