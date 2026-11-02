@@ -2041,35 +2041,56 @@
     "加權指數開盤價": "success",
     "同時段公平比較": "success"
    }
+  },
+  {
+   "at": "2026-11-02T17:34:11",
+   "run_id": "41420941980",
+   "mode": "fast",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "success",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "success",
+    "整合測試": "skipped",
+    "AI 模擬交易": "success",
+    "到期對帳明細": "success",
+    "學術候選影子紀錄": "success",
+    "正式績效對帳": "success",
+    "加權指數開盤價": "success",
+    "同時段公平比較": "success"
+   }
   }
  ],
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 92,
+   "runs": 93,
    "fails": 0
   },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 52,
+   "runs": 53,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 52,
+   "runs": 53,
    "fails": 0
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 90,
+   "runs": 91,
    "fails": 0
   },
   "連線診斷": {
@@ -2102,44 +2123,44 @@
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 75,
+   "runs": 76,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 67,
+   "runs": 68,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 64,
+   "runs": 65,
    "fails": 0
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 51,
+   "runs": 52,
    "fails": 0
   },
   "加權指數開盤價": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 13,
+   "runs": 14,
    "fails": 0
   },
   "同時段公平比較": {
    "streak": 0,
-   "last_ok": "2026-11-02T16:03:40",
+   "last_ok": "2026-11-02T17:34:11",
    "last": "success",
-   "runs": 13,
+   "runs": 14,
    "fails": 0
   }
  }
