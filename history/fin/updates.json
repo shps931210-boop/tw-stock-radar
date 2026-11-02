@@ -1,87 +1,146 @@
 {
- "generated_at": "2026-11-03T06:58:30",
+ "generated_at": "2026-11-03T07:22:28",
  "quarter": "2026-Q3",
  "announced": 91,
- "synced": 86,
- "waiting": 5,
+ "synced": 91,
+ "waiting": 0,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 89,
+ "db_has_quarter": 94,
  "latency_hours": {
-  "n": 31,
+  "n": 36,
   "median": 1.0,
   "max": 16.0
  },
- "waiting_list": [
+ "waiting_list": [],
+ "rescored": [
   {
-   "stock_id": "2498",
-   "name": "宏達電",
+   "stock_id": "6908",
+   "name": "宏碁遊戲-創",
    "period": "2026-Q3",
+   "synced_at": "2026-11-03T07:13:43",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 1.0,
    "first_seen": "2026-11-03T06:15:56",
-   "attempts": 0,
-   "eps": -0.36,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
+   "fetched_at": "2026-11-03T07:13:43",
+   "rescored_at": "2026-11-03T07:22:28",
    "corrected_at": null,
-   "note": null
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數"
+   }
   },
   {
    "stock_id": "3704",
    "name": "合勤控",
    "period": "2026-Q3",
+   "synced_at": "2026-11-03T07:13:40",
+   "before": 45.1,
+   "after": 37.7,
+   "latency_h": 1.0,
    "first_seen": "2026-11-03T06:15:56",
-   "attempts": 0,
-   "eps": 2.71,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
+   "fetched_at": "2026-11-03T07:13:40",
+   "rescored_at": "2026-11-03T07:22:28",
    "corrected_at": null,
-   "note": null
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 37.7,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
   },
   {
    "stock_id": "6112",
    "name": "邁達特",
    "period": "2026-Q3",
+   "synced_at": "2026-11-03T07:13:37",
+   "before": 44.9,
+   "after": 33.1,
+   "latency_h": 1.0,
    "first_seen": "2026-11-03T06:15:56",
-   "attempts": 0,
-   "eps": 1.78,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
+   "fetched_at": "2026-11-03T07:13:37",
+   "rescored_at": "2026-11-03T07:22:28",
    "corrected_at": null,
-   "note": null
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 33.1,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "2498",
+   "name": "宏達電",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-03T07:13:35",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 1.0,
+   "first_seen": "2026-11-03T06:15:56",
+   "fetched_at": "2026-11-03T07:13:35",
+   "rescored_at": "2026-11-03T07:22:28",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫，但沒有取得分數（需要檢查）"
+   }
   },
   {
    "stock_id": "6278",
    "name": "台表科",
    "period": "2026-Q3",
+   "synced_at": "2026-11-03T07:13:32",
+   "before": 52.7,
+   "after": 53.9,
+   "latency_h": 1.0,
    "first_seen": "2026-11-03T06:15:56",
-   "attempts": 0,
-   "eps": 8.31,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
+   "fetched_at": "2026-11-03T07:13:32",
+   "rescored_at": "2026-11-03T07:22:28",
    "corrected_at": null,
-   "note": null
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 53.9,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
   },
-  {
-   "stock_id": "6908",
-   "name": "宏碁遊戲-創",
-   "period": "2026-Q3",
-   "first_seen": "2026-11-03T06:15:56",
-   "attempts": 0,
-   "eps": -0.35,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
-   "corrected_at": null,
-   "note": null
-  }
- ],
- "rescored": [
   {
    "stock_id": "4967",
    "name": "十銓",
@@ -451,10 +510,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 46.9,
+    "ref_composite": 47.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.0"
    }
   },
   {
@@ -476,10 +535,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 47.1,
+    "ref_composite": 47.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.2"
    }
   },
   {
@@ -501,10 +560,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 84.1,
+    "ref_composite": 84.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 84.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 84.2"
    }
   },
   {
@@ -984,6 +1043,17 @@
   }
  ],
  "revisions": [
+  {
+   "stock_id": "2498",
+   "period": "2025-Q3",
+   "detected_at": "2026-11-03T07:13:35",
+   "fields": {
+    "total_liabilities": [
+     11545141000.0,
+     11430354000.0
+    ]
+   }
+  },
   {
    "stock_id": "4967",
    "period": "2026-Q3",
@@ -1534,25 +1604,14 @@
      1402534000.0
     ]
    }
-  },
-  {
-   "stock_id": "2354",
-   "period": "2018-Q3",
-   "detected_at": "2026-10-27T01:24:17",
-   "fields": {
-    "ocf": [
-     -1492800000.0,
-     -1479774000.0
-    ]
-   }
   }
  ],
  "detect": {
-  "at": "2026-11-03T06:15:56",
+  "at": "2026-11-03T07:13:29",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 91,
-  "new": 6,
+  "new": 0,
   "corrected": 0,
   "mismatch": 0
  },
