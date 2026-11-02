@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-03T01:30:32",
+ "generated_at": "2026-11-03T02:34:07",
  "quarter": "2026-Q3",
  "announced": 85,
  "synced": 85,
@@ -8,7 +8,7 @@
  "corrected": 0,
  "mismatch": 0,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 88,
+ "db_has_quarter": 89,
  "latency_hours": {
   "n": 31,
   "median": 1.0,
@@ -435,10 +435,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 84.2,
+    "ref_composite": 84.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 84.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 84.1"
    }
   },
   {
@@ -1482,7 +1482,7 @@
   }
  ],
  "detect": {
-  "at": "2026-11-03T01:29:28",
+  "at": "2026-11-03T02:23:57",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 85,
