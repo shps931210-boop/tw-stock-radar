@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-30T23:12:35",
- "files": 3,
- "used": 3,
+ "generated_at": "2026-11-02T22:21:40",
+ "files": 4,
+ "used": 4,
  "skipped": 0,
  "by_risk_level": {
   "偏低": {
@@ -13,23 +13,28 @@
    "n": 2,
    "gap_0050": -1.14,
    "open_to_close_0050": -0.57
+  },
+  "高": {
+   "n": 1,
+   "gap_0050": -1.48,
+   "open_to_close_0050": 0.68
   }
  },
  "groups": {
   "A": {
    "label": "A：盤後名單全部",
-   "n": 146,
-   "gap": 0.01,
-   "open_to_close": -0.4,
+   "n": 194,
+   "gap": -0.46,
+   "open_to_close": 0.02,
    "excess_5d_from_open": null,
    "excess_20d_from_open": null,
    "n_20d": 0
   },
   "C": {
    "label": "C：排除盤前「風險上升」",
-   "n": 146,
-   "gap": 0.01,
-   "open_to_close": -0.4,
+   "n": 194,
+   "gap": -0.46,
+   "open_to_close": 0.02,
    "excess_5d_from_open": null,
    "excess_20d_from_open": null,
    "n_20d": 0
