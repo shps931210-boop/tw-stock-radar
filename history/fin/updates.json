@@ -1,35 +1,46 @@
 {
- "generated_at": "2026-11-03T17:18:29",
+ "generated_at": "2026-11-03T22:19:42",
  "quarter": "2026-Q3",
  "announced": 95,
- "synced": 94,
- "waiting": 1,
+ "synced": 95,
+ "waiting": 0,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 94,
+ "db_has_quarter": 95,
  "latency_hours": {
-  "n": 36,
+  "n": 37,
   "median": 1.0,
   "max": 16.0
  },
- "waiting_list": [
+ "waiting_list": [],
+ "rescored": [
   {
    "stock_id": "4116",
    "name": "明基醫",
    "period": "2026-Q3",
+   "synced_at": "2026-11-03T22:11:53",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 6.9,
    "first_seen": "2026-11-03T15:15:12",
-   "attempts": 0,
-   "eps": 16.65,
-   "status": "pending",
-   "slow": false,
-   "last_try": null,
+   "fetched_at": "2026-11-03T22:11:53",
+   "rescored_at": "2026-11-03T22:19:42",
    "corrected_at": null,
-   "note": null
-  }
- ],
- "rescored": [
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": 58.7,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.7"
+   }
+  },
   {
    "stock_id": "6908",
    "name": "宏碁遊戲-創",
@@ -324,10 +335,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 58.8,
+    "ref_composite": 58.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.6"
    }
   },
   {
@@ -524,10 +535,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 44.8,
+    "ref_composite": 44.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.7"
    }
   },
   {
@@ -549,10 +560,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 46.8,
+    "ref_composite": 46.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.7"
    }
   },
   {
@@ -574,10 +585,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 84.0,
+    "ref_composite": 83.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 84.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 83.9"
    }
   },
   {
@@ -1621,7 +1632,7 @@
   }
  ],
  "detect": {
-  "at": "2026-11-03T17:14:12",
+  "at": "2026-11-03T22:11:50",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 95,

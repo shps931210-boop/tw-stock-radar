@@ -1,21 +1,6 @@
 {
  "runs": [
   {
-   "at": "2026-10-27T06:56:21",
-   "run_id": "40415465524",
-   "mode": "premarket",
-   "steps": {
-    "連線診斷": "skipped",
-    "影子預測封存": "skipped",
-    "新聞與公告": "success",
-    "國際市場": "success",
-    "盤前情報": "success",
-    "盤前情報對帳": "skipped",
-    "預測封存日曆": "skipped",
-    "整合測試": "skipped"
-   }
-  },
-  {
    "at": "2026-10-27T07:13:07",
    "run_id": "40416921148",
    "mode": "backfill",
@@ -2258,19 +2243,54 @@
     "加權指數開盤價": "success",
     "同時段公平比較": "success"
    }
+  },
+  {
+   "at": "2026-11-03T22:25:06",
+   "run_id": "41649349191",
+   "mode": "full",
+   "steps": {
+    "連線診斷": "success",
+    "影子預測封存": "success",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "skipped",
+    "盤前情報對帳": "success",
+    "預測封存日曆": "success",
+    "整合測試": "failure",
+    "AI 模擬交易": "success",
+    "到期對帳明細": "success",
+    "學術候選影子紀錄": "success",
+    "正式績效對帳": "success",
+    "加權指數開盤價": "success",
+    "同時段公平比較": "success"
+   }
   }
  ],
  "status": {
+  "影子預測封存": {
+   "streak": 0,
+   "last_ok": "2026-11-03T22:25:06",
+   "last": "success",
+   "runs": 96,
+   "fails": 0
+  },
+  "預測封存日曆": {
+   "streak": 0,
+   "last_ok": "2026-11-03T22:25:06",
+   "last": "success",
+   "runs": 96,
+   "fails": 0
+  },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
    "runs": 57,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
    "runs": 57,
    "fails": 0
@@ -2279,84 +2299,70 @@
    "streak": 0,
    "last_ok": "2026-11-03T12:21:35",
    "last": "success",
-   "runs": 25,
-   "fails": 0
-  },
-  "影子預測封存": {
-   "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
-   "last": "success",
-   "runs": 95,
-   "fails": 0
-  },
-  "預測封存日曆": {
-   "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
-   "last": "success",
-   "runs": 95,
+   "runs": 24,
    "fails": 0
   },
   "連線診斷": {
    "streak": 0,
-   "last_ok": "2026-11-02T22:21:47",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 8,
+   "runs": 9,
    "fails": 0
   },
   "盤前情報對帳": {
    "streak": 0,
-   "last_ok": "2026-11-02T22:21:47",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 8,
+   "runs": 9,
    "fails": 0
   },
   "整合測試": {
-   "streak": 1,
+   "streak": 2,
    "last_ok": "2026-10-30T23:12:41",
    "last": "failure",
-   "runs": 8,
-   "fails": 1
+   "runs": 9,
+   "fails": 2
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 89,
+   "runs": 90,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 81,
+   "runs": 82,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 78,
+   "runs": 79,
    "fails": 0
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 65,
+   "runs": 66,
    "fails": 0
   },
   "加權指數開盤價": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 27,
+   "runs": 28,
    "fails": 0
   },
   "同時段公平比較": {
    "streak": 0,
-   "last_ok": "2026-11-03T17:20:33",
+   "last_ok": "2026-11-03T22:25:06",
    "last": "success",
-   "runs": 27,
+   "runs": 28,
    "fails": 0
   }
  }
