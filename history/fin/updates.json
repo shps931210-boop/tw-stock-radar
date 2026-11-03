@@ -1,21 +1,571 @@
 {
- "generated_at": "2026-11-04T05:24:00",
+ "generated_at": "2026-11-04T06:25:29",
  "quarter": "2026-Q3",
- "announced": 95,
- "synced": 95,
+ "announced": 117,
+ "synced": 117,
  "waiting": 0,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 95,
+ "db_has_quarter": 117,
  "latency_hours": {
-  "n": 37,
+  "n": 59,
   "median": 1.0,
   "max": 16.0
  },
  "waiting_list": [],
  "rescored": [
+  {
+   "stock_id": "3168",
+   "name": "眾福科",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:52",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:52",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": 46.3,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.3"
+   }
+  },
+  {
+   "stock_id": "6201",
+   "name": "亞弘電",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:50",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:50",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": 48.9,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 48.9"
+   }
+  },
+  {
+   "stock_id": "6776",
+   "name": "展碁國際",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:47",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:47",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": 36.0,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.0"
+   }
+  },
+  {
+   "stock_id": "9930",
+   "name": "中聯資源",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:45",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:45",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": 41.5,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 41.5"
+   }
+  },
+  {
+   "stock_id": "8374",
+   "name": "羅昇",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:42",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:42",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫，但還缺 估值合理性，五個因子沒有全部算出，不產生綜合分數"
+   }
+  },
+  {
+   "stock_id": "9907",
+   "name": "統一實",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:39",
+   "before": 36.1,
+   "after": 35.2,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:39",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 35.2,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "6585",
+   "name": "鼎基",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:37",
+   "before": 60.1,
+   "after": 60.1,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:37",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 60.1,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "8163",
+   "name": "達方",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:34",
+   "before": 23.3,
+   "after": 25.4,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:34",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 25.4,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "1582",
+   "name": "信錦",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:31",
+   "before": 30.2,
+   "after": 25.5,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:31",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 25.5,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "2014",
+   "name": "中鴻",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:29",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:29",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（長期虧損），依規則不產生正式綜合分數"
+   }
+  },
+  {
+   "stock_id": "8114",
+   "name": "振樺電",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:26",
+   "before": 39.8,
+   "after": 42.5,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:26",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 42.5,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "1723",
+   "name": "中碳",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:23",
+   "before": 50.0,
+   "after": 51.7,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:23",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 51.7,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "6962",
+   "name": "奕力-KY",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:21",
+   "before": 31.8,
+   "after": 40.7,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:21",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 40.7,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "3416",
+   "name": "融程電",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:18",
+   "before": 60.0,
+   "after": 59.0,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:18",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 59.0,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "7710",
+   "name": "東擎科技",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:16",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:16",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（交易日數不足），依規則不產生正式綜合分數"
+   }
+  },
+  {
+   "stock_id": "3592",
+   "name": "瑞鼎",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:13",
+   "before": 47.0,
+   "after": 46.6,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:13",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 46.6,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "7711",
+   "name": "永擎",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:11",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:11",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫，但還缺 成長能力、股價動能，五個因子沒有全部算出，不產生綜合分數"
+   }
+  },
+  {
+   "stock_id": "6197",
+   "name": "佳必琪",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:08",
+   "before": 63.2,
+   "after": 63.0,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:08",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 63.0,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "4919",
+   "name": "新唐",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:06",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:06",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（長期虧損），依規則不產生正式綜合分數"
+   }
+  },
+  {
+   "stock_id": "2344",
+   "name": "華邦電",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:03",
+   "before": NaN,
+   "after": 86.0,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:03",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 86.0,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "3189",
+   "name": "景碩",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:19:00",
+   "before": 59.6,
+   "after": 63.8,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:19:00",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 63.8,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "3034",
+   "name": "聯詠",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-04T06:18:58",
+   "before": 62.6,
+   "after": 65.1,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-04T06:18:55",
+   "fetched_at": "2026-11-04T06:18:58",
+   "rescored_at": "2026-11-04T06:25:29",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 65.1,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
   {
    "stock_id": "4116",
    "name": "明基醫",
@@ -260,10 +810,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 52.1,
+    "ref_composite": 52.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.0"
    }
   },
   {
@@ -335,10 +885,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 58.7,
+    "ref_composite": 58.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.6"
    }
   },
   {
@@ -535,10 +1085,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 44.7,
+    "ref_composite": 44.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.6"
    }
   },
   {
@@ -1069,6 +1619,47 @@
  ],
  "revisions": [
   {
+   "stock_id": "6776",
+   "period": "2025-Q3",
+   "detected_at": "2026-11-04T06:19:47",
+   "fields": {
+    "total_assets": [
+     10527065000.0,
+     11987521000.0
+    ],
+    "total_liabilities": [
+     8132804000.0,
+     9268875000.0
+    ],
+    "ocf": [
+     -551917000.0,
+     -424272000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6776",
+   "period": "2025-Q4",
+   "detected_at": "2026-11-04T06:19:47",
+   "fields": {
+    "ocf": [
+     -583487000.0,
+     -711132000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3416",
+   "period": "2025-Q3",
+   "detected_at": "2026-11-04T06:19:18",
+   "fields": {
+    "total_liabilities": [
+     1310223000.0,
+     1335865000.0
+    ]
+   }
+  },
+  {
    "stock_id": "2498",
    "period": "2025-Q3",
    "detected_at": "2026-11-03T07:13:35",
@@ -1596,47 +2187,14 @@
      2373356000.0
     ]
    }
-  },
-  {
-   "stock_id": "2367",
-   "period": "2017-Q3",
-   "detected_at": "2026-10-27T01:24:21",
-   "fields": {
-    "ocf": [
-     -7417000.0,
-     23668000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2367",
-   "period": "2018-Q2",
-   "detected_at": "2026-10-27T01:24:21",
-   "fields": {
-    "ocf": [
-     168740000.0,
-     176380000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2367",
-   "period": "2018-Q4",
-   "detected_at": "2026-10-27T01:24:21",
-   "fields": {
-    "ocf": [
-     1410174000.0,
-     1402534000.0
-    ]
-   }
   }
  ],
  "detect": {
-  "at": "2026-11-04T05:18:58",
+  "at": "2026-11-04T06:18:55",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 95,
-  "new": 0,
+  "stocks": 117,
+  "new": 22,
   "corrected": 0,
   "mismatch": 0
  },
@@ -1645,9 +2203,9 @@
    "market": "twse",
    "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
    "ok": true,
-   "stocks": 53,
+   "stocks": 75,
    "error": null,
-   "rows": 53,
+   "rows": 75,
    "empty": null
   },
   {
