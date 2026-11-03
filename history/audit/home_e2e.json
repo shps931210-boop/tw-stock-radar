@@ -1,8 +1,8 @@
 {
- "at": "2026-11-03T00:08:52.036Z",
+ "at": "2026-11-03T01:27:17.162Z",
  "site": "https://shps931210-boop.github.io/tw-stock-radar/",
  "as_of": "2026-11-02",
- "passed": 48,
+ "passed": 43,
  "total": 48,
  "results": [
   {
@@ -30,8 +30,8 @@
    "device": "電腦",
    "id": 4,
    "name": "個股走勢圖",
-   "ok": true,
-   "note": "CANVAS 914×352；走勢圖在研究摘要之前、研究摘要預設收合"
+   "ok": false,
+   "note": "錯誤：page.$eval: Failed to find element matching selector \"#pc\""
   },
   {
    "device": "電腦",
@@ -58,15 +58,15 @@
    "device": "電腦",
    "id": 8,
    "name": "股票搜尋",
-   "ok": true,
-   "note": "搜尋 2330 進入個股頁"
+   "ok": false,
+   "note": "錯誤：page.waitForSelector: Timeout 30000ms exceeded."
   },
   {
    "device": "電腦",
    "id": 9,
    "name": "個股分析",
-   "ok": true,
-   "note": "AI 評分 70"
+   "ok": false,
+   "note": "錯誤：page.$eval: Failed to find element matching selector \".qj-sc b\""
   },
   {
    "device": "電腦",
@@ -149,15 +149,15 @@
    "device": "電腦",
    "id": 21,
    "name": "走勢頁：期間切換與交易訊號",
-   "ok": true,
-   "note": "CANVAS 914×352；三期間狀態：盤整，沒有訊號／盤整，沒有訊號／符合進場條件；切到短線後條件檢查=短線條件檢查；研究細節在後"
+   "ok": false,
+   "note": "錯誤：page.click: Timeout 30000ms exceeded."
   },
   {
    "device": "電腦",
    "id": 22,
    "name": "走勢頁：三種期間各自的圖表、條件與依據",
-   "ok": true,
-   "note": "短線：通過（圖 914×352、條件 5 項、圖上訊號 0 個）；波段：通過（圖 914×352、條件 5 項、圖上訊號 11 個）；長期：通過（圖 914×352、條件 1 項、圖上訊號 0 個、有判斷依據=true）"
+   "ok": false,
+   "note": "錯誤：page.click: Timeout 30000ms exceeded."
   },
   {
    "device": "電腦",
