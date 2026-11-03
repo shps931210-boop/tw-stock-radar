@@ -1,63 +1,63 @@
 {
- "generated_at": "2026-11-02T15:35:33",
- "days": 10,
- "on_time": 10,
+ "generated_at": "2026-11-03T15:21:55",
+ "days": 11,
+ "on_time": 11,
  "definitions": {
   "top_excess": "前 20 名平均相對 0050 超額，未扣成本（研究排序能力）",
   "top10_net_excess": "前 10 名平均相對 0050 超額，扣成本 0.585%（和到期對帳明細同一口徑）"
  },
  "first": "2026-10-16",
- "last": "2026-11-02",
+ "last": "2026-11-03",
  "horizons": {
   "5": {
-   "matured": 4,
+   "matured": 5,
    "v21": {
-    "ic": -0.003,
-    "ic_pos": 50.0,
-    "top_excess": 0.89,
+    "ic": -0.016,
+    "ic_pos": 40.0,
+    "top_excess": 0.94,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": 1.24,
-    "n": 4
+    "top10_net_excess": 1.29,
+    "n": 5
    },
    "ridge": {
-    "ic": 0.234,
+    "ic": 0.252,
     "ic_pos": 100.0,
-    "top_excess": 1.9,
+    "top_excess": 2.03,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": 0.91,
-    "n": 4
+    "top10_net_excess": 1.16,
+    "n": 5
    },
    "lgbm": {
-    "ic": 0.18,
-    "ic_pos": 75.0,
-    "top_excess": -0.35,
+    "ic": 0.205,
+    "ic_pos": 80.0,
+    "top_excess": -0.04,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -1.73,
-    "n": 4
+    "top10_net_excess": -1.48,
+    "n": 5
    },
    "ens": {
-    "ic": 0.148,
+    "ic": 0.153,
     "ic_pos": 100.0,
-    "top_excess": -1.53,
+    "top_excess": -0.88,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -1.63,
-    "n": 3
+    "top10_net_excess": -0.77,
+    "n": 4
    },
    "logit": {
-    "ic": -0.025,
-    "ic_pos": 50.0,
-    "top_excess": -3.61,
+    "ic": -0.02,
+    "ic_pos": 60.0,
+    "top_excess": -3.64,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -4.87,
-    "n": 4,
-    "hit": 57.9,
-    "brier": 0.2463,
-    "brier_base": 0.2371
+    "top10_net_excess": -4.68,
+    "n": 5,
+    "hit": 56.4,
+    "brier": 0.2491,
+    "brier_base": 0.2397
    }
   },
   "20": {
@@ -167,6 +167,32 @@
     "lgbm": -0.06229,
     "ens": -0.00313,
     "logit": -0.10867
+   }
+  },
+  {
+   "sig": "2026-10-22",
+   "h": "5",
+   "ver": "2026-10-17-7e79ede630",
+   "ic": {
+    "v21": -0.0678,
+    "ridge": 0.3251,
+    "lgbm": 0.3042,
+    "ens": 0.1649,
+    "logit": 0.0001
+   },
+   "top": {
+    "v21": 0.011,
+    "ridge": 0.02553,
+    "lgbm": 0.01187,
+    "ens": 0.01084,
+    "logit": -0.03768
+   },
+   "top10": {
+    "v21": 0.01475,
+    "ridge": 0.02165,
+    "lgbm": -0.00483,
+    "ens": 0.01816,
+    "logit": -0.03929
    }
   }
  ],

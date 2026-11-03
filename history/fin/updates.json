@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-03T12:21:23",
+ "generated_at": "2026-11-03T15:19:50",
  "quarter": "2026-Q3",
- "announced": 91,
- "synced": 91,
- "waiting": 0,
+ "announced": 95,
+ "synced": 94,
+ "waiting": 1,
  "slow": 0,
  "corrected": 0,
  "mismatch": 0,
@@ -14,7 +14,21 @@
   "median": 1.0,
   "max": 16.0
  },
- "waiting_list": [],
+ "waiting_list": [
+  {
+   "stock_id": "4116",
+   "name": "明基醫",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-03T15:15:12",
+   "attempts": 0,
+   "eps": 16.65,
+   "status": "pending",
+   "slow": false,
+   "last_try": null,
+   "corrected_at": null,
+   "note": null
+  }
+ ],
  "rescored": [
   {
    "stock_id": "6908",
@@ -235,10 +249,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 51.9,
+    "ref_composite": 52.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.4"
    }
   },
   {
@@ -260,10 +274,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 42.4,
+    "ref_composite": 42.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.5"
    }
   },
   {
@@ -310,10 +324,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 58.8,
+    "ref_composite": 59.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 59.0"
    }
   },
   {
@@ -335,10 +349,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 33.5,
+    "ref_composite": 33.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.9"
    }
   },
   {
@@ -510,10 +524,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 47.0,
+    "ref_composite": 44.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.9"
    }
   },
   {
@@ -535,10 +549,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 47.2,
+    "ref_composite": 46.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.9"
    }
   },
   {
@@ -1607,11 +1621,11 @@
   }
  ],
  "detect": {
-  "at": "2026-11-03T07:13:29",
+  "at": "2026-11-03T15:15:12",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 91,
-  "new": 0,
+  "stocks": 95,
+  "new": 4,
   "corrected": 0,
   "mismatch": 0
  },
@@ -1674,9 +1688,9 @@
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
    "ok": true,
-   "stocks": 37,
+   "stocks": 41,
    "error": null,
-   "rows": 37,
+   "rows": 41,
    "empty": null
   },
   {

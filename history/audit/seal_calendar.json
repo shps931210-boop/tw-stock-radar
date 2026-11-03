@@ -1,15 +1,15 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-03T07:24:23",
+ "generated_at": "2026-11-03T15:25:58",
  "summary": {
   "first": "2026-10-16",
-  "last_data": "2026-11-02",
+  "last_data": "2026-11-03",
   "today": "2026-11-03",
-  "expected": 10,
-  "sealed": 10,
-  "on_time": 10,
+  "expected": 11,
+  "sealed": 11,
+  "on_time": 11,
   "missing": [],
-  "picks": 10,
+  "picks": 11,
   "pre_open": 5,
   "pre_open_on_time": 5,
   "pre_open_note": "盤前版＝盤前情報：開盤前依隔夜國際市場與收盤後公告更新風險標示，AI 分數沿用前一天收盤後封存的正式預測（還沒有驗證過的事件模型不改分數）。正式前瞻預測是收盤後封存、隔天開盤前就已存在的那一份。",
@@ -24,22 +24,22 @@
    }
   ],
   "matured": {
-   "5": 4,
+   "5": 5,
    "20": 0,
    "60": 0
   },
   "scorecard": {
-   "generated_at": "2026-11-02T15:35:33",
-   "days": 10,
-   "last": "2026-11-02",
+   "generated_at": "2026-11-03T15:21:55",
+   "days": 11,
+   "last": "2026-11-03",
    "matured": {
-    "5": 4,
+    "5": 5,
     "20": 0,
     "60": 0
    }
   },
   "next_due": {
-   "date": "2026-11-03",
+   "date": "2026-11-04",
    "horizon": "5"
   },
   "scorecard_lag": {},
@@ -174,7 +174,7 @@
    "maturity": {
     "5": {
      "due": "2026-11-03",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-11-24",
@@ -355,10 +355,15 @@
    "date": "2026-11-03",
    "trading": true,
    "entry": "2026-11-04",
-   "picks": false,
+   "picks": true,
    "pre_open": false,
-   "sealed": false,
-   "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
+   "sealed": true,
+   "generated_at": "2026-11-03T15:21:25",
+   "on_time": true,
+   "model_version": "2026-11-02-84867621e3",
+   "n": 754,
+   "status": "experimental",
+   "data_ok": true,
    "maturity": {
     "5": {
      "due": "2026-11-11",
