@@ -1,0 +1,995 @@
+{
+ "schema_version": 1,
+ "signal_date": "2026-10-27",
+ "horizon": 5,
+ "entry": "2026-10-28",
+ "exit": "2026-11-04",
+ "bench_0050": -6.28,
+ "taiex": -6.05,
+ "taiex_window": [
+  "2026-10-27",
+  "2026-11-03"
+ ],
+ "bench_0050_close": -5.63,
+ "cost_pct": 0.585,
+ "rule": "訊號日收盤後封存，隔一個交易日開盤買，第 h 個交易日後開盤賣（還原除權息），扣成本 0.585%。0050 同一段期間（開盤到開盤）；加權指數只有收盤價，用訊號日收盤到出場前一天收盤，並附上 0050 同一段收盤口徑，兩者才能互相比較。買不到的不算進平均。",
+ "created_at": "2026-11-04T15:29:00",
+ "shadow": {
+  "file": "2026-10-27.json",
+  "generated_at": "2026-10-27T15:33:35",
+  "model_hash": "4c675d40be",
+  "model_version": "2026-10-22-4c675d40be",
+  "on_time": true,
+  "n": 741,
+  "models": {
+   "v21": {
+    "name": "V21（正式模型的分數）",
+    "ic": -0.108,
+    "ic_n": 731,
+    "stocks": [
+     {
+      "id": "2451",
+      "name": "創見",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -1.95,
+      "net": -2.53,
+      "excess": 3.74,
+      "pred": 89.2,
+      "rank": 1
+     },
+     {
+      "id": "2605",
+      "name": "新興",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -2.61,
+      "net": -3.19,
+      "excess": 3.08,
+      "pred": 82.3,
+      "rank": 2
+     },
+     {
+      "id": "2615",
+      "name": "萬海",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -0.85,
+      "net": -1.44,
+      "excess": 4.84,
+      "pred": 79.6,
+      "rank": 3
+     },
+     {
+      "id": "5386",
+      "name": "青雲",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -10.84,
+      "net": -11.42,
+      "excess": -5.15,
+      "pred": 76.9,
+      "rank": 4
+     },
+     {
+      "id": "2851",
+      "name": "中再保",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -2.6,
+      "net": -3.18,
+      "excess": 3.09,
+      "pred": 76.8,
+      "rank": 5
+     },
+     {
+      "id": "2637",
+      "name": "慧洋-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -3.0,
+      "net": -3.59,
+      "excess": 2.69,
+      "pred": 76.7,
+      "rank": 6
+     },
+     {
+      "id": "2059",
+      "name": "川湖",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -8.51,
+      "net": -9.09,
+      "excess": -2.82,
+      "pred": 76.4,
+      "rank": 7
+     },
+     {
+      "id": "6651",
+      "name": "全宇昕",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -11.83,
+      "net": -12.41,
+      "excess": -6.14,
+      "pred": 75.6,
+      "rank": 8
+     },
+     {
+      "id": "3081",
+      "name": "聯亞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -16.54,
+      "net": -17.12,
+      "excess": -10.85,
+      "pred": 75.3,
+      "rank": 9
+     },
+     {
+      "id": "6531",
+      "name": "愛普*",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -11.72,
+      "net": -12.3,
+      "excess": -6.03,
+      "pred": 74.9,
+      "rank": 10
+     }
+    ],
+    "n": 10,
+    "filled": 10,
+    "unfilled": [],
+    "stale": [],
+    "mean_net": -7.63,
+    "up_hit": 0.0,
+    "beat_0050": 50.0,
+    "mean_excess": -1.35,
+    "worst": [
+     {
+      "id": "3081",
+      "name": "聯亞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -16.54,
+      "net": -17.12,
+      "excess": -10.85,
+      "pred": 75.3,
+      "rank": 9
+     },
+     {
+      "id": "6651",
+      "name": "全宇昕",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -11.83,
+      "net": -12.41,
+      "excess": -6.14,
+      "pred": 75.6,
+      "rank": 8
+     },
+     {
+      "id": "6531",
+      "name": "愛普*",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -11.72,
+      "net": -12.3,
+      "excess": -6.03,
+      "pred": 74.9,
+      "rank": 10
+     }
+    ]
+   },
+   "ridge": {
+    "name": "Ridge（候選）",
+    "ic": -0.215,
+    "ic_n": 731,
+    "stocks": [
+     {
+      "id": "6669",
+      "name": "緯穎",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -9.09,
+      "net": -9.68,
+      "excess": -3.4,
+      "pred": 0.5844,
+      "rank": 1
+     },
+     {
+      "id": "2360",
+      "name": "致茂",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -24.31,
+      "net": -24.9,
+      "excess": -18.62,
+      "pred": 0.5769,
+      "rank": 2
+     },
+     {
+      "id": "2855",
+      "name": "統一證",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -7.08,
+      "net": -7.66,
+      "excess": -1.39,
+      "pred": 0.57,
+      "rank": 3
+     },
+     {
+      "id": "4991",
+      "name": "環宇-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -13.79,
+      "net": -14.38,
+      "excess": -8.1,
+      "pred": 0.5663,
+      "rank": 4
+     },
+     {
+      "id": "3450",
+      "name": "聯鈞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -14.38,
+      "net": -14.97,
+      "excess": -8.69,
+      "pred": 0.566,
+      "rank": 5
+     },
+     {
+      "id": "6531",
+      "name": "愛普*",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -11.72,
+      "net": -12.3,
+      "excess": -6.03,
+      "pred": 0.5658,
+      "rank": 6
+     },
+     {
+      "id": "5274",
+      "name": "信驊",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -14.48,
+      "net": -15.07,
+      "excess": -8.79,
+      "pred": 0.5652,
+      "rank": 7
+     },
+     {
+      "id": "4979",
+      "name": "華星光",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.19,
+      "net": -20.77,
+      "excess": -14.5,
+      "pred": 0.5645,
+      "rank": 8
+     },
+     {
+      "id": "3260",
+      "name": "威剛",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -3.86,
+      "net": -4.44,
+      "excess": 1.83,
+      "pred": 0.5631,
+      "rank": 9
+     },
+     {
+      "id": "3665",
+      "name": "貿聯-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -13.19,
+      "net": -13.77,
+      "excess": -7.5,
+      "pred": 0.5627,
+      "rank": 10
+     }
+    ],
+    "n": 10,
+    "filled": 10,
+    "unfilled": [],
+    "stale": [],
+    "mean_net": -13.79,
+    "up_hit": 0.0,
+    "beat_0050": 10.0,
+    "mean_excess": -7.52,
+    "worst": [
+     {
+      "id": "2360",
+      "name": "致茂",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -24.31,
+      "net": -24.9,
+      "excess": -18.62,
+      "pred": 0.5769,
+      "rank": 2
+     },
+     {
+      "id": "4979",
+      "name": "華星光",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.19,
+      "net": -20.77,
+      "excess": -14.5,
+      "pred": 0.5645,
+      "rank": 8
+     },
+     {
+      "id": "5274",
+      "name": "信驊",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -14.48,
+      "net": -15.07,
+      "excess": -8.79,
+      "pred": 0.5652,
+      "rank": 7
+     }
+    ]
+   },
+   "lgbm": {
+    "name": "LightGBM（候選）",
+    "ic": -0.265,
+    "ic_n": 731,
+    "stocks": [
+     {
+      "id": "4979",
+      "name": "華星光",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.19,
+      "net": -20.77,
+      "excess": -14.5,
+      "pred": 0.6198,
+      "rank": 1
+     },
+     {
+      "id": "6274",
+      "name": "台燿",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -16.3,
+      "net": -16.88,
+      "excess": -10.61,
+      "pred": 0.5976,
+      "rank": 2
+     },
+     {
+      "id": "4991",
+      "name": "環宇-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -13.79,
+      "net": -14.38,
+      "excess": -8.1,
+      "pred": 0.5949,
+      "rank": 3
+     },
+     {
+      "id": "3450",
+      "name": "聯鈞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -14.38,
+      "net": -14.97,
+      "excess": -8.69,
+      "pred": 0.5794,
+      "rank": 4
+     },
+     {
+      "id": "6669",
+      "name": "緯穎",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -9.09,
+      "net": -9.68,
+      "excess": -3.4,
+      "pred": 0.5792,
+      "rank": 5
+     },
+     {
+      "id": "6182",
+      "name": "合晶",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -17.26,
+      "net": -17.85,
+      "excess": -11.57,
+      "pred": 0.5727,
+      "rank": 6
+     },
+     {
+      "id": "5274",
+      "name": "信驊",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -14.48,
+      "net": -15.07,
+      "excess": -8.79,
+      "pred": 0.5694,
+      "rank": 7
+     },
+     {
+      "id": "2454",
+      "name": "聯發科",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -7.43,
+      "net": -8.01,
+      "excess": -1.73,
+      "pred": 0.5689,
+      "rank": 8
+     },
+     {
+      "id": "2897",
+      "name": "王道銀行",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -1.83,
+      "net": -2.42,
+      "excess": 3.86,
+      "pred": 0.5681,
+      "rank": 9
+     },
+     {
+      "id": "2308",
+      "name": "台達電",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -17.57,
+      "net": -18.16,
+      "excess": -11.88,
+      "pred": 0.5668,
+      "rank": 10
+     }
+    ],
+    "n": 10,
+    "filled": 10,
+    "unfilled": [],
+    "stale": [],
+    "mean_net": -13.82,
+    "up_hit": 0.0,
+    "beat_0050": 10.0,
+    "mean_excess": -7.54,
+    "worst": [
+     {
+      "id": "4979",
+      "name": "華星光",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.19,
+      "net": -20.77,
+      "excess": -14.5,
+      "pred": 0.6198,
+      "rank": 1
+     },
+     {
+      "id": "2308",
+      "name": "台達電",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -17.57,
+      "net": -18.16,
+      "excess": -11.88,
+      "pred": 0.5668,
+      "rank": 10
+     },
+     {
+      "id": "6182",
+      "name": "合晶",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -17.26,
+      "net": -17.85,
+      "excess": -11.57,
+      "pred": 0.5727,
+      "rank": 6
+     }
+    ]
+   }
+  },
+  "eligible": true,
+  "excluded_why": null
+ },
+ "official": {
+  "file": "2026-10-27.json",
+  "generated_at": "2026-10-27T14:52:11",
+  "model_version": "v1.1",
+  "model_hash": "ce1e61207b30",
+  "on_time": true,
+  "eligible": true,
+  "excluded_why": null,
+  "list_kind": "正式精選",
+  "modes": {
+   "stable": {
+    "name": "穩健型",
+    "stocks": [
+     {
+      "id": "2605",
+      "name": "新興",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -2.61,
+      "net": -3.19,
+      "excess": 3.08,
+      "rank": 1,
+      "score": 82.9
+     },
+     {
+      "id": "2851",
+      "name": "中再保",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -2.6,
+      "net": -3.18,
+      "excess": 3.09,
+      "rank": 2,
+      "score": 82.7
+     },
+     {
+      "id": "2615",
+      "name": "萬海",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -0.85,
+      "net": -1.44,
+      "excess": 4.84,
+      "rank": 3,
+      "score": 81.1
+     },
+     {
+      "id": "2637",
+      "name": "慧洋-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -3.0,
+      "net": -3.59,
+      "excess": 2.69,
+      "rank": 4,
+      "score": 78.7
+     },
+     {
+      "id": "6532",
+      "name": "瑞耘",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -5.11,
+      "net": -5.69,
+      "excess": 0.58,
+      "rank": 5,
+      "score": 74.4
+     },
+     {
+      "id": "2006",
+      "name": "東和鋼鐵",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -3.87,
+      "net": -4.46,
+      "excess": 1.82,
+      "rank": 6,
+      "score": 72.7
+     },
+     {
+      "id": "3617",
+      "name": "碩天",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -5.4,
+      "net": -5.99,
+      "excess": 0.29,
+      "rank": 7,
+      "score": 72.0
+     },
+     {
+      "id": "2330",
+      "name": "台積電",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -4.13,
+      "net": -4.72,
+      "excess": 1.56,
+      "rank": 8,
+      "score": 71.9
+     },
+     {
+      "id": "2603",
+      "name": "長榮",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": 1.34,
+      "net": 0.76,
+      "excess": 7.03,
+      "rank": 9,
+      "score": 71.8
+     },
+     {
+      "id": "2027",
+      "name": "大成鋼",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -4.21,
+      "net": -4.79,
+      "excess": 1.48,
+      "rank": 10,
+      "score": 71.7
+     }
+    ],
+    "n": 10,
+    "filled": 10,
+    "unfilled": [],
+    "stale": [],
+    "mean_net": -3.63,
+    "up_hit": 10.0,
+    "beat_0050": 100.0,
+    "mean_excess": 2.65,
+    "worst": [
+     {
+      "id": "3617",
+      "name": "碩天",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -5.4,
+      "net": -5.99,
+      "excess": 0.29,
+      "rank": 7,
+      "score": 72.0
+     },
+     {
+      "id": "6532",
+      "name": "瑞耘",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -5.11,
+      "net": -5.69,
+      "excess": 0.58,
+      "rank": 5,
+      "score": 74.4
+     },
+     {
+      "id": "2027",
+      "name": "大成鋼",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -4.21,
+      "net": -4.79,
+      "excess": 1.48,
+      "rank": 10,
+      "score": 71.7
+     }
+    ]
+   },
+   "balanced": {
+    "name": "均衡型",
+    "stocks": [
+     {
+      "id": "2451",
+      "name": "創見",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -1.95,
+      "net": -2.53,
+      "excess": 3.74,
+      "rank": 1,
+      "score": 89.4
+     },
+     {
+      "id": "2605",
+      "name": "新興",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -2.61,
+      "net": -3.19,
+      "excess": 3.08,
+      "rank": 2,
+      "score": 82.4
+     },
+     {
+      "id": "2615",
+      "name": "萬海",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -0.85,
+      "net": -1.44,
+      "excess": 4.84,
+      "rank": 3,
+      "score": 79.7
+     },
+     {
+      "id": "5386",
+      "name": "青雲",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -10.84,
+      "net": -11.42,
+      "excess": -5.15,
+      "rank": 4,
+      "score": 77.1
+     },
+     {
+      "id": "2637",
+      "name": "慧洋-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -3.0,
+      "net": -3.59,
+      "excess": 2.69,
+      "rank": 5,
+      "score": 76.9
+     },
+     {
+      "id": "2851",
+      "name": "中再保",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -2.6,
+      "net": -3.18,
+      "excess": 3.09,
+      "rank": 6,
+      "score": 76.8
+     },
+     {
+      "id": "2059",
+      "name": "川湖",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -8.51,
+      "net": -9.09,
+      "excess": -2.82,
+      "rank": 7,
+      "score": 76.5
+     },
+     {
+      "id": "3081",
+      "name": "聯亞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -16.54,
+      "net": -17.12,
+      "excess": -10.85,
+      "rank": 8,
+      "score": 75.3
+     },
+     {
+      "id": "6532",
+      "name": "瑞耘",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -5.11,
+      "net": -5.69,
+      "excess": 0.58,
+      "rank": 9,
+      "score": 74.2
+     },
+     {
+      "id": "1714",
+      "name": "和桐",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -10.19,
+      "net": -10.77,
+      "excess": -4.5,
+      "rank": 10,
+      "score": 73.7
+     }
+    ],
+    "n": 10,
+    "filled": 10,
+    "unfilled": [],
+    "stale": [],
+    "mean_net": -6.8,
+    "up_hit": 0.0,
+    "beat_0050": 60.0,
+    "mean_excess": -0.53,
+    "worst": [
+     {
+      "id": "3081",
+      "name": "聯亞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -16.54,
+      "net": -17.12,
+      "excess": -10.85,
+      "rank": 8,
+      "score": 75.3
+     },
+     {
+      "id": "5386",
+      "name": "青雲",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -10.84,
+      "net": -11.42,
+      "excess": -5.15,
+      "rank": 4,
+      "score": 77.1
+     },
+     {
+      "id": "1714",
+      "name": "和桐",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -10.19,
+      "net": -10.77,
+      "excess": -4.5,
+      "rank": 10,
+      "score": 73.7
+     }
+    ]
+   },
+   "aggressive": {
+    "name": "積極型",
+    "stocks": [
+     {
+      "id": "3498",
+      "name": "陽程",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -15.06,
+      "net": -15.64,
+      "excess": -9.37,
+      "rank": 1,
+      "score": 86.8
+     },
+     {
+      "id": "2305",
+      "name": "全友",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -9.21,
+      "net": -9.8,
+      "excess": -3.52,
+      "rank": 2,
+      "score": 84.9
+     },
+     {
+      "id": "6672",
+      "name": "騰輝電子-KY",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -6.03,
+      "net": -6.61,
+      "excess": -0.34,
+      "rank": 3,
+      "score": 82.9
+     },
+     {
+      "id": "1303",
+      "name": "南亞",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -12.22,
+      "net": -12.8,
+      "excess": -6.53,
+      "rank": 4,
+      "score": 82.1
+     },
+     {
+      "id": "2855",
+      "name": "統一證",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -7.08,
+      "net": -7.66,
+      "excess": -1.39,
+      "rank": 5,
+      "score": 82.1
+     },
+     {
+      "id": "3037",
+      "name": "欣興",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.0,
+      "net": -20.58,
+      "excess": -14.31,
+      "rank": 6,
+      "score": 81.3
+     },
+     {
+      "id": "6834",
+      "name": "天二科技",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -18.29,
+      "net": -18.87,
+      "excess": -12.6,
+      "rank": 7,
+      "score": 81.3
+     },
+     {
+      "id": "6213",
+      "name": "聯茂",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.15,
+      "net": -20.74,
+      "excess": -14.46,
+      "rank": 8,
+      "score": 80.8
+     },
+     {
+      "id": "1714",
+      "name": "和桐",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -10.19,
+      "net": -10.77,
+      "excess": -4.5,
+      "rank": 9,
+      "score": 80.6
+     },
+     {
+      "id": "6173",
+      "name": "信昌電",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -17.69,
+      "net": -18.27,
+      "excess": -12.0,
+      "rank": 10,
+      "score": 80.6
+     }
+    ],
+    "n": 10,
+    "filled": 10,
+    "unfilled": [],
+    "stale": [],
+    "mean_net": -14.17,
+    "up_hit": 0.0,
+    "beat_0050": 0.0,
+    "mean_excess": -7.9,
+    "worst": [
+     {
+      "id": "6213",
+      "name": "聯茂",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.15,
+      "net": -20.74,
+      "excess": -14.46,
+      "rank": 8,
+      "score": 80.8
+     },
+     {
+      "id": "3037",
+      "name": "欣興",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -20.0,
+      "net": -20.58,
+      "excess": -14.31,
+      "rank": 6,
+      "score": 81.3
+     },
+     {
+      "id": "6834",
+      "name": "天二科技",
+      "status": "ok",
+      "status_text": "正常出場",
+      "ret": -18.29,
+      "net": -18.87,
+      "excess": -12.6,
+      "rank": 7,
+      "score": 81.3
+     }
+    ]
+   }
+  }
+ }
+}
