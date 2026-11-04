@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-04T15:56:18",
+ "generated_at": "2026-11-04T17:23:26",
  "quarter": "2026-Q3",
  "announced": 136,
  "synced": 117,
@@ -283,10 +283,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 50.2,
+    "ref_composite": 50.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 50.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 50.5"
    }
   },
   {
@@ -308,10 +308,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 52.8,
+    "ref_composite": 52.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.5"
    }
   },
   {
@@ -333,10 +333,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 36.1,
+    "ref_composite": 36.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.4"
    }
   },
   {
@@ -358,10 +358,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 41.3,
+    "ref_composite": 41.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 41.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 41.5"
    }
   },
   {
@@ -370,23 +370,23 @@
    "period": "2026-Q3",
    "synced_at": "2026-11-04T06:19:42",
    "before": NaN,
-   "after": NaN,
+   "after": 28.3,
    "latency_h": 0.0,
    "first_seen": "2026-11-04T06:18:55",
    "fetched_at": "2026-11-04T06:19:42",
-   "rescored_at": "2026-11-04T06:25:29",
+   "rescored_at": "2026-11-04T17:23:26",
    "corrected_at": null,
    "check": {
     "fin_in_db": true,
     "fin_period": "2026-Q3",
     "factors_recomputed": true,
     "in_rank_universe": true,
-    "complete": false,
-    "score": null,
+    "complete": true,
+    "score": 28.3,
     "ref_composite": null,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫，但還缺 估值合理性，五個因子沒有全部算出，不產生綜合分數"
+    "why": "已產生新的正式 AI 綜合分數"
    }
   },
   {
@@ -1358,10 +1358,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 46.7,
+    "ref_composite": 46.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.6"
    }
   },
   {
@@ -2438,7 +2438,7 @@
   }
  ],
  "detect": {
-  "at": "2026-11-04T15:52:09",
+  "at": "2026-11-04T17:19:52",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 136,
