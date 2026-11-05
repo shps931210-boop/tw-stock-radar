@@ -1,33 +1,20 @@
 {
- "generated_at": "2026-11-05T15:30:18",
+ "generated_at": "2026-11-05T15:55:59",
  "quarter": "2026-Q3",
  "announced": 198,
- "synced": 167,
- "waiting": 31,
+ "synced": 168,
+ "waiting": 30,
  "slow": 0,
  "corrected": 198,
  "mismatch": 1,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
  "db_has_quarter": 169,
  "latency_hours": {
-  "n": 109,
+  "n": 110,
   "median": 1.0,
-  "max": 16.0
+  "max": 24.5
  },
  "waiting_list": [
-  {
-   "stock_id": "5514",
-   "name": "三豐",
-   "period": "2026-Q3",
-   "first_seen": "2026-11-04T15:22:22",
-   "attempts": 0,
-   "eps": 0.4,
-   "status": "pending",
-   "slow": false,
-   "last_try": NaN,
-   "corrected_at": "2026-11-05T15:25:42",
-   "note": "官方更正：EPS"
-  },
   {
    "stock_id": "2528",
    "name": "皇普",
@@ -420,6 +407,31 @@
   }
  ],
  "rescored": [
+  {
+   "stock_id": "5514",
+   "name": "三豐",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-05T15:52:52",
+   "before": NaN,
+   "after": NaN,
+   "latency_h": 24.5,
+   "first_seen": "2026-11-04T15:22:22",
+   "fetched_at": NaN,
+   "rescored_at": "2026-11-05T15:55:59",
+   "corrected_at": "2026-11-05T15:25:42",
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": false,
+    "complete": false,
+    "score": null,
+    "ref_composite": 43.8,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 43.8"
+   }
+  },
   {
    "stock_id": "1906",
    "name": "寶隆",
@@ -3853,12 +3865,12 @@
   }
  ],
  "detect": {
-  "at": "2026-11-05T15:25:42",
+  "at": "2026-11-05T15:52:52",
   "endpoints_ok": 12,
   "endpoints": 12,
   "stocks": 198,
-  "new": 29,
-  "corrected": 1,
+  "new": 0,
+  "corrected": 0,
   "mismatch": 0
  },
  "endpoints": [
