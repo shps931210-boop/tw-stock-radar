@@ -1,10 +1,10 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-05T23:36:40",
+ "generated_at": "2026-11-06T00:45:57",
  "summary": {
   "first": "2026-10-16",
   "last_data": "2026-11-05",
-  "today": "2026-11-05",
+  "today": "2026-11-06",
   "expected": 13,
   "sealed": 13,
   "on_time": 13,
@@ -437,6 +437,29 @@
     },
     "60": {
      "due": "2027-02-01",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-06",
+   "trading": true,
+   "entry": "2026-11-09",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
+   "maturity": {
+    "5": {
+     "due": "2026-11-16",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-07",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-02",
      "matured": false
     }
    }
