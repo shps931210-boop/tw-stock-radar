@@ -54,6 +54,7 @@ def _cohort(D: dict, ids: list[str], entry: str, exit_: str, bench: float | None
             "up_hit": round(float(np.mean([x > 0 for x in nets])) * 100, 1) if nets else None,
             "beat_0050": round(float(np.mean([x > 0 for x in ex])) * 100, 1) if ex else None,
             "mean_excess": round(float(np.mean(ex)), 2) if ex else None,
+            "big_loss": round(float(np.mean([x <= -10 for x in nets])) * 100, 1) if nets else None,   # 單檔成本後 ≤ −10%
             "worst": sorted(ok, key=lambda x: x["net"])[:3]}
 
 
@@ -151,8 +152,9 @@ def build_one(D: dict, sig: str, h: str, pred: Path = PRED, picks: Path = PICKS)
                 p = pd.Series({sid: v[j] for sid, v in a["layers"].items()}, dtype=float).reindex(Y.index).dropna()
                 out["academic"][f"ic_{k}"] = round(float(p.rank().corr(Y.reindex(p.index).rank())), 3) if len(p) >= 30 else None
         for k, rows in (a.get("lists") or {}).items():
-            ext = {c["stock_id"]: {"rank": c.get("rank"), "score": c.get("balanced_score")} for c in rows}
-            out["academic"]["lists"][k] = {"name": a.get("label") if k != "balanced" else "均衡型原始前 10 名（同一天）",
+            ext = {c["stock_id"]: {"rank": c.get("rank"), "score": c.get("balanced_score", c.get("score"))} for c in rows}
+            nm = (a.get("names") or {}).get(k) or (a.get("label") if k != "balanced" else "均衡型原始前 10 名（同一天）")
+            out["academic"]["lists"][k] = {"name": nm,
                                            **_cohort(D, [c["stock_id"] for c in rows], entry, exit_, b, names, ext)}
     # 2. 正式 AI 精選（首次發布版）
     kf = picks / f"{sig}.json"
@@ -185,7 +187,7 @@ def gate(r: dict) -> dict:
             part["excluded_why"] = None if part["eligible"] else "無法證明名單在進場日開盤前產生"
         if not part["eligible"]:
             for c in (part.get(sub) or {}).values():
-                for key in ("mean_net", "mean_excess", "up_hit", "beat_0050", "ic"):
+                for key in ("mean_net", "mean_excess", "up_hit", "beat_0050", "big_loss", "ic"):
                     if key in c:
                         c[key] = None
                 c["excluded"] = True
@@ -236,7 +238,7 @@ def run(dbname: str = "stocks.db", pred: Path = PRED, picks: Path = PICKS, out: 
                     "shadow": {m: {k: v.get(k) for k in ("ic", "mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in sh.items()},
                     "shadow_on_time": (r.get("shadow") or {}).get("on_time"), "shadow_model": (r.get("shadow") or {}).get("model_hash"),
                     "official": {m: {k: v.get(k) for k in ("mean_net", "mean_excess", "up_hit", "beat_0050", "filled")} for m, v in of.items()},
-                    "academic": {k: {kk: v.get(kk) for kk in ("mean_net", "mean_excess", "beat_0050", "filled")} for k, v in ((r.get("academic") or {}).get("lists") or {}).items()},
+                    "academic": {k: {kk: v.get(kk) for kk in ("mean_net", "mean_excess", "beat_0050", "big_loss", "filled")} for k, v in ((r.get("academic") or {}).get("lists") or {}).items()},
                     "official_kind": (r.get("official") or {}).get("list_kind"), "official_on_time": (r.get("official") or {}).get("on_time"),
                     "eligible": {k: (r.get(k) or {}).get("eligible") for k in ("shadow", "official", "academic") if r.get(k)}})
     I = {"generated_at": config.now().isoformat(timespec="seconds"), "new": new, "batches": idx[::-1], "excluded": excluded,

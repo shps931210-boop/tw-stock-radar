@@ -22,6 +22,11 @@ OUT = config.ROOT / "history" / "predictions" / "academic"
 CANDIDATE = "balanced_msurge"
 LABEL = "均衡型＋月營收驚喜（學術候選，影子）"
 TOP = 10
+VOLCAP = "aggressive_volcap"
+VOLCAP_LABEL = "積極型＋波動上限（控制大虧，影子）"
+VOLCAP_RULE = "積極型原始排名，跳過年化波動在當天均衡型可排名母體前 20% 的股票（perf_study R2，事前登記 2026-11-01）"
+NAMES = {"balanced": "均衡型原始前 10 名（同一天）", CANDIDATE: LABEL,
+         "aggressive": "積極型原始前 10 名（同一天）", VOLCAP: VOLCAP_LABEL}
 
 
 V_PARTS = ("score_quality", "score_growth", "score_value", "msurge")   # 和 twolayer_study 同一個定義
@@ -58,6 +63,26 @@ def site(rows: list[dict], rev: dict[str, pd.DataFrame], sig: str, path: Path = 
     return out
 
 
+def volcap(rows: list[dict]) -> dict:
+    """2026-11-05 使用者選擇「積極型先控制大虧」：R2 在歷史上明顯減少大虧，但報酬少超過 0.2%，沒過原本門檻，
+    所以只做前瞻影子紀錄，和同一天的積極型原始前 10 名一起到期對帳，正式選股不變。
+    母體和 perf_study 一樣：均衡型可排名的股票；波動門檻是母體 vol_1y 的第 80 百分位。"""
+    from . import perf_study as ps
+    uni = [r for r in rows if (r.get("ai") or {}).get("modes", {}).get("balanced", {}).get("rank")]
+    vol = pd.Series({r["stock_id"]: r.get("vol_1y") for r in uni}, dtype=float)
+    cut = float(vol.quantile(ps.VOL_PCT)) if vol.notna().any() else None
+    agg = sorted((r for r in uni if (r["ai"]["modes"].get("aggressive") or {}).get("rank")),
+                 key=lambda r: r["ai"]["modes"]["aggressive"]["rank"])
+    row = lambda r, k: {"stock_id": r["stock_id"], "name": r.get("name"), "rank": k + 1,
+                        "aggressive_rank": r["ai"]["modes"]["aggressive"]["rank"], "score": r["ai"]["modes"]["aggressive"].get("score"),
+                        "vol_1y": None if r.get("vol_1y") is None else round(float(r["vol_1y"]), 1)}
+    base = agg[:TOP]
+    keep = [r for r in agg if cut is None or r.get("vol_1y") is None or float(r["vol_1y"]) < cut][:TOP]
+    return {"lists": {"aggressive": [row(r, k) for k, r in enumerate(base)], VOLCAP: [row(r, k) for k, r in enumerate(keep)]},
+            "info": {"rule": VOLCAP_RULE, "vol_cut": None if cut is None else round(cut, 1),
+                     "overlap": len({r["stock_id"] for r in base} & {r["stock_id"] for r in keep})}}
+
+
 def build(rows: list[dict], rev: dict[str, pd.DataFrame], sig: str) -> dict:
     df = pd.DataFrame([{"id": r["stock_id"], "name": r.get("name"), "industry": r.get("industry"),
                         "score": r["ai"]["modes"]["balanced"]["score"], "rank": r["ai"]["modes"]["balanced"]["rank"]}
@@ -68,11 +93,13 @@ def build(rows: list[dict], rev: dict[str, pd.DataFrame], sig: str) -> dict:
     cand = blend.sort_values(ascending=False).index[:TOP]
     row = lambda s, k: {"stock_id": s, "name": df.at[s, "name"], "rank": k + 1, "balanced_score": df.at[s, "score"],
                         "msurge": None if pd.isna(df.at[s, "msurge"]) else round(float(df.at[s, "msurge"]), 3)}
-    return {"schema_version": 1, "signal_date": sig, "generated_at": config.now().isoformat(timespec="seconds"),
+    vc = volcap(rows)
+    return {"schema_version": 2, "signal_date": sig, "generated_at": config.now().isoformat(timespec="seconds"),
             "status": "shadow", "candidate": CANDIDATE, "label": LABEL, "study": "history/backtest/academic.json（事前登記 2026-10-28）",
             "rule": f"{1 - ac.BLEND:.2f}×均衡型分數百分位＋{ac.BLEND:.2f}×MSURGE 百分位；沒有 MSURGE 的股票給中位數",
             "universe_n": int(len(df)), "msurge_coverage": round(float(df["msurge"].notna().mean()) * 100, 1),
-            "lists": {"balanced": [row(s, k) for k, s in enumerate(base)], CANDIDATE: [row(s, k) for k, s in enumerate(cand)]},
+            "lists": {"balanced": [row(s, k) for k, s in enumerate(base)], CANDIDATE: [row(s, k) for k, s in enumerate(cand)], **vc["lists"]},
+            "names": NAMES, "volcap": vc["info"],
             "overlap": int(len(set(base) & set(cand))),
             "layers": {k: [None if pd.isna(v) else round(float(v), 1), None if pd.isna(e) else round(float(e), 1)]
                        for k, v, e in (lambda L: zip(L.index, L["V"], L["E"]))(layers(rows, rev, sig))}}

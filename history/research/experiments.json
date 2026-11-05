@@ -272,6 +272,18 @@
    "cause": "證據不足以上線",
    "decision": "rejected",
    "evidence": "history/backtest/perf_v22.json"
+  },
+  {
+   "date": "2026-11-05",
+   "version": "V22.1",
+   "change": "積極型＋波動上限（R2）改成前瞻影子紀錄",
+   "hypothesis": "積極型跳過年化波動前 20% 的股票，可以明顯減少單檔大虧，報酬只少一點",
+   "improved": "歷史回測：大虧比例顯著下降（perf_v22 R2 風控門檻）",
+   "worse": "歷史回測：平均報酬少超過事先登記的 0.2 個百分點容忍度",
+   "result": "2026-11-05 使用者選擇積極型先控制大虧；每天封存積極型原始前 10 名與波動上限前 10 名，到期用同一規則對帳（成本後報酬、相對 0050、大虧比例）",
+   "cause": "上線 11 批 5 日結果積極型全輸 0050，大虧是主要損失；但歷史證據未過原門檻，所以只做影子",
+   "decision": "shadow",
+   "evidence": "history/predictions/academic/（lists.aggressive_volcap）、history/audit/maturity/"
   }
  ],
  "auto": [

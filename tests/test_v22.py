@@ -158,5 +158,35 @@ class PaperBenchStart(unittest.TestCase):
         self.assertAlmostEqual(b["taiex"]["ret"], 1.0, places=2)
 
 
+class VolcapShadow(unittest.TestCase):
+    """2026-11-05 使用者選「積極型先控制大虧」：R2 波動上限只做影子紀錄，和積極型原始前 10 名一起對帳。"""
+    def test_skips_top20pct_vol_of_balanced_universe(self):
+        from app import shadow_academic as sa
+        rows = [{"stock_id": f"s{i:02d}", "name": f"n{i}", "vol_1y": float(i),
+                 "ai": {"modes": {"balanced": {"score": 50, "rank": i + 1}, "aggressive": {"score": 99 - i, "rank": 50 - i}}}} for i in range(50)]
+        rows.append({"stock_id": "z", "vol_1y": 999.0, "ai": {"modes": {"balanced": {"rank": None}, "aggressive": {"rank": 1}}}})  # 不在母體
+        v = sa.volcap(rows)
+        agg = [r["stock_id"] for r in v["lists"]["aggressive"]]
+        cap = [r["stock_id"] for r in v["lists"][sa.VOLCAP]]
+        self.assertEqual(agg, [f"s{i:02d}" for i in range(49, 39, -1)])     # 原始排名，不含母體外
+        cut = pd.Series(range(50), dtype=float).quantile(ps.VOL_PCT)
+        self.assertEqual(v["info"]["vol_cut"], round(cut, 1))
+        self.assertTrue(all(r["vol_1y"] < cut for r in v["lists"][sa.VOLCAP]))
+        self.assertEqual(cap[0], "s39")
+        self.assertEqual(len(cap), 10)
+        self.assertEqual(v["info"]["overlap"], 0)
+
+    def test_cohort_big_loss(self):
+        from app import maturity_report as mr
+        from app import pit_backtest as pbt
+        old = pbt.hold_return
+        pbt.hold_return = lambda D_, sid, a, b: ({"A": -0.2, "B": 0.05}[sid], "ok")
+        try:
+            r = mr._cohort({}, ["A", "B"], "a", "b", 0.0, {})
+        finally:
+            pbt.hold_return = old
+        self.assertEqual(r["big_loss"], 50.0)
+
+
 if __name__ == "__main__":
     unittest.main()

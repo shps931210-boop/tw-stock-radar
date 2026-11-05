@@ -165,6 +165,10 @@ class Queue(unittest.TestCase):
                "errors": {"by_industry": {"lgbm": [{"group": "航運業", "n": 40, "avg_excess": -3.1, "enough": True}]},
                           "worst": [{"sid": "2605", "sig": "2026-09-29", "industry": "航運業", "model": "lgbm", "excess": -12.0}]},
                "feature_drift": {"flagged": []}}
+        from app import paper
+        orig = paper.research_items
+        paper.research_items = lambda *a, **k: []   # 不讀真實的模擬交易帳本（10/30 起有虧損檢討項目）
+        self.addCleanup(setattr, paper, "research_items", orig)
         q = dl.update_queue(rep, p)
         self.assertEqual(len(q["items"]), 3)
         dl.update_queue(rep, p)                                   # 同一天重跑：次數不加
