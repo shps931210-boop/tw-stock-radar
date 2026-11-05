@@ -2403,18 +2403,18 @@
    }
   },
   {
-   "at": "2026-11-05T23:23:50",
-   "run_id": "42051928897",
-   "mode": "full",
+   "at": "2026-11-05T23:36:40",
+   "run_id": "42054696939",
+   "mode": "backfill",
    "steps": {
-    "連線診斷": "success",
+    "連線診斷": "skipped",
     "影子預測封存": "success",
-    "新聞與公告": "success",
-    "國際市場": "success",
+    "新聞與公告": "skipped",
+    "國際市場": "skipped",
     "盤前情報": "skipped",
-    "盤前情報對帳": "success",
+    "盤前情報對帳": "skipped",
     "預測封存日曆": "success",
-    "整合測試": "failure",
+    "整合測試": "skipped",
     "AI 模擬交易": "success",
     "到期對帳明細": "success",
     "學術候選影子紀錄": "success",
@@ -2427,35 +2427,35 @@
  "status": {
   "影子預測封存": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 95,
    "fails": 0
   },
   "預測封存日曆": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 95,
    "fails": 0
   },
   "AI 模擬交易": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 95,
    "fails": 0
   },
   "到期對帳明細": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 95,
    "fails": 0
   },
   "學術候選影子紀錄": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 95,
    "fails": 0
@@ -2464,14 +2464,14 @@
    "streak": 0,
    "last_ok": "2026-11-05T23:23:50",
    "last": "success",
-   "runs": 56,
+   "runs": 55,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
    "last_ok": "2026-11-05T23:23:50",
    "last": "success",
-   "runs": 56,
+   "runs": 55,
    "fails": 0
   },
   "盤前情報": {
@@ -2483,7 +2483,7 @@
   },
   "正式績效對帳": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 94,
    "fails": 0
@@ -2511,14 +2511,14 @@
   },
   "加權指數開盤價": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 56,
    "fails": 0
   },
   "同時段公平比較": {
    "streak": 0,
-   "last_ok": "2026-11-05T23:23:50",
+   "last_ok": "2026-11-05T23:36:40",
    "last": "success",
    "runs": 56,
    "fails": 0
