@@ -1,20 +1,33 @@
 {
- "generated_at": "2026-11-05T12:25:26",
+ "generated_at": "2026-11-05T15:30:18",
  "quarter": "2026-Q3",
- "announced": 169,
- "synced": 168,
- "waiting": 1,
+ "announced": 198,
+ "synced": 167,
+ "waiting": 31,
  "slow": 0,
- "corrected": 0,
+ "corrected": 198,
  "mismatch": 1,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
  "db_has_quarter": 169,
  "latency_hours": {
-  "n": 110,
+  "n": 109,
   "median": 1.0,
   "max": 16.0
  },
  "waiting_list": [
+  {
+   "stock_id": "5514",
+   "name": "三豐",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-04T15:22:22",
+   "attempts": 0,
+   "eps": 0.4,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": "2026-11-05T15:25:42",
+   "note": "官方更正：EPS"
+  },
   {
    "stock_id": "2528",
    "name": "皇普",
@@ -27,6 +40,383 @@
    "last_try": "2026-11-05T06:19:20",
    "corrected_at": null,
    "note": "資料庫和官方累計數字不一致：本期淨利 資料庫 988,061 千元／官方 703,135 千元"
+  },
+  {
+   "stock_id": "1570",
+   "name": "力肯",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 0.61,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "2937",
+   "name": "集雅社",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 2.08,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3213",
+   "name": "茂訊",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 9.54,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3228",
+   "name": "金麗科",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -1.49,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3265",
+   "name": "台星科",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 5.32,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3306",
+   "name": "鼎天",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 3.23,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3465",
+   "name": "進泰電子",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -1.1,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3531",
+   "name": "先益",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -0.15,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3556",
+   "name": "禾瑞亞",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 3.38,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3628",
+   "name": "盈正",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 2.22,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "3675",
+   "name": "德微",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 5.91,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "4105",
+   "name": "東洋",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 5.45,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "4121",
+   "name": "優盛",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -0.4,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "4183",
+   "name": "福永生技",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -0.93,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "4972",
+   "name": "湯石照明",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -1.55,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "5903",
+   "name": "全家",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 6.07,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6146",
+   "name": "耕興",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 9.12,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6180",
+   "name": "橘子",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 1.14,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6527",
+   "name": "明達醫",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 4.57,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6568",
+   "name": "宏觀",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 3.57,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6679",
+   "name": "鈺太",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 9.76,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6693",
+   "name": "廣閎科",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 6.53,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6733",
+   "name": "博晟生醫",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -0.48,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6761",
+   "name": "穩得",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 5.67,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6872",
+   "name": "浩宇生醫",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": -1.53,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6884",
+   "name": "海柏特",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 1.37,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "6996",
+   "name": "力領科技",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 11.5,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "7704",
+   "name": "明遠精密",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 3.06,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
+  },
+  {
+   "stock_id": "8928",
+   "name": "鉅明",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-05T15:25:42",
+   "attempts": 0,
+   "eps": 1.26,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
   }
  ],
  "rescored": [
@@ -74,10 +464,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.6,
+    "ref_composite": 56.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.5"
    }
   },
   {
@@ -124,10 +514,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 47.3,
+    "ref_composite": 47.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 47.1"
    }
   },
   {
@@ -149,10 +539,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 37.6,
+    "ref_composite": 37.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.5"
    }
   },
   {
@@ -224,10 +614,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 52.7,
+    "ref_composite": 52.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.5"
    }
   },
   {
@@ -274,10 +664,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 44.3,
+    "ref_composite": 44.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.6"
    }
   },
   {
@@ -299,10 +689,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 40.8,
+    "ref_composite": 40.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 40.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 40.7"
    }
   },
   {
@@ -324,10 +714,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 55.9,
+    "ref_composite": 56.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 55.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.2"
    }
   },
   {
@@ -831,31 +1221,6 @@
    }
   },
   {
-   "stock_id": "5514",
-   "name": "三豐",
-   "period": "2026-Q3",
-   "synced_at": "2026-11-04T22:08:26",
-   "before": NaN,
-   "after": NaN,
-   "latency_h": 6.8,
-   "first_seen": "2026-11-04T15:22:22",
-   "fetched_at": "2026-11-04T22:08:26",
-   "rescored_at": "2026-11-04T22:10:50",
-   "corrected_at": null,
-   "check": {
-    "fin_in_db": true,
-    "fin_period": "2026-Q3",
-    "factors_recomputed": true,
-    "in_rank_universe": false,
-    "complete": false,
-    "score": null,
-    "ref_composite": 45.7,
-    "eligible": false,
-    "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.7"
-   }
-  },
-  {
    "stock_id": "6210",
    "name": "慶生",
    "period": "2026-Q3",
@@ -974,10 +1339,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 35.9,
+    "ref_composite": 36.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.0"
    }
   },
   {
@@ -999,10 +1364,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 58.4,
+    "ref_composite": 58.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 58.3"
    }
   },
   {
@@ -1049,10 +1414,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 45.6,
+    "ref_composite": 45.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.2"
    }
   },
   {
@@ -1324,10 +1689,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 50.5,
+    "ref_composite": 50.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 50.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 50.6"
    }
   },
   {
@@ -1349,10 +1714,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 52.5,
+    "ref_composite": 50.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 50.4"
    }
   },
   {
@@ -1874,10 +2239,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 59.2,
+    "ref_composite": 59.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 59.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 59.0"
    }
   },
   {
@@ -2099,10 +2464,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 51.8,
+    "ref_composite": 51.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.4"
    }
   },
   {
@@ -2124,10 +2489,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 42.2,
+    "ref_composite": 42.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.3"
    }
   },
   {
@@ -2174,10 +2539,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.5,
+    "ref_composite": 56.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.6"
    }
   },
   {
@@ -2199,10 +2564,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 33.7,
+    "ref_composite": 33.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.9"
    }
   },
   {
@@ -2374,10 +2739,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 44.6,
+    "ref_composite": 44.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.4"
    }
   },
   {
@@ -2399,10 +2764,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 46.7,
+    "ref_composite": 46.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.6"
    }
   },
   {
@@ -2424,10 +2789,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 83.8,
+    "ref_composite": 83.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 83.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 83.7"
    }
   },
   {
@@ -2907,6 +3272,18 @@
   }
  ],
  "revisions": [
+  {
+   "stock_id": "5514",
+   "period": "2026-Q3",
+   "detected_at": "2026-11-05T15:25:42",
+   "fields": {
+    "source": "官方公告",
+    "eps": [
+     0.04,
+     0.4
+    ]
+   }
+  },
   {
    "stock_id": "8131",
    "period": "2025-Q3",
@@ -3473,26 +3850,15 @@
      1827652000.0
     ]
    }
-  },
-  {
-   "stock_id": "1504",
-   "period": "2019-Q3",
-   "detected_at": "2026-10-27T01:24:24",
-   "fields": {
-    "ocf": [
-     2777373000.0,
-     2155142000.0
-    ]
-   }
   }
  ],
  "detect": {
-  "at": "2026-11-05T07:16:39",
+  "at": "2026-11-05T15:25:42",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 169,
-  "new": 0,
-  "corrected": 0,
+  "stocks": 198,
+  "new": 29,
+  "corrected": 1,
   "mismatch": 0
  },
  "endpoints": [
@@ -3554,9 +3920,9 @@
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
    "ok": true,
-   "stocks": 60,
+   "stocks": 89,
    "error": null,
-   "rows": 60,
+   "rows": 89,
    "empty": null
   },
   {
