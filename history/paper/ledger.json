@@ -4,7 +4,7 @@
  "rules": "訊號日收盤後的正式 AI 精選，隔一個交易日開盤買（＋0.1% 滑價）；收盤跌 10% 停損、漲 20% 停利、滿 20 個交易日到期，都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃前一個交易日的 5%，開盤就漲停買不到、開盤就跌停賣不掉照實記；開盤成交只用開盤時已知的資訊。只模擬，不會送出任何真實委託。",
  "live_trading": false,
  "start_signal": "2026-10-27",
- "last_data": "2026-11-05",
+ "last_data": "2026-11-06",
  "first_entry": "2026-10-28",
  "books": {
   "stable": {
@@ -47,14 +47,14 @@
      "stop_price": 45.05,
      "target_price": 60.06,
      "max_close": 49.3,
-     "min_close": 48.35,
+     "min_close": 46.45,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 48.65,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 194114.0,
-     "unreal_ret": -2.935,
+     "last_close": 46.45,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 185336.0,
+     "unreal_ret": -7.325,
      "pending_exit": null,
      "status": "open"
     },
@@ -94,15 +94,15 @@
      "stop_price": 31.08,
      "target_price": 41.44,
      "max_close": 35.2,
-     "min_close": 32.65,
+     "min_close": 30.95,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 32.65,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 188815.0,
-     "unreal_ret": -5.591,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-06",
+     "last_close": 30.95,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 178984.0,
+     "unreal_ret": -10.507,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -141,14 +141,14 @@
      "stop_price": 105.86,
      "target_price": 141.14,
      "max_close": 120.0,
-     "min_close": 113.0,
+     "min_close": 107.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 113.0,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 191874.0,
-     "unreal_ret": -4.062,
+     "last_close": 107.5,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 182535.0,
+     "unreal_ret": -8.732,
      "pending_exit": null,
      "status": "open"
     },
@@ -188,14 +188,14 @@
      "stop_price": 90.09,
      "target_price": 120.12,
      "max_close": 101.5,
-     "min_close": 97.7,
+     "min_close": 94.4,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 98.6,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 196707.0,
-     "unreal_ret": -1.638,
+     "last_close": 94.4,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 188328.0,
+     "unreal_ret": -5.828,
      "pending_exit": null,
      "status": "open"
     },
@@ -235,14 +235,14 @@
      "stop_price": 105.86,
      "target_price": 141.14,
      "max_close": 119.5,
-     "min_close": 97.5,
+     "min_close": 87.9,
      "fill_note": null,
      "exit_signal_date": "2026-11-05",
-     "last_close": 97.5,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 165555.0,
-     "unreal_ret": -17.222,
+     "last_close": 87.9,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 149254.0,
+     "unreal_ret": -25.372,
      "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     }
@@ -313,6 +313,17 @@
      "price": 117.6175,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-06",
+     "side": "sell",
+     "sid": "6532",
+     "name": "瑞耘",
+     "want": 1698,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在跌停價，賣不掉"
     }
    ],
    "curve": [
@@ -364,6 +375,13 @@
      "mv": 937064.0,
      "equity": 937103.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-06",
+     "cash": 39.0,
+     "mv": 884437.0,
+     "equity": 884476.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
@@ -371,19 +389,25 @@
     {
      "sid": "6532",
      "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2605",
+     "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "kpi": {
-    "equity": 937103.0,
+    "equity": 884476.0,
     "cash": 39.0,
-    "ret": -6.29,
-    "mdd": -6.85,
+    "ret": -11.552,
+    "mdd": -12.08,
     "n_open": 5,
     "n_closed": 0,
     "realized": 0,
     "fees": 1420,
     "taxes": 0,
-    "unfilled": {}
+    "unfilled": {
+     "開盤就在跌停價，賣不掉": 1
+    }
    },
    "odds": {
     "n": 0,
@@ -454,14 +478,14 @@
      "stop_price": 254.5,
      "target_price": 339.34,
      "max_close": 294.0,
-     "min_close": 254.5,
+     "min_close": 247.0,
      "fill_note": null,
      "exit_signal_date": "2026-11-05",
-     "last_close": 254.5,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 179677.0,
-     "unreal_ret": -10.129,
+     "last_close": 247.0,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 174382.0,
+     "unreal_ret": -12.778,
      "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
@@ -501,15 +525,15 @@
      "stop_price": 31.08,
      "target_price": 41.44,
      "max_close": 35.2,
-     "min_close": 32.65,
+     "min_close": 30.95,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 32.65,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 188815.0,
-     "unreal_ret": -5.591,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-06",
+     "last_close": 30.95,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 178984.0,
+     "unreal_ret": -10.507,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -548,14 +572,14 @@
      "stop_price": 105.86,
      "target_price": 141.14,
      "max_close": 120.0,
-     "min_close": 113.0,
+     "min_close": 107.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 113.0,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 191874.0,
-     "unreal_ret": -4.062,
+     "last_close": 107.5,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 182535.0,
+     "unreal_ret": -8.732,
      "pending_exit": null,
      "status": "open"
     },
@@ -595,14 +619,14 @@
      "stop_price": 45.05,
      "target_price": 60.06,
      "max_close": 49.3,
-     "min_close": 48.35,
+     "min_close": 46.45,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 48.65,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 194114.0,
-     "unreal_ret": -2.935,
+     "last_close": 46.45,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 185336.0,
+     "unreal_ret": -7.325,
      "pending_exit": null,
      "status": "open"
     },
@@ -642,14 +666,14 @@
      "stop_price": 218.47,
      "target_price": 291.29,
      "max_close": 231.5,
-     "min_close": 214.0,
+     "min_close": 207.5,
      "fill_note": null,
      "exit_signal_date": "2026-11-05",
-     "last_close": 214.0,
-     "last_date": "2026-11-05",
-     "held_days": 2,
-     "market_value": 155792.0,
-     "unreal_ret": -11.966,
+     "last_close": 207.5,
+     "last_date": "2026-11-06",
+     "held_days": 3,
+     "market_value": 151060.0,
+     "unreal_ret": -14.64,
      "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     }
@@ -798,6 +822,28 @@
      "price": 242.7425,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-06",
+     "side": "sell",
+     "sid": "2451",
+     "name": "創見",
+     "want": 706,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在跌停價，賣不掉"
+    },
+    {
+     "date": "2026-11-06",
+     "side": "sell",
+     "sid": "3006",
+     "name": "晶豪科",
+     "want": 728,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在跌停價，賣不掉"
     }
    ],
    "curve": [
@@ -849,6 +895,13 @@
      "mv": 910271.0,
      "equity": 910325.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-06",
+     "cash": 54.0,
+     "mv": 872296.0,
+     "equity": 872350.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
@@ -860,19 +913,25 @@
     {
      "sid": "3006",
      "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2605",
+     "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "kpi": {
-    "equity": 910325.0,
+    "equity": 872350.0,
     "cash": 54.0,
-    "ret": -8.967,
-    "mdd": -10.03,
+    "ret": -12.765,
+    "mdd": -13.78,
     "n_open": 5,
     "n_closed": 1,
     "realized": -23071.0,
     "fees": 1924,
     "taxes": 533,
-    "unfilled": {}
+    "unfilled": {
+     "開盤就在跌停價，賣不掉": 2
+    }
    },
    "odds": {
     "n": 0,
@@ -963,15 +1022,15 @@
      "stop_price": 49.64,
      "target_price": 66.19,
      "max_close": 56.0,
-     "min_close": 50.1,
+     "min_close": 48.4,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 50.1,
-     "last_date": "2026-11-05",
-     "held_days": 7,
-     "market_value": 181362.0,
-     "unreal_ret": -9.294,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-06",
+     "last_close": 48.4,
+     "last_date": "2026-11-06",
+     "held_days": 8,
+     "market_value": 175208.0,
+     "unreal_ret": -12.372,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -1010,15 +1069,15 @@
      "stop_price": 42.61,
      "target_price": 56.82,
      "max_close": 48.8,
-     "min_close": 43.95,
+     "min_close": 42.25,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 43.95,
-     "last_date": "2026-11-05",
-     "held_days": 2,
-     "market_value": 163054.0,
-     "unreal_ret": -7.307,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-06",
+     "last_close": 42.25,
+     "last_date": "2026-11-06",
+     "held_days": 3,
+     "market_value": 156748.0,
+     "unreal_ret": -10.893,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -1057,15 +1116,15 @@
      "stop_price": 198.2,
      "target_price": 264.26,
      "max_close": 228.5,
-     "min_close": 206.0,
+     "min_close": 192.5,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 206.0,
-     "last_date": "2026-11-05",
-     "held_days": 2,
-     "market_value": 164182.0,
-     "unreal_ret": -6.59,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-06",
+     "last_close": 192.5,
+     "last_date": "2026-11-06",
+     "held_days": 3,
+     "market_value": 153422.0,
+     "unreal_ret": -12.712,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -1104,15 +1163,15 @@
      "stop_price": 6306.3,
      "target_price": 8408.4,
      "max_close": 7115.0,
-     "min_close": 6405.0,
+     "min_close": 6205.0,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 6405.0,
-     "last_date": "2026-11-05",
-     "held_days": 2,
-     "market_value": 160125.0,
-     "unreal_ret": -8.721,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-06",
+     "last_close": 6205.0,
+     "last_date": "2026-11-06",
+     "held_days": 3,
+     "market_value": 155125.0,
+     "unreal_ret": -11.571,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -1151,14 +1210,14 @@
      "stop_price": 477.48,
      "target_price": 636.64,
      "max_close": 529.0,
-     "min_close": 476.5,
+     "min_close": 463.0,
      "fill_note": null,
      "exit_signal_date": "2026-11-05",
-     "last_close": 476.5,
-     "last_date": "2026-11-05",
-     "held_days": 2,
-     "market_value": 157722.0,
-     "unreal_ret": -10.312,
+     "last_close": 463.0,
+     "last_date": "2026-11-06",
+     "held_days": 3,
+     "market_value": 153253.0,
+     "unreal_ret": -12.853,
      "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     }
@@ -1538,6 +1597,17 @@
      "price": 530.53,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-06",
+     "side": "sell",
+     "sid": "6672",
+     "name": "騰輝電子-KY",
+     "want": 331,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在跌停價，賣不掉"
     }
    ],
    "curve": [
@@ -1589,6 +1659,13 @@
      "mv": 826445.0,
      "equity": 832986.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-06",
+     "cash": 6541.0,
+     "mv": 793756.0,
+     "equity": 800297.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
@@ -1596,19 +1673,37 @@
     {
      "sid": "6672",
      "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2855",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2305",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "3498",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "3443",
+     "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "kpi": {
-    "equity": 832986.0,
+    "equity": 800297.0,
     "cash": 6541.0,
-    "ret": -16.701,
-    "mdd": -17.98,
+    "ret": -19.97,
+    "mdd": -21.2,
     "n_open": 5,
     "n_closed": 4,
     "realized": -90560.0,
     "fees": 3431,
     "taxes": 2133,
-    "unfilled": {}
+    "unfilled": {
+     "開盤就在跌停價，賣不掉": 1
+    }
    },
    "odds": {
     "n": 0,
@@ -1756,34 +1851,45 @@
     "date": "2026-11-05",
     "e0050": 894462.0,
     "taiex": 895953.0
+   },
+   {
+    "date": "2026-11-06",
+    "e0050": 851649.0,
+    "taiex": 855587.0
    }
   ],
   "shares": 9207,
   "price": 108.4583,
   "e0050": {
-   "ret": -10.554,
-   "mdd": -10.58
+   "ret": -14.835,
+   "mdd": -14.86
   },
   "taiex": {
-   "ret": -10.405,
-   "mdd": -11.61
+   "ret": -14.441,
+   "mdd": -15.59
   },
   "taiex_start": "open",
   "note": "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：從第一個進場日的證交所開盤指數換算，不含成本；開盤指數在 9:00 很多股票還沒成交，接近前一天收盤，和 0050 的可成交開盤價不完全同步，只能參考。"
  },
  "plan": {
-  "signal_date": "2026-11-05",
-  "entry_date": "2026-11-06",
-  "pick_file": "2026-11-05.v8.json",
-  "generated_at": "2026-11-06T07:25:32",
+  "signal_date": "2026-11-06",
+  "entry_date": "2026-11-09",
+  "pick_file": "2026-11-06.json",
+  "generated_at": "2026-11-06T15:25:07",
   "model_version": "v1.1",
   "buys": {
    "stable": [
     {
      "sid": "6505",
      "name": "台塑化",
-     "rank": 4,
-     "score": 76.0
+     "rank": 3,
+     "score": 75.9
+    },
+    {
+     "sid": "3617",
+     "name": "碩天",
+     "rank": 7,
+     "score": 70.8
     }
    ],
    "balanced": [
@@ -1796,16 +1902,46 @@
     {
      "sid": "2344",
      "name": "華邦電",
-     "rank": 4,
-     "score": 84.5
+     "rank": 3,
+     "score": 84.7
+    },
+    {
+     "sid": "6505",
+     "name": "台塑化",
+     "rank": 5,
+     "score": 77.1
     }
    ],
    "aggressive": [
     {
-     "sid": "1303",
-     "name": "南亞",
+     "sid": "3147",
+     "name": "大綜",
+     "rank": 2,
+     "score": 77.1
+    },
+    {
+     "sid": "6199",
+     "name": "天品",
      "rank": 3,
-     "score": 78.8
+     "score": 76.2
+    },
+    {
+     "sid": "2221",
+     "name": "大甲",
+     "rank": 4,
+     "score": 75.1
+    },
+    {
+     "sid": "6933",
+     "name": "AMAX-KY",
+     "rank": 5,
+     "score": 71.8
+    },
+    {
+     "sid": "6538",
+     "name": "倉和",
+     "rank": 6,
+     "score": 71.7
     }
    ]
   },
@@ -1813,6 +1949,10 @@
    "stable": [
     {
      "sid": "6532",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2605",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
@@ -1824,11 +1964,31 @@
     {
      "sid": "3006",
      "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2605",
+     "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "aggressive": [
     {
      "sid": "6672",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2855",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2305",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "3498",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "3443",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ]
@@ -1922,6 +2082,17 @@
     "revenue": "2026-09",
     "financials": "2026-Q2"
    }
+  },
+  "2026-11-06": {
+   "file": "2026-11-06.json",
+   "generated_at": "2026-11-06T15:25:07",
+   "model_version": "v1.1",
+   "model_hash": "ce1e61207b30",
+   "data_dates": {
+    "prices": "2026-11-06",
+    "revenue": "2026-09",
+    "financials": "2026-Q2"
+   }
   }
  },
  "note": "這是依固定規則的模擬交易（前瞻紀錄，從 2026-10-28 開盤開始），不是回測，也沒有送出任何真實委託。",
@@ -1930,16 +2101,18 @@
   "books": {
    "stable": {
     "kpi": {
-     "equity": 937103.0,
+     "equity": 884476.0,
      "cash": 39.0,
-     "ret": -6.29,
-     "mdd": -6.85,
+     "ret": -11.552,
+     "mdd": -12.08,
      "n_open": 5,
      "n_closed": 0,
      "realized": 0,
      "fees": 1420,
      "taxes": 0,
-     "unfilled": {}
+     "unfilled": {
+      "開盤就在跌停價，賣不掉": 1
+     }
     },
     "files": [
      "2026-10-27.json"
@@ -1947,16 +2120,18 @@
    },
    "balanced": {
     "kpi": {
-     "equity": 912919.0,
+     "equity": 875342.0,
      "cash": 54.0,
-     "ret": -8.708,
-     "mdd": -10.11,
+     "ret": -12.466,
+     "mdd": -13.81,
      "n_open": 5,
      "n_closed": 1,
      "realized": -23071.0,
      "fees": 1924,
      "taxes": 533,
-     "unfilled": {}
+     "unfilled": {
+      "開盤就在跌停價，賣不掉": 2
+     }
     },
     "files": [
      "2026-10-27.json",
@@ -1965,16 +2140,18 @@
    },
    "aggressive": {
     "kpi": {
-     "equity": 832986.0,
+     "equity": 800297.0,
      "cash": 6541.0,
-     "ret": -16.701,
-     "mdd": -17.98,
+     "ret": -19.97,
+     "mdd": -21.2,
      "n_open": 5,
      "n_closed": 4,
      "realized": -90560.0,
      "fees": 3431,
      "taxes": 2133,
-     "unfilled": {}
+     "unfilled": {
+      "開盤就在跌停價，賣不掉": 1
+     }
     },
     "files": [
      "2026-10-27.json",
@@ -1990,7 +2167,8 @@
    "2026-11-02": "2026-11-02.v7.json",
    "2026-11-03": "2026-11-03.v8.json",
    "2026-11-04": "2026-11-04.v8.json",
-   "2026-11-05": "2026-11-05.v8.json"
+   "2026-11-05": "2026-11-05.v8.json",
+   "2026-11-06": "2026-11-06.json"
   }
  }
 }
