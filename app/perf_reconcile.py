@@ -7,6 +7,7 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -150,11 +151,13 @@ def run(dbname: str = "stocks.db", D: dict | None = None, mat_dir: Path = MAT, p
     D = D or pb.load(dbname)
     files = []
     for p in sorted(mat_dir.glob("????-??-??_h*.json")):
-        r = json.loads(p.read_text("utf-8"))
+        raw = p.read_bytes()
+        r = json.loads(raw.decode("utf-8"))
         bad = check_file(D, r, picks_dir)
         summ = {m: c.get("mean_excess") for m, c in ((r.get("official") or {}).get("modes") or {}).items()}
         summ.update({f"shadow_{m}": c.get("mean_excess") for m, c in ((r.get("shadow") or {}).get("models") or {}).items()})
-        files.append({"file": p.name, "entry": r["entry"], "exit": r["exit"], "ok": not bad, "problems": bad, "mean_excess": summ})
+        files.append({"file": p.name, "entry": r["entry"], "exit": r["exit"], "ok": not bad, "problems": bad, "mean_excess": summ,
+                      "sha256": hashlib.sha256(raw).hexdigest()})   # 發布閘門比對：對帳後檔案被改過就不發布
     from . import maturity_report as mr
     idx = []
     for p in sorted(mat_dir.glob("????-??-??_h*.json")):
@@ -162,7 +165,7 @@ def run(dbname: str = "stocks.db", D: dict | None = None, mat_dir: Path = MAT, p
         idx.append({"eligible": {k: g[k].get("eligible") for k in ("shadow", "official", "academic") if g.get(k)},
                     **{k: (g.get(k) or {}).get({"shadow": "models", "official": "modes", "academic": "lists"}[k]) or {} for k in ("shadow", "official", "academic")}})
     viol = mr.violations(idx)
-    res = {"schema_version": 1, "generated_at": config.now().isoformat(timespec="seconds"), "violations": viol,
+    res = {"schema_version": 2, "generated_at": config.now().isoformat(timespec="seconds"), "violations": viol,
            "method": "不經過 maturity_report／pit_backtest 的報酬函式，直接用還原後開盤價重算報酬、扣成本、0050 超額與名單（首次發布版前 10 名）",
            "tolerance_pp": TOL, "files": files, "all_ok": all(f["ok"] for f in files) and viol == 0, "cross_sources": cross_sources(mat_dir),
            "definitions": DEFINITIONS}

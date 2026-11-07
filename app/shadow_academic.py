@@ -128,6 +128,9 @@ def seal(dbname: str = "stocks.db", out: Path = OUT, snap_path: Path | None = No
         print(f"{last} 學術候選已封存，不覆寫")
         return None
     rec = build(rows, rev, last)
+    # 2026-11-07（交接 GZ-P0-04）：正式績效資格要求記錄行情資料日與模型版本，缺欄位就不列入統計
+    rec["data_date"] = last
+    rec["model_version"] = (snap.get("model") or {}).get("version")
     out.mkdir(parents=True, exist_ok=True)
     with open(out / f"{last}.json", "x", encoding="utf-8") as fh:
         json.dump(rec, fh, ensure_ascii=False, indent=1)

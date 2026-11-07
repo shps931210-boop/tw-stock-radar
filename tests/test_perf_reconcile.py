@@ -68,7 +68,7 @@ class Eligibility(unittest.TestCase):
     """V21.2（10/29 驗收 P0）：開盤後才產生、沒有產生時間、資料日不對的名單，不准進任何績效統計。"""
     def test_eligible_rules(self):
         from app import track
-        ok = {"signal_date": "2026-10-16", "generated_at": "2026-10-16T14:52:57", "data_dates": {"prices": "2026-10-16"}}
+        ok = {"signal_date": "2026-10-16", "generated_at": "2026-10-16T14:52:57", "data_dates": {"prices": "2026-10-16"}, "model_version": "v1.1"}
         self.assertEqual(track.perf_eligible(ok, "2026-10-19"), (True, None))
         self.assertFalse(track.perf_eligible({**ok, "generated_at": "2026-10-19T09:00:01"}, "2026-10-19")[0])
         self.assertFalse(track.perf_eligible({**ok, "generated_at": None}, "2026-10-19")[0])

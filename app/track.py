@@ -98,19 +98,53 @@ def on_time(log: dict, entry: str | None) -> bool | None:
     return g[:19] < f"{entry}T{OPEN_AT}"
 
 
+def _data_date(log: dict) -> str | None:
+    """名單用的行情資料日：正式精選記在 data_dates.prices，影子預測記在 data_version.prices，學術候選記在 data_date。"""
+    dd = log.get("data_dates")
+    if isinstance(dd, dict) and dd.get("prices"):
+        return dd["prices"]
+    if isinstance(dd, str) and dd:
+        return dd
+    dv = log.get("data_version")
+    if isinstance(dv, dict) and dv.get("prices"):
+        return dv["prices"]
+    return log.get("data_date") or None
+
+
 def perf_eligible(log: dict, entry: str | None) -> tuple[bool, str | None]:
-    """正式績效的唯一資格條件（V21.2，2026-10-29）：名單要在進場日開盤前產生，資料日要等於訊號日。
+    """正式績效的唯一資格條件（V21.2，2026-10-29；2026-11-07 交接 GZ-P0-04 改成 Fail-Closed）。
+    缺任何一個關鍵欄位都不合格（之前資料日或訊號日缺值時直接略過檢查）：
+    1. 有訊號日、有產生時間，而且產生時間在訊號日當天或之後、進場日 09:00 之前
+    2. 有行情資料日，而且等於訊號日
+    3. 有模型識別（model_version／model_hash；學術候選用 candidate）
+    4. 有訓練截止日的（影子預測），每個期間的訓練截止都要早於訊號日；time_check.trained_before_signal 不能是 False
     不符合的到期結果照樣保存（不刪、不改），但不准進任何平均、成績單或學習統計。回傳（是否合格, 不合格原因）。"""
+    sig = log.get("signal_date") or log.get("date")
+    if not sig:
+        return False, "沒有訊號日"
     ot = on_time(log, entry)
     if ot is None:
-        return False, "沒有產生時間，無法證明在開盤前封存"
+        return False, "沒有產生時間或進場日，無法證明在開盤前封存"
     if not ot:
         return False, f"名單在 {entry} 開盤後才產生（{(log.get('generated_at') or '')[:16]}）"
-    dd = log.get("data_dates")
-    px = dd.get("prices") if isinstance(dd, dict) else dd
-    sig = log.get("signal_date") or log.get("date")
-    if px and sig and px != sig:
+    if str(log.get("generated_at"))[:10] < sig:
+        return False, f"產生時間 {str(log.get('generated_at'))[:16]} 早於訊號日 {sig}，不可能用到當天收盤資料"
+    if not entry or entry <= sig:
+        return False, f"進場日 {entry} 不在訊號日 {sig} 之後"
+    px = _data_date(log)
+    if not px:
+        return False, "沒有記錄行情資料日，無法確認用的是訊號日資料"
+    if px != sig:
         return False, f"資料日 {px} 和訊號日 {sig} 不同"
+    if not (log.get("model_version") or log.get("model_hash") or log.get("candidate")):
+        return False, "沒有模型版本，無法追溯是哪個模型產生的"
+    tt = log.get("trained_through")
+    if tt is not None:
+        vals = list(tt.values()) if isinstance(tt, dict) else [tt]
+        if not vals or any(not isinstance(v, str) or not v or v >= sig for v in vals):
+            return False, f"訓練資料截止 {tt} 沒有全部早於訊號日 {sig}"
+    if (log.get("time_check") or {}).get("trained_before_signal") is False:
+        return False, "模型訓練時間檢查沒有通過"
     return True, None
 
 

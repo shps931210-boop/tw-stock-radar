@@ -335,5 +335,30 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # 2026-11-07（交接 P0-01）：Pages 偶爾卡在 syncing_files 逾時（11/6 17:19、11/7 10:40）或直接回「try again later」（11/6 18:13），
+      # 同樣約 50MB 的產物其他次 10～50 秒就完成，屬於 Pages 端暫時性失敗。第一次失敗等 60 秒重試一次；兩次都失敗整個 job 失敗，網站維持上一版。
       - id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 900000
+      - name: 第一次部署失敗，等一下再試一次
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 60
+      - id: retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 900000
+      # 部署成功不等於使用者拿到新版：直接讀網站上的 version.json（加隨機參數避開快取），確認是這一次建置的 run_id
+      - name: 部署後驗證網站版本
+        run: |
+          URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data/version.json"
+          for i in 1 2 3 4 5 6; do
+            got=$(curl -fsS "$URL?nocache=$RANDOM$RANDOM" -H 'Cache-Control: no-cache' | python3 -c "import sys,json; print((json.load(sys.stdin).get('build') or {}).get('run_id'))" || echo "讀取失敗")
+            echo "第 $i 次：網站上的 run_id=$got，這次建置=${{ github.run_id }}"
+            [ "$got" = "${{ github.run_id }}" ] && exit 0
+            sleep 30
+          done
+          echo "::error::部署回報成功，但網站上不是這一次的版本（可能 CDN 快取還沒更新，或部署沒有真正生效）"
+          exit 1
