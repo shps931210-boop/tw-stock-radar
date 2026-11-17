@@ -252,9 +252,11 @@ jobs:
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
           "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}" "加權指數開盤價=${{ steps.taiex.outcome }}" "同時段公平比較=${{ steps.fair.outcome }}"
 
+      # 2026-11-17：帳號 11/7～11/17 被停權（原因未公布）。之前每次更新都上傳約 180MB 備份、再下載回來測還原，一天十幾次，
+      # 很像把 GitHub 當檔案倉庫用；改成只在完整更新（21:00、22:17 備援）時備份。
       - name: 備份資料庫到 GitHub Release
         id: backup
-        if: env.MODE != 'premarket'
+        if: env.MODE == 'full'
         continue-on-error: true      # 備份失敗不影響網站更新，但會記錄下來，最後一步讓這次執行標成失敗並寄信
         env:
           GH_TOKEN: ${{ github.token }}
@@ -277,7 +279,7 @@ jobs:
           python -m app.backup verify "$RUNNER_TEMP/rt/stocks.db.gz"
 
       - name: 記錄備份狀態（網站可信度頁會顯示）
-        if: always() && env.MODE != 'premarket'
+        if: always() && env.MODE == 'full'
         run: python -m app.backup status "${{ steps.backup.outcome }}" "${{ steps.restore.outcome }}"
 
       # 只有資料更新成功才存快取，避免把失敗或不完整的資料庫存成下一次的起點
