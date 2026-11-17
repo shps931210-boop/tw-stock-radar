@@ -27,7 +27,7 @@ def sealed(path: Path, sig: str, ids):
     stocks = [{"id": s, "5": {"v21": i, "v21_pct": i / len(ids), "lgbm_pct": 1 - i / len(ids), "ens_pct": 0.5},
                "20": {"v21": i, "v21_pct": i / len(ids), "lgbm_pct": 1 - i / len(ids), "ens_pct": 0.5}} for i, s in enumerate(ids)]
     path.mkdir(parents=True, exist_ok=True)
-    (path / f"{sig}.json").write_text(json.dumps({"signal_date": sig, "model_version": "v-test", "generated_at": f"{sig}T15:00:00", "stocks": stocks}), "utf-8")
+    (path / f"{sig}.json").write_text(json.dumps({"signal_date": sig, "model_version": "v-test", "data_version": {"prices": sig}, "generated_at": f"{sig}T15:00:00", "stocks": stocks}), "utf-8")
 
 
 class Mature(unittest.TestCase):

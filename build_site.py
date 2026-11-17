@@ -160,18 +160,16 @@ _mat = config.ROOT / "history" / "audit" / "maturity"
 if _mat.exists():  # V20.4 到期對帳明細（app/maturity_report.py）
     # V21.2 品質閘門：獨立對帳（app/perf_reconcile.py）沒通過就不發布到期績效；不合格批次（開盤後才產生等）只發布清空統計後的版本
     from app import maturity_report as _mr
-    _rc = config.ROOT / "history" / "audit" / "reconcile.json"
-    _rcj = json.loads(_rc.read_text("utf-8")) if _rc.exists() else None
+    from app import publish_gate as _pg
     _md = out / "data" / "predictions" / "maturity"
     _md.mkdir(parents=True, exist_ok=True)
-    _mi = _mat / "index.json"
-    _stale = _rcj is not None and _mi.exists() and (_rcj.get("generated_at") or "") < (json.loads(_mi.read_text("utf-8")).get("generated_at") or "")
-    if _stale:   # 對帳步驟本身當掉、沒有重新產生：比到期索引舊的對帳結果不能當作通過
-        _rcj = {**_rcj, "all_ok": False, "files": [{"file": "reconcile.json（比到期索引舊，這次對帳沒有完成）", "ok": False}]}
-    if _rcj is not None and not _rcj.get("all_ok"):
-        bad = [f["file"] for f in _rcj.get("files", []) if not f.get("ok")]
+    # 2026-11-07（交接 GZ-P0-03）：Fail-Closed。缺檔、格式錯、過期、批次不齊、指紋不符都擋（app/publish_gate.py）
+    _gate = _pg.check(config.ROOT / "history" / "audit" / "reconcile.json", _mat)
+    if not _gate["ok"]:
+        print("到期績效不發布：", "；".join(_gate["why"][:5]))
         (_md / "index.json").write_text(json.dumps({"blocked": True, "batches": [], "why": "獨立對帳沒有通過，暫停發布到期績效",
-                                                     "files": bad, "checked_at": _rcj.get("generated_at")}, ensure_ascii=False), "utf-8")
+                                                     "reasons": _gate["why"], "files": _gate["files"], "checked_at": _gate["checked_at"]},
+                                                    ensure_ascii=False), "utf-8")
     else:
         _fc = config.ROOT / "history" / "audit" / "fair_compare.json"
         if _fc.exists():   # V22 同時段公平比較（app/fair_compare.py）
@@ -299,5 +297,8 @@ else:
 from app import version  # noqa: E402
 files = {str(f.relative_to(out / "data")): f.read_bytes() for f in sorted((out / "data").rglob("*.json")) if f.name not in ("status.json", "version.json")}
 ver = version.build(json.loads(snap_path.read_text("utf-8")) if snap_path.exists() else None, files)
+# 2026-11-07（交接 P0-01）：部署後驗證要能確認網站上真的是這一次建置的版本，不是上一版
+ver["build"] = {"run_id": os.environ.get("GITHUB_RUN_ID"), "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+                "sha": os.environ.get("GITHUB_SHA"), "built_at": config.now().isoformat(timespec="seconds")}
 (out / "data" / "version.json").write_text(json.dumps(ver, ensure_ascii=False, indent=1), "utf-8")
 print(f"資料版本 {ver['data_version']}：{ver['data_state_label']}・交易日 {ver['trading_date']}")

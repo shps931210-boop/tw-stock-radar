@@ -41,12 +41,12 @@ def main() -> int:
         if st.get("partial_alert"):
             steps = "、".join((st.get("last") or {}).get("failed_steps") or [])
             problems.append(f"每日自主學習連續 {st['partial_streak']} 次有步驟失敗（{steps}）；最後一次完整成功：{st.get('last_valid_report') or '從未'}")
-    rc = config.ROOT / "history" / "audit" / "reconcile.json"   # V21.2：正式績效獨立對帳沒通過 → 這次執行標失敗並寄信（網站不發布到期績效）
-    if rc.exists():
-        r = json.loads(rc.read_text("utf-8"))
-        if not r.get("all_ok"):
-            bad = [f["file"] for f in r.get("files", []) if not f.get("ok")]
-            problems.append(f"正式績效對帳沒通過（{('、'.join(bad) or '')}；不合格樣本進入統計 {r.get('violations', 0)} 筆），網站暫停發布到期績效")
+    mat = config.ROOT / "history" / "audit" / "maturity"
+    if mat.exists():   # 2026-11-07：和網站發布用同一個 Fail-Closed 閘門（app/publish_gate.py），缺檔、過期、指紋不符也要寄信
+        from . import publish_gate
+        g = publish_gate.check(config.ROOT / "history" / "audit" / "reconcile.json", mat)
+        if not g["ok"]:
+            problems.append(f"正式績效發布閘門沒通過（{'；'.join(g['why'][:3])}），網站暫停發布到期績效")
     from . import step_log  # V19：失敗不影響網站的步驟，連續失敗 2 次以上也要寄信
     problems += step_log.alerts()
     if not s.get("history", {}).get("ready", True):

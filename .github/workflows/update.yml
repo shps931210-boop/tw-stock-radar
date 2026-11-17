@@ -17,8 +17,8 @@ on:
     - cron: "30 8 * * 1-5"     # 16:30 快速：補跑（萬一前一次延遲或失敗）
     - cron: "0 13 * * 1-5"     # 21:00 完整：融資等最晚公布的資料＋歷史回補、財報、股利
     - cron: "17 14 * * 1-5"    # 22:17 完整（備援）：GitHub 排程常延遲、偶爾整個漏掉（10/26 21:00 沒有啟動）；已完成的封存不會覆寫
-    - cron: "30 14-22 * * *"   # 22:30～06:30 每小時：夜間財報補齊
-    - cron: "20 22 * * 0-4"    # 交易日 06:20 盤前：隔夜美股、匯率、收盤後公告
+    - cron: "30 16,19 * * 1-5" # 00:30、03:30 夜間財報補齊（2026-11-07 帳號被停權後降低頻率：原本每天 22:30～06:30 每小時 9 次、含週末）
+    - cron: "20 22 * * 0-4"    # 交易日 06:20 盤前：隔夜美股、匯率、收盤後公告（主要的盤前封存）
     - cron: "35 23 * * 0-4"    # 交易日 07:35 盤前（V20.2）：排程實際約晚 40 分鐘才啟動，08:15 那次總是 08:57～09:00 才跑，錯過封存時間
     - cron: "15 0 * * 1-5"     # 交易日 08:15 盤前：再收集一次並封存「盤前版」（08:40 前發布；實際常延遲到開盤）
     - cron: "30 3 * * 1-5"     # 交易日 11:30：盤前版封存後的新重大事件警示
@@ -252,9 +252,11 @@ jobs:
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
           "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}" "加權指數開盤價=${{ steps.taiex.outcome }}" "同時段公平比較=${{ steps.fair.outcome }}"
 
+      # 2026-11-17：帳號 11/7～11/17 被停權（原因未公布）。之前每次更新都上傳約 180MB 備份、再下載回來測還原，一天十幾次，
+      # 很像把 GitHub 當檔案倉庫用；改成只在完整更新（21:00、22:17 備援）時備份。
       - name: 備份資料庫到 GitHub Release
         id: backup
-        if: env.MODE != 'premarket'
+        if: env.MODE == 'full'
         continue-on-error: true      # 備份失敗不影響網站更新，但會記錄下來，最後一步讓這次執行標成失敗並寄信
         env:
           GH_TOKEN: ${{ github.token }}
@@ -277,7 +279,7 @@ jobs:
           python -m app.backup verify "$RUNNER_TEMP/rt/stocks.db.gz"
 
       - name: 記錄備份狀態（網站可信度頁會顯示）
-        if: always() && env.MODE != 'premarket'
+        if: always() && env.MODE == 'full'
         run: python -m app.backup status "${{ steps.backup.outcome }}" "${{ steps.restore.outcome }}"
 
       # 只有資料更新成功才存快取，避免把失敗或不完整的資料庫存成下一次的起點
@@ -335,5 +337,30 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # 2026-11-07（交接 P0-01）：Pages 偶爾卡在 syncing_files 逾時（11/6 17:19、11/7 10:40）或直接回「try again later」（11/6 18:13），
+      # 同樣約 50MB 的產物其他次 10～50 秒就完成，屬於 Pages 端暫時性失敗。第一次失敗等 60 秒重試一次；兩次都失敗整個 job 失敗，網站維持上一版。
       - id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 900000
+      - name: 第一次部署失敗，等一下再試一次
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 60
+      - id: retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 900000
+      # 部署成功不等於使用者拿到新版：直接讀網站上的 version.json（加隨機參數避開快取），確認是這一次建置的 run_id
+      - name: 部署後驗證網站版本
+        run: |
+          URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data/version.json"
+          for i in 1 2 3 4 5 6; do
+            got=$(curl -fsS "$URL?nocache=$RANDOM$RANDOM" -H 'Cache-Control: no-cache' | python3 -c "import sys,json; print((json.load(sys.stdin).get('build') or {}).get('run_id'))" || echo "讀取失敗")
+            echo "第 $i 次：網站上的 run_id=$got，這次建置=${{ github.run_id }}"
+            [ "$got" = "${{ github.run_id }}" ] && exit 0
+            sleep 30
+          done
+          echo "::error::部署回報成功，但網站上不是這一次的版本（可能 CDN 快取還沒更新，或部署沒有真正生效）"
+          exit 1

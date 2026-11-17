@@ -26,7 +26,15 @@ class OfficialOpenAPI(unittest.TestCase):
         found, diag = fin_watch.detect()
         ok = [d for d in diag if d.get("ok")]
         self.assertGreaterEqual(len(ok), 8, [(d["url"].rsplit("/", 1)[-1], d.get("error")) for d in diag if not d.get("ok")])
-        self.assertGreater(len(found), 1500)  # 上市櫃一般公司
+        # 官方 OpenAPI 只放「最新一季」：財報季剛開始時（例如 11/2 起換成 Q3）只有已公告的公司，家數會從 1,900 掉到幾百。
+        # 2026-11-07 修正：之前固定要求 > 1500，11/2 起連續失敗 6 次（283 家），是測試假設錯誤，不是資料錯誤。
+        # 申報期間內只要求最新季度正確、家數合理；申報期結束後才要求涵蓋大部分上市櫃公司。
+        periods = {v["period"] for v in found.values()}
+        season = fin_watch.season_quarter(config.today())
+        if season and max(periods, default="") == season:
+            self.assertGreater(len(found), 50, f"申報期間 {season} 只解析到 {len(found)} 家")
+        else:
+            self.assertGreater(len(found), 1500, f"非申報期間只解析到 {len(found)} 家（季度 {sorted(periods)[-3:]}）")  # 上市櫃一般公司
         ci = next(d for d in diag if d["url"].endswith("t187ap06_L_ci"))
         for k in ("eps", "revenue", "operating_income", "net_income", "parent_ni"):
             self.assertTrue(ci.get(k), f"證交所一般業找不到 {k} 欄位，官方可能改了欄位名稱")
