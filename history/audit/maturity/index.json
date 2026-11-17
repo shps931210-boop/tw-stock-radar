@@ -1,7 +1,574 @@
 {
- "generated_at": "2026-11-07T07:15:14",
- "new": [],
+ "generated_at": "2026-11-17T10:39:59",
+ "new": [
+  "2026-10-08_h20.json",
+  "2026-10-12_h20.json",
+  "2026-10-13_h20.json",
+  "2026-10-14_h20.json",
+  "2026-10-30_h5.json",
+  "2026-11-02_h5.json",
+  "2026-11-03_h5.json",
+  "2026-11-04_h5.json",
+  "2026-11-05_h5.json",
+  "2026-11-06_h5.json"
+ ],
  "batches": [
+  {
+   "file": "2026-11-06_h5.json",
+   "signal_date": "2026-11-06",
+   "horizon": 5,
+   "exit": "2026-11-16",
+   "bench_0050": 5.8,
+   "taiex": 10.01,
+   "taiex_window": [
+    "2026-11-06",
+    "2026-11-13"
+   ],
+   "bench_0050_close": 10.81,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": 0.099,
+     "mean_net": 2.59,
+     "mean_excess": -3.21,
+     "up_hit": 60.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": 0.31,
+     "mean_net": 6.19,
+     "mean_excess": 0.39,
+     "up_hit": 90.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": 0.28,
+     "mean_net": 8.97,
+     "mean_excess": 3.17,
+     "up_hit": 100.0,
+     "beat_0050": 60.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "84867621e3",
+   "official": {
+    "stable": {
+     "mean_net": 4.48,
+     "mean_excess": -1.32,
+     "up_hit": 77.8,
+     "beat_0050": 44.4,
+     "filled": 9
+    },
+    "balanced": {
+     "mean_net": 1.97,
+     "mean_excess": -3.83,
+     "up_hit": 50.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -1.26,
+     "mean_excess": -7.06,
+     "up_hit": 55.6,
+     "beat_0050": 0.0,
+     "filled": 9
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 9
+    },
+    "aggressive": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 9
+    },
+    "aggressive_volcap": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 9
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
+   }
+  },
+  {
+   "file": "2026-11-05_h5.json",
+   "signal_date": "2026-11-05",
+   "horizon": 5,
+   "exit": "2026-11-13",
+   "bench_0050": 14.34,
+   "taiex": 3.65,
+   "taiex_window": [
+    "2026-11-05",
+    "2026-11-12"
+   ],
+   "bench_0050_close": 3.91,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": 0.236,
+     "mean_net": 12.73,
+     "mean_excess": -1.61,
+     "up_hit": 100.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": 0.411,
+     "mean_net": 13.76,
+     "mean_excess": -0.58,
+     "up_hit": 100.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": 0.394,
+     "mean_net": 18.89,
+     "mean_excess": 4.55,
+     "up_hit": 100.0,
+     "beat_0050": 70.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "84867621e3",
+   "official": {
+    "stable": {
+     "mean_net": 10.24,
+     "mean_excess": -4.1,
+     "up_hit": 100.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": 11.7,
+     "mean_excess": -2.64,
+     "up_hit": 100.0,
+     "beat_0050": 50.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": 19.81,
+     "mean_excess": 5.47,
+     "up_hit": 100.0,
+     "beat_0050": 70.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "aggressive_volcap": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
+   }
+  },
+  {
+   "file": "2026-11-04_h5.json",
+   "signal_date": "2026-11-04",
+   "horizon": 5,
+   "exit": "2026-11-12",
+   "bench_0050": 4.12,
+   "taiex": 3.05,
+   "taiex_window": [
+    "2026-11-04",
+    "2026-11-11"
+   ],
+   "bench_0050_close": 3.36,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": 0.253,
+     "mean_net": -1.2,
+     "mean_excess": -5.32,
+     "up_hit": 40.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": 0.215,
+     "mean_net": -2.09,
+     "mean_excess": -6.21,
+     "up_hit": 40.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": 0.175,
+     "mean_net": 4.54,
+     "mean_excess": 0.42,
+     "up_hit": 90.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "84867621e3",
+   "official": {
+    "stable": {
+     "mean_net": 0.71,
+     "mean_excess": -3.42,
+     "up_hit": 40.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -1.24,
+     "mean_excess": -5.37,
+     "up_hit": 50.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": 5.56,
+     "mean_excess": 1.44,
+     "up_hit": 70.0,
+     "beat_0050": 60.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
+   }
+  },
+  {
+   "file": "2026-11-03_h5.json",
+   "signal_date": "2026-11-03",
+   "horizon": 5,
+   "exit": "2026-11-11",
+   "bench_0050": -0.54,
+   "taiex": -1.38,
+   "taiex_window": [
+    "2026-11-03",
+    "2026-11-10"
+   ],
+   "bench_0050_close": -0.89,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": 0.065,
+     "mean_net": -4.83,
+     "mean_excess": -4.29,
+     "up_hit": 10.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": -0.047,
+     "mean_net": -10.15,
+     "mean_excess": -9.61,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": -0.079,
+     "mean_net": -6.74,
+     "mean_excess": -6.2,
+     "up_hit": 0.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "84867621e3",
+   "official": {
+    "stable": {
+     "mean_net": -0.33,
+     "mean_excess": 0.21,
+     "up_hit": 30.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -6.88,
+     "mean_excess": -6.34,
+     "up_hit": 10.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -1.81,
+     "mean_excess": -1.27,
+     "up_hit": 40.0,
+     "beat_0050": 50.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
+   }
+  },
+  {
+   "file": "2026-11-02_h5.json",
+   "signal_date": "2026-11-02",
+   "horizon": 5,
+   "exit": "2026-11-10",
+   "bench_0050": -2.88,
+   "taiex": -7.25,
+   "taiex_window": [
+    "2026-11-02",
+    "2026-11-09"
+   ],
+   "bench_0050_close": -6.39,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": -0.111,
+     "mean_net": -7.38,
+     "mean_excess": -4.5,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": -0.199,
+     "mean_net": -10.49,
+     "mean_excess": -7.61,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": -0.233,
+     "mean_net": -13.02,
+     "mean_excess": -10.14,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "57beb6f1f2",
+   "official": {
+    "stable": {
+     "mean_net": -6.65,
+     "mean_excess": -3.77,
+     "up_hit": 0.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -7.73,
+     "mean_excess": -4.86,
+     "up_hit": 0.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -6.87,
+     "mean_excess": -3.99,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
+   }
+  },
+  {
+   "file": "2026-10-30_h5.json",
+   "signal_date": "2026-10-30",
+   "horizon": 5,
+   "exit": "2026-11-09",
+   "bench_0050": -7.5,
+   "taiex": -12.19,
+   "taiex_window": [
+    "2026-10-30",
+    "2026-11-06"
+   ],
+   "bench_0050_close": -11.86,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": -0.176,
+     "mean_net": -12.1,
+     "mean_excess": -4.61,
+     "up_hit": 10.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": -0.305,
+     "mean_net": -16.88,
+     "mean_excess": -9.38,
+     "up_hit": 0.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": -0.366,
+     "mean_net": -19.91,
+     "mean_excess": -12.41,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "4c675d40be",
+   "official": {
+    "stable": {
+     "mean_net": -10.27,
+     "mean_excess": -2.78,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -12.7,
+     "mean_excess": -5.21,
+     "up_hit": 10.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -13.66,
+     "mean_excess": -6.16,
+     "up_hit": 10.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
+   }
+  },
   {
    "file": "2026-10-29_h5.json",
    "signal_date": "2026-10-29",
@@ -703,6 +1270,52 @@
    }
   },
   {
+   "file": "2026-10-14_h20.json",
+   "signal_date": "2026-10-14",
+   "horizon": 20,
+   "exit": "2026-11-16",
+   "bench_0050": -8.13,
+   "taiex": -10.18,
+   "taiex_window": [
+    "2026-10-14",
+    "2026-11-13"
+   ],
+   "bench_0050_close": -9.29,
+   "corrected": false,
+   "shadow": {},
+   "shadow_on_time": null,
+   "shadow_model": null,
+   "official": {
+    "stable": {
+     "mean_net": -6.96,
+     "mean_excess": 1.17,
+     "up_hit": 20.0,
+     "beat_0050": 50.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -14.8,
+     "mean_excess": -6.67,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -25.18,
+     "mean_excess": -17.06,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    }
+   },
+   "academic": {},
+   "official_kind": "原始排名（當時還沒有正式精選）",
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
+  },
+  {
    "file": "2026-10-13_h5.json",
    "signal_date": "2026-10-13",
    "horizon": 5,
@@ -737,6 +1350,52 @@
      "mean_net": -7.92,
      "mean_excess": -4.2,
      "up_hit": 10.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    }
+   },
+   "academic": {},
+   "official_kind": "原始排名（當時還沒有正式精選）",
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
+  },
+  {
+   "file": "2026-10-13_h20.json",
+   "signal_date": "2026-10-13",
+   "horizon": 20,
+   "exit": "2026-11-13",
+   "bench_0050": -8.98,
+   "taiex": -10.86,
+   "taiex_window": [
+    "2026-10-13",
+    "2026-11-12"
+   ],
+   "bench_0050_close": -10.19,
+   "corrected": false,
+   "shadow": {},
+   "shadow_on_time": null,
+   "shadow_model": null,
+   "official": {
+    "stable": {
+     "mean_net": -7.06,
+     "mean_excess": 1.93,
+     "up_hit": 20.0,
+     "beat_0050": 60.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -13.49,
+     "mean_excess": -4.51,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -26.41,
+     "mean_excess": -17.43,
+     "up_hit": 0.0,
      "beat_0050": 10.0,
      "filled": 10
     }
@@ -795,6 +1454,52 @@
    }
   },
   {
+   "file": "2026-10-12_h20.json",
+   "signal_date": "2026-10-12",
+   "horizon": 20,
+   "exit": "2026-11-12",
+   "bench_0050": -8.04,
+   "taiex": -10.23,
+   "taiex_window": [
+    "2026-10-12",
+    "2026-11-11"
+   ],
+   "bench_0050_close": -10.1,
+   "corrected": false,
+   "shadow": {},
+   "shadow_on_time": null,
+   "shadow_model": null,
+   "official": {
+    "stable": {
+     "mean_net": -1.5,
+     "mean_excess": 6.55,
+     "up_hit": 40.0,
+     "beat_0050": 90.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -13.22,
+     "mean_excess": -5.18,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -24.96,
+     "mean_excess": -16.92,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    }
+   },
+   "academic": {},
+   "official_kind": "原始排名（當時還沒有正式精選）",
+   "official_on_time": true,
+   "eligible": {
+    "official": true
+   }
+  },
+  {
    "file": "2026-10-08_h5.json",
    "signal_date": "2026-10-08",
    "horizon": 5,
@@ -839,9 +1544,91 @@
    "eligible": {
     "official": true
    }
+  },
+  {
+   "file": "2026-10-08_h20.json",
+   "signal_date": "2026-10-08",
+   "horizon": 20,
+   "exit": "2026-11-11",
+   "bench_0050": -11.56,
+   "taiex": -13.39,
+   "taiex_window": [
+    "2026-10-08",
+    "2026-11-10"
+   ],
+   "bench_0050_close": -13.27,
+   "corrected": false,
+   "shadow": {},
+   "shadow_on_time": null,
+   "shadow_model": null,
+   "official": {
+    "stable": {
+     "mean_net": null,
+     "mean_excess": null,
+     "up_hit": null,
+     "beat_0050": null,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "up_hit": null,
+     "beat_0050": null,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": null,
+     "mean_excess": null,
+     "up_hit": null,
+     "beat_0050": null,
+     "filled": 10
+    }
+   },
+   "academic": {},
+   "official_kind": "原始排名（當時還沒有正式精選）",
+   "official_on_time": true,
+   "eligible": {
+    "official": false
+   }
   }
  ],
- "excluded": [],
+ "excluded": [
+  {
+   "file": "2026-10-08_h20.json",
+   "part": "official",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-10-30_h5.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-11-02_h5.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-11-03_h5.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-11-04_h5.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-11-05_h5.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-11-06_h5.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  }
+ ],
  "violations": 0,
  "eligibility": "名單要在進場日 09:00 前產生、資料日等於訊號日（track.perf_eligible）；不符合的批次保留原檔但不進任何平均",
  "note": "每一批到期後只寫一次，不會事後修改。同一個期間的相鄰批次持有期重疊，不是獨立樣本；一兩批的短期結果不能代表模型長期有沒有優勢。"

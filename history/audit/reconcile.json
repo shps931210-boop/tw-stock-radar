@@ -1,10 +1,23 @@
 {
- "schema_version": 1,
- "generated_at": "2026-11-07T07:15:33",
+ "schema_version": 2,
+ "generated_at": "2026-11-17T10:40:29",
  "violations": 0,
  "method": "不經過 maturity_report／pit_backtest 的報酬函式，直接用還原後開盤價重算報酬、扣成本、0050 超額與名單（首次發布版前 10 名）",
  "tolerance_pp": 0.011,
  "files": [
+  {
+   "file": "2026-10-08_h20.json",
+   "entry": "2026-10-12",
+   "exit": "2026-11-11",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 1.25,
+    "balanced": -5.49,
+    "aggressive": -14.2
+   },
+   "sha256": "7ead7fd0b268885c88246513cb3195ec0f5c2789c057c05f9be03c908c5f4fec"
+  },
   {
    "file": "2026-10-08_h5.json",
    "entry": "2026-10-12",
@@ -15,7 +28,21 @@
     "stable": 3.75,
     "balanced": -1.84,
     "aggressive": -5.32
-   }
+   },
+   "sha256": "25798051c5dd6d31149434ca4f1387d39d71d4143293810387389b2c48385706"
+  },
+  {
+   "file": "2026-10-12_h20.json",
+   "entry": "2026-10-13",
+   "exit": "2026-11-12",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 6.55,
+    "balanced": -5.18,
+    "aggressive": -16.92
+   },
+   "sha256": "5aca6925b5d426bdec0261ab1dee746eb281850b3fc0ff1866dbd65fb967e6ef"
   },
   {
    "file": "2026-10-12_h5.json",
@@ -27,7 +54,21 @@
     "stable": 3.8,
     "balanced": -1.36,
     "aggressive": -6.45
-   }
+   },
+   "sha256": "af733bb50ab90ed3c6e096c6d250176afb1366cea8ece837c7f94663eae99d96"
+  },
+  {
+   "file": "2026-10-13_h20.json",
+   "entry": "2026-10-14",
+   "exit": "2026-11-13",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 1.93,
+    "balanced": -4.51,
+    "aggressive": -17.43
+   },
+   "sha256": "8370f76645d54145633bd96fe9ec527924b87661b99fe478e4cedf77e1a39fbf"
   },
   {
    "file": "2026-10-13_h5.json",
@@ -39,7 +80,21 @@
     "stable": 1.02,
     "balanced": 0.65,
     "aggressive": -4.2
-   }
+   },
+   "sha256": "34883178c50032b6d7ccbebd7abc84363235df8d999e3fc53003f4da75d46eab"
+  },
+  {
+   "file": "2026-10-14_h20.json",
+   "entry": "2026-10-15",
+   "exit": "2026-11-16",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 1.17,
+    "balanced": -6.67,
+    "aggressive": -17.06
+   },
+   "sha256": "c03972dd72b9a8ea6bcf2470640ce95aa30c7abae67edc23e717fe746ac7eed1"
   },
   {
    "file": "2026-10-14_h5.json",
@@ -51,7 +106,8 @@
     "stable": -1.73,
     "balanced": -0.89,
     "aggressive": -0.69
-   }
+   },
+   "sha256": "9d5cdfdd99463600cbeda748a083dcb796d61c07fe5b7fc26cf72a43382d5f43"
   },
   {
    "file": "2026-10-15_h5.json",
@@ -63,7 +119,8 @@
     "stable": -0.1,
     "balanced": -1.32,
     "aggressive": -3.58
-   }
+   },
+   "sha256": "9403906470e7cb06c791469fd6364fc3a5db9b7358772ca4055b8115bee50346"
   },
   {
    "file": "2026-10-16_h5.json",
@@ -78,7 +135,8 @@
     "shadow_v21": 0.47,
     "shadow_ridge": -2.57,
     "shadow_lgbm": -1.72
-   }
+   },
+   "sha256": "03211e6546975dd0a2f9bfb442e5f26f640729d0f7ffac866be5868d4290456d"
   },
   {
    "file": "2026-10-19_h5.json",
@@ -93,7 +151,8 @@
     "shadow_v21": 2.06,
     "shadow_ridge": -0.98,
     "shadow_lgbm": 0.73
-   }
+   },
+   "sha256": "d4296954947d244b6ebbf94d571847e694ce02af2ce5fbdc43bd753fd8005218"
   },
   {
    "file": "2026-10-20_h5.json",
@@ -108,7 +167,8 @@
     "shadow_v21": 0.76,
     "shadow_ridge": 3.56,
     "shadow_lgbm": 0.3
-   }
+   },
+   "sha256": "5b668a73f75caf8348c1a779e31dc7386a8185aefc3da3a42702cdc690eb3bdd"
   },
   {
    "file": "2026-10-21_h5.json",
@@ -123,7 +183,8 @@
     "shadow_v21": 1.69,
     "shadow_ridge": 3.65,
     "shadow_lgbm": -6.23
-   }
+   },
+   "sha256": "b0366ae6b6d7675bd476a149595186544619d72c18eaa0b81ecfb5861836e052"
   },
   {
    "file": "2026-10-22_h5.json",
@@ -138,7 +199,8 @@
     "shadow_v21": 1.47,
     "shadow_ridge": 2.17,
     "shadow_lgbm": -0.88
-   }
+   },
+   "sha256": "bba86ad926ea2caec5dfbf00c62f3dce86d781ae78d509184d75695615378107"
   },
   {
    "file": "2026-10-27_h5.json",
@@ -153,7 +215,8 @@
     "shadow_v21": -1.35,
     "shadow_ridge": -7.52,
     "shadow_lgbm": -7.54
-   }
+   },
+   "sha256": "9b005e9853c876000f037c07c7b298f6191bdb7fd1337d84d23587977ff782dc"
   },
   {
    "file": "2026-10-28_h5.json",
@@ -168,7 +231,8 @@
     "shadow_v21": -1.31,
     "shadow_ridge": -6.22,
     "shadow_lgbm": -9.49
-   }
+   },
+   "sha256": "79ebd7522f59b0dc202a90b7f31f4a42d41561ec3c895b5a0de9423a509c4853"
   },
   {
    "file": "2026-10-29_h5.json",
@@ -183,7 +247,104 @@
     "shadow_v21": -2.23,
     "shadow_ridge": -8.89,
     "shadow_lgbm": -11.36
-   }
+   },
+   "sha256": "b0b9f74b2dd74757988fde65623adaf35c4832ed47aed6bff08c09579e95edb1"
+  },
+  {
+   "file": "2026-10-30_h5.json",
+   "entry": "2026-11-02",
+   "exit": "2026-11-09",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -2.78,
+    "balanced": -5.21,
+    "aggressive": -6.16,
+    "shadow_v21": -4.61,
+    "shadow_ridge": -9.38,
+    "shadow_lgbm": -12.41
+   },
+   "sha256": "316eb80cdc8f31f6f32753efdc6d2f48cbdcaa1eb13c5b4f8a6ba47f608a585d"
+  },
+  {
+   "file": "2026-11-02_h5.json",
+   "entry": "2026-11-03",
+   "exit": "2026-11-10",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -3.77,
+    "balanced": -4.86,
+    "aggressive": -3.99,
+    "shadow_v21": -4.5,
+    "shadow_ridge": -7.61,
+    "shadow_lgbm": -10.14
+   },
+   "sha256": "a9b172ae9e580b1e218ae47445036ff461060c11c8db95b55c0805d70a4144dd"
+  },
+  {
+   "file": "2026-11-03_h5.json",
+   "entry": "2026-11-04",
+   "exit": "2026-11-11",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 0.21,
+    "balanced": -6.34,
+    "aggressive": -1.27,
+    "shadow_v21": -4.29,
+    "shadow_ridge": -9.61,
+    "shadow_lgbm": -6.2
+   },
+   "sha256": "36c2cb734dfeae8a78035d9a7ead1bedda8c4595f5a10f7c177ad95d52b33812"
+  },
+  {
+   "file": "2026-11-04_h5.json",
+   "entry": "2026-11-05",
+   "exit": "2026-11-12",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -3.42,
+    "balanced": -5.37,
+    "aggressive": 1.44,
+    "shadow_v21": -5.32,
+    "shadow_ridge": -6.21,
+    "shadow_lgbm": 0.42
+   },
+   "sha256": "b8eae50dbcaa472bbc021cb054f869677e59a3cb575045dceaa1a1e93bfb3894"
+  },
+  {
+   "file": "2026-11-05_h5.json",
+   "entry": "2026-11-06",
+   "exit": "2026-11-13",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -4.1,
+    "balanced": -2.64,
+    "aggressive": 5.47,
+    "shadow_v21": -1.61,
+    "shadow_ridge": -0.58,
+    "shadow_lgbm": 4.55
+   },
+   "sha256": "1f46448a962ad3aaf37bad8ab8024325b8a649914c68b4f8544bd89cc2b15e5f"
+  },
+  {
+   "file": "2026-11-06_h5.json",
+   "entry": "2026-11-09",
+   "exit": "2026-11-16",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -1.32,
+    "balanced": -3.83,
+    "aggressive": -7.06,
+    "shadow_v21": -3.21,
+    "shadow_ridge": 0.39,
+    "shadow_lgbm": 3.17
+   },
+   "sha256": "126e701dcb623c7818b50d1c6d5cf714c9f15177b368923b5d9f72172d2a5e25"
   }
  ],
  "all_ok": true,
@@ -249,6 +410,54 @@
    "maturity_v21_top10_net": -2.23,
    "scorecard_top20_gross": -5.17,
    "scorecard_top10_net": -2.23,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
+   "batch": "2026-10-30_h5",
+   "maturity_v21_top10_net": -4.61,
+   "scorecard_top20_gross": -2.65,
+   "scorecard_top10_net": -4.61,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
+   "batch": "2026-11-02_h5",
+   "maturity_v21_top10_net": -4.5,
+   "scorecard_top20_gross": -2.45,
+   "scorecard_top10_net": -4.5,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
+   "batch": "2026-11-03_h5",
+   "maturity_v21_top10_net": -4.29,
+   "scorecard_top20_gross": -2.52,
+   "scorecard_top10_net": -4.29,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
+   "batch": "2026-11-04_h5",
+   "maturity_v21_top10_net": -5.32,
+   "scorecard_top20_gross": -3.51,
+   "scorecard_top10_net": -5.32,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
+   "batch": "2026-11-05_h5",
+   "maturity_v21_top10_net": -1.61,
+   "scorecard_top20_gross": -1.93,
+   "scorecard_top10_net": -1.61,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
+   "batch": "2026-11-06_h5",
+   "maturity_v21_top10_net": -3.21,
+   "scorecard_top20_gross": -1.99,
+   "scorecard_top10_net": -3.21,
    "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
    "same_basis_match": true
   }

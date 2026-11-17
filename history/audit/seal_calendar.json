@@ -1,14 +1,20 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-07T07:15:52",
+ "generated_at": "2026-11-17T10:43:23",
  "summary": {
   "first": "2026-10-16",
-  "last_data": "2026-11-06",
-  "today": "2026-11-07",
-  "expected": 14,
+  "last_data": "2026-11-13",
+  "today": "2026-11-17",
+  "expected": 19,
   "sealed": 14,
   "on_time": 14,
-  "missing": [],
+  "missing": [
+   "2026-11-09",
+   "2026-11-10",
+   "2026-11-11",
+   "2026-11-12",
+   "2026-11-13"
+  ],
   "picks": 14,
   "pre_open": 8,
   "pre_open_on_time": 8,
@@ -24,22 +30,22 @@
    }
   ],
   "matured": {
-   "5": 8,
+   "5": 13,
    "20": 0,
    "60": 0
   },
   "scorecard": {
-   "generated_at": "2026-11-06T15:28:43",
-   "days": 14,
-   "last": "2026-11-06",
+   "generated_at": "2026-11-17T10:39:13",
+   "days": 15,
+   "last": "2026-11-16",
    "matured": {
-    "5": 8,
+    "5": 14,
     "20": 0,
     "60": 0
    }
   },
   "next_due": {
-   "date": "2026-11-09",
+   "date": "2026-11-16",
    "horizon": "5"
   },
   "scorecard_lag": {},
@@ -308,7 +314,7 @@
    "maturity": {
     "5": {
      "due": "2026-11-09",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-11-30",
@@ -339,7 +345,7 @@
    "maturity": {
     "5": {
      "due": "2026-11-10",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-12-01",
@@ -370,7 +376,7 @@
    "maturity": {
     "5": {
      "due": "2026-11-11",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-12-02",
@@ -401,7 +407,7 @@
    "maturity": {
     "5": {
      "due": "2026-11-12",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-12-03",
@@ -432,7 +438,7 @@
    "maturity": {
     "5": {
      "due": "2026-11-13",
-     "matured": false
+     "matured": true
     },
     "20": {
      "due": "2026-12-04",
@@ -468,6 +474,172 @@
     },
     "60": {
      "due": "2027-02-02",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-09",
+   "trading": true,
+   "entry": "2026-11-10",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
+   "maturity": {
+    "5": {
+     "due": "2026-11-17",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-08",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-03",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-10",
+   "trading": true,
+   "entry": "2026-11-11",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
+   "maturity": {
+    "5": {
+     "due": "2026-11-18",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-09",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-04",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-11",
+   "trading": true,
+   "entry": "2026-11-12",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
+   "maturity": {
+    "5": {
+     "due": "2026-11-19",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-10",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-05",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-12",
+   "trading": true,
+   "entry": "2026-11-13",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
+   "maturity": {
+    "5": {
+     "due": "2026-11-20",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-11",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-08",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-13",
+   "trading": true,
+   "entry": "2026-11-16",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "缺漏：這個交易日沒有封存的預測，不會事後補做",
+   "maturity": {
+    "5": {
+     "due": "2026-11-23",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-14",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-09",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-16",
+   "trading": true,
+   "entry": "2026-11-17",
+   "picks": true,
+   "pre_open": false,
+   "sealed": true,
+   "generated_at": "2026-11-17T10:38:38",
+   "on_time": false,
+   "model_version": "2026-11-02-84867621e3",
+   "n": 748,
+   "status": "experimental",
+   "data_ok": true,
+   "maturity": {
+    "5": {
+     "due": "2026-11-24",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-15",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-10",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-17",
+   "trading": true,
+   "entry": "2026-11-18",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
+   "maturity": {
+    "5": {
+     "due": "2026-11-25",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-16",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-11",
      "matured": false
     }
    }
