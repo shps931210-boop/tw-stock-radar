@@ -1,0 +1,2248 @@
+{
+ "schema_version": 1,
+ "file": "2026-11-04_h5.json",
+ "created_at": "2026-11-18T05:47:08",
+ "modes": {
+  "stable": {
+   "signal_date": "2026-11-04",
+   "entry": "2026-11-05",
+   "exit": "2026-11-12",
+   "horizon": 5,
+   "mode": "stable",
+   "name": "穩健型",
+   "bench_0050": 4.12,
+   "mean_net": 0.71,
+   "stocks": [
+    {
+     "id": "2605",
+     "name": "新興",
+     "industry": "航運業",
+     "rank": 1,
+     "score": 81.5,
+     "factors": {
+      "quality": 79.6341,
+      "growth": 83.7204,
+      "value": 92.7977,
+      "momentum": 60.7568,
+      "trend": 80.0
+     },
+     "pre5": -5.97,
+     "pre20": -7.41,
+     "dist_ma20": -7.01,
+     "rsi14": 21.2,
+     "vol20": 34.7,
+     "from_hi250": -21.0,
+     "gap_entry": 0.6,
+     "rev_month": "2026-09",
+     "rev_yoy": 60.1,
+     "per": 6.76,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -1.8,
+     "net": -2.39,
+     "excess": -6.51,
+     "path": [
+      -1.95,
+      -7.06,
+      -4.95,
+      -4.5,
+      -1.8,
+      -2.55
+     ],
+     "worst_close": -7.06,
+     "news_before_signal": [
+      {
+       "date": "2026-11-02",
+       "title": "新興(2605) 個股概覽 | 個股 - 股市 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "熱門股》資金轉進航運 新興站穩均線 - 自由時報",
+       "source": "自由時報"
+      },
+      {
+       "date": "2026-10-20",
+       "title": "2605 新興 - 真的是破幹船！這是載垃圾的不是載油的🙄️🙄️🙄️！ - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "2605 新興 - 感覺還會打- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "2605 新興 - 據Arctic公司稱，近期來自中國和印度的數據總體上支持了歐... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2851",
+     "name": "中再保",
+     "industry": "金融保險",
+     "rank": 2,
+     "score": 79.9,
+     "factors": {
+      "quality": 96.875,
+      "growth": 52.0726,
+      "value": 64.7059,
+      "momentum": 77.9459,
+      "trend": 80.0
+     },
+     "pre5": -1.43,
+     "pre20": 5.22,
+     "dist_ma20": -1.74,
+     "rsi14": 46.9,
+     "vol20": 44.2,
+     "from_hi250": -9.12,
+     "gap_entry": 1.86,
+     "rev_month": "2026-09",
+     "rev_yoy": -14.9,
+     "per": 4.58,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -5.18,
+     "net": -5.76,
+     "excess": -9.89,
+     "path": [
+      -1.22,
+      -5.69,
+      -5.48,
+      -8.83,
+      -6.09,
+      -2.94
+     ],
+     "worst_close": -8.83,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "【13:00 即時新聞】中再保(2851)盤中微跌守高檔，法人買盤成焦點 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【13:00 即時新聞】中再保(2851)盤中微跌守高檔，法人買盤成焦點 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "【10:25 即時新聞】中再保(2851)盤中小漲，股價守在50元關前震盪 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-19",
+       "title": "【09:53 即時新聞】中再保(2851)股價走強，防禦金融標的續獲資金關注 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "公告本公司法人董事代表人異動",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "最新月營收年減"
+     ]
+    },
+    {
+     "id": "2615",
+     "name": "萬海",
+     "industry": "航運業",
+     "rank": 3,
+     "score": 76.8,
+     "factors": {
+      "quality": 71.5115,
+      "growth": 79.3369,
+      "value": 89.0476,
+      "momentum": 59.8919,
+      "trend": 80.0
+     },
+     "pre5": -2.53,
+     "pre20": 2.21,
+     "dist_ma20": -1.53,
+     "rsi14": 42.5,
+     "vol20": 49.4,
+     "from_hi250": -8.7,
+     "gap_entry": 2.16,
+     "rev_month": "2026-09",
+     "rev_yoy": 97.7,
+     "per": 7.93,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -6.36,
+     "net": -6.94,
+     "excess": -11.07,
+     "path": [
+      -4.24,
+      -8.9,
+      -9.32,
+      -5.51,
+      -5.93,
+      -9.32
+     ],
+     "worst_close": -9.32,
+     "news_before_signal": [
+      {
+       "date": "2026-11-02",
+       "title": "萬海(2615) 個股概覽 | 個股 - 股市 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "2615 萬海- 【金包銀之萬海：血雨腥風中的諾亞方舟，航海王霸氣逆襲】 - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "2615 萬海- 萬海新增海防-華南-西印度航線，強化亞洲區域網絡- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "萬海新增海防-華南-西印度航線，強化亞洲區域網絡- 新聞 - MoneyDJ",
+       "source": "MoneyDJ"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "【10:18 即時新聞】萬海(2615)盤中小幅走強，市場聚焦美國線與近洋線運價延續力道 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "《航運股》萬海開闢海防直航西印度CI8航線 強化3地運輸網絡 - 富聯網",
+       "source": "富聯網"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2637",
+     "name": "慧洋-KY",
+     "industry": "航運業",
+     "rank": 4,
+     "score": 73.8,
+     "factors": {
+      "quality": 68.539,
+      "growth": 70.6797,
+      "value": 83.6539,
+      "momentum": 63.6757,
+      "trend": 80.0
+     },
+     "pre5": -1.1,
+     "pre20": 0.1,
+     "dist_ma20": -1.33,
+     "rsi14": 37.4,
+     "vol20": 29.3,
+     "from_hi250": -4.44,
+     "gap_entry": 4.15,
+     "rev_month": "2026-09",
+     "rev_yoy": 24.5,
+     "per": 11.0,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -5.73,
+     "net": -6.31,
+     "excess": -10.44,
+     "path": [
+      -4.27,
+      -8.35,
+      -4.47,
+      -4.08,
+      -5.53,
+      -7.48
+     ],
+     "worst_close": -8.35,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "【11:52 即時新聞】慧洋-KY(2637) 股價小幅走強，市場聚焦散裝航運動能 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-29",
+       "title": "【10:54 即時新聞】慧洋-KY(2637) 小漲守百元關卡，盤面聚焦散裝航運行情 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "代孫公司Taokas Marine S.A.及Taokas Navigation S.A.公告處分散裝貨輪二艘",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "代子公司Wisdom Marine Lines S.A.公告新增資金貸與金額達\r\n最近期財務報表淨值百分之二以上",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-13",
+       "title": "【12:18 即時新聞】慧洋-KY(2637)股價走強，散裝行情與營收表現成盤中焦點 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "進場跳空≥3%"
+     ]
+    },
+    {
+     "id": "6532",
+     "name": "瑞耘",
+     "industry": "半導體業",
+     "rank": 5,
+     "score": 71.8,
+     "factors": {
+      "quality": 81.9196,
+      "growth": 77.2388,
+      "value": 44.5354,
+      "momentum": 81.9459,
+      "trend": 80.0
+     },
+     "pre5": -10.46,
+     "pre20": -10.83,
+     "dist_ma20": -7.6,
+     "rsi14": 44.3,
+     "vol20": 78.6,
+     "from_hi250": -14.74,
+     "gap_entry": -2.8,
+     "rev_month": "2026-09",
+     "rev_yoy": 60.6,
+     "per": 13.31,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 0.48,
+     "net": -0.1,
+     "excess": -4.23,
+     "path": [
+      -6.25,
+      -15.48,
+      -7.12,
+      -3.85,
+      2.4,
+      0.0
+     ],
+     "worst_close": -15.48,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "【09:55 即時新聞】瑞耘(6532)盤中維持偏強，AI與HPC擴產動能受關注 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "半導體全倒下！「這檔」訂單旺到明年Q2、盤中領跌3.42% 迅德跌3.73%、瑞耘重挫近5% - FTNN 新聞網",
+       "source": "FTNN 新聞網"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "6532 瑞耘 - 別亂拼，會死很難看的 - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "迎交貨旺季 瑞耘Q4營收估續揚、全年拚高 - 台視全球資訊網",
+       "source": "台視全球資訊網"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "迎交貨旺季瑞耘Q4營收估續揚、全年拚高- 新聞 - MoneyDJ理財網",
+       "source": "MoneyDJ理財網"
+      },
+      {
+       "date": "2026-10-21",
+       "title": "6532 瑞耘- 高雄幫之後，又有大佬要開始出清了- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "2330",
+     "name": "台積電",
+     "industry": "電子工業",
+     "rank": 6,
+     "score": 70.9,
+     "factors": {
+      "quality": 92.6132,
+      "growth": 67.4576,
+      "value": 32.496,
+      "momentum": 69.7297,
+      "trend": 80.0
+     },
+     "pre5": -6.8,
+     "pre20": -9.6,
+     "dist_ma20": -7.38,
+     "rsi14": 16.2,
+     "vol20": 19.9,
+     "from_hi250": -12.57,
+     "gap_entry": -0.44,
+     "rev_month": "2026-09",
+     "rev_yoy": 54.6,
+     "per": 26.2,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 6.0,
+     "net": 5.42,
+     "excess": 1.29,
+     "path": [
+      -0.44,
+      -5.11,
+      -0.67,
+      1.56,
+      6.44,
+      4.0
+     ],
+     "worst_close": -5.11,
+     "news_before_signal": [
+      {
+       "date": "2026-11-04",
+       "title": "三大法人買賣超 – 外資買超(1802)台玻、(3406)玉晶光，投信買超(2330)台積電、(2454)聯發科，法人合計賣超1464.57億元 - 永豐金證券",
+       "source": "永豐金證券"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "公告本公司115年度第4期無擔保普通公司債(綠色債券)\r\n主要發行條件",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "2330 台積電 - 現在只有台積電拉低敢買。其它的股票觀望。義隆第3Q EPS可... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "台積電 2 奈米產能明年翻倍！廠務、設備、IP 受惠台廠一次看 - 鏈新聞 ABMedia",
+       "source": "鏈新聞 ABMedia"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "2330 台積電 - 那斯達克高層：台積電成全球第七大企業，反映該國建立的成就- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "2330 台積電 - 台股暴跌1612點 專家：籌碼沉澱期 短期維持高檔震盪 美... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "6446",
+     "name": "藥華藥",
+     "industry": "生技醫療業",
+     "rank": 7,
+     "score": 70.9,
+     "factors": {
+      "quality": 91.2836,
+      "growth": 83.4527,
+      "value": 21.8832,
+      "momentum": 86.1622,
+      "trend": 80.0
+     },
+     "pre5": 4.17,
+     "pre20": 7.3,
+     "dist_ma20": 4.58,
+     "rsi14": 60.8,
+     "vol20": 39.4,
+     "from_hi250": -21.14,
+     "gap_entry": 1.6,
+     "rev_month": "2026-09",
+     "rev_yoy": 100.0,
+     "per": 61.21,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 3.15,
+     "net": 2.56,
+     "excess": -1.56,
+     "path": [
+      -6.69,
+      0.0,
+      7.87,
+      0.79,
+      5.12,
+      7.48
+     ],
+     "worst_close": -6.69,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "【最新消息】台股重挫1613點，藥華藥收1225元守住1200元關卡-起漲K線 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "大盤吹冷風也不怕！藥華藥擁逆勢衝刺，生技股重掌台股避風港？ - 聚財網",
+       "source": "聚財網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "泰合爆量衝高近10%！藥華藥強漲35元 生技股資金選邊站 - 聚財網",
+       "source": "聚財網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "6446 藥華藥 - 藥華藥盤後資訊 五大觀察 技術面： 今日放量上漲，站穩5日... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "〈焦點股〉資金流入生技股 藥華藥全球MPN市場布局逐步完善 漲逾半根停板 - 鉅亨網",
+       "source": "鉅亨網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "營運槓桿發酵，藥華藥明年獲利成長拚加速 | MoneyDJ理財網 - LINE TODAY",
+       "source": "LINE TODAY"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2603",
+     "name": "長榮",
+     "industry": "航運業",
+     "rank": 8,
+     "score": 70.6,
+     "factors": {
+      "quality": 54.1433,
+      "growth": 63.1604,
+      "value": 88.1381,
+      "momentum": 56.0,
+      "trend": 100.0
+     },
+     "pre5": 1.9,
+     "pre20": 11.67,
+     "dist_ma20": 4.16,
+     "rsi14": 53.7,
+     "vol20": 45.7,
+     "from_hi250": -2.37,
+     "gap_entry": 0.56,
+     "rev_month": "2026-09",
+     "rev_yoy": 65.0,
+     "per": 10.63,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -4.27,
+     "net": -4.85,
+     "excess": -8.98,
+     "path": [
+      -3.9,
+      -8.53,
+      -8.91,
+      -5.19,
+      -4.45,
+      -6.68
+     ],
+     "worst_close": -8.91,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "2603 長榮 - 大航運-從貨攬業財報窺海空運（捷迅6.31元） - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "2603 長榮 - 恭喜船友們都賺到錢了, 不過最近盤勢震盪劇烈大家小心操作🙏... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-02",
+       "title": "三大法人買賣超– 外資買超(3008)大立光、(2603)長榮，投信買超(3711)日月光投控、(2330)台積電，法人合計賣超1398.44億元(1030)｜豐雲學堂2026 年 11 月 - 永豐金證券",
+       "source": "永豐金證券"
+      },
+      {
+       "date": "2026-11-01",
+       "title": "長榮(2603) 個股概覽 | 個股 - 股市 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-31",
+       "title": "台股暴跌1156點航運股卻挺身救火！長榮領軍抗跌 貨櫃三雄迎運價變局 - 聚財網",
+       "source": "聚財網"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "2603 長榮 - 今天盤面熱點很明顯是「電子股殺聲隆隆、航運股逆勢吸金」：觸控... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "3617",
+     "name": "碩天",
+     "industry": "電子工業",
+     "rank": 9,
+     "score": 70.3,
+     "factors": {
+      "quality": 76.3038,
+      "growth": 60.9092,
+      "value": 73.7819,
+      "momentum": 32.8649,
+      "trend": 80.0
+     },
+     "pre5": -8.48,
+     "pre20": -4.72,
+     "dist_ma20": -7.06,
+     "rsi14": 31.6,
+     "vol20": 42.0,
+     "from_hi250": -13.75,
+     "gap_entry": -1.51,
+     "rev_month": "2026-09",
+     "rev_yoy": 13.3,
+     "per": 11.12,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 16.85,
+     "net": 16.26,
+     "excess": 12.14,
+     "path": [
+      -2.63,
+      -6.78,
+      2.41,
+      12.47,
+      17.07,
+      17.51
+     ],
+     "worst_close": -6.78,
+     "news_before_signal": [
+      {
+       "date": "2026-10-28",
+       "title": "碩天：AI 與邊緣運算帶動 UPS 商機，碩天 2026Q2 毛利率創高 - 富果直送",
+       "source": "富果直送"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "央行政策定調無資金荒！外資匯出逾2.5兆掀匯市波動，AI受惠股碩天創高-財經焦點情報站 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "資料中心需求旺，碩天Q3毛利率續看高檔| MoneyDJ理財網 - LINE TODAY",
+       "source": "LINE TODAY"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "碩天2027年營收、毛利率有望續成長| MoneyDJ理財網 - LINE TODAY",
+       "source": "LINE TODAY"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "碩天2027年營收、毛利率有望續成長- 新聞 - MoneyDJ",
+       "source": "MoneyDJ"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "資料中心需求旺，碩天Q3毛利率續看高檔- 新聞 - MoneyDJ",
+       "source": "MoneyDJ"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "6782",
+     "name": "視陽",
+     "industry": "生技醫療業",
+     "rank": 10,
+     "score": 70.2,
+     "factors": {
+      "quality": 84.7079,
+      "growth": 46.5343,
+      "value": 45.3916,
+      "momentum": 53.0811,
+      "trend": 100.0
+     },
+     "pre5": -3.91,
+     "pre20": 9.32,
+     "dist_ma20": 1.85,
+     "rsi14": 62.8,
+     "vol20": 40.6,
+     "from_hi250": -4.8,
+     "gap_entry": 0.97,
+     "rev_month": "2026-09",
+     "rev_yoy": 14.9,
+     "per": 13.76,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 9.79,
+     "net": 9.2,
+     "excess": 5.08,
+     "path": [
+      1.92,
+      5.37,
+      1.92,
+      10.56,
+      8.45,
+      7.1
+     ],
+     "worst_close": 1.92,
+     "news_before_signal": [
+      {
+       "date": "2026-10-29",
+       "title": "公告本公司研發主管異動",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "澄清115年10月16日經濟日報報導",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "視陽(6782)Q4營收有望年增逾四成？視陽：以公告為準 - 環球生技月刊",
+       "source": "環球生技月刊"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "視陽 (6782) 澄清115年10月16日經濟日報報導 - GeneOnline",
+       "source": "GeneOnline"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "6782 視陽- 〈焦點股〉視陽日本及中國市場帶動Q4有望迎高峰漲逾半根停板- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "〈焦點股〉視陽日本及中國市場帶動Q4有望迎高峰 漲逾半根停板 - 鉅亨網",
+       "source": "鉅亨網"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    }
+   ],
+   "concentration": {
+    "industry": "航運業",
+    "n": 4,
+    "cluster_mean_net": -5.12,
+    "others_mean_net": 4.6,
+    "avg_corr_60d": 0.134
+   },
+   "flag_counts": {
+    "最新月營收年減": 1,
+    "進場跳空≥3%": 1,
+    "20日波動≥60%": 1
+   },
+   "big_losses": [],
+   "cross_section": {
+    "n": 763,
+    "pre20": {
+     "低": 0.98,
+     "中": -1.59,
+     "高": -0.13,
+     "rank_corr": -0.123
+    },
+    "dist_ma20": {
+     "低": 1.48,
+     "中": -1.82,
+     "高": -0.4,
+     "rank_corr": -0.166
+    },
+    "vol20": {
+     "低": -2.23,
+     "中": -1.16,
+     "高": 2.67,
+     "rank_corr": 0.297
+    },
+    "gap_entry": {
+     "低": 2.39,
+     "中": -1.85,
+     "高": -1.27,
+     "rank_corr": -0.283
+    },
+    "rsi14": {
+     "低": -0.5,
+     "中": -0.44,
+     "高": 0.21,
+     "rank_corr": 0.001
+    }
+   }
+  },
+  "balanced": {
+   "signal_date": "2026-11-04",
+   "entry": "2026-11-05",
+   "exit": "2026-11-12",
+   "horizon": 5,
+   "mode": "balanced",
+   "name": "均衡型",
+   "bench_0050": 4.12,
+   "mean_net": -1.24,
+   "stocks": [
+    {
+     "id": "3006",
+     "name": "晶豪科",
+     "industry": "電子工業",
+     "rank": 1,
+     "score": 88.9,
+     "factors": {
+      "quality": 91.8575,
+      "growth": 99.3169,
+      "value": 82.7925,
+      "momentum": 92.7568,
+      "trend": 60.0
+     },
+     "pre5": -15.97,
+     "pre20": -18.91,
+     "dist_ma20": -8.98,
+     "rsi14": 47.0,
+     "vol20": 80.9,
+     "from_hi250": -25.8,
+     "gap_entry": -4.75,
+     "rev_month": "2026-09",
+     "rev_yoy": 470.2,
+     "per": 3.26,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 6.58,
+     "net": 5.99,
+     "excess": 1.87,
+     "path": [
+      -2.95,
+      -5.9,
+      3.4,
+      2.27,
+      6.58,
+      2.27
+     ],
+     "worst_close": -5.9,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "晶豪科10月營收65.46 億元 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "3006 晶豪科 - 11月沒搞錯吧？ 籌碼k怎麼敢這樣估 - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "晶豪科10月營收65.46 億元 - TechNews 科技新報",
+       "source": "TechNews 科技新報"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "《業績-半導體》晶豪科10月營收為65.46億元，年增430.06% - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "營收：晶豪科(3006)10月營收65億4593萬元，月增率-12.26%，年增率430.06% - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "晶豪科EPS躍上36.79元：缺貨推升售價，高毛利還要過成本關 - 口袋證券",
+       "source": "口袋證券"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "2451",
+     "name": "創見",
+     "industry": "電子工業",
+     "rank": 2,
+     "score": 86.5,
+     "factors": {
+      "quality": 95.0995,
+      "growth": 97.9782,
+      "value": 75.0403,
+      "momentum": 83.027,
+      "trend": 60.0
+     },
+     "pre5": -10.39,
+     "pre20": -9.31,
+     "dist_ma20": -5.89,
+     "rsi14": 42.4,
+     "vol20": 41.7,
+     "from_hi250": -24.63,
+     "gap_entry": -0.95,
+     "rev_month": "2026-09",
+     "rev_yoy": 290.4,
+     "per": 4.58,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -8.25,
+     "net": -8.84,
+     "excess": -12.96,
+     "path": [
+      -2.3,
+      -5.18,
+      -8.25,
+      -10.56,
+      -9.79,
+      -11.32
+     ],
+     "worst_close": -11.32,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "本公司將於115年11月6日召開法人說明會",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "《半導體》創見11月6日自辦法說 - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "個股：創見(2451)11月6日召開法人說明會 - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-10-21",
+       "title": "創見束家身價多狂？上半年狂賺200億　束崇萬855億重返富豪榜 - NOWnews今日新聞",
+       "source": "NOWnews今日新聞"
+      },
+      {
+       "date": "2026-10-20",
+       "title": "商用不動產大單！宜蘭阿拉伯宮傳10億易主，科技家族創見大股東接手-財經焦點情報站 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-20",
+       "title": "創見束家大手筆！砸10億買下宜蘭「阿拉伯皇宮」 傳奇招待所迎新主人 - UDN",
+       "source": "UDN"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2344",
+     "name": "華邦電",
+     "industry": "電子工業",
+     "rank": 3,
+     "score": 86.0,
+     "factors": {
+      "quality": 91.5817,
+      "growth": 96.5594,
+      "value": 69.7019,
+      "momentum": 96.2162,
+      "trend": 60.0
+     },
+     "pre5": -17.73,
+     "pre20": -20.95,
+     "dist_ma20": -13.55,
+     "rsi14": 38.8,
+     "vol20": 65.9,
+     "from_hi250": -36.26,
+     "gap_entry": -5.65,
+     "rev_month": "2026-09",
+     "rev_yoy": 256.7,
+     "per": 9.12,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 2.62,
+     "net": 2.04,
+     "excess": -2.09,
+     "path": [
+      -4.49,
+      -9.74,
+      -0.75,
+      1.12,
+      2.25,
+      -4.49
+     ],
+     "worst_close": -9.74,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "更正本公司之子公司背書保證資訊揭露明細表",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "公告本公司董事會通過115年第三季合併財務報告",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "本公司董事會通過12吋晶圓廠擴建計劃及購買設備",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "公告本公司民國115年上半年度之現金股利除息基準日",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "董事會決議發放股利",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "記憶體昨天喊缺貨今天喊救命！南亞科、華邦電、群聯跌停 - 聚財網",
+       "source": "聚財網"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "2605",
+     "name": "新興",
+     "industry": "航運業",
+     "rank": 4,
+     "score": 80.5,
+     "factors": {
+      "quality": 79.6341,
+      "growth": 83.7204,
+      "value": 92.7977,
+      "momentum": 60.7568,
+      "trend": 80.0
+     },
+     "pre5": -5.97,
+     "pre20": -7.41,
+     "dist_ma20": -7.01,
+     "rsi14": 21.2,
+     "vol20": 34.7,
+     "from_hi250": -21.0,
+     "gap_entry": 0.6,
+     "rev_month": "2026-09",
+     "rev_yoy": 60.1,
+     "per": 6.76,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -1.8,
+     "net": -2.39,
+     "excess": -6.51,
+     "path": [
+      -1.95,
+      -7.06,
+      -4.95,
+      -4.5,
+      -1.8,
+      -2.55
+     ],
+     "worst_close": -7.06,
+     "news_before_signal": [
+      {
+       "date": "2026-11-02",
+       "title": "新興(2605) 個股概覽 | 個股 - 股市 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "熱門股》資金轉進航運 新興站穩均線 - 自由時報",
+       "source": "自由時報"
+      },
+      {
+       "date": "2026-10-20",
+       "title": "2605 新興 - 真的是破幹船！這是載垃圾的不是載油的🙄️🙄️🙄️！ - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "2605 新興 - 感覺還會打- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "2605 新興 - 據Arctic公司稱，近期來自中國和印度的數據總體上支持了歐... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2615",
+     "name": "萬海",
+     "industry": "航運業",
+     "rank": 5,
+     "score": 76.1,
+     "factors": {
+      "quality": 71.5115,
+      "growth": 79.3369,
+      "value": 89.0476,
+      "momentum": 59.8919,
+      "trend": 80.0
+     },
+     "pre5": -2.53,
+     "pre20": 2.21,
+     "dist_ma20": -1.53,
+     "rsi14": 42.5,
+     "vol20": 49.4,
+     "from_hi250": -8.7,
+     "gap_entry": 2.16,
+     "rev_month": "2026-09",
+     "rev_yoy": 97.7,
+     "per": 7.93,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -6.36,
+     "net": -6.94,
+     "excess": -11.07,
+     "path": [
+      -4.24,
+      -8.9,
+      -9.32,
+      -5.51,
+      -5.93,
+      -9.32
+     ],
+     "worst_close": -9.32,
+     "news_before_signal": [
+      {
+       "date": "2026-11-02",
+       "title": "萬海(2615) 個股概覽 | 個股 - 股市 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "2615 萬海- 【金包銀之萬海：血雨腥風中的諾亞方舟，航海王霸氣逆襲】 - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "2615 萬海- 萬海新增海防-華南-西印度航線，強化亞洲區域網絡- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "萬海新增海防-華南-西印度航線，強化亞洲區域網絡- 新聞 - MoneyDJ",
+       "source": "MoneyDJ"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "【10:18 即時新聞】萬海(2615)盤中小幅走強，市場聚焦美國線與近洋線運價延續力道 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "《航運股》萬海開闢海防直航西印度CI8航線 強化3地運輸網絡 - 富聯網",
+       "source": "富聯網"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "4967",
+     "name": "十銓",
+     "industry": "電子工業",
+     "rank": 6,
+     "score": 76.1,
+     "factors": {
+      "quality": 68.3882,
+      "growth": 94.6543,
+      "value": 58.2145,
+      "momentum": 81.7297,
+      "trend": 80.0
+     },
+     "pre5": -4.83,
+     "pre20": -2.56,
+     "dist_ma20": 0.52,
+     "rsi14": 51.5,
+     "vol20": 44.6,
+     "from_hi250": -9.82,
+     "gap_entry": -2.26,
+     "rev_month": "2026-09",
+     "rev_yoy": 109.7,
+     "per": 2.87,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 1.35,
+     "net": 0.76,
+     "excess": -3.36,
+     "path": [
+      0.58,
+      3.08,
+      1.15,
+      1.15,
+      0.58,
+      -1.73
+     ],
+     "worst_close": -1.73,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "十銓長單看到一年半，缺貨下能交多少才是關鍵 - 口袋證券",
+       "source": "口袋證券"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "十銓看好推論需求增，拓企業工控市場- 新聞 - MoneyDJ",
+       "source": "MoneyDJ"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "《盤前掃瞄-基本面》健鼎營收步步高；十銓看記憶體：缺到2028 H2 - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-11-02",
+       "title": "記憶體產業遇中日雙利空夾擊，報價漲幅急降引發十銓等概念股修正-財經焦點情報站 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "5522 遠雄- 📅法說會行情又來了，十銓能複製歷史嗎？ - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-29",
+       "title": "【1029台股盤後】開高走低震盪打底！聯準會按兵不動但Google財報帶崩，外資賣超約略688億，策略鎖定主本比【麗臺】、【眾達-KY】、【十銓】｜豐雲學堂2026 年 10 月 - 永豐金證券",
+       "source": "永豐金證券"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2059",
+     "name": "川湖",
+     "industry": "電子零組件業",
+     "rank": 7,
+     "score": 75.9,
+     "factors": {
+      "quality": 94.7569,
+      "growth": 93.543,
+      "value": 22.0026,
+      "momentum": 91.5676,
+      "trend": 60.0
+     },
+     "pre5": -15.27,
+     "pre20": -29.19,
+     "dist_ma20": -16.42,
+     "rsi14": 26.3,
+     "vol20": 71.1,
+     "from_hi250": -40.52,
+     "gap_entry": -3.14,
+     "rev_month": "2026-09",
+     "rev_yoy": 196.2,
+     "per": 47.41,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 7.92,
+     "net": 7.34,
+     "excess": 3.21,
+     "path": [
+      -4.02,
+      -9.18,
+      -3.84,
+      2.82,
+      4.8,
+      -1.98
+     ],
+     "worst_close": -9.18,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "2059 川湖- 【00992A】11/03 操作日報｜淨值重挫近7%，經理人逆勢大買這兩檔- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【00403A】11/03 操作日報｜盤面重挫，經理人逆勢撿台積電與川湖 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "川湖啟動百億CB募資；明年Q1~Q2動能再起 - Yahoo股市",
+       "source": "Yahoo股市"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "AI股綠油油！「這檔」9月獲利暴增291%仍大跌5.79% 穎崴、宏碁資訊重摔半根、川湖漲2.6%撐盤 - FTNN 新聞網",
+       "source": "FTNN 新聞網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "川湖啟動百億CB募資；明年Q1~Q2動能再起- 新聞 - MoneyDJ",
+       "source": "MoneyDJ"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【11/03 產業即時新聞】電子中游-金屬製品族群上漲 2.48%，伺服器滑軌龍頭川湖領軍強彈 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "5386",
+     "name": "青雲",
+     "industry": "電腦及週邊設備業",
+     "rank": 8,
+     "score": 75.0,
+     "factors": {
+      "quality": 57.0731,
+      "growth": 97.3412,
+      "value": 73.2206,
+      "momentum": 99.2432,
+      "trend": 40.0
+     },
+     "pre5": -15.2,
+     "pre20": -27.52,
+     "dist_ma20": -15.61,
+     "rsi14": 22.3,
+     "vol20": 49.4,
+     "from_hi250": -46.16,
+     "gap_entry": -3.3,
+     "rev_month": "2026-09",
+     "rev_yoy": 574.9,
+     "per": 3.0,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -6.59,
+     "net": -7.17,
+     "excess": -11.3,
+     "path": [
+      -5.85,
+      -7.56,
+      -8.54,
+      -8.05,
+      -7.56,
+      -11.46
+     ],
+     "worst_close": -11.46,
+     "news_before_signal": [],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "2851",
+     "name": "中再保",
+     "industry": "金融保險",
+     "rank": 9,
+     "score": 74.7,
+     "factors": {
+      "quality": 96.875,
+      "growth": 52.0726,
+      "value": 64.7059,
+      "momentum": 77.9459,
+      "trend": 80.0
+     },
+     "pre5": -1.43,
+     "pre20": 5.22,
+     "dist_ma20": -1.74,
+     "rsi14": 46.9,
+     "vol20": 44.2,
+     "from_hi250": -9.12,
+     "gap_entry": 1.86,
+     "rev_month": "2026-09",
+     "rev_yoy": -14.9,
+     "per": 4.58,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -5.18,
+     "net": -5.76,
+     "excess": -9.89,
+     "path": [
+      -1.22,
+      -5.69,
+      -5.48,
+      -8.83,
+      -6.09,
+      -2.94
+     ],
+     "worst_close": -8.83,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "【13:00 即時新聞】中再保(2851)盤中微跌守高檔，法人買盤成焦點 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【13:00 即時新聞】中再保(2851)盤中微跌守高檔，法人買盤成焦點 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "【10:25 即時新聞】中再保(2851)盤中小漲，股價守在50元關前震盪 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-19",
+       "title": "【09:53 即時新聞】中再保(2851)股價走強，防禦金融標的續獲資金關注 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "公告本公司法人董事代表人異動",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "最新月營收年減"
+     ]
+    },
+    {
+     "id": "6446",
+     "name": "藥華藥",
+     "industry": "生技醫療業",
+     "rank": 10,
+     "score": 73.5,
+     "factors": {
+      "quality": 91.2836,
+      "growth": 83.4527,
+      "value": 21.8832,
+      "momentum": 86.1622,
+      "trend": 80.0
+     },
+     "pre5": 4.17,
+     "pre20": 7.3,
+     "dist_ma20": 4.58,
+     "rsi14": 60.8,
+     "vol20": 39.4,
+     "from_hi250": -21.14,
+     "gap_entry": 1.6,
+     "rev_month": "2026-09",
+     "rev_yoy": 100.0,
+     "per": 61.21,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 3.15,
+     "net": 2.56,
+     "excess": -1.56,
+     "path": [
+      -6.69,
+      0.0,
+      7.87,
+      0.79,
+      5.12,
+      7.48
+     ],
+     "worst_close": -6.69,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "【最新消息】台股重挫1613點，藥華藥收1225元守住1200元關卡-起漲K線 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "大盤吹冷風也不怕！藥華藥擁逆勢衝刺，生技股重掌台股避風港？ - 聚財網",
+       "source": "聚財網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "泰合爆量衝高近10%！藥華藥強漲35元 生技股資金選邊站 - 聚財網",
+       "source": "聚財網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "6446 藥華藥 - 藥華藥盤後資訊 五大觀察 技術面： 今日放量上漲，站穩5日... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "〈焦點股〉資金流入生技股 藥華藥全球MPN市場布局逐步完善 漲逾半根停板 - 鉅亨網",
+       "source": "鉅亨網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "營運槓桿發酵，藥華藥明年獲利成長拚加速 | MoneyDJ理財網 - LINE TODAY",
+       "source": "LINE TODAY"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    }
+   ],
+   "concentration": {
+    "industry": "電子工業",
+    "n": 4,
+    "cluster_mean_net": -0.01,
+    "others_mean_net": -2.06,
+    "avg_corr_60d": 0.165
+   },
+   "flag_counts": {
+    "20日波動≥60%": 3,
+    "最新月營收年減": 1
+   },
+   "big_losses": [],
+   "cross_section": {
+    "n": 763,
+    "pre20": {
+     "低": 0.98,
+     "中": -1.59,
+     "高": -0.13,
+     "rank_corr": -0.123
+    },
+    "dist_ma20": {
+     "低": 1.48,
+     "中": -1.82,
+     "高": -0.4,
+     "rank_corr": -0.166
+    },
+    "vol20": {
+     "低": -2.23,
+     "中": -1.16,
+     "高": 2.67,
+     "rank_corr": 0.297
+    },
+    "gap_entry": {
+     "低": 2.39,
+     "中": -1.85,
+     "高": -1.27,
+     "rank_corr": -0.283
+    },
+    "rsi14": {
+     "低": -0.5,
+     "中": -0.44,
+     "高": 0.21,
+     "rank_corr": 0.001
+    }
+   }
+  },
+  "aggressive": {
+   "signal_date": "2026-11-04",
+   "entry": "2026-11-05",
+   "exit": "2026-11-12",
+   "horizon": 5,
+   "mode": "aggressive",
+   "name": "積極型",
+   "bench_0050": 4.12,
+   "mean_net": 5.56,
+   "stocks": [
+    {
+     "id": "2305",
+     "name": "全友",
+     "industry": "電腦及週邊設備業",
+     "rank": 1,
+     "score": 84.8,
+     "factors": {
+      "quality": 51.0243,
+      "growth": 97.3746,
+      "value": 30.6283,
+      "momentum": 98.4865,
+      "trend": 80.0
+     },
+     "pre5": -9.63,
+     "pre20": -18.94,
+     "dist_ma20": -13.28,
+     "rsi14": 24.0,
+     "vol20": 87.1,
+     "from_hi250": -31.36,
+     "gap_entry": -1.64,
+     "rev_month": "2026-09",
+     "rev_yoy": 212.8,
+     "per": 59.51,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -10.83,
+     "net": -11.42,
+     "excess": -15.54,
+     "path": [
+      -8.44,
+      -11.98,
+      -6.56,
+      -3.44,
+      -11.46,
+      -16.25
+     ],
+     "worst_close": -16.25,
+     "news_before_signal": [
+      {
+       "date": "2026-10-14",
+       "title": "2305 全友- 籌碼明細1014 - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-14",
+       "title": "2305 全友- 昨天警示今天解除.表示?認同3率.3生月營收新高- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": true,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "3498",
+     "name": "陽程",
+     "industry": "其他電子類",
+     "rank": 2,
+     "score": 84.3,
+     "factors": {
+      "quality": 57.483,
+      "growth": 92.9476,
+      "value": 38.2842,
+      "momentum": 97.5135,
+      "trend": 80.0
+     },
+     "pre5": -13.28,
+     "pre20": 6.28,
+     "dist_ma20": -3.97,
+     "rsi14": 48.4,
+     "vol20": 82.0,
+     "from_hi250": -13.28,
+     "gap_entry": -1.53,
+     "rev_month": "2026-09",
+     "rev_yoy": 283.6,
+     "per": 52.05,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": -3.11,
+     "net": -3.7,
+     "excess": -7.82,
+     "path": [
+      -8.44,
+      -14.44,
+      -6.0,
+      -15.33,
+      -6.89,
+      -6.0
+     ],
+     "worst_close": -15.33,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "3498 陽程- 長期投資的效益- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-29",
+       "title": "本公司有價證券近期達公布注意交易資訊標準，\r\n故公告相關訊息，以利投資人區別瞭解。",
+       "source": "公開資訊觀測站（上櫃重大訊息）"
+      },
+      {
+       "date": "2026-10-29",
+       "title": "《其他電》陽程自結9月每股盈餘1.47元 - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-10-29",
+       "title": "《其他電》注意股：陽程 近5日漲11.42% - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "《其他電》注意股：陽程 近5日漲6.11% - 富聯網",
+       "source": "富聯網"
+      },
+      {
+       "date": "2026-10-27",
+       "title": "【10:03 即時新聞】陽程(3498) 股價走強，軍工與自動化設備成盤中焦點 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "3167",
+     "name": "大量",
+     "industry": "電機機械",
+     "rank": 3,
+     "score": 83.5,
+     "factors": {
+      "quality": 66.2043,
+      "growth": 88.2509,
+      "value": 20.5717,
+      "momentum": 98.8108,
+      "trend": 80.0
+     },
+     "pre5": -16.21,
+     "pre20": -12.03,
+     "dist_ma20": -11.45,
+     "rsi14": 41.3,
+     "vol20": 88.9,
+     "from_hi250": -20.46,
+     "gap_entry": -4.98,
+     "rev_month": "2026-09",
+     "rev_yoy": 172.3,
+     "per": 60.52,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 11.71,
+     "net": 11.12,
+     "excess": 7.0,
+     "path": [
+      -5.24,
+      -14.63,
+      -9.88,
+      -2.32,
+      7.44,
+      7.2
+     ],
+     "worst_close": -14.63,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "公告本公司召開法人說明會",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "【12:38 即時新聞】大量(3167)股價小漲，市場聚焦營收連創新高與成長動能 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "【11:40 即時新聞】大量(3167)股價走強，市場聚焦營收與AI訂單動能 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "大量(3167)9月營收年增172.33%連7月創高！合約負債一年翻倍，高階背鑽機的訂單還能看多遠？ - 鉅亨網",
+       "source": "鉅亨網"
+      },
+      {
+       "date": "2026-10-16",
+       "title": "大量(3167)9月營收年增172.33%連7月創高！合約負債一年翻倍，高階背鑽機的訂單還能看多遠？ - 優分析UAnalyze",
+       "source": "優分析UAnalyze"
+      },
+      {
+       "date": "2026-10-15",
+       "title": "大量9月獲利年增逾5倍，單月EPS 3.82元 - 台視全球資訊網",
+       "source": "台視全球資訊網"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "6672",
+     "name": "騰輝電子-KY",
+     "industry": "電子零組件業",
+     "rank": 4,
+     "score": 80.9,
+     "factors": {
+      "quality": 58.4836,
+      "growth": 86.0527,
+      "value": 17.2061,
+      "momentum": 97.0811,
+      "trend": 80.0
+     },
+     "pre5": -5.87,
+     "pre20": 20.5,
+     "dist_ma20": -3.36,
+     "rsi14": 48.8,
+     "vol20": 105.5,
+     "from_hi250": -15.63,
+     "gap_entry": -4.54,
+     "rev_month": "2026-09",
+     "rev_yoy": 201.7,
+     "per": 79.91,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 5.35,
+     "net": 4.76,
+     "excess": 0.64,
+     "path": [
+      -5.64,
+      -8.32,
+      -2.38,
+      -0.2,
+      3.96,
+      -1.58
+     ],
+     "worst_close": -8.32,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "係因本公司有價證券於集中交易市場達公布注意交易資訊標準\r\n，故公布相關財務業務等重大訊息，以利投資人區別暸解。",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      },
+      {
+       "date": "2026-10-30",
+       "title": "本公司受邀&#21442;加永豐金證券所舉辦之法說會，說明115年第三季營運成果",
+       "source": "公開資訊觀測站（上市重大訊息）"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "訊號前20日漲≥20%",
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "3443",
+     "name": "創意",
+     "industry": "半導體業",
+     "rank": 5,
+     "score": 80.8,
+     "factors": {
+      "quality": 64.2404,
+      "growth": 82.6733,
+      "value": 14.9751,
+      "momentum": 98.3784,
+      "trend": 80.0
+     },
+     "pre5": -12.91,
+     "pre20": -9.94,
+     "dist_ma20": -9.14,
+     "rsi14": 39.4,
+     "vol20": 76.7,
+     "from_hi250": -17.27,
+     "gap_entry": -4.43,
+     "rev_month": "2026-09",
+     "rev_yoy": 97.8,
+     "per": 143.74,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 17.72,
+     "net": 17.14,
+     "excess": 13.01,
+     "path": [
+      -5.81,
+      -8.75,
+      -1.4,
+      5.44,
+      15.96,
+      15.59
+     ],
+     "worst_close": -8.75,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "台積電「親兒子」也扛不住！創意盤中重挫逾7％ 外資卻喊目標價8600元 - FTNN 新聞網",
+       "source": "FTNN 新聞網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "焦點股》創意：台積電最強「親兒子」 CPU訂單需求優於預期 - 聚財網",
+       "source": "聚財網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "焦點股》創意：台積電最強「親兒子」 CPU訂單需求優於預期 - 自由財經",
+       "source": "自由財經"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "焦點股》創意：台積電最強「親兒子」 CPU訂單需求優於預期 - 自由時報",
+       "source": "自由時報"
+      },
+      {
+       "date": "2026-11-02",
+       "title": "美系CSP大單發威！創意CPU出貨衝刺 外資看旺到2027年 - 中時新聞網",
+       "source": "中時新聞網"
+      },
+      {
+       "date": "2026-11-02",
+       "title": "準萬金股+1！本土投顧喊創意「9360元」目標價　關鍵因素曝光 - ETtoday財經雲",
+       "source": "ETtoday財經雲"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "3147",
+     "name": "大綜",
+     "industry": "資訊服務業",
+     "rank": 6,
+     "score": 80.1,
+     "factors": {
+      "quality": 61.8934,
+      "growth": 95.1476,
+      "value": 53.013,
+      "momentum": 66.0541,
+      "trend": 100.0
+     },
+     "pre5": 0.16,
+     "pre20": 19.66,
+     "dist_ma20": 5.33,
+     "rsi14": 61.0,
+     "vol20": 49.4,
+     "from_hi250": -6.87,
+     "gap_entry": -1.26,
+     "rev_month": "2026-09",
+     "rev_yoy": 287.9,
+     "per": 19.67,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 13.76,
+     "net": 13.17,
+     "excess": 9.05,
+     "path": [
+      -5.6,
+      -7.04,
+      2.24,
+      12.32,
+      13.92,
+      4.32
+     ],
+     "worst_close": -7.04,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "【11:35 即時新聞】大綜(3147)盤中續強，AI伺服器題材延燒 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-27",
+       "title": "【12:23 即時新聞】大綜(3147)股價續強，AI伺服器與資訊服務成盤中焦點 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-13",
+       "title": "更正115年8月背書保證資訊揭露明細表",
+       "source": "公開資訊觀測站（上櫃重大訊息）"
+      }
+     ],
+     "big_loss": false,
+     "flags": []
+    },
+    {
+     "id": "3653",
+     "name": "健策",
+     "industry": "電子零組件業",
+     "rank": 7,
+     "score": 79.4,
+     "factors": {
+      "quality": 89.6265,
+      "growth": 74.0799,
+      "value": 15.5413,
+      "momentum": 90.9189,
+      "trend": 80.0
+     },
+     "pre5": 1.18,
+     "pre20": -5.15,
+     "dist_ma20": -2.67,
+     "rsi14": 40.4,
+     "vol20": 65.7,
+     "from_hi250": -10.48,
+     "gap_entry": -6.2,
+     "rev_month": "2026-09",
+     "rev_yoy": 80.0,
+     "per": 145.57,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 2.73,
+     "net": 2.14,
+     "excess": -1.98,
+     "path": [
+      -4.05,
+      -13.64,
+      -6.86,
+      -4.3,
+      2.89,
+      -7.36
+     ],
+     "worst_close": -13.64,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "【11:39 即時新聞】健策(3653)盤中小漲，AI伺服器散熱題材續受關注 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-28",
+       "title": "【09:20 即時新聞】健策(3653)攻上漲停，盤中聚焦AI伺服器散熱供應鏈 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-26",
+       "title": "三大法人買賣超 – 外資買超(6669)緯穎、(3653)健策，投信買超(2330)台積電、(3037)欣興，法人合計賣超1001.6億元 - 永豐金證券",
+       "source": "永豐金證券"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "1303",
+     "name": "南亞",
+     "industry": "塑膠工業",
+     "rank": 8,
+     "score": 78.9,
+     "factors": {
+      "quality": 47.3065,
+      "growth": 82.4251,
+      "value": 24.9035,
+      "momentum": 99.027,
+      "trend": 80.0
+     },
+     "pre5": -13.32,
+     "pre20": 6.35,
+     "dist_ma20": -9.19,
+     "rsi14": 40.1,
+     "vol20": 94.8,
+     "from_hi250": -20.77,
+     "gap_entry": -3.44,
+     "rev_month": "2026-09",
+     "rev_yoy": 55.3,
+     "per": 44.6,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 17.98,
+     "net": 17.39,
+     "excess": 13.27,
+     "path": [
+      -6.74,
+      -10.3,
+      -1.5,
+      8.24,
+      17.23,
+      9.74
+     ],
+     "worst_close": -10.3,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "1303 南亞 - 高盛今日出清南亞了，但凱北今年累計賣超4萬多張，借劵空嗎？錢... - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "1303 南亞 - 如何看待本益比估值？ - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "《塑膠股》南亞跌破300元慘吞跌停週五展望成救命稻草- 上市櫃 - 旺得富理財網",
+       "source": "旺得富理財網"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【即時新聞】南亞(1303)獲利報喜竟重挫近跌停！這「5檔概念股」賣壓湧現快逃？ - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【即時新聞】南亞(1303)獲利報喜竟重挫近跌停！這「5檔概念股」賣壓湧現快逃？ - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【即時新聞】南亞最新Q3狂賺4.9元，這2檔轉投資接棒爆量轉強？ - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "6532",
+     "name": "瑞耘",
+     "industry": "半導體業",
+     "rank": 9,
+     "score": 78.1,
+     "factors": {
+      "quality": 81.9196,
+      "growth": 77.2388,
+      "value": 44.5354,
+      "momentum": 81.9459,
+      "trend": 80.0
+     },
+     "pre5": -10.46,
+     "pre20": -10.83,
+     "dist_ma20": -7.6,
+     "rsi14": 44.3,
+     "vol20": 78.6,
+     "from_hi250": -14.74,
+     "gap_entry": -2.8,
+     "rev_month": "2026-09",
+     "rev_yoy": 60.6,
+     "per": 13.31,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 0.48,
+     "net": -0.1,
+     "excess": -4.23,
+     "path": [
+      -6.25,
+      -15.48,
+      -7.12,
+      -3.85,
+      2.4,
+      0.0
+     ],
+     "worst_close": -15.48,
+     "news_before_signal": [
+      {
+       "date": "2026-10-30",
+       "title": "【09:55 即時新聞】瑞耘(6532)盤中維持偏強，AI與HPC擴產動能受關注 - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "半導體全倒下！「這檔」訂單旺到明年Q2、盤中領跌3.42% 迅德跌3.73%、瑞耘重挫近5% - FTNN 新聞網",
+       "source": "FTNN 新聞網"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "6532 瑞耘 - 別亂拼，會死很難看的 - 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "迎交貨旺季 瑞耘Q4營收估續揚、全年拚高 - 台視全球資訊網",
+       "source": "台視全球資訊網"
+      },
+      {
+       "date": "2026-10-22",
+       "title": "迎交貨旺季瑞耘Q4營收估續揚、全年拚高- 新聞 - MoneyDJ理財網",
+       "source": "MoneyDJ理財網"
+      },
+      {
+       "date": "2026-10-21",
+       "title": "6532 瑞耘- 高雄幫之後，又有大佬要開始出清了- 股市爆料同學會 - CMoney",
+       "source": "CMoney"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    },
+    {
+     "id": "6213",
+     "name": "聯茂",
+     "industry": "電子零組件業",
+     "rank": 10,
+     "score": 77.9,
+     "factors": {
+      "quality": 39.3788,
+      "growth": 83.8995,
+      "value": 16.7618,
+      "momentum": 99.3514,
+      "trend": 80.0
+     },
+     "pre5": -21.34,
+     "pre20": -10.4,
+     "dist_ma20": -19.03,
+     "rsi14": 33.1,
+     "vol20": 87.7,
+     "from_hi250": -28.5,
+     "gap_entry": -8.01,
+     "rev_month": "2026-09",
+     "rev_yoy": 110.7,
+     "per": 94.88,
+     "per_pct_3y": null,
+     "disposition": [],
+     "ret": 5.68,
+     "net": 5.1,
+     "excess": 0.97,
+     "path": [
+      -2.13,
+      -11.9,
+      -5.68,
+      -6.22,
+      3.02,
+      -7.28
+     ],
+     "worst_close": -11.9,
+     "news_before_signal": [
+      {
+       "date": "2026-11-03",
+       "title": "冠西電飆29%抓去關！明起2分鐘撮合　聯茂5度列注意股拉警報 - ETtoday財經雲",
+       "source": "ETtoday財經雲"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【即時新聞】聯茂(6213)列注意股賣壓沉重，這「4檔概念股」同步遭大戶提款！ - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "【即時新聞】最新聯茂電子9月賺3.54元，外資爆量倒貨小心這檔拉回！ - CMoney投資網誌",
+       "source": "CMoney投資網誌"
+      },
+      {
+       "date": "2026-11-03",
+       "title": "最狂不是聯茂！「這檔」90天暴漲589%、東台6天飆39% 15檔注意股名單一次看 - Yahoo股市",
+       "source": "Yahoo股市"
+      },
+      {
+       "date": "2026-11-02",
+       "title": "台股殺800點急反彈！PCB三雄全倒「這檔玻纖布」挾萬張逆勢漲 CCL台燿、聯茂跌半根 - FTNN 新聞網",
+       "source": "FTNN 新聞網"
+      },
+      {
+       "date": "2026-11-02",
+       "title": "《電零組》注意股：聯茂 近5日跌16.52% - 富聯網",
+       "source": "富聯網"
+      }
+     ],
+     "big_loss": false,
+     "flags": [
+      "20日波動≥60%"
+     ]
+    }
+   ],
+   "concentration": {
+    "industry": "電子零組件業",
+    "n": 3,
+    "cluster_mean_net": 4.0,
+    "others_mean_net": 6.23,
+    "avg_corr_60d": 0.254
+   },
+   "flag_counts": {
+    "20日波動≥60%": 9,
+    "訊號前20日漲≥20%": 1
+   },
+   "big_losses": [
+    "2305"
+   ],
+   "cross_section": {
+    "n": 763,
+    "pre20": {
+     "低": 0.98,
+     "中": -1.59,
+     "高": -0.13,
+     "rank_corr": -0.123
+    },
+    "dist_ma20": {
+     "低": 1.48,
+     "中": -1.82,
+     "高": -0.4,
+     "rank_corr": -0.166
+    },
+    "vol20": {
+     "低": -2.23,
+     "中": -1.16,
+     "高": 2.67,
+     "rank_corr": 0.297
+    },
+    "gap_entry": {
+     "低": 2.39,
+     "中": -1.85,
+     "高": -1.27,
+     "rank_corr": -0.283
+    },
+    "rsi14": {
+     "低": -0.5,
+     "中": -0.44,
+     "高": 0.21,
+     "rank_corr": 0.001
+    }
+   }
+  }
+ }
+}
