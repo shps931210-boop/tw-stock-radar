@@ -88,6 +88,35 @@
    "matured_dates": 0,
    "matured_stocks": 0,
    "models": {}
+  },
+  {
+   "date": "2026-11-18",
+   "at": "2026-11-19T05:26:04",
+   "sealed_days": 17,
+   "matured_dates": 1,
+   "matured_stocks": 745,
+   "models": {
+    "v21": {
+     "dates": 1,
+     "ic": -0.0821,
+     "top_net": -6.56,
+     "beat_0050": 0.0,
+     "hit": 40.0,
+     "mdd": -6.56,
+     "first": "2026-10-16",
+     "last": "2026-10-16"
+    },
+    "lgbm": {
+     "dates": 1,
+     "ic": -0.1237,
+     "top_net": -16.88,
+     "beat_0050": 0.0,
+     "hit": 10.0,
+     "mdd": -16.88,
+     "first": "2026-10-16",
+     "last": "2026-10-16"
+    }
+   }
   }
  ]
 }
