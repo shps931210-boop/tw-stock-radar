@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-18T11:46:34",
+ "generated_at": "2026-11-18T12:45:16",
  "quality": {
-  "checked_at": "2026-11-18T11:46:34",
+  "checked_at": "2026-11-18T12:45:16",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -16,7 +16,7 @@
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-11-18T11:46:27"
+    "detail": "2026-11-18T12:45:09"
    },
    "global": {
     "label": "國際市場",
@@ -26,8 +26,8 @@
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 3,
-  "latest_event_at": "2026-11-17T21:47:00"
+  "duplicates_removed": 13,
+  "latest_event_at": "2026-11-18T04:30:00"
  },
  "upcoming_holidays": [
   "2026-12-25"
@@ -41,7 +41,7 @@
   "mode": "collect",
   "target_date": "2026-11-19",
   "since": "2026-11-17T13:30:00",
-  "events": 84,
+  "events": 224,
   "high": 6
  },
  "risk": {
@@ -66,7 +66,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T15:43:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T15:43:00",
    "affected_tickers": [
     "5306"
@@ -88,7 +88,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:09:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:09:00",
    "affected_tickers": [
     "3588"
@@ -110,7 +110,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:28:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:28:00",
    "affected_tickers": [
     "2885"
@@ -132,7 +132,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T18:31:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T18:31:00",
    "affected_tickers": [
     "2855"
@@ -154,7 +154,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T19:19:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T19:19:00",
    "affected_tickers": [
     "1538"
@@ -176,7 +176,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T21:47:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T21:47:00",
    "affected_tickers": [
     "3593"
@@ -198,7 +198,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T13:37:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T13:37:00",
    "affected_tickers": [
     "1583"
@@ -220,7 +220,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T13:40:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T13:40:00",
    "affected_tickers": [
     "5244"
@@ -242,7 +242,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T13:45:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T13:45:00",
    "affected_tickers": [
     "6153"
@@ -264,7 +264,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T13:46:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T13:46:00",
    "affected_tickers": [
     "4989"
@@ -286,7 +286,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T14:06:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T14:06:00",
    "affected_tickers": [
     "1225"
@@ -308,7 +308,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T14:11:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T14:11:00",
    "affected_tickers": [
     "2303"
@@ -330,7 +330,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T14:18:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T14:18:00",
    "affected_tickers": [
     "2227"
@@ -352,7 +352,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T14:20:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T14:20:00",
    "affected_tickers": [
     "2022"
@@ -374,7 +374,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T14:27:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T14:27:00",
    "affected_tickers": [
     "2610"
@@ -396,7 +396,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T14:42:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T14:42:00",
    "affected_tickers": [
     "1305"
@@ -418,7 +418,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T15:04:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T15:04:00",
    "affected_tickers": [
     "1817"
@@ -440,7 +440,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T15:08:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T15:08:00",
    "affected_tickers": [
     "2351"
@@ -462,7 +462,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T15:15:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T15:15:00",
    "affected_tickers": [
     "8481"
@@ -484,7 +484,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T15:31:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T15:31:00",
    "affected_tickers": [
     "3040"
@@ -506,7 +506,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T15:59:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T15:59:00",
    "affected_tickers": [
     "3032"
@@ -528,7 +528,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:06:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:06:00",
    "affected_tickers": [
     "5471"
@@ -550,7 +550,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:16:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:16:00",
    "affected_tickers": [
     "8926"
@@ -572,7 +572,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:21:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:21:00",
    "affected_tickers": [
     "2415"
@@ -594,7 +594,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:22:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:22:00",
    "affected_tickers": [
     "9802"
@@ -616,7 +616,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:33:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:33:00",
    "affected_tickers": [
     "2471"
@@ -638,7 +638,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:40:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:40:00",
    "affected_tickers": [
     "4426"
@@ -660,7 +660,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:43:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:43:00",
    "affected_tickers": [
     "2201"
@@ -682,7 +682,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T16:43:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T16:43:00",
    "affected_tickers": [
     "2886"
@@ -704,7 +704,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:12:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:12:00",
    "affected_tickers": [
     "3048"
@@ -726,7 +726,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:13:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:13:00",
    "affected_tickers": [
     "2886"
@@ -748,7 +748,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:23:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:23:00",
    "affected_tickers": [
     "2206"
@@ -770,7 +770,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:26:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:26:00",
    "affected_tickers": [
     "1702"
@@ -792,7 +792,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:30:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:30:00",
    "affected_tickers": [
     "2371"
@@ -814,7 +814,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:32:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:32:00",
    "affected_tickers": [
     "2331"
@@ -836,7 +836,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T17:37:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T17:37:00",
    "affected_tickers": [
     "1417"
@@ -858,7 +858,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T18:07:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T18:07:00",
    "affected_tickers": [
     "6225"
@@ -880,7 +880,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-17T18:19:00",
    "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
+   "fetched_at": "2026-11-18T12:45:16",
    "data_asof": "2026-11-17T18:19:00",
    "affected_tickers": [
     "6743"
@@ -895,51 +895,51 @@
    "novel": true
   },
   {
-   "id": "dab91d5619621b94",
-   "kind": "announcement",
-   "title": "本公司115年第一次股東臨時會決議 解除董事競業禁止之限制",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-17T13:36:00",
-   "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
-   "data_asof": "2026-11-17T13:36:00",
+   "id": "ef45016aa71a804e",
+   "kind": "news",
+   "title": "砸14.5億搶攻車用商機 鴻海宣布收購Sony車載相機模組事業",
+   "source": "TVBS新聞網",
+   "link": "https://news.tvbs.com.tw/money/4052149",
+   "published_at": "2026-11-18T00:23:00",
+   "first_seen_at": "2026-11-18T12:45:09",
+   "fetched_at": "2026-11-18T12:45:16",
+   "data_asof": "2026-11-18T00:23:00",
    "affected_tickers": [
-    "4169"
+    "2317"
    ],
    "affected_industries": [
-    "生技醫療業"
+    "電子工業"
    ],
-   "event_type": "其他",
-   "importance": 1,
+   "event_type": "合併收購",
+   "importance": 2,
    "direction": "不確定",
-   "confidence": "官方公告",
+   "confidence": "媒體報導",
    "novel": true
   },
   {
-   "id": "6c31a748f27fe7f4",
-   "kind": "announcement",
-   "title": "公告本公司115年第一次股東臨時會重要決議事項",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-17T13:36:00",
-   "first_seen_at": "2026-11-18T05:47:25",
-   "fetched_at": "2026-11-18T11:46:34",
-   "data_asof": "2026-11-17T13:36:00",
+   "id": "f8be03576e4db890",
+   "kind": "news",
+   "title": "玉山金法說會讓市場與法人「扣分」或重新定價的四大關鍵",
+   "source": "CMoney",
+   "link": "https://www.cmoney.tw/forum/article/189038899",
+   "published_at": "2026-11-18T01:54:00",
+   "first_seen_at": "2026-11-18T12:45:09",
+   "fetched_at": "2026-11-18T12:45:16",
+   "data_asof": "2026-11-18T01:54:00",
    "affected_tickers": [
-    "4169"
+    "2884"
    ],
    "affected_industries": [
-    "生技醫療業"
+    "金融保險"
    ],
-   "event_type": "其他",
-   "importance": 1,
+   "event_type": "法說會",
+   "importance": 2,
    "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": false
+   "confidence": "媒體報導",
+   "novel": true
   }
  ],
- "event_count": 84,
+ "event_count": 224,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -948,7 +948,7 @@
    "price": 89.62,
    "chg_pct": 0.0
   },
-  "generated_at": "2026-11-18T11:46:33+08:00",
+  "generated_at": "2026-11-18T12:45:15+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
