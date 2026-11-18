@@ -32,8 +32,9 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
   await home();
 
   await check(1, "加權指數", async () => {
+    // 2026-11-18 使用者要求「今天能買哪些股票」放最上面，大盤卡排在它後面，所以只檢查內容，不檢查位置
     const r = await page.$eval("#hmkt", (el) => ({ top: el.getBoundingClientRect().top, txt: el.innerText }));
-    return [r.top < h * 0.6 && /加權指數\s*[\d,]+\.\d\d/.test(r.txt), `大盤卡頂端 ${Math.round(r.top)}px`];
+    return [/加權指數\s*[\d,]+\.\d\d/.test(r.txt), `大盤卡頂端 ${Math.round(r.top)}px`];
   });
   await check(2, "0050", async () => {
     const t = await page.$eval("#hmkt .mk-top", (el) => el.innerText);
@@ -45,7 +46,12 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     const top = await page.$eval("#hix", (el) => el.getBoundingClientRect().top);
     const sw = [];
     for (const r of ["5D", "1M", "1Y", "3M"]) { await page.click(`#ixr button[data-r="${r}"]`); await page.waitForTimeout(300); sw.push(r + ":" + ((await chartOk("#hix")).ok ? "有圖" : "沒圖")); }
-    return [c.ok && sw.every((x) => x.endsWith("有圖")) && (dev === "手機" || top < h), `${c.kind} ${c.wh}，頂端 ${Math.round(top)}px；${sw.join("，")}`];
+    return [c.ok && sw.every((x) => x.endsWith("有圖")), `${c.kind} ${c.wh}，頂端 ${Math.round(top)}px；${sw.join("，")}`];
+  });
+  await check(0, "今天可以考慮進場的股票（首頁第一張卡）", async () => {
+    const r = await page.$eval("#hbuy", (el) => ({ top: el.getBoundingClientRect().top, txt: el.innerText }));
+    const first = await page.$eval("#app section.card", (el) => el.id);
+    return [first === "hbuy" && r.top < h * 0.6 && /可信度|回測/.test(r.txt) && !/上漲機率/.test(r.txt), `頂端 ${Math.round(r.top)}px`];
   });
   await check(5, "AI 數字評分", async () => {
     const xs = await page.$$eval("#hpick .pk-sc b", (bs) => bs.map((b) => ({ t: b.innerText.trim(), fs: parseFloat(getComputedStyle(b).fontSize) })));
