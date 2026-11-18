@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-18T00:00:24",
- "days": 16,
- "on_time": 15,
+ "generated_at": "2026-11-18T23:40:17",
+ "days": 17,
+ "on_time": 16,
  "definitions": {
   "top_excess": "前 20 名平均相對 0050 超額，未扣成本（研究排序能力）",
   "top10_net_excess": "前 10 名平均相對 0050 超額，扣成本 0.585%（和到期對帳明細同一口徑）"
  },
  "first": "2026-10-16",
- "last": "2026-11-17",
+ "last": "2026-11-18",
  "horizons": {
   "5": {
    "matured": 14,
@@ -61,7 +61,46 @@
    }
   },
   "20": {
-   "matured": 0
+   "matured": 1,
+   "v21": {
+    "ic": -0.082,
+    "ic_pos": 0.0,
+    "top_excess": -7.69,
+    "top_n": 20,
+    "top_basis": "未扣成本",
+    "top10_net_excess": -6.56,
+    "n": 1
+   },
+   "ridge": {
+    "ic": -0.035,
+    "ic_pos": 0.0,
+    "top_excess": -4.18,
+    "top_n": 20,
+    "top_basis": "未扣成本",
+    "top10_net_excess": -7.19,
+    "n": 1
+   },
+   "lgbm": {
+    "ic": -0.124,
+    "ic_pos": 0.0,
+    "top_excess": -16.19,
+    "top_n": 20,
+    "top_basis": "未扣成本",
+    "top10_net_excess": -16.88,
+    "n": 1
+   },
+   "logit": {
+    "ic": -0.398,
+    "ic_pos": 0.0,
+    "top_excess": -15.13,
+    "top_n": 20,
+    "top_basis": "未扣成本",
+    "top10_net_excess": -16.22,
+    "n": 1,
+    "hit": 64.6,
+    "brier": 0.2461,
+    "brier_base": 0.2288
+   }
   },
   "60": {
    "matured": 0
@@ -89,6 +128,29 @@
     "ridge": -0.02567,
     "lgbm": -0.01725,
     "logit": -0.0051
+   }
+  },
+  {
+   "sig": "2026-10-16",
+   "h": "20",
+   "ver": "aa85a6cc14",
+   "ic": {
+    "v21": -0.0821,
+    "ridge": -0.0352,
+    "lgbm": -0.1237,
+    "logit": -0.3984
+   },
+   "top": {
+    "v21": -0.07692,
+    "ridge": -0.04185,
+    "lgbm": -0.16191,
+    "logit": -0.15129
+   },
+   "top10": {
+    "v21": -0.0656,
+    "ridge": -0.07193,
+    "lgbm": -0.16879,
+    "logit": -0.16221
    }
   },
   {

@@ -1,6 +1,8 @@
 {
- "generated_at": "2026-11-18T07:41:13",
- "new": [],
+ "generated_at": "2026-11-18T23:40:58",
+ "new": [
+  "2026-10-16_h20.json"
+ ],
  "batches": [
   {
    "file": "2026-11-06_h5.json",
@@ -1155,6 +1157,78 @@
      "mean_excess": -2.05,
      "up_hit": 30.0,
      "beat_0050": 30.0,
+     "filled": 10
+    }
+   },
+   "academic": {},
+   "official_kind": "原始排名（當時還沒有正式精選）",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true
+   }
+  },
+  {
+   "file": "2026-10-16_h20.json",
+   "signal_date": "2026-10-16",
+   "horizon": 20,
+   "exit": "2026-11-18",
+   "bench_0050": -10.94,
+   "taiex": -14.9,
+   "taiex_window": [
+    "2026-10-16",
+    "2026-11-17"
+   ],
+   "bench_0050_close": -13.76,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": -0.082,
+     "mean_net": -17.5,
+     "mean_excess": -6.56,
+     "up_hit": 0.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": -0.035,
+     "mean_net": -18.13,
+     "mean_excess": -7.19,
+     "up_hit": 10.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": -0.124,
+     "mean_net": -27.81,
+     "mean_excess": -16.88,
+     "up_hit": 0.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "aa85a6cc14",
+   "official": {
+    "stable": {
+     "mean_net": -9.82,
+     "mean_excess": 1.12,
+     "up_hit": 0.0,
+     "beat_0050": 60.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -16.3,
+     "mean_excess": -5.37,
+     "up_hit": 0.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -27.44,
+     "mean_excess": -16.51,
+     "up_hit": 0.0,
+     "beat_0050": 10.0,
      "filled": 10
     }
    },
