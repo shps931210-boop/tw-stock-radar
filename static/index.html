@@ -1408,11 +1408,28 @@ function robustHtml(R) {
       ${Object.entries(IM).map(([y, v]) => `<tr><td>${y}</td>${Object.keys(G).map((g) => `<td class="r num">${v[g] == null ? "—" : fmtNum(v[g], 1) + "%"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
       <p class="faint small" style="margin:4px 0 0">重要性只代表模型用了多少，不代表因果；看的是每年穩不穩定。</p>` : ""}`;
 }
+// 2026-11-18 每日反省：為什麼輸 0050（data/predictions/reflection.json，app/reflection.py）
+function reflHtml(R) {
+  if (!R || !R.modes) return "";
+  const cls = { bad: "warn", warn: "acc", info: "" }, lab = { bad: "輸 0050", warn: "原因", info: "觀察" };
+  const li = (f) => `<li><span class="pill ${cls[f.level] || ""}">${lab[f.level] || ""}</span> ${esc(f.text)}</li>`;
+  const num = (v) => v == null ? "—" : `<span class="num ${signCls(v)}">${v > 0 ? "+" : ""}${fmtNum(v, 2)}</span>`;
+  const M = Object.values(R.modes);
+  return `<div class="banner ${M.some((m) => m.findings.some((f) => f.level === "bad")) ? "warn" : "info"} small" style="margin-bottom:10px">
+    <b>每日反省：${esc(R.headline)}</b>
+    <div class="tbl" style="margin-top:6px"><table><thead><tr><th>模式（5 日到期）</th><th class="r">批數</th><th class="r">平均相對 0050</th><th class="r">最近 10 批</th><th class="r">跟大盤漲跌程度</th><th class="r">扣掉大盤後的選股能力</th></tr></thead><tbody>
+    ${M.map((m) => { const s = m.h5 || {}; return `<tr><td>${esc(m.name)}</td><td class="r num">${s.n ?? 0}</td><td class="r">${num(s.mean_excess)}</td><td class="r">${num(s.recent)}</td><td class="r num">${s.beta == null ? "—" : fmtNum(s.beta, 2) + " 倍"}</td><td class="r">${num(s.alpha)}</td></tr>`; }).join("")}</tbody></table></div>
+    <ul style="margin:6px 0 0;padding-left:18px">${M.flatMap((m) => m.findings).concat(R.process?.findings || []).map(li).join("")}</ul>
+    ${(R.next || []).length ? `<p style="margin:6px 0 0"><b>接下來要做：</b></p><ul style="margin:2px 0 0;padding-left:18px">${R.next.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+    ${(R.lessons || []).length ? `<details style="margin-top:6px"><summary>從過去失敗學到的教訓（${R.lessons.length} 條）</summary><ul style="margin:4px 0 0;padding-left:18px">${R.lessons.map((x) => `<li>${esc(x.date)}：${esc(x.lesson)} <span class="faint">（${esc(x.evidence)}）</span></li>`).join("")}</ul></details>` : ""}
+    <p class="faint" style="margin:6px 0 0">${esc(R.rule)}資料：${esc(R.source)}。</p></div>`;
+}
 // V31 每日自主學習報告（data/predictions/daily_learning.json）
 async function loadDL() {
   const el = $("#dlearn"); if (!el || !SITE) return;
   let S; try { const r = await fetch("data/predictions/daily_learning.json?t=" + Date.now()); S = r.ok ? await r.json() : null; } catch (e) { S = null; }
   if (!S || !S.latest) return;
+  let RF; try { const r = await fetch("data/predictions/reflection.json?t=" + Date.now()); RF = r.ok ? await r.json() : null; } catch (e) { RF = null; }
   el.hidden = false;
   const L = S.latest, C = L.candidate || {}, G = L.gate || {}, E = L.errors || {}, M = E.models || {}, FE = L.feature_effect || {}, FD = L.feature_drift || {};
   const yes = (v, a = "是", b = "否") => v == null ? "—" : v ? `<span class="pill s-ok">${a}</span>` : `<span class="pill warn">${b}</span>`;
@@ -1421,6 +1438,7 @@ async function loadDL() {
   const RS = S.run_status || {}, failed = RS.last && RS.last.ok === false, tm = (x) => esc((x || "").slice(0, 16).replace("T", " "));
   el.innerHTML = `<div class="card-h"><h2>AI 每日學習報告</h2><span class="muted small">資料日 ${esc(L.date)}・${tm(L.generated_at)} 產生</span></div>
     ${failed ? `<div class="banner warn small" style="margin-bottom:10px"><b>最近一次自主學習沒有完成</b>（${tm(RS.last.at)}）：${esc(RS.last.error || "原因不明")}${RS.fail_streak > 1 ? `，已連續失敗 ${RS.fail_streak} 次` : ""}。下面是最近一次成功的報告（${tm(RS.last_ok)}），不是今天的學習結果。</div>` : ""}
+    ${reflHtml(RF)}
     <div class="banner ${L.needs_human ? "warn" : "info"} small" style="margin-bottom:10px"><b>${failed ? "上次成功時：" : ""}${esc(L.summary)}</b>${L.needs_human ? `<br>需要你注意：${esc(L.human_why.join("；"))}` : ""}</div>
     ${S.ops ? `<div class="opsg">${[["每日任務成功率", S.ops.runs ? fmtNum(S.ops.success_rate, 0) + "%" : "尚無紀錄"], ["最後一次成功", tm(S.ops.last_ok) || "—"],
       ["連續失敗", `${S.ops.fail_streak || 0} 次`], ["候選模型版本", esc(S.ops.candidate || "—")], ["可以升級嗎", S.ops.promotion?.ok ? "通過門檻，等人工確認" : esc(S.ops.promotion?.label || "還不行")],

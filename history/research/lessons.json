@@ -1,0 +1,15 @@
+{
+ "schema_version": 1,
+ "note": "從過去失敗學到的教訓。每一條都附證據來源；只新增、不刪除，錯了就加一條更正。",
+ "lessons": [
+  {"date": "2026-10-28", "lesson": "輸 0050 不只是選錯股：全部可選股票等權平均每 20 天就落後 0050 約 0.85 個百分點（0050 大部分是台積電）。和 0050 比之前要先知道這個結構差距。", "evidence": "history/backtest/selection.json（V21 選股品質檢討）"},
+  {"date": "2026-10-28", "lesson": "積極型的分數在 2019 年以來的歷史裡沒有排序能力（Rank IC −0.015），高分不代表會漲。", "evidence": "history/backtest/selection.json"},
+  {"date": "2026-11-01", "lesson": "積極型大虧主要來自高波動股的開盤跳空；避開跳空的股票反而更差，問題在挑了太多高波動股。", "evidence": "history/research/miss_deep.json、history/backtest/perf_v22.json"},
+  {"date": "2026-11-01", "lesson": "27 個事前登記的候選規則全部沒過；控制波動、空頭改買 0050 能減少大虧，但都犧牲太多報酬。", "evidence": "history/backtest/perf_v22.json"},
+  {"date": "2026-11-17", "lesson": "穩健型之前看起來贏 0050，主要是跟大盤漲跌的程度只有 0.7 倍，大跌時少跌；大盤一漲就輸。跌得少不等於選得準。", "evidence": "history/audit/fair_compare.json（19 批 5 日到期）"},
+  {"date": "2026-11-17", "lesson": "正式名單幾乎沒有 0050 的權值股（57 份名單裡，鴻海、聯發科、台達電等一次都沒有）；權值股一帶動大盤，我們一定落後。", "evidence": "history/audit/maturity/"},
+  {"date": "2026-11-17", "lesson": "2025 年以來，原本前 10 名每 20 天落後 0050 約 3.6～3.8 個百分點（穩健、均衡），同期 0050 累計 +116%、穩健只有 +3%。以 0050 為主可以把落後縮小，但不能變贏。", "evidence": "history/backtest/bench_study.json（PR #2）"},
+  {"date": "2026-11-17", "lesson": "研究做太多、真實證據太少：40 多個測試對上只有幾批 20 日到期結果。再加新候選只會增加碰巧有效的機會，不會讓網站變準。", "evidence": "history/research/experiments.json"},
+  {"date": "2026-11-17", "lesson": "重新訓練不等於進步：LightGBM 重新訓練 4 次，真實到期表現都沒贏正式版；兩次用的訓練期間還一模一樣。", "evidence": "history/learning/、影子模型對帳"}
+ ]
+}
