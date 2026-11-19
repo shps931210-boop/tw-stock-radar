@@ -1,6 +1,6 @@
 {
  "schema_version": 2,
- "generated_at": "2026-11-19T23:57:59",
+ "generated_at": "2026-11-20T00:10:53",
  "violations": 0,
  "method": "不經過 maturity_report／pit_backtest 的報酬函式，直接用還原後開盤價重算報酬、扣成本、0050 超額與名單（首次發布版前 10 名）",
  "tolerance_pp": 0.011,
@@ -181,7 +181,7 @@
     "shadow_ridge": -0.94,
     "shadow_lgbm": -18.23
    },
-   "sha256": "930b63a79cc74f267c93e8698d421795be86d05ad258607150505b3679667713"
+   "sha256": "a0d2445407548992233c5dfcbbf2f6a493edfc5828accd1765ad3e4c7779c9eb"
   },
   {
    "file": "2026-10-19_h5.json",
