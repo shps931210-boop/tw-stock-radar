@@ -212,6 +212,13 @@ try:  # V25 AI 持續學習報告（app/learning.py）：版本、比賽、漂�
     (out / "data" / "predictions" / "learning.json").write_text(json.dumps(learning.status(sc), ensure_ascii=False, separators=(",", ":")), "utf-8")
 except Exception as e:
     print("持續學習報告失敗：", e)
+try:  # 2026-11-18 每日反省（app/reflection.py）
+    _rf = config.ROOT / "history" / "learning" / "reflection.json"
+    if _rf.exists():
+        (out / "data" / "predictions").mkdir(parents=True, exist_ok=True)
+        shutil.copy(_rf, out / "data" / "predictions" / "reflection.json")
+except Exception as e:
+    print("每日反省複製失敗：", e)
 try:  # V31 每日自主學習報告（app/daily_learning.py → history/learning/）
     from app import daily_learning
     dl = daily_learning.site_summary()
