@@ -53,5 +53,5 @@ class ProductionDB(unittest.TestCase):
 
     def test_seal_calendar_has_no_unexplained_gap(self):
         cal = seal_calendar.build(data_days=seal_calendar.db_days())
-        self.assertEqual(cal["summary"]["missing"], [], "有交易日沒有封存預測")
+        self.assertEqual(cal["summary"]["unexplained"], [], "有交易日沒有封存預測，也沒有寫明原因")
         self.assertFalse(cal["summary"]["scorecard_lag"], "對帳統計沒有跟上已到期的預測")

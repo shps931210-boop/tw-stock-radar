@@ -48,6 +48,26 @@ class Calendar(unittest.TestCase):
         self.assertIn("2026-10-27", c["summary"]["missing"])  # 有行情但沒封存
 
 
+    def test_outage_is_still_missing_but_explained(self):
+        """2026-11-19：自己系統停擺（帳號停權）造成的缺漏照樣算缺漏、不補做，但寫明原因，整合測試只擋沒有原因的。"""
+        (Path(self.t.name) / "out.json").write_text(json.dumps({"2026-10-20": "帳號停權"}))
+        days = ["2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22"]
+        c = seal_calendar.build(today=date(2026, 10, 26), data_days=days, outage=Path(self.t.name) / "out.json", **self.kw)
+        S, D = c["summary"], {d["date"]: d for d in c["days"]}
+        self.assertEqual(S["missing"], ["2026-10-20", "2026-10-21"])
+        self.assertEqual(S["outage"], ["2026-10-20"])
+        self.assertEqual(S["unexplained"], ["2026-10-21"])
+        self.assertIn("帳號停權", D["2026-10-20"]["reason"])
+
+    def test_sealed_day_without_index_is_not_a_holiday(self):
+        """加權指數那天沒抓到（行情走 OpenAPI 備援），但有封存預測：是交易日，不能當成颱風假。"""
+        days = ["2026-10-16", "2026-10-20", "2026-10-21", "2026-10-22"]  # 少了 10/19
+        c = seal_calendar.build(today=date(2026, 10, 26), data_days=days, **self.kw)
+        D = {d["date"]: d for d in c["days"]}
+        self.assertTrue(D["2026-10-19"]["trading"])
+        self.assertTrue(D["2026-10-19"]["sealed"])
+
+
 class PreOpen(unittest.TestCase):
     def test_pre_open_matched_by_target_day(self):
         """盤前版用目標交易日命名：10/27 收盤後的預測，對應 10/28 開盤前的盤前版。"""
