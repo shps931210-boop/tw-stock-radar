@@ -440,6 +440,7 @@ def build(demo: bool = False) -> dict:
         for r in rows:
             if r.get("plan"):
                 r["plan"].update(short="blocked", swing="blocked")
+                r["plan"]["buy"] = {"key": "na", "label": "暫停判斷", "why": [f"行情沒有更新：{blocked}"]}
     name = "snapshot_demo.json" if demo else "snapshot.json"
     (config.DATA_DIR / name).write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), "utf-8")
     (config.DATA_DIR / ("decision_demo.json" if demo else "decision.json")).write_text(json.dumps(decision, ensure_ascii=False, separators=(",", ":")), "utf-8")
@@ -547,7 +548,7 @@ def _modules(r: dict, st: dict, v: dict, lg: dict, price_day: str, fm_done: set 
 def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None, fm_queue: dict | None = None, ann: dict | None = None) -> dict:
     """個股研究決策卡：進出場策略狀態、估值區間、長期判斷、各模組資料狀態。完整內容另存 data/decision.json（只放進個股 JSON），
     快照裡只留一行摘要（plan），避免整份快照變大。"""
-    from . import strategy, valuation
+    from . import buyplan, strategy, valuation
     valuation.add_peers(rows)
     out = {}
     for r in rows:
@@ -564,6 +565,11 @@ def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None,
         tech = lambda m: (st.get(m) or {}).get("state", "na") if st.get("ready") else "na"
         r["plan"] = {"short": tech("short"), "swing": tech("swing"), "long": lg["state"],
                      "pe_pct": (vb or {}).get("pct"), "vs_base": round((r["close"] / vb["base"] - 1) * 100, 1) if vb and vb.get("base") and r.get("close") else None}
+        try:   # 2026-11-18 買賣計畫：能不能買、合理價、進出場價位（app/buyplan.py）
+            r["plan"]["buy"] = buyplan.build(r, st, v)
+            r["plan"]["buy_long"] = buyplan.build_long(r, lg, v)
+        except Exception as e:
+            r["plan"]["buy"] = {"key": "na", "label": "資料不足", "why": [f"買賣計畫計算失敗：{e}"]}
     return out
 
 
