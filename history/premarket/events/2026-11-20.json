@@ -1,7 +1,7 @@
 {
  "target_date": "2026-11-20",
  "since": "2026-11-18T13:30:00",
- "updated_at": "2026-11-19T12:32:27",
+ "updated_at": "2026-11-19T15:25:46",
  "events": [
   {
    "id": "47ac382d9d4d1623",
@@ -11,13 +11,35 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:50:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:50:00",
    "affected_tickers": [
     "6257"
    ],
    "affected_industries": [
     "電子工業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "24ccdc2c5d456172",
+   "kind": "announcement",
+   "title": "更正本公司108年私募期別1之10802~11101及110年私募 期別1之11002~11101私募有價證券資金運用情形季報表",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:28:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:28:00",
+   "affected_tickers": [
+    "5529"
+   ],
+   "affected_industries": [
+    "建材營造"
    ],
    "event_type": "減資／私募",
    "importance": 3,
@@ -33,7 +55,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:44:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:44:00",
    "affected_tickers": [
     "2465"
@@ -48,6 +70,51 @@
    "novel": true
   },
   {
+   "id": "a5457b41a74c8fff",
+   "kind": "announcement",
+   "title": "補充說明115年10月27日公告及重訊依公開發行 公司資金貸與及背書保證處理準則第二十二條第 一項第一款、第二款及第三款資金貸與事項合併",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:12:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:12:00",
+   "affected_tickers": [
+    "5902"
+   ],
+   "affected_industries": [
+    "居家生活類"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "37aa012a6afa60a0",
+   "kind": "announcement",
+   "title": "補充說明115年10月27日公告及重訊依公開發行 公司資金貸與及背書保證處理準則第二十二條第 一項第一款、第二款及第三款資金貸與事項合併",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:14:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:14:00",
+   "affected_tickers": [
+    "5902"
+   ],
+   "affected_industries": [
+    "居家生活類"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true,
+   "duplicate_of": "a5457b41a74c8fff"
+  },
+  {
    "id": "993cc898b558eb34",
    "kind": "announcement",
    "title": "代重要子公司Silks Global Holding, Limited公告現金減資 事宜",
@@ -55,7 +122,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:56:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:56:00",
    "affected_tickers": [
     "2707"
@@ -77,7 +144,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:09:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:09:00",
    "affected_tickers": [
     "2945"
@@ -92,6 +159,50 @@
    "novel": true
   },
   {
+   "id": "cea7cb3477fb0da9",
+   "kind": "announcement",
+   "title": "就投保中心於108年對本公司及前任董事長提起民事解任 董事之訴，今台灣高等法院宣判投保中心之上訴駁回",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:41:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:41:00",
+   "affected_tickers": [
+    "8299"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "2287a786db858b2d",
+   "kind": "announcement",
+   "title": "公告本公司註銷收回之限制員工權利新股 辦理減資變更登記完成",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T18:22:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T18:22:00",
+   "affected_tickers": [
+    "5289"
+   ],
+   "affected_industries": [
+    "電腦及週邊設備業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "fd2a8b2f9ee73387",
    "kind": "announcement",
    "title": "代本公司之子公司兆豐票券金融公司公告董事長異動",
@@ -99,7 +210,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T18:23:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T18:23:00",
    "affected_tickers": [
     "2886"
@@ -114,6 +225,50 @@
    "novel": true
   },
   {
+   "id": "72ce248afdaeb96a",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加國泰綜合證券舉辦之法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:34:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:34:00",
+   "affected_tickers": [
+    "5206"
+   ],
+   "affected_industries": [
+    "建材營造"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "7bbe29844b7dc9c1",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加福邦證券所舉辦之法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:42:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:42:00",
+   "affected_tickers": [
+    "5488"
+   ],
+   "affected_industries": [
+    "電子零組件業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "20b45b413ff99ac8",
    "kind": "announcement",
    "title": "群益期公告董事會決議通過發行有擔保次順位普通公司債",
@@ -121,7 +276,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:49:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:49:00",
    "affected_tickers": [
     "6024"
@@ -143,7 +298,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:02:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:02:00",
    "affected_tickers": [
     "6005"
@@ -165,7 +320,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:10:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:10:00",
    "affected_tickers": [
     "4999"
@@ -187,7 +342,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:16:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:16:00",
    "affected_tickers": [
     "2929"
@@ -202,6 +357,28 @@
    "novel": true
   },
   {
+   "id": "47970084b40d4911",
+   "kind": "announcement",
+   "title": "本公司受邀參加元大證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:18:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:18:00",
+   "affected_tickers": [
+    "4105"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
    "id": "24c40184f439a0f5",
    "kind": "announcement",
    "title": "公告本公司召開法人說明會相關資訊",
@@ -209,7 +386,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:19:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:19:00",
    "affected_tickers": [
     "3518"
@@ -231,7 +408,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:23:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:23:00",
    "affected_tickers": [
     "3653"
@@ -253,7 +430,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:29:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:29:00",
    "affected_tickers": [
     "2845"
@@ -275,7 +452,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:47:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:47:00",
    "affected_tickers": [
     "2436"
@@ -297,7 +474,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:47:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:47:00",
    "affected_tickers": [
     "2449"
@@ -319,7 +496,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:48:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:48:00",
    "affected_tickers": [
     "3701"
@@ -334,6 +511,50 @@
    "novel": true
   },
   {
+   "id": "903e18612f531dae",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加元大證券舉辦之線上法說會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:00:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:00:00",
+   "affected_tickers": [
+    "5508"
+   ],
+   "affected_industries": [
+    "建材營造"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "868e19191d24e67f",
+   "kind": "announcement",
+   "title": "本公司受邀參加群益金鼎證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:02:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:02:00",
+   "affected_tickers": [
+    "4109"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "d437ca63b5467b0c",
    "kind": "announcement",
    "title": "更正本公司115年第三季合併財務報告iXBRL之申報資訊",
@@ -341,7 +562,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:06:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:06:00",
    "affected_tickers": [
     "8499"
@@ -363,7 +584,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:07:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:07:00",
    "affected_tickers": [
     "6282"
@@ -385,7 +606,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:25:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:25:00",
    "affected_tickers": [
     "1618"
@@ -407,7 +628,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:35:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:35:00",
    "affected_tickers": [
     "2617"
@@ -429,7 +650,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:43:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:43:00",
    "affected_tickers": [
     "1611"
@@ -444,6 +665,28 @@
    "novel": true
   },
   {
+   "id": "8e1004545d5d19f6",
+   "kind": "announcement",
+   "title": "本公司受邀參加元大證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:45:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:45:00",
+   "affected_tickers": [
+    "4111"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
    "id": "4eaeb79ed18cfb80",
    "kind": "announcement",
    "title": "本公司受邀參加11月19日富邦證券所主辦之法人說明會",
@@ -451,13 +694,35 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:01:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:01:00",
    "affected_tickers": [
     "2204"
    ],
    "affected_industries": [
     "汽車工業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "f8e345ecd56a1c3e",
+   "kind": "announcement",
+   "title": "本公司受邀參加合作金庫證券股份有限公司所舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:13:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:13:00",
+   "affected_tickers": [
+    "3489"
+   ],
+   "affected_industries": [
+    "建材營造"
    ],
    "event_type": "法說會",
    "importance": 2,
@@ -473,7 +738,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:30:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:30:00",
    "affected_tickers": [
     "1303"
@@ -495,7 +760,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:31:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:31:00",
    "affected_tickers": [
     "2376"
@@ -510,6 +775,28 @@
    "novel": true
   },
   {
+   "id": "856e9d8f5af99028",
+   "kind": "announcement",
+   "title": "公告本公司法人董事之代表人辭世",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:31:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:31:00",
+   "affected_tickers": [
+    "6182"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "主管與董事異動",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "78243ddc41b5f194",
    "kind": "announcement",
    "title": "本公司代子公司Delta Electronics Int'l (Singapore) Pte. Ltd.公告發放現金股利",
@@ -517,7 +804,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:34:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:34:00",
    "affected_tickers": [
     "2308"
@@ -539,7 +826,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:34:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:34:00",
    "affected_tickers": [
     "2308"
@@ -562,7 +849,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:38:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:38:00",
    "affected_tickers": [
     "8028"
@@ -577,6 +864,50 @@
    "novel": true
   },
   {
+   "id": "f8022d8cf15a0d96",
+   "kind": "announcement",
+   "title": "本公司受邀參加華南永昌綜合證券舉辦之法人說明會「產業趨勢暨企業論壇」，說明本公司產業狀況及發展趨勢。",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:39:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:39:00",
+   "affected_tickers": [
+    "4760"
+   ],
+   "affected_industries": [
+    "其他電子類"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "931ae1bf498bd3f2",
+   "kind": "announcement",
+   "title": "本公司與台灣某科技股份有限公司竹科分公司簽署工程合約",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:01:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:01:00",
+   "affected_tickers": [
+    "6881"
+   ],
+   "affected_industries": [
+    "其他"
+   ],
+   "event_type": "新藥與合約",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "db21291d005b519f",
    "kind": "announcement",
    "title": "公告本公司115年11月20日召開法人說明會之相關訊息。",
@@ -584,7 +915,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:02:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:02:00",
    "affected_tickers": [
     "2009"
@@ -606,7 +937,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:03:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:03:00",
    "affected_tickers": [
     "1101"
@@ -621,6 +952,50 @@
    "novel": true
   },
   {
+   "id": "026ef48e40dc6e2e",
+   "kind": "announcement",
+   "title": "公告本公司現金增資發行新股認股基準日等相關事宜",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:12:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:12:00",
+   "affected_tickers": [
+    "6160"
+   ],
+   "affected_industries": [
+    "電腦及週邊設備業"
+   ],
+   "event_type": "籌資",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "e437e7c6fe7b1a27",
+   "kind": "announcement",
+   "title": "本公司召開法人說明會相關資訊公告",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:18:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:18:00",
+   "affected_tickers": [
+    "5315"
+   ],
+   "affected_industries": [
+    "光電業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "d73722cb3af1a782",
    "kind": "announcement",
    "title": "代重要子公司盛慶(北京)投資管理諮詢有限公司公告 法人董事代表人異動",
@@ -628,7 +1003,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:19:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:19:00",
    "affected_tickers": [
     "2201"
@@ -643,6 +1018,50 @@
    "novel": true
   },
   {
+   "id": "d08ed1326ec4265a",
+   "kind": "announcement",
+   "title": "康和證券受邀宏遠證券參加115年度第二次線上法說會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:22:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:22:00",
+   "affected_tickers": [
+    "6016"
+   ],
+   "affected_industries": [
+    "金融業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "a738558ca1d32396",
+   "kind": "announcement",
+   "title": "代重要子公司康和期貨股份有限公司115年現金增資股款催繳公告",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:23:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:23:00",
+   "affected_tickers": [
+    "6016"
+   ],
+   "affected_industries": [
+    "金融業"
+   ],
+   "event_type": "籌資",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "dc347e45cfa75d2b",
    "kind": "announcement",
    "title": "代重要子公司盛慶(北京)投資管理諮詢有限公司公告 會計主管異動",
@@ -650,7 +1069,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:25:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:25:00",
    "affected_tickers": [
     "2201"
@@ -672,7 +1091,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:27:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:27:00",
    "affected_tickers": [
     "2201"
@@ -694,7 +1113,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:28:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:28:00",
    "affected_tickers": [
     "2201"
@@ -716,7 +1135,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:36:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:36:00",
    "affected_tickers": [
     "2371"
@@ -738,7 +1157,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:48:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:48:00",
    "affected_tickers": [
     "1439"
@@ -760,7 +1179,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:49:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:49:00",
    "affected_tickers": [
     "4906"
@@ -782,13 +1201,79 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:56:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:56:00",
    "affected_tickers": [
     "3596"
    ],
    "affected_industries": [
     "電子工業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "bb629df0c45f7359",
+   "kind": "announcement",
+   "title": "更正今日115年11月18日公告之主旨，為本公司接獲台灣某科技 股份有限公司竹科分公司得標通知",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T18:07:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T18:07:00",
+   "affected_tickers": [
+    "6881"
+   ],
+   "affected_industries": [
+    "其他"
+   ],
+   "event_type": "新藥與合約",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "9bd58b208f431c38",
+   "kind": "announcement",
+   "title": "本公司及母公司朋億(股)公司與聖暉工程科技(股)公司，受邀參加國泰證券舉辦之聖暉集團2026年第三季聯合法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T18:13:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T18:13:00",
+   "affected_tickers": [
+    "7703"
+   ],
+   "affected_industries": [
+    "其他電子類"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "5282854f018d8bb7",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加宏遠證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T18:17:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T18:17:00",
+   "affected_tickers": [
+    "4167"
+   ],
+   "affected_industries": [
+    "生技醫療業"
    ],
    "event_type": "法說會",
    "importance": 2,
@@ -804,7 +1289,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T18:46:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T18:46:00",
    "affected_tickers": [
     "2886"
@@ -819,6 +1304,50 @@
    "novel": true
   },
   {
+   "id": "f21c0fdb44642003",
+   "kind": "announcement",
+   "title": "(補充原115年1月30日公告)本公司代重要子公司聖暉系統集 成集團股份有限公司公告董事會決議發行無擔保可轉換公司債",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T19:08:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T19:08:00",
+   "affected_tickers": [
+    "5536"
+   ],
+   "affected_industries": [
+    "其他電子類"
+   ],
+   "event_type": "籌資",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "524533ecca59ddb5",
+   "kind": "announcement",
+   "title": "本公司代重要子公司聖暉系統集成集團股份有限公司公告 召開線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T19:12:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T19:12:00",
+   "affected_tickers": [
+    "5536"
+   ],
+   "affected_industries": [
+    "其他電子類"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "6bc07ba120e595c8",
    "kind": "announcement",
    "title": "代子公司FBD Biologics Limited公告， 美國 FDA 通知 HCB301 新藥臨床試驗申請 （IND 170769）實施臨床暫停",
@@ -826,7 +1355,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T19:38:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T19:38:00",
    "affected_tickers": [
     "7827"
@@ -848,7 +1377,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T21:52:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T21:52:00",
    "affected_tickers": [
     "6869"
@@ -870,7 +1399,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T22:41:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T22:41:00",
    "affected_tickers": [
     "6446"
@@ -892,7 +1421,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T23:02:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T23:02:00",
    "affected_tickers": [
     "3045"
@@ -914,7 +1443,7 @@
    "link": "https://www.ftnn.com.tw/news/597108",
    "published_at": "2026-11-19T00:24:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:24:00",
    "affected_tickers": [
     "3443"
@@ -936,7 +1465,7 @@
    "link": "https://www.sinotrade.com.tw/richclub/MarketTrends/-1119%E5%8F%B0%E8%82%A1%E7%9B%A4%E5%89%8D-%E5%8F%B0%E6%8C%87%E7%B5%90%E7%AE%97%E9%9C%87%E7%9B%AA1-677%E9%BB%9E%E5%AE%88%E5%9B%9B%E8%90%AC-Anthropic-IPO-%E8%81%AF%E5%8B%95%E7%AE%97%E5%8A%9B%E9%8F%88-%E7%87%9F%E6%94%B6%E5%89%B5%E9%AB%98%E6%A8%A1%E7%AF%84%E7%94%9F%E9%8E%96%E5%AE%9A-2317-%E9%B4%BB%E6%B5%B7---6223-%E6%97%BA%E7%9F%BD---3665-%E8%B2%BF%E8%81%AF-KY--6afd6c0453ac4f25b8085f5e",
    "published_at": "2026-11-19T00:27:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:27:00",
    "affected_tickers": [
     "2317"
@@ -958,7 +1487,7 @@
    "link": "https://www.sinotrade.com.tw/richclub/MarketTrends/-1119%E5%8F%B0%E8%82%A1%E7%9B%A4%E5%89%8D-%E5%8F%B0%E6%8C%87%E7%B5%90%E7%AE%97%E9%9C%87%E7%9B%AA1-677%E9%BB%9E%E5%AE%88%E5%9B%9B%E8%90%AC-Anthropic-IPO-%E8%81%AF%E5%8B%95%E7%AE%97%E5%8A%9B%E9%8F%88-%E7%87%9F%E6%94%B6%E5%89%B5%E9%AB%98%E6%A8%A1%E7%AF%84%E7%94%9F%E9%8E%96%E5%AE%9A-2317-%E9%B4%BB%E6%B5%B7---6223-%E6%97%BA%E7%9F%BD---3665-%E8%B2%BF%E8%81%AF-KY--6afd6c0453ac4f25b8085f5e",
    "published_at": "2026-11-19T00:27:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:27:00",
    "affected_tickers": [
     "6223"
@@ -980,7 +1509,7 @@
    "link": "https://www.sinotrade.com.tw/richclub/MarketTrends/-1119%E5%8F%B0%E8%82%A1%E7%9B%A4%E5%89%8D-%E5%8F%B0%E6%8C%87%E7%B5%90%E7%AE%97%E9%9C%87%E7%9B%AA1-677%E9%BB%9E%E5%AE%88%E5%9B%9B%E8%90%AC-Anthropic-IPO-%E8%81%AF%E5%8B%95%E7%AE%97%E5%8A%9B%E9%8F%88-%E7%87%9F%E6%94%B6%E5%89%B5%E9%AB%98%E6%A8%A1%E7%AF%84%E7%94%9F%E9%8E%96%E5%AE%9A-2317-%E9%B4%BB%E6%B5%B7---6223-%E6%97%BA%E7%9F%BD---3665-%E8%B2%BF%E8%81%AF-KY--6afd6c0453ac4f25b8085f5e",
    "published_at": "2026-11-19T00:27:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:27:00",
    "affected_tickers": [
     "3665"
@@ -1002,7 +1531,7 @@
    "link": "https://news.ebc.net.tw/news/business/581383",
    "published_at": "2026-11-19T00:44:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:44:00",
    "affected_tickers": [
     "3037"
@@ -1024,7 +1553,7 @@
    "link": "https://abmedia.io/phison-chairman-pua-khein-seng",
    "published_at": "2026-11-19T00:50:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:50:00",
    "affected_tickers": [
     "8299"
@@ -1046,7 +1575,7 @@
    "link": "https://newtalk.tw/news/view/2026-11-19/1071946",
    "published_at": "2026-11-19T01:11:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:11:00",
    "affected_tickers": [
     "3443"
@@ -1068,7 +1597,7 @@
    "link": "https://newtalk.tw/news/view/2026-11-19/1071946",
    "published_at": "2026-11-19T01:11:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:11:00",
    "affected_tickers": [
     "2313"
@@ -1090,7 +1619,7 @@
    "link": "https://news.tvbs.com.tw/money/4052739",
    "published_at": "2026-11-19T01:36:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:36:00",
    "affected_tickers": [
     "3443"
@@ -1112,7 +1641,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-4223a2c3-e3bc-11f1-8164-be1bd557706e",
    "published_at": "2026-11-19T01:55:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:55:00",
    "affected_tickers": [
     "4904"
@@ -1134,7 +1663,7 @@
    "link": "https://applealmondrealty.com/posts/55338",
    "published_at": "2026-11-19T02:06:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:06:00",
    "affected_tickers": [
     "2884"
@@ -1156,7 +1685,7 @@
    "link": "https://uanalyze.com.tw/articles/2434060198",
    "published_at": "2026-11-19T02:17:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:17:00",
    "affected_tickers": [
     "8299"
@@ -1178,7 +1707,7 @@
    "link": "https://cmnews.com.tw/article/newsyoudeservetoknow-e5c609ec-e3c0-11f1-8eb6-1db7eedab833",
    "published_at": "2026-11-19T02:28:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:28:00",
    "affected_tickers": [
     "2059"
@@ -1193,6 +1722,50 @@
    "novel": true
   },
   {
+   "id": "5685058c4b82e61c",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加櫃買中心舉辦之業績發表會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:31:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:31:00",
+   "affected_tickers": [
+    "2755"
+   ],
+   "affected_industries": [
+    "觀光餐旅"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "5bf52d729cbfa3b6",
+   "kind": "announcement",
+   "title": "本公司受邀參加財團法人中華民國證券櫃檯買賣中心舉辦之業績發表會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:33:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:33:00",
+   "affected_tickers": [
+    "4129"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "e0dab4e78c6fc908",
    "kind": "announcement",
    "title": "代子公司新加坡商Bloomeria Limited公告股東臨時會重大 決議",
@@ -1200,7 +1773,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:50:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:50:00",
    "affected_tickers": [
     "6257"
@@ -1222,7 +1795,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:52:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:52:00",
    "affected_tickers": [
     "2535"
@@ -1237,6 +1810,28 @@
    "novel": true
   },
   {
+   "id": "1c9be9649a4cb463",
+   "kind": "announcement",
+   "title": "公告本公司法人董事改派代表人",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:52:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:52:00",
+   "affected_tickers": [
+    "3609"
+   ],
+   "affected_industries": [
+    "電子零組件業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
    "id": "007dc2bcb22bcffb",
    "kind": "announcement",
    "title": "本公司受邀參加花旗證券舉辦之「Citi's 2026 Taiwan Corporate Day」",
@@ -1244,7 +1839,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:58:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:58:00",
    "affected_tickers": [
     "4958"
@@ -1259,6 +1854,28 @@
    "novel": false
   },
   {
+   "id": "13afdae7d0570db9",
+   "kind": "announcement",
+   "title": "更正115年9月及10月背書保證明細表資訊",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:11:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:11:00",
+   "affected_tickers": [
+    "6127"
+   ],
+   "affected_industries": [
+    "電子零組件業"
+   ],
+   "event_type": "背書保證與資金貸與",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "dabab9d71d893f34",
    "kind": "announcement",
    "title": "公告本公司之子公司宏華勝精密電子（煙台） 有限公司新增資金貸與他人金額達母公司最 近期財務報表淨值百分之二以上。",
@@ -1266,13 +1883,35 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:12:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:12:00",
    "affected_tickers": [
     "2328"
    ],
    "affected_industries": [
     "電子零組件業"
+   ],
+   "event_type": "背書保證與資金貸與",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "1a7bfb631b61b616",
+   "kind": "announcement",
+   "title": "公告更正本公司民國115年度第3季“財務報表附註揭露申報 資訊”(為他人背書保證金額)。",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:13:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:13:00",
+   "affected_tickers": [
+    "4529"
+   ],
+   "affected_industries": [
+    "其他"
    ],
    "event_type": "背書保證與資金貸與",
    "importance": 1,
@@ -1288,7 +1927,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:15:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:15:00",
    "affected_tickers": [
     "1445"
@@ -1303,6 +1942,28 @@
    "novel": true
   },
   {
+   "id": "ba13152d9a0bb216",
+   "kind": "announcement",
+   "title": "公告本公司115年第一次股東臨時會重要決議事項",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:30:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:30:00",
+   "affected_tickers": [
+    "3520"
+   ],
+   "affected_industries": [
+    "電子零組件業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
    "id": "c2743bfac0a5bf2c",
    "kind": "announcement",
    "title": "本公司代子公司Quanta Manufacturing Nashville, LLC 公告取得租賃使用權資產",
@@ -1310,7 +1971,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:31:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:31:00",
    "affected_tickers": [
     "2382"
@@ -1325,6 +1986,28 @@
    "novel": true
   },
   {
+   "id": "452f75939e261a31",
+   "kind": "announcement",
+   "title": "公告本公司董事長依董事會授權決定限制員工權利新股之 增資基準日(更正增資基準日)",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:33:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:33:00",
+   "affected_tickers": [
+    "4971"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "b45c03292b145b16",
    "kind": "announcement",
    "title": "公告本公司設置永續長",
@@ -1332,13 +2015,101 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:44:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:44:00",
    "affected_tickers": [
     "6024"
    ],
    "affected_industries": [
     "金融保險"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "46ca75765d660add",
+   "kind": "announcement",
+   "title": "公告本公司重要營運主管異動",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:46:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:46:00",
+   "affected_tickers": [
+    "3372"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
+   "id": "559ccd1311cced17",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加財團法人證券櫃檯買賣中心舉辦之「櫃買市場業績發表會」",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:57:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:57:00",
+   "affected_tickers": [
+    "8069"
+   ],
+   "affected_industries": [
+    "光電業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "e0d0290cd72939fe",
+   "kind": "announcement",
+   "title": "公告本公司資訊系統疑似遭受駭客網路攻擊",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:00:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:00:00",
+   "affected_tickers": [
+    "8069"
+   ],
+   "affected_industries": [
+    "光電業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "fb410746bc04026c",
+   "kind": "announcement",
+   "title": "本公司有價證券近期多次達公佈注意交易資訊標準， 故公告相關訊息，以利投資人區別暸解",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:01:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:01:00",
+   "affected_tickers": [
+    "6148"
+   ],
+   "affected_industries": [
+    "資訊服務業"
    ],
    "event_type": "其他",
    "importance": 1,
@@ -1354,7 +2125,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:04:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:04:00",
    "affected_tickers": [
     "4306"
@@ -1376,13 +2147,57 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:04:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:04:00",
    "affected_tickers": [
     "4306"
    ],
    "affected_industries": [
     "塑膠工業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "411b276168caab8e",
+   "kind": "announcement",
+   "title": "本公司有價證券近期多次達公布注意交易資訊標準， 故公告相關訊息，以利投資人區別暸解。",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:16:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:16:00",
+   "affected_tickers": [
+    "7717"
+   ],
+   "affected_industries": [
+    "通信網路業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "8e4c84a1253f454a",
+   "kind": "announcement",
+   "title": "本公司受邀參加康和證券舉辦之「2027投資趨勢論壇」",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:27:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:27:00",
+   "affected_tickers": [
+    "3675"
+   ],
+   "affected_industries": [
+    "半導體業"
    ],
    "event_type": "其他",
    "importance": 1,
@@ -1398,7 +2213,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:32:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:32:00",
    "affected_tickers": [
     "3533"
@@ -1420,7 +2235,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:33:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:33:00",
    "affected_tickers": [
     "3533"
@@ -1442,7 +2257,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:35:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:35:00",
    "affected_tickers": [
     "3533"
@@ -1464,7 +2279,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:41:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:41:00",
    "affected_tickers": [
     "1456"
@@ -1486,7 +2301,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:46:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:46:00",
    "affected_tickers": [
     "1456"
@@ -1508,7 +2323,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:52:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:52:00",
    "affected_tickers": [
     "6239"
@@ -1523,6 +2338,28 @@
    "novel": false
   },
   {
+   "id": "dde05558f2b3f166",
+   "kind": "announcement",
+   "title": "公告本公司獨立董事對董事會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:54:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:54:00",
+   "affected_tickers": [
+    "5310"
+   ],
+   "affected_industries": [
+    "資訊服務業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "19f713359d459ef4",
    "kind": "announcement",
    "title": "係因本公司有價證券於集中交易市場達公布注意交易資訊 標準，故公布相關財務業務等重大訊息，以利投資人區別瞭解。",
@@ -1530,7 +2367,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:56:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:56:00",
    "affected_tickers": [
     "7610"
@@ -1552,7 +2389,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:58:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:58:00",
    "affected_tickers": [
     "3037"
@@ -1574,13 +2411,35 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:59:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:59:00",
    "affected_tickers": [
     "3037"
    ],
    "affected_industries": [
     "電子零組件業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "cd522d0e45189cd0",
+   "kind": "announcement",
+   "title": "(更正主旨)公告本公司獨立董事對董事會議決事項表示反對意見",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:03:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:03:00",
+   "affected_tickers": [
+    "5310"
+   ],
+   "affected_industries": [
+    "資訊服務業"
    ],
    "event_type": "其他",
    "importance": 1,
@@ -1596,7 +2455,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:08:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:08:00",
    "affected_tickers": [
     "2945"
@@ -1618,7 +2477,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:08:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:08:00",
    "affected_tickers": [
     "7610"
@@ -1640,7 +2499,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:15:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:15:00",
    "affected_tickers": [
     "2207"
@@ -1662,7 +2521,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:17:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:17:00",
    "affected_tickers": [
     "2474"
@@ -1684,7 +2543,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:17:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:17:00",
    "affected_tickers": [
     "3380"
@@ -1706,7 +2565,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:38:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:38:00",
    "affected_tickers": [
     "2881"
@@ -1728,7 +2587,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:48:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:48:00",
    "affected_tickers": [
     "2912"
@@ -1750,7 +2609,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:50:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:50:00",
    "affected_tickers": [
     "2912"
@@ -1772,7 +2631,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:51:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:51:00",
    "affected_tickers": [
     "2608"
@@ -1794,7 +2653,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:52:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:52:00",
    "affected_tickers": [
     "2912"
@@ -1816,7 +2675,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:55:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:55:00",
    "affected_tickers": [
     "2881"
@@ -1838,7 +2697,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:56:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:56:00",
    "affected_tickers": [
     "5215"
@@ -1860,7 +2719,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:56:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:56:00",
    "affected_tickers": [
     "5215"
@@ -1882,7 +2741,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:00:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:00:00",
    "affected_tickers": [
     "6668"
@@ -1897,6 +2756,28 @@
    "novel": true
   },
   {
+   "id": "900c692e60e9f9fc",
+   "kind": "announcement",
+   "title": "更正本公司115年8月份及9月份資金貸與 明細表資訊",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:01:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:01:00",
+   "affected_tickers": [
+    "5356"
+   ],
+   "affected_industries": [
+    "電腦及週邊設備業"
+   ],
+   "event_type": "背書保證與資金貸與",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "058f7c261ff5c7d2",
    "kind": "announcement",
    "title": "公告本公司證券簡稱由「沛爾生醫*-創」變更為「沛爾*-創」",
@@ -1904,7 +2785,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:04:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:04:00",
    "affected_tickers": [
     "6949"
@@ -1919,6 +2800,28 @@
    "novel": false
   },
   {
+   "id": "67f76f00ff9082f9",
+   "kind": "announcement",
+   "title": "本公司受邀參加Morgan Stanley舉辦之Post-AP Summit Taiwan Tech Trip",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:04:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:04:00",
+   "affected_tickers": [
+    "6223"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "f4d43564226d9e26",
    "kind": "announcement",
    "title": "代子公司Foxconn EV Technology Inc.公告取得Foxconn System LLC股權",
@@ -1926,7 +2829,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:12:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:12:00",
    "affected_tickers": [
     "2317"
@@ -1948,13 +2851,57 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:13:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:13:00",
    "affected_tickers": [
     "2317"
    ],
    "affected_industries": [
     "電子工業"
+   ],
+   "event_type": "資產交易",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "cb7d0ff5400fa0ba",
+   "kind": "announcement",
+   "title": "公告本公司董事會決議通過取得新竹縣竹北市泰和段土地",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:18:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:18:00",
+   "affected_tickers": [
+    "6640"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "資產交易",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "1a55fb75628b8dfe",
+   "kind": "announcement",
+   "title": "公告本公司董事會決議通過取得新竹縣竹北市泰和段鄰近土地及建物",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:18:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:18:00",
+   "affected_tickers": [
+    "6640"
+   ],
+   "affected_industries": [
+    "半導體業"
    ],
    "event_type": "資產交易",
    "importance": 1,
@@ -1970,7 +2917,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:19:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:19:00",
    "affected_tickers": [
     "2887"
@@ -1992,7 +2939,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:19:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:19:00",
    "affected_tickers": [
     "2887"
@@ -2014,7 +2961,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:23:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:23:00",
    "affected_tickers": [
     "2201"
@@ -2036,7 +2983,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:32:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:32:00",
    "affected_tickers": [
     "2882"
@@ -2058,7 +3005,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:35:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:35:00",
    "affected_tickers": [
     "2323"
@@ -2080,7 +3027,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:36:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:36:00",
    "affected_tickers": [
     "2323"
@@ -2103,7 +3050,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:37:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:37:00",
    "affected_tickers": [
     "2323"
@@ -2126,7 +3073,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:38:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:38:00",
    "affected_tickers": [
     "2323"
@@ -2148,7 +3095,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:46:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:46:00",
    "affected_tickers": [
     "6176"
@@ -2170,7 +3117,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:57:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:57:00",
    "affected_tickers": [
     "2440"
@@ -2192,7 +3139,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T18:43:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T18:43:00",
    "affected_tickers": [
     "2440"
@@ -2207,6 +3154,50 @@
    "novel": true
   },
   {
+   "id": "300f512214307073",
+   "kind": "announcement",
+   "title": "代重要子公司合富（中國）醫療科技股份有限公司公告 2026年第一次股東臨時會決議事項",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T18:49:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T18:49:00",
+   "affected_tickers": [
+    "4745"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "39952b53d9fa4e70",
+   "kind": "announcement",
+   "title": "本公司代重要子公司聖暉系統集成集團股份有限公司公告召 開2026年第二次臨時股東大會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T19:10:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T19:10:00",
+   "affected_tickers": [
+    "5536"
+   ],
+   "affected_industries": [
+    "其他電子類"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "c4b7c10df24cfd62",
    "kind": "announcement",
    "title": "更正本公司背書保證資訊揭露明細表",
@@ -2214,7 +3205,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T19:12:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T19:12:00",
    "affected_tickers": [
     "2363"
@@ -2236,7 +3227,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T19:49:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T19:49:00",
    "affected_tickers": [
     "4958"
@@ -2251,6 +3242,50 @@
    "novel": false
   },
   {
+   "id": "48892bbe64cf3589",
+   "kind": "announcement",
+   "title": "更正本公司115年第3季iXBRL之大陸投資資訊 及赴大陸投資資訊公告內容",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T20:16:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T20:16:00",
+   "affected_tickers": [
+    "8171"
+   ],
+   "affected_industries": [
+    "綠能環保類"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "155b42caa6896144",
+   "kind": "announcement",
+   "title": "代重要子公司全球商務科技股份有限公司 公告資通安全事件",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T22:00:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T22:00:00",
+   "affected_tickers": [
+    "2640"
+   ],
+   "affected_industries": [
+    "數位雲端類"
+   ],
+   "event_type": "其他",
+   "importance": 1,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "9c5b6f7349a455df",
    "kind": "news",
    "title": "旺宏慘賠48％想抱10年！聯發科賺57元卻想賣掉換0050 投資人勸先存本金",
@@ -2258,7 +3293,7 @@
    "link": "https://udn.com/news/story/123006/9887951",
    "published_at": "2026-11-19T00:00:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:00:00",
    "affected_tickers": [
     "2454"
@@ -2280,7 +3315,7 @@
    "link": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6365279001&PU=1002",
    "published_at": "2026-11-19T00:02:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:02:00",
    "affected_tickers": [
     "2027"
@@ -2302,7 +3337,7 @@
    "link": "https://www.cmoney.tw/forum/article/189160430",
    "published_at": "2026-11-19T00:07:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:07:00",
    "affected_tickers": [
     "2330"
@@ -2324,7 +3359,7 @@
    "link": "https://www.cmoney.tw/forum/article/189160431",
    "published_at": "2026-11-19T00:07:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:07:00",
    "affected_tickers": [
     "2330"
@@ -2346,7 +3381,7 @@
    "link": "https://www.cmoney.tw/forum/article/189160460",
    "published_at": "2026-11-19T00:10:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:10:00",
    "affected_tickers": [
     "2330"
@@ -2368,7 +3403,7 @@
    "link": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6365306001&PU=1002",
    "published_at": "2026-11-19T00:11:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:11:00",
    "affected_tickers": [
     "3081"
@@ -2390,7 +3425,7 @@
    "link": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6365309001&PU=1002",
    "published_at": "2026-11-19T00:11:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:11:00",
    "affected_tickers": [
     "2413"
@@ -2412,7 +3447,7 @@
    "link": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6365307001&PU=1002",
    "published_at": "2026-11-19T00:11:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:11:00",
    "affected_tickers": [
     "3008"
@@ -2434,7 +3469,7 @@
    "link": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6365311001&PU=1002",
    "published_at": "2026-11-19T00:12:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:12:00",
    "affected_tickers": [
     "2221"
@@ -2456,7 +3491,7 @@
    "link": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?SN=6365344001&PU=1002",
    "published_at": "2026-11-19T00:15:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:15:00",
    "affected_tickers": [
     "4977"
@@ -2478,7 +3513,7 @@
    "link": "https://www.cmoney.tw/finance/8299/f00025",
    "published_at": "2026-11-19T00:17:00",
    "first_seen_at": "2026-10-26T14:59:15",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:17:00",
    "affected_tickers": [
     "8299"
@@ -2500,7 +3535,7 @@
    "link": "https://www.sinotrade.com.tw/richclub/hotstock/DRAM%E5%83%B9%E6%A0%BC%E9%AB%98%E9%BB%9E%E6%8F%90%E5%89%8D%E5%88%B02027%E5%B9%B4-SemiAnalysis%E5%A4%A7%E7%A0%8DAI%E9%9C%80%E6%B1%82%E9%A0%90%E6%B8%AC-%E5%8D%97%E4%BA%9E%E7%A7%91-%E8%8F%AF%E9%82%A6%E9%9B%BB%E9%9D%A2%E8%87%A8%E6%93%B4%E7%94%A2%E8%80%83%E9%A9%97--%E7%94%A2%E6%A5%AD%E7%86%B1%E8%A9%B1-6afbf18053ac4f25b8fded25",
    "published_at": "2026-11-19T00:18:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:18:00",
    "affected_tickers": [
     "2408"
@@ -2522,7 +3557,7 @@
    "link": "https://www.sinotrade.com.tw/richclub/hotstock/DRAM%E5%83%B9%E6%A0%BC%E9%AB%98%E9%BB%9E%E6%8F%90%E5%89%8D%E5%88%B02027%E5%B9%B4-SemiAnalysis%E5%A4%A7%E7%A0%8DAI%E9%9C%80%E6%B1%82%E9%A0%90%E6%B8%AC-%E5%8D%97%E4%BA%9E%E7%A7%91-%E8%8F%AF%E9%82%A6%E9%9B%BB%E9%9D%A2%E8%87%A8%E6%93%B4%E7%94%A2%E8%80%83%E9%A9%97--%E7%94%A2%E6%A5%AD%E7%86%B1%E8%A9%B1-6afbf18053ac4f25b8fded25",
    "published_at": "2026-11-19T00:18:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:18:00",
    "affected_tickers": [
     "2344"
@@ -2544,7 +3579,7 @@
    "link": "https://uanalyze.com.tw/articles/9423159961",
    "published_at": "2026-11-19T00:31:00",
    "first_seen_at": "2026-11-18T12:45:09",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:31:00",
    "affected_tickers": [
     "1216"
@@ -2566,7 +3601,7 @@
    "link": "https://www.cmoney.tw/forum/article/189160792",
    "published_at": "2026-11-19T00:37:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:37:00",
    "affected_tickers": [
     "2330"
@@ -2588,7 +3623,7 @@
    "link": "https://wantrich.chinatimes.com/news/20261119900073-420101",
    "published_at": "2026-11-19T00:37:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:37:00",
    "affected_tickers": [
     "2308"
@@ -2610,7 +3645,7 @@
    "link": "https://www.ftnn.com.tw/news/597109",
    "published_at": "2026-11-19T00:40:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:40:00",
    "affected_tickers": [
     "3189"
@@ -2632,7 +3667,7 @@
    "link": "https://www.ftnn.com.tw/news/597109",
    "published_at": "2026-11-19T00:40:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:40:00",
    "affected_tickers": [
     "3037"
@@ -2654,7 +3689,7 @@
    "link": "https://www.ftnn.com.tw/news/597109",
    "published_at": "2026-11-19T00:40:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:40:00",
    "affected_tickers": [
     "8046"
@@ -2676,7 +3711,7 @@
    "link": "https://www.cmoney.tw/finance/2606/f00025",
    "published_at": "2026-11-19T00:48:00",
    "first_seen_at": "2026-10-13T16:55:08",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:48:00",
    "affected_tickers": [
     "2606"
@@ -2698,7 +3733,7 @@
    "link": "https://www.ftnn.com.tw/news/597071",
    "published_at": "2026-11-19T00:50:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:50:00",
    "affected_tickers": [
     "2382"
@@ -2720,7 +3755,7 @@
    "link": "https://www.ftnn.com.tw/news/597071",
    "published_at": "2026-11-19T00:50:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:50:00",
    "affected_tickers": [
     "2357"
@@ -2742,7 +3777,7 @@
    "link": "https://www.cmoney.tw/forum/article/189161403",
    "published_at": "2026-11-19T00:58:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T00:58:00",
    "affected_tickers": [
     "2330"
@@ -2764,7 +3799,7 @@
    "link": "https://www.cmoney.tw/forum/article/189161574",
    "published_at": "2026-11-19T01:02:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:02:00",
    "affected_tickers": [
     "2605"
@@ -2786,7 +3821,7 @@
    "link": "https://finance.ettoday.net/news/3274656",
    "published_at": "2026-11-19T01:02:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:02:00",
    "affected_tickers": [
     "2330"
@@ -2808,7 +3843,7 @@
    "link": "https://www.cmoney.tw/finance/3661/f00025",
    "published_at": "2026-11-19T01:06:00",
    "first_seen_at": "2026-10-30T21:59:15",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:06:00",
    "affected_tickers": [
     "3661"
@@ -2830,7 +3865,7 @@
    "link": "https://www.cmoney.tw/forum/article/189162874",
    "published_at": "2026-11-19T01:10:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:10:00",
    "affected_tickers": [
     "2330"
@@ -2852,7 +3887,7 @@
    "link": "https://finance.ettoday.net/news/3274660",
    "published_at": "2026-11-19T01:15:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:15:00",
    "affected_tickers": [
     "2059"
@@ -2874,7 +3909,7 @@
    "link": "https://finance.ettoday.net/news/3274660",
    "published_at": "2026-11-19T01:15:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:15:00",
    "affected_tickers": [
     "3443"
@@ -2896,7 +3931,7 @@
    "link": "https://tw.stock.yahoo.com/news/%E5%8F%B0%E9%81%94%E9%9B%BB%E5%99%B45-%E8%81%AF%E7%99%BC%E7%A7%91%E6%BC%B22-%E5%8F%B0%E7%A9%8D%E9%9B%BB%E6%97%A9%E7%9B%A4%E8%B7%8C15%E5%85%83%E6%8B%9A%E7%BF%BB%E7%B4%85-%E5%8F%B0%E8%82%A1%E9%96%8B%E4%BD%8E%E4%B8%8B%E6%AE%BA408%E9%BB%9E%E6%91%9C%E7%A0%B44%E8%90%AC%E9%BB%9E%E5%A4%A7%E9%97%9C-011200277.html",
    "published_at": "2026-11-19T01:17:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:17:00",
    "affected_tickers": [
     "2308"
@@ -2918,7 +3953,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-132e0785-e3b8-11f1-b6f5-0ca794795dcb",
    "published_at": "2026-11-19T01:25:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:25:00",
    "affected_tickers": [
     "2886"
@@ -2940,7 +3975,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-01350cc8-e3b9-11f1-8a3f-ab2b3e96b4e4",
    "published_at": "2026-11-19T01:31:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:31:00",
    "affected_tickers": [
     "2412"
@@ -2962,7 +3997,7 @@
    "link": "https://ec.ltn.com.tw/article/breakingnews/5645823",
    "published_at": "2026-11-19T01:34:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:34:00",
    "affected_tickers": [
     "3189"
@@ -2984,7 +4019,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-7885fc21-e3b9-11f1-8486-a12a6187a558",
    "published_at": "2026-11-19T01:35:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:35:00",
    "affected_tickers": [
     "1216"
@@ -3006,7 +4041,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-ef3e2b66-e3b9-11f1-829a-86bff2a13eaf",
    "published_at": "2026-11-19T01:38:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:38:00",
    "affected_tickers": [
     "8415"
@@ -3028,7 +4063,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-65d95139-e3ba-11f1-9b0c-c5cf19547e3d",
    "published_at": "2026-11-19T01:41:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:41:00",
    "affected_tickers": [
     "2880"
@@ -3050,7 +4085,7 @@
    "link": "https://news.wearn.com/c2149530.html",
    "published_at": "2026-11-19T01:42:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:42:00",
    "affected_tickers": [
     "3189"
@@ -3073,7 +4108,7 @@
    "link": "https://stock.ltn.com.tw/article/yvb2mzfxmzln",
    "published_at": "2026-11-19T01:42:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:42:00",
    "affected_tickers": [
     "3443"
@@ -3095,7 +4130,7 @@
    "link": "https://tw.stock.yahoo.com/news/64%E8%90%AC%E5%BC%B5%E6%96%B0%E8%82%A1%E4%B8%8A%E5%B8%82%E6%B9%A7%E8%B3%A3%E5%A3%93%EF%BC%81%E6%B0%B8%E8%B1%90%E9%87%91%E5%8D%8A%E5%B0%8F%E6%99%82%E6%88%90%E4%BA%A4%E9%87%8F%E7%88%863%E8%90%AC%E5%BC%B5%E5%B7%A8%E9%87%8F-014502203.html",
    "published_at": "2026-11-19T01:49:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:49:00",
    "affected_tickers": [
     "2890"
@@ -3117,7 +4152,7 @@
    "link": "https://www.ftnn.com.tw/news/597111",
    "published_at": "2026-11-19T01:50:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:50:00",
    "affected_tickers": [
     "3081"
@@ -3139,7 +4174,7 @@
    "link": "https://news.wearn.com/c2149535.html",
    "published_at": "2026-11-19T01:53:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:53:00",
    "affected_tickers": [
     "3443"
@@ -3162,7 +4197,7 @@
    "link": "https://news.tvbs.com.tw/money/4052753",
    "published_at": "2026-11-19T01:55:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:55:00",
    "affected_tickers": [
     "3189"
@@ -3184,7 +4219,7 @@
    "link": "https://news.tvbs.com.tw/money/4052753",
    "published_at": "2026-11-19T01:55:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:55:00",
    "affected_tickers": [
     "8046"
@@ -3206,7 +4241,7 @@
    "link": "https://tw.news.yahoo.com/%E5%BF%AB%E8%A8%8A-%E5%8F%B0%E8%82%A1%E9%9C%87%E7%9B%AA%E5%B4%A9%E8%B7%8C500%E9%BB%9E%E5%A4%B1%E5%AE%88-40k-%E5%8F%B0%E7%A9%8D%E9%9B%BB%E4%B8%8B%E8%B7%8C10%E5%85%83-011900016.html",
    "published_at": "2026-11-19T01:56:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:56:00",
    "affected_tickers": [
     "2330"
@@ -3228,7 +4263,7 @@
    "link": "https://cmnews.com.tw/article/cmoney-911cb104-e3bc-11f1-8bf9-7b4178276775",
    "published_at": "2026-11-19T01:57:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T01:57:00",
    "affected_tickers": [
     "3189"
@@ -3250,7 +4285,7 @@
    "link": "https://tw.stock.yahoo.com/news/%E7%BE%A4%E5%89%B5%E8%B7%8C%E9%80%BE6%E6%AF%94%E5%8F%8B%E9%81%94%E6%85%98%EF%BC%81%E9%9D%A2%E6%9D%BF%E9%9B%99%E8%99%8E%E9%82%84%E8%83%BD%E6%8A%B1%EF%BC%9F%E5%88%86%E6%9E%90%E5%B8%AB%EF%BC%9A%E4%B8%8D%E5%BF%85%E6%80%A5%E8%91%97%E6%AE%BA%E4%BD%8E-015859329.html",
    "published_at": "2026-11-19T02:03:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:03:00",
    "affected_tickers": [
     "3481"
@@ -3272,7 +4307,7 @@
    "link": "https://stock.ltn.com.tw/article/reheena9ypmf",
    "published_at": "2026-11-19T02:07:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:07:00",
    "affected_tickers": [
     "2344"
@@ -3294,7 +4329,7 @@
    "link": "https://news.tvbs.com.tw/money/4052774",
    "published_at": "2026-11-19T02:10:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:10:00",
    "affected_tickers": [
     "3017"
@@ -3316,7 +4351,7 @@
    "link": "https://www.ftnn.com.tw/news/597138",
    "published_at": "2026-11-19T02:10:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:10:00",
    "affected_tickers": [
     "6223"
@@ -3338,7 +4373,7 @@
    "link": "https://finance.ettoday.net/news/3274721",
    "published_at": "2026-11-19T02:12:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:12:00",
    "affected_tickers": [
     "2383"
@@ -3360,7 +4395,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-9b406a2f-e3be-11f1-924e-6c18b65bfed7",
    "published_at": "2026-11-19T02:12:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:12:00",
    "affected_tickers": [
     "3045"
@@ -3382,7 +4417,7 @@
    "link": "https://news.wearn.com/c2149553.html",
    "published_at": "2026-11-19T02:15:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:15:00",
    "affected_tickers": [
     "2344"
@@ -3405,7 +4440,7 @@
    "link": "https://cmnews.com.tw/article/cmoneyairesearcher-122c48c9-e3bf-11f1-ab7f-8cee2552be72",
    "published_at": "2026-11-19T02:15:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:15:00",
    "affected_tickers": [
     "8016"
@@ -3427,7 +4462,7 @@
    "link": "https://www.ftnn.com.tw/news/597110",
    "published_at": "2026-11-19T02:20:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:20:00",
    "affected_tickers": [
     "2408"
@@ -3449,7 +4484,7 @@
    "link": "https://stock.ltn.com.tw/article/5b87xu5wxxmr",
    "published_at": "2026-11-19T02:20:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:20:00",
    "affected_tickers": [
     "1303"
@@ -3471,7 +4506,7 @@
    "link": "https://tw.stock.yahoo.com/news/%E8%A8%98%E6%86%B6%E9%AB%94%E9%81%AD%E5%88%A9%E7%A9%BA%E5%9C%8D%E5%89%BF-%E5%8D%97%E4%BA%9E%E7%A7%91%E9%A9%9A%E8%A6%8B3%E5%AD%97%E9%A0%AD-%E8%8F%AF%E9%82%A6%E9%9B%BB%E9%80%A35%E9%BB%91-%E5%B0%88%E5%AE%B6%E7%A4%BA%E8%AD%A6%E6%98%8E%E5%B9%B4%E5%A0%B1%E5%83%B9-%E6%BC%B2%E4%B8%8D%E5%8B%95-022000505.html",
    "published_at": "2026-11-19T02:23:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:23:00",
    "affected_tickers": [
     "2344"
@@ -3493,7 +4528,7 @@
    "link": "https://cmnews.com.tw/article/newsyoudeservetoknow-27626702-e3c0-11f1-bccc-f096c6da3c93",
    "published_at": "2026-11-19T02:23:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:23:00",
    "affected_tickers": [
     "2412"
@@ -3515,7 +4550,7 @@
    "link": "https://finance.ettoday.net/news/3274731",
    "published_at": "2026-11-19T02:26:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:26:00",
    "affected_tickers": [
     "2886"
@@ -3537,7 +4572,7 @@
    "link": "https://cmnews.com.tw/article/newsyoudeservetoknow-90538804-e3c0-11f1-baab-bc8716a5d19b",
    "published_at": "2026-11-19T02:26:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:26:00",
    "affected_tickers": [
     "2886"
@@ -3559,7 +4594,7 @@
    "link": "https://cmnews.com.tw/article/newsyoudeservetoknow-3981774f-e3c1-11f1-878a-e33cd79f069d",
    "published_at": "2026-11-19T02:30:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:30:00",
    "affected_tickers": [
     "8046"
@@ -3581,7 +4616,7 @@
    "link": "https://www.ftnn.com.tw/news/597115",
    "published_at": "2026-11-19T02:30:00",
    "first_seen_at": "2026-11-19T12:32:20",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-19T02:30:00",
    "affected_tickers": [
     "3661"

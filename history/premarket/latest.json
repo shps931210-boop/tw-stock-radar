@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-19T12:32:27",
+ "generated_at": "2026-11-19T15:25:46",
  "quality": {
-  "checked_at": "2026-11-19T12:32:27",
+  "checked_at": "2026-11-19T15:25:46",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,12 +11,12 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 94 則、上櫃 62 則"
+    "detail": "上市 94 則、上櫃 54 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-11-19T12:32:20"
+    "detail": "2026-11-19T15:25:39"
    },
    "global": {
     "label": "國際市場",
@@ -26,7 +26,7 @@
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 6,
+  "duplicates_removed": 7,
   "latest_event_at": "2026-11-19T02:30:00"
  },
  "upcoming_holidays": [
@@ -41,8 +41,8 @@
   "mode": "collect",
   "target_date": "2026-11-20",
   "since": "2026-11-18T13:30:00",
-  "events": 157,
-  "high": 5
+  "events": 203,
+  "high": 9
  },
  "risk": {
   "level": "中性",
@@ -71,6 +71,21 @@
    "event_ids": [
     "8b11a40e3e2468f1"
    ]
+  },
+  {
+   "id": "5289",
+   "name": "宜鼎",
+   "industry": "電腦及週邊設備業",
+   "lists": [
+    "均衡型第 8 名"
+   ],
+   "flag": "重大訊息待確認",
+   "reasons": [
+    "收盤後重大訊息（減資／私募）：公告本公司註銷收回之限制員工權利新股 辦理減資變更登記完成"
+   ],
+   "event_ids": [
+    "2287a786db858b2d"
+   ]
   }
  ],
  "events": [
@@ -82,13 +97,35 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:50:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:50:00",
    "affected_tickers": [
     "6257"
    ],
    "affected_industries": [
     "電子工業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "24ccdc2c5d456172",
+   "kind": "announcement",
+   "title": "更正本公司108年私募期別1之10802~11101及110年私募 期別1之11002~11101私募有價證券資金運用情形季報表",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:28:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:28:00",
+   "affected_tickers": [
+    "5529"
+   ],
+   "affected_industries": [
+    "建材營造"
    ],
    "event_type": "減資／私募",
    "importance": 3,
@@ -104,7 +141,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:44:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:44:00",
    "affected_tickers": [
     "2465"
@@ -119,6 +156,28 @@
    "novel": true
   },
   {
+   "id": "a5457b41a74c8fff",
+   "kind": "announcement",
+   "title": "補充說明115年10月27日公告及重訊依公開發行 公司資金貸與及背書保證處理準則第二十二條第 一項第一款、第二款及第三款資金貸與事項合併",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:12:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:12:00",
+   "affected_tickers": [
+    "5902"
+   ],
+   "affected_industries": [
+    "居家生活類"
+   ],
+   "event_type": "合併收購",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "993cc898b558eb34",
    "kind": "announcement",
    "title": "代重要子公司Silks Global Holding, Limited公告現金減資 事宜",
@@ -126,7 +185,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:56:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:56:00",
    "affected_tickers": [
     "2707"
@@ -148,7 +207,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:09:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:09:00",
    "affected_tickers": [
     "2945"
@@ -163,6 +222,50 @@
    "novel": true
   },
   {
+   "id": "cea7cb3477fb0da9",
+   "kind": "announcement",
+   "title": "就投保中心於108年對本公司及前任董事長提起民事解任 董事之訴，今台灣高等法院宣判投保中心之上訴駁回",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:41:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:41:00",
+   "affected_tickers": [
+    "8299"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "2287a786db858b2d",
+   "kind": "announcement",
+   "title": "公告本公司註銷收回之限制員工權利新股 辦理減資變更登記完成",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T18:22:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T18:22:00",
+   "affected_tickers": [
+    "5289"
+   ],
+   "affected_industries": [
+    "電腦及週邊設備業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "fd2a8b2f9ee73387",
    "kind": "announcement",
    "title": "代本公司之子公司兆豐票券金融公司公告董事長異動",
@@ -170,7 +273,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T18:23:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T18:23:00",
    "affected_tickers": [
     "2886"
@@ -185,6 +288,50 @@
    "novel": true
   },
   {
+   "id": "72ce248afdaeb96a",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加國泰綜合證券舉辦之法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:34:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:34:00",
+   "affected_tickers": [
+    "5206"
+   ],
+   "affected_industries": [
+    "建材營造"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "7bbe29844b7dc9c1",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加福邦證券所舉辦之法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T13:42:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T13:42:00",
+   "affected_tickers": [
+    "5488"
+   ],
+   "affected_industries": [
+    "電子零組件業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "20b45b413ff99ac8",
    "kind": "announcement",
    "title": "群益期公告董事會決議通過發行有擔保次順位普通公司債",
@@ -192,7 +339,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T13:49:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T13:49:00",
    "affected_tickers": [
     "6024"
@@ -214,7 +361,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:02:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:02:00",
    "affected_tickers": [
     "6005"
@@ -236,7 +383,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:10:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:10:00",
    "affected_tickers": [
     "4999"
@@ -258,7 +405,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:16:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:16:00",
    "affected_tickers": [
     "2929"
@@ -273,6 +420,28 @@
    "novel": true
   },
   {
+   "id": "47970084b40d4911",
+   "kind": "announcement",
+   "title": "本公司受邀參加元大證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T14:18:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T14:18:00",
+   "affected_tickers": [
+    "4105"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
    "id": "24c40184f439a0f5",
    "kind": "announcement",
    "title": "公告本公司召開法人說明會相關資訊",
@@ -280,7 +449,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:19:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:19:00",
    "affected_tickers": [
     "3518"
@@ -302,7 +471,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:23:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:23:00",
    "affected_tickers": [
     "3653"
@@ -324,7 +493,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:29:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:29:00",
    "affected_tickers": [
     "2845"
@@ -346,7 +515,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:47:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:47:00",
    "affected_tickers": [
     "2436"
@@ -368,7 +537,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:47:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:47:00",
    "affected_tickers": [
     "2449"
@@ -390,7 +559,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T14:48:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T14:48:00",
    "affected_tickers": [
     "3701"
@@ -405,6 +574,50 @@
    "novel": true
   },
   {
+   "id": "903e18612f531dae",
+   "kind": "announcement",
+   "title": "公告本公司受邀參加元大證券舉辦之線上法說會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:00:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:00:00",
+   "affected_tickers": [
+    "5508"
+   ],
+   "affected_industries": [
+    "建材營造"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "868e19191d24e67f",
+   "kind": "announcement",
+   "title": "本公司受邀參加群益金鼎證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:02:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:02:00",
+   "affected_tickers": [
+    "4109"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "d437ca63b5467b0c",
    "kind": "announcement",
    "title": "更正本公司115年第三季合併財務報告iXBRL之申報資訊",
@@ -412,7 +625,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:06:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:06:00",
    "affected_tickers": [
     "8499"
@@ -434,7 +647,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:07:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:07:00",
    "affected_tickers": [
     "6282"
@@ -456,7 +669,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:25:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:25:00",
    "affected_tickers": [
     "1618"
@@ -478,7 +691,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:35:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:35:00",
    "affected_tickers": [
     "2617"
@@ -500,7 +713,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T15:43:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T15:43:00",
    "affected_tickers": [
     "1611"
@@ -515,6 +728,28 @@
    "novel": true
   },
   {
+   "id": "8e1004545d5d19f6",
+   "kind": "announcement",
+   "title": "本公司受邀參加元大證券舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T15:45:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T15:45:00",
+   "affected_tickers": [
+    "4111"
+   ],
+   "affected_industries": [
+    "生技醫療業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
    "id": "4eaeb79ed18cfb80",
    "kind": "announcement",
    "title": "本公司受邀參加11月19日富邦證券所主辦之法人說明會",
@@ -522,13 +757,35 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:01:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:01:00",
    "affected_tickers": [
     "2204"
    ],
    "affected_industries": [
     "汽車工業"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "f8e345ecd56a1c3e",
+   "kind": "announcement",
+   "title": "本公司受邀參加合作金庫證券股份有限公司所舉辦之線上法人說明會",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:13:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:13:00",
+   "affected_tickers": [
+    "3489"
+   ],
+   "affected_industries": [
+    "建材營造"
    ],
    "event_type": "法說會",
    "importance": 2,
@@ -544,7 +801,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:30:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:30:00",
    "affected_tickers": [
     "1303"
@@ -566,7 +823,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:31:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:31:00",
    "affected_tickers": [
     "2376"
@@ -581,6 +838,28 @@
    "novel": true
   },
   {
+   "id": "856e9d8f5af99028",
+   "kind": "announcement",
+   "title": "公告本公司法人董事之代表人辭世",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:31:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:31:00",
+   "affected_tickers": [
+    "6182"
+   ],
+   "affected_industries": [
+    "半導體業"
+   ],
+   "event_type": "主管與董事異動",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "78243ddc41b5f194",
    "kind": "announcement",
    "title": "本公司代子公司Delta Electronics Int'l (Singapore) Pte. Ltd.公告發放現金股利",
@@ -588,7 +867,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:34:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:34:00",
    "affected_tickers": [
     "2308"
@@ -610,7 +889,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T16:38:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T16:38:00",
    "affected_tickers": [
     "8028"
@@ -625,6 +904,50 @@
    "novel": true
   },
   {
+   "id": "f8022d8cf15a0d96",
+   "kind": "announcement",
+   "title": "本公司受邀參加華南永昌綜合證券舉辦之法人說明會「產業趨勢暨企業論壇」，說明本公司產業狀況及發展趨勢。",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T16:39:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T16:39:00",
+   "affected_tickers": [
+    "4760"
+   ],
+   "affected_industries": [
+    "其他電子類"
+   ],
+   "event_type": "法說會",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "931ae1bf498bd3f2",
+   "kind": "announcement",
+   "title": "本公司與台灣某科技股份有限公司竹科分公司簽署工程合約",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-18T17:01:00",
+   "first_seen_at": "2026-11-19T15:25:39",
+   "fetched_at": "2026-11-19T15:25:46",
+   "data_asof": "2026-11-18T17:01:00",
+   "affected_tickers": [
+    "6881"
+   ],
+   "affected_industries": [
+    "其他"
+   ],
+   "event_type": "新藥與合約",
+   "importance": 2,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
    "id": "db21291d005b519f",
    "kind": "announcement",
    "title": "公告本公司115年11月20日召開法人說明會之相關訊息。",
@@ -632,7 +955,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-18T17:02:00",
    "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
+   "fetched_at": "2026-11-19T15:25:46",
    "data_asof": "2026-11-18T17:02:00",
    "affected_tickers": [
     "2009"
@@ -645,317 +968,9 @@
    "direction": "不確定",
    "confidence": "官方公告",
    "novel": true
-  },
-  {
-   "id": "e5dd0a9fe1950b5f",
-   "kind": "announcement",
-   "title": "代子公司和平電力(股)公司公告取得台灣電力 (股)公司115年度第7期無擔保普通公司債",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:03:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:03:00",
-   "affected_tickers": [
-    "1101"
-   ],
-   "affected_industries": [
-    "水泥工業"
-   ],
-   "event_type": "籌資",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "d73722cb3af1a782",
-   "kind": "announcement",
-   "title": "代重要子公司盛慶(北京)投資管理諮詢有限公司公告 法人董事代表人異動",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:19:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:19:00",
-   "affected_tickers": [
-    "2201"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "主管與董事異動",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "dc347e45cfa75d2b",
-   "kind": "announcement",
-   "title": "代重要子公司盛慶(北京)投資管理諮詢有限公司公告 會計主管異動",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:25:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:25:00",
-   "affected_tickers": [
-    "2201"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "主管與董事異動",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "ce084d03bab0f740",
-   "kind": "announcement",
-   "title": "代重要子公司裕隆(中國)汽車投資有限公司公告會計主管異動",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:27:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:27:00",
-   "affected_tickers": [
-    "2201"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "主管與董事異動",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "c968e91f8c3d476a",
-   "kind": "announcement",
-   "title": "代重要子公司納智捷(杭州)汽車銷售有限公司公告會計主管異動",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:28:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:28:00",
-   "affected_tickers": [
-    "2201"
-   ],
-   "affected_industries": [
-    "汽車工業"
-   ],
-   "event_type": "主管與董事異動",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "dc38edd5e7f0d36e",
-   "kind": "announcement",
-   "title": "公告本公司擬對子公司群曜數位科技(股)公司進行現金增資。",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:36:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:36:00",
-   "affected_tickers": [
-    "2371"
-   ],
-   "affected_industries": [
-    "電機機械"
-   ],
-   "event_type": "籌資",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "421311188ccf76a4",
-   "kind": "announcement",
-   "title": "更正本公司115年第三季合併財務報告及iXBRL申報資訊",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:48:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:48:00",
-   "affected_tickers": [
-    "1439"
-   ],
-   "affected_industries": [
-    "建材營造"
-   ],
-   "event_type": "營運數字",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "271180a54f1d4192",
-   "kind": "announcement",
-   "title": "115年12月2日正文科技召開年度法人說明會",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:49:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:49:00",
-   "affected_tickers": [
-    "4906"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "法說會",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "6d992c955c8563ca",
-   "kind": "announcement",
-   "title": "本公司受邀參加機構投資人說明會",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T17:56:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T17:56:00",
-   "affected_tickers": [
-    "3596"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "法說會",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "15e8acfb6ba0e387",
-   "kind": "announcement",
-   "title": "公告本公司之子公司兆豐證券(股)公司董事異動",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T18:46:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T18:46:00",
-   "affected_tickers": [
-    "2886"
-   ],
-   "affected_industries": [
-    "金融保險"
-   ],
-   "event_type": "主管與董事異動",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "6bc07ba120e595c8",
-   "kind": "announcement",
-   "title": "代子公司FBD Biologics Limited公告， 美國 FDA 通知 HCB301 新藥臨床試驗申請 （IND 170769）實施臨床暫停",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T19:38:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T19:38:00",
-   "affected_tickers": [
-    "7827"
-   ],
-   "affected_industries": [
-    "生技醫療業"
-   ],
-   "event_type": "新藥與合約",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "2b5f7781f2a92eb7",
-   "kind": "announcement",
-   "title": "本公司受邀參加凱基證券股份有限公司主辦之法人說明會， 向投資人說明本公司之營運概況、財務及業務相關資訊。",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T21:52:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T21:52:00",
-   "affected_tickers": [
-    "6869"
-   ],
-   "affected_industries": [
-    "綠能環保"
-   ],
-   "event_type": "法說會",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "901a02fd11f65e36",
-   "kind": "announcement",
-   "title": "本公司新藥BESREMi（Ropeginterferon alfa-2b）向巴西 衛生部衛生監督局申請新增適應症，新增適應症為原發性血 小板過多症（ET）",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T22:41:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T22:41:00",
-   "affected_tickers": [
-    "6446"
-   ],
-   "affected_industries": [
-    "化學生技醫療"
-   ],
-   "event_type": "新藥與合約",
-   "importance": 2,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "9f6715385d2ed22e",
-   "kind": "announcement",
-   "title": "本公司與通傳會有關頻譜附款訴訟判決說明",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-18T23:02:00",
-   "first_seen_at": "2026-11-19T06:14:31",
-   "fetched_at": "2026-11-19T12:32:27",
-   "data_asof": "2026-11-18T23:02:00",
-   "affected_tickers": [
-    "3045"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "訴訟與調查",
-   "importance": 2,
-   "direction": "負面",
-   "confidence": "官方公告",
-   "novel": true
   }
  ],
- "event_count": 157,
+ "event_count": 203,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -964,7 +979,7 @@
    "price": 89.53,
    "chg_pct": 0.32
   },
-  "generated_at": "2026-11-19T12:32:26+08:00",
+  "generated_at": "2026-11-19T15:25:45+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
@@ -972,11 +987,11 @@
     "symbol": "^SOX",
     "name": "費城半導體指數",
     "date": "2026-11-18",
-    "close": 9607.27,
+    "close": 9652.8,
     "prev_close": 9642.88,
-    "chg_pct": -0.37,
-    "streak": -1,
-    "ret_5d": -9.06,
+    "chg_pct": 0.1,
+    "streak": 2,
+    "ret_5d": -8.63,
     "recent": [
      [
       "2026-11-11",
@@ -1000,7 +1015,7 @@
      ],
      [
       "2026-11-18",
-      9607.27
+      9652.8
      ]
     ]
    },
@@ -1008,11 +1023,11 @@
     "symbol": "^IXIC",
     "name": "那斯達克綜合指數",
     "date": "2026-11-18",
-    "close": 24322.71,
+    "close": 24429.88,
     "prev_close": 24328.38,
-    "chg_pct": -0.02,
-    "streak": -5,
-    "ret_5d": -4.49,
+    "chg_pct": 0.42,
+    "streak": 1,
+    "ret_5d": -4.07,
     "recent": [
      [
       "2026-11-11",
@@ -1036,7 +1051,7 @@
      ],
      [
       "2026-11-18",
-      24322.71
+      24429.88
      ]
     ]
    },
@@ -1044,11 +1059,11 @@
     "symbol": "^GSPC",
     "name": "S&P 500 指數",
     "date": "2026-11-18",
-    "close": 7303.98,
+    "close": 7323.63,
     "prev_close": 7340.53,
-    "chg_pct": -0.5,
+    "chg_pct": -0.23,
     "streak": -5,
-    "ret_5d": -4.14,
+    "ret_5d": -3.88,
     "recent": [
      [
       "2026-11-11",
@@ -1072,7 +1087,7 @@
      ],
      [
       "2026-11-18",
-      7303.98
+      7323.63
      ]
     ]
    },
@@ -1080,11 +1095,11 @@
     "symbol": "^DJI",
     "name": "道瓊工業指數",
     "date": "2026-11-18",
-    "close": 50089.71,
+    "close": 50198.17,
     "prev_close": 50759.42,
-    "chg_pct": -1.32,
+    "chg_pct": -1.11,
     "streak": -3,
-    "ret_5d": -4.57,
+    "ret_5d": -4.36,
     "recent": [
      [
       "2026-11-11",
@@ -1108,7 +1123,7 @@
      ],
      [
       "2026-11-18",
-      50089.71
+      50198.17
      ]
     ]
    },
@@ -1116,11 +1131,11 @@
     "symbol": "TSM",
     "name": "台積電 ADR（美股）",
     "date": "2026-11-18",
-    "close": 361.07,
+    "close": 362.62,
     "prev_close": 359.69,
-    "chg_pct": 0.38,
+    "chg_pct": 0.81,
     "streak": 1,
-    "ret_5d": -12.65,
+    "ret_5d": -12.27,
     "recent": [
      [
       "2026-11-11",
@@ -1144,7 +1159,7 @@
      ],
      [
       "2026-11-18",
-      361.07
+      362.62
      ]
     ]
    }
