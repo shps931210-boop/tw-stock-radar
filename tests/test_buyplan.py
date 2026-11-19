@@ -53,5 +53,28 @@ class BuyPlan(unittest.TestCase):
         self.assertTrue(any("同業" in w for w in p["why"]))
 
 
+class LongPlan(unittest.TestCase):
+    def test_triggered_is_buy_in_batches(self):
+        p = bp.build_long({"close": 100.0, "ma240": 90.0}, {"state": "triggered", "miss": [], "warn": []}, V)
+        self.assertEqual(p["key"], "buy")
+        self.assertIn("分", p["entry"])
+        self.assertAlmostEqual(p["ma240_floor"], 76.5)
+
+    def test_only_pe_missing_waits_for_price(self):
+        lg = {"state": "setup", "miss": ["本益比 20.0 倍，高於自己近兩年中位數 15.0 倍"], "warn": []}
+        p = bp.build_long({"close": 130.0}, lg, V)
+        self.assertEqual(p["key"], "wait_price")
+        self.assertIn("100.00", p["entry"])
+
+    def test_hot_or_broken_is_avoid(self):
+        hot = {"state": "setup", "miss": [], "warn": ["本益比高於自己近兩年第 80 百分位，估值偏熱"]}
+        self.assertEqual(bp.build_long({"close": 1}, hot, V)["key"], "avoid")
+        bad = {"state": "none", "miss": ["財務品質因子 30 分，未達 60"], "warn": ["財務品質或成長因子低於 40 分，原本的長期論點可能已經不成立"]}
+        self.assertEqual(bp.build_long({"close": 1}, bad, V)["key"], "avoid")
+
+    def test_na(self):
+        self.assertEqual(bp.build_long({}, {"state": "na"}, {})["key"], "na")
+
+
 if __name__ == "__main__":
     unittest.main()

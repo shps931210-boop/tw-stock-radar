@@ -567,6 +567,7 @@ def _decision(rows: list[dict], price_day: str = "", fm_done: set | None = None,
                      "pe_pct": (vb or {}).get("pct"), "vs_base": round((r["close"] / vb["base"] - 1) * 100, 1) if vb and vb.get("base") and r.get("close") else None}
         try:   # 2026-11-18 買賣計畫：能不能買、合理價、進出場價位（app/buyplan.py）
             r["plan"]["buy"] = buyplan.build(r, st, v)
+            r["plan"]["buy_long"] = buyplan.build_long(r, lg, v)
         except Exception as e:
             r["plan"]["buy"] = {"key": "na", "label": "資料不足", "why": [f"買賣計畫計算失敗：{e}"]}
     return out

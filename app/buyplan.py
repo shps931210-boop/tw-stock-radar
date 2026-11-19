@@ -95,3 +95,37 @@ def build(r: dict, st: dict, v: dict) -> dict:
     elif key == "wait_signal":
         plan["entry"] = "等波段進場訊號（回檔到月線附近後轉強）。目前：" + (sw.get("miss") or ["條件還沒成立"])[0]
     return plan
+
+
+LONG_VERDICT = {"buy": "可以考慮分批買進", "wait_price": "好公司，等價格回落", "watch": "觀察", "avoid": "先不要買", "na": "資料不足"}
+
+
+def build_long(r: dict, lg: dict, v: dict) -> dict:
+    """長期（6 個月以上）：看公司體質與估值（strategy.long_status），不看每日股價訊號。"""
+    state = (lg or {}).get("state", "na")
+    miss, warn = list((lg or {}).get("miss") or []), list((lg or {}).get("warn") or [])
+    hist = v.get("p50") is not None
+    hot = any("估值偏熱" in w for w in warn)
+    broken = any("論點可能已經不成立" in w or "跌破年線 15%" in w for w in warn)
+    pe_miss = any(m.startswith("本益比") for m in miss)
+    other_miss = [m for m in miss if not m.startswith("本益比")]
+    if state == "na":
+        key = "na"
+    elif broken or hot:
+        key = "avoid"
+    elif state == "triggered":
+        key = "buy"
+    elif pe_miss and not other_miss:
+        key = "wait_price"
+    else:
+        key = "watch"
+    close, ma240 = r.get("close"), r.get("ma240")
+    plan = {"key": key, "label": LONG_VERDICT[key], "why": (miss + warn)[:4] or ["品質、成長、AI 分數、估值四項都符合"],
+            "fair": {"low": _r(v.get("low")), "base": _r(v.get("base")), "high": _r(v.get("high"))} if hist else None,
+            "ma240_floor": _r(ma240 * 0.85) if ma240 else None}
+    if key == "buy":
+        plan["entry"] = "分 2～3 次買進（例如每月一次），不要一次買滿" + (f"；股價高於樂觀價 {plan['fair']['high']:.2f} 就先停" if plan["fair"] else "")
+    elif key == "wait_price":
+        base = plan["fair"]["base"] if plan["fair"] else None
+        plan["entry"] = f"等股價回到合理價 {base:.2f} 以下再分批買" if base else "等本益比回到同業中位數以下再分批買"
+    return plan

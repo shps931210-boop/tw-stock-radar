@@ -4309,20 +4309,34 @@ function exitLines(P, close) {
   return L;
 }
 function planCard(s, d) {
-  const P = s.plan?.buy; if (!P) return "";
-  const V = d?.decision?.valuation || {}, ev = swingEvidence(), F = P.fair;
+  const hz = store.get("phz", "swing") === "long" ? "long" : "swing";
+  const P = hz === "long" ? s.plan?.buy_long : s.plan?.buy; if (!s.plan?.buy) return "";
+  const V = d?.decision?.valuation || {}, F = P?.fair;
   const pos = F && s.close ? (s.close <= F.low ? "低於保守價（便宜）" : s.close <= F.base ? "在保守價與合理價之間" : s.close <= F.high ? "在合理價與樂觀價之間（不便宜）" : "高於樂觀價（偏貴）") : null;
-  return `<section class="card bplan" id="bplan"><div class="card-h"><h2>現在能不能買？</h2><span class="faint small">${esc(s.date)} 收盤後判斷・波段（約 1～2 個月）</span></div>
+  const seg = `<div class="seg sm" id="phz"><button data-h="swing" class="${hz === "swing" ? "on" : ""}">波段（1～2 個月）</button><button data-h="long" class="${hz === "long" ? "on" : ""}">長期（6 個月以上）</button></div>`;
+  if (!P) return `<section class="card bplan" id="bplan"><div class="card-h"><h2>現在能不能買？</h2>${seg}</div><p class="muted" style="margin:0">這檔股票還沒有長期計畫的資料。</p></section>`;
+  const ev = hz === "long" ? { ok: null, txt: "長期規則（品質、成長、AI 分數、估值四項）沒有單獨的歷史回測：交易所的歷史本益比只從 2026 年 8 月開始有，可信度未知。最接近的驗證是 AI 均衡型每月換股，2025 年以來每 20 天平均落後 0050 約 3.6 個百分點。" } : swingEvidence();
+  const exits = hz === "long" ? ["公司體質轉差：財務品質或成長分數掉到 40 分以下",
+      F?.high != null ? `估值過熱：股價高於樂觀價 <b class="num">${fmtNum(F.high)}</b>（本益比高於自己近兩年第 80 百分位），分批賣出` : "估值過熱：本益比高於自己近兩年第 80 百分位，分批賣出",
+      P.ma240_floor != null ? `長期趨勢破壞：股價跌破年線 15%（約 <b class="num">${fmtNum(P.ma240_floor)}</b>）就重新評估` : "長期趨勢破壞：股價跌破年線 15% 就重新評估",
+      "論點失效：連續兩季 EPS 年減，或月營收連續 3 個月年減 10% 以上"] : exitLines(P, s.close);
+  return `<section class="card bplan" id="bplan"><div class="card-h"><h2>現在能不能買？</h2>${seg}</div>
+    <p class="faint small" style="margin:-4px 0 8px">${esc(s.date)} 收盤後判斷</p>
     <div class="bp-v"><span class="pill ${BUYCLS[P.key] || ""} lg">${esc(P.label)}</span><span class="num bp-px">${fmtNum(s.close)}</span></div>
     <ul class="bp-why">${(P.why || []).map((w) => `<li>${esc(w)}</li>`).join("")}</ul>
+    ${F && s.close && (F.base >= s.close * 2 || F.base <= s.close / 2) ? `<div class="banner warn small" style="margin:0 0 10px"><b>合理價和股價差了一倍以上，請特別小心。</b>${F.base >= s.close * 2 ? "通常代表近四季獲利特別高（例如記憶體、航運、鋼鐵等景氣循環股在獲利高峰），市場預期獲利會下滑，用本益比算的合理價可能嚴重高估。" : "通常代表近四季獲利特別低或剛轉虧為盈，用本益比算的合理價可能嚴重低估。"}</div>` : ""}
     <div class="bp-grid">
       <div><span>合理價區間</span>${F ? `<b class="num">${fmtNum(F.low)} ～ ${fmtNum(F.high)}</b><small>保守 ${fmtNum(F.low)}・合理 ${fmtNum(F.base)}・樂觀 ${fmtNum(F.high)}${pos ? `<br>目前股價${pos}` : ""}</small>`
         : `<b>算不出來</b><small>${esc(V.why || "沒有足夠的本益比歷史")}${V.pe != null && V.peer ? `；本益比 ${fmtNum(V.pe, 1)} 倍、同業中位數 ${fmtNum(V.peer, 1)} 倍` : ""}</small>`}</div>
       <div><span>什麼時候進場</span><b style="font-size:14px;font-weight:600">${esc(P.entry || (P.key === "avoid" ? "目前不建議進場" : "條件還不夠，先觀察"))}</b></div>
-      <div class="bp-exit"><span>${P.key === "buy" ? "買了之後什麼時候出場" : "如果之後進場，出場規則"}</span><ul>${exitLines(P, s.close).map((x) => `<li>${x}</li>`).join("")}</ul></div>
+      <div class="bp-exit"><span>${P.key === "buy" ? "買了之後什麼時候出場" : "如果之後進場，出場規則"}</span><ul>${exits.map((x) => `<li>${x}</li>`).join("")}</ul></div>
     </div>
-    <p class="small" style="margin:10px 0 0">${ev.ok === false ? '<span class="pill warn">可信度：尚未證明</span> ' : ev.ok ? '<span class="pill good">可信度：歷史贏 0050</span> ' : ""}${ev.txt}</p>
-    <p class="faint small" style="margin:4px 0 0">合理價 = 近四季 EPS × 自己近兩年本益比第 20／50／80 百分位；停損、季線由股價規則算出，不是 AI 預測。這是研究參考，不是投資建議；跳空時停損可能成交在更差的價格。</p></section>`;
+    <p class="small" style="margin:10px 0 0">${ev.ok === false || ev.ok === null ? '<span class="pill warn">可信度：尚未證明</span> ' : '<span class="pill good">可信度：歷史贏 0050</span> '}${ev.txt}</p>
+    <p class="faint small" style="margin:4px 0 0">合理價 = 近四季 EPS × 自己近兩年本益比第 20／50／80 百分位；停損、季線、年線由股價規則算出，不是 AI 預測。這是研究參考，不是投資建議；跳空時停損可能成交在更差的價格。</p></section>`;
+}
+function bindPlan(s, d) {
+  const el = $("#phz"); if (!el) return;
+  el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; store.set("phz", b.dataset.h); $("#bplan").outerHTML = planCard(s, d); bindPlan(s, d); };
 }
 function homeBuy() {
   const L = SNAP.stocks.filter((s) => s.plan?.buy?.key === "buy").sort((a, b) => (b.ai?.modes?.balanced?.score ?? 0) - (a.ai?.modes?.balanced?.score ?? 0));
@@ -4459,7 +4473,7 @@ async function pageStock(id) {
   };
   const onHz = (e) => { const b = e.target.closest("button[data-h]"); if (!b) return; store.set("hz", b.dataset.h); const y = scrollY, open = $("#t-adv")?.open;
     $("#tr-top").outerHTML = trendCard(s, d); $("#t-adv").outerHTML = decisionCard(s, d); if (open) $("#t-adv").open = true; scrollTo(0, y); bindTrend(); facHint(s, d.decision); fillFinQ(); fillPred(); };
-  bindTrend();
+  bindTrend(); bindPlan(s, d);
   facHint(s, d.decision); fillFinQ(); fillPred();
   const drawSpec = (k) => { $("#spec").innerHTML = specHtml(k, s); };
   drawSpec(mode);
