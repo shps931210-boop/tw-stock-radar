@@ -1636,7 +1636,7 @@ async function loadSealCal() {
   if (!C?.days?.length) return;
   const S = C.summary, m = (x) => x.matured ? '<span class="ckok">已到期</span>' : `<span class="num">${esc(x.due.slice(5))}</span>`;
   el.innerHTML = `<h3 style="margin:14px 0 6px">封存日曆</h3>
-    <p class="small" style="margin:0 0 6px">${esc(S.first)} 起應有預測的交易日 <b>${S.expected}</b> 天，已封存 <b>${S.sealed}</b> 天（開盤前封存 ${S.on_time} 天）${S.missing.length ? `，<b class="ckw">缺漏 ${S.missing.length} 天：${esc(S.missing.join("、"))}</b>（不會事後補做）` : "，沒有缺漏"}。
+    <p class="small" style="margin:0 0 6px">${esc(S.first)} 起應有預測的交易日 <b>${S.expected}</b> 天，已封存 <b>${S.sealed}</b> 天（開盤前封存 ${S.on_time} 天）${S.missing.length ? `，<b class="ckw">缺漏 ${S.missing.length} 天：${esc(S.missing.join("、"))}</b>（不會事後補做${S.outage?.length ? `；其中 ${S.outage.length} 天是系統停擺，原因寫在下表` : ""}）` : "，沒有缺漏"}。
       ${S.next_due ? `下一個到期：${esc(S.next_due.date)}（${esc(S.next_due.horizon)} 日）。` : ""}${Object.keys(S.scorecard_lag || {}).length ? `<b class="ckw">對帳統計落後：${Object.entries(S.scorecard_lag).map(([h, n]) => `${h} 日少算 ${n} 天`).join("、")}</b>` : ""}</p>
     <div class="tbl"><table><thead><tr><th>日期</th><th>封存</th><th>精選紀錄</th><th>盤前版</th><th class="r">5 日</th><th class="r">20 日</th><th class="r">60 日</th></tr></thead><tbody>
     ${[...C.days].reverse().map((d) => d.trading

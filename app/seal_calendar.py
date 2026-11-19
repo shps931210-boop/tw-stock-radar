@@ -20,6 +20,9 @@ PRED = config.ROOT / "history" / "predictions"
 PICKS = config.ROOT / "history" / "picks"
 HOL = config.ROOT / "history" / "premarket" / "holidays.json"
 NOTES = config.ROOT / "history" / "audit" / "closure_notes.json"   # 非例行休市的原因（人工註記，只寫官方公告過的事實）
+# 2026-11-19：我們自己的系統停擺（例如 GitHub 帳號停權）造成的缺漏。照樣算「缺漏」、不補做，只是寫明原因；
+# 整合測試只擋「沒有原因的缺漏」，避免一段已知的停擺讓之後每一次更新都永遠顯示失敗。
+OUTAGE = config.ROOT / "history" / "audit" / "outage_notes.json"
 OUT = config.ROOT / "history" / "audit" / "seal_calendar.json"
 HORIZONS = (5, 20, 60)
 OPEN_AT = "09:00"
@@ -33,11 +36,12 @@ def _read(p: Path):
 
 
 def build(today: date | None = None, data_days: list[str] | None = None, pred: Path = PRED, picks: Path = PICKS,
-          hol: Path = HOL, notes: Path = NOTES) -> dict:
+          hol: Path = HOL, notes: Path = NOTES, outage: Path = OUTAGE) -> dict:
     """data_days：資料庫實際有行情的日期（有資料庫時傳入，用來找出颱風假這類非例行休市）；沒有時只用休市日曆。"""
     today = today or config.today()
     H = set((_read(hol) or {}).get("dates", []))
     N = _read(notes) or {}
+    O = _read(outage) or {}
     files = sorted(pred.glob("????-??-??.json")) if pred.exists() else []
     if not files:
         return {"days": [], "summary": {"expected": 0}}
@@ -54,7 +58,7 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
             return "週末"
         if s in H:
             return N.get(s) or "證交所休市日曆"
-        if have and s <= last_data and s not in have:
+        if have and s <= last_data and s not in have and s not in sealed:  # 有封存預測的那天一定有行情
             return N.get(s) or "非例行休市：官方當天沒有行情（例如颱風停止交易）"
         if s in N:
             return N[s]
@@ -93,7 +97,8 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
             elif s > last_data:
                 r.update(sealed=False, reason="今天的收盤資料還沒更新（完整更新後才會封存）" if s == today.isoformat() else "資料還沒更新到這一天")
             else:
-                r.update(sealed=False, reason="缺漏：這個交易日沒有封存的預測，不會事後補做")
+                r.update(sealed=False, reason="缺漏：這個交易日沒有封存的預測，不會事後補做" + (f"（{O[s]}）" if s in O else ""),
+                         outage=s in O)
             mat = {}
             for h in HORIZONS:
                 due = trading_after(entry, h)  # 進場日後第 h 個交易日開盤出場；那天收盤資料進來後才能對帳
@@ -107,6 +112,8 @@ def build(today: date | None = None, data_days: list[str] | None = None, pred: P
         "first": first.isoformat(), "last_data": last_data, "today": today.isoformat(),
         "expected": len(tr), "sealed": sum(bool(r.get("sealed")) for r in tr), "on_time": sum(bool(r.get("on_time")) for r in tr),
         "missing": [r["date"] for r in tr if not r.get("sealed")],
+        "outage": [r["date"] for r in tr if not r.get("sealed") and r.get("outage")],
+        "unexplained": [r["date"] for r in tr if not r.get("sealed") and not r.get("outage")],
         "picks": sum(bool(r.get("picks")) for r in tr),
         "pre_open": sum(bool(r.get("pre_open")) for r in tr),
         "pre_open_on_time": sum(bool(r.get("pre_open_on_time")) for r in tr),
@@ -138,7 +145,9 @@ def db_days(dbname: str = "stocks.db", since: str = "2026-01-01") -> list[str] |
     try:
         from . import db
         with db.connect(dbname) as con:
-            return [r[0] for r in con.execute("SELECT DISTINCT date FROM index_prices WHERE date>=? ORDER BY date", (since,))]
+            # 2026-11-19：只看加權指數會把「指數那天沒抓到」誤判成休市（11/16 行情走 OpenAPI 備援，沒有指數）；股價有資料的日子也算交易日
+            return sorted({r[0] for r in con.execute("SELECT DISTINCT date FROM index_prices WHERE date>=?", (since,))}
+                          | {r[0] for r in con.execute("SELECT DISTINCT date FROM prices WHERE date>=?", (since,))})
     except Exception:  # noqa: BLE001  沒有資料庫時只用休市日曆
         return None
 

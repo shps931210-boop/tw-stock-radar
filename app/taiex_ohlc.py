@@ -60,6 +60,20 @@ def months(today: date, have: set[str]) -> list[str]:
     return [f"{k // 12}-{k % 12 + 1:02d}" for k in recent + old]
 
 
+def fill_index_prices(con) -> list[str]:
+    """2026-11-19：每日行情走 OpenAPI 備援的那天（例如 11/16、10/07）股價有了，加權指數收盤卻沒有，
+    0050／加權指數比較和封存日曆會少一天。用同一個官方來源（證交所 MI_5MINS_HIST）的收盤補上，只補缺的、不覆寫既有的。"""
+    cand = [r[0] for r in con.execute("SELECT date FROM index_ohlc o WHERE close IS NOT NULL"
+                                      " AND NOT EXISTS (SELECT 1 FROM index_prices p WHERE p.date=o.date) ORDER BY date")]
+    # 只補股價那天確實有資料的日子（prices 主鍵是 stock_id+date，用 0050 查才走得到索引）
+    days = [d for d in cand if con.execute("SELECT 1 FROM prices WHERE stock_id='0050' AND date=?", (d,)).fetchone()]
+    if days:
+        q = ",".join("?" * len(days))
+        con.execute(f"INSERT OR IGNORE INTO index_prices (date, close) SELECT date, close FROM index_ohlc WHERE date IN ({q})", days)
+        con.commit()
+    return days
+
+
 def run(session: requests.Session | None = None) -> dict:
     s = session or requests.Session()
     s.headers.update(HEADERS)
@@ -80,10 +94,12 @@ def run(session: requests.Session | None = None) -> dict:
                 db.upsert(con, "index_ohlc", rows)
                 con.commit()
                 got += len(rows)
+        filled = fill_index_prices(con)
         span = con.execute("SELECT MIN(date), MAX(date), COUNT(*) FROM index_ohlc").fetchone()
         # 和既有的加權指數收盤價核對（同一天收盤要一樣）
         bad = con.execute("SELECT COUNT(*) FROM index_ohlc o JOIN index_prices p USING(date) WHERE ABS(o.close - p.close) > 0.05").fetchone()[0]
-    return {"months": todo, "rows": got, "errors": errors, "first": span[0], "last": span[1], "days": span[2], "close_mismatch": bad}
+    return {"months": todo, "rows": got, "errors": errors, "first": span[0], "last": span[1], "days": span[2], "close_mismatch": bad,
+            "filled_close": filled}
 
 
 if __name__ == "__main__":
