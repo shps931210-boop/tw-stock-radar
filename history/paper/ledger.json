@@ -4,60 +4,13 @@
  "rules": "訊號日收盤後的正式 AI 精選，隔一個交易日開盤買（＋0.1% 滑價）；收盤跌 10% 停損、漲 20% 停利、滿 20 個交易日到期，都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃前一個交易日的 5%，開盤就漲停買不到、開盤就跌停賣不掉照實記；開盤成交只用開盤時已知的資訊。只模擬，不會送出任何真實委託。",
  "live_trading": false,
  "start_signal": "2026-10-27",
- "last_data": "2026-11-19",
+ "last_data": "2026-11-20",
  "first_entry": "2026-10-28",
  "books": {
   "stable": {
    "mode": "stable",
-   "cash": 352.0,
+   "cash": 425.0,
    "positions": [
-    {
-     "id": "S0003",
-     "mode": "stable",
-     "sid": "2615",
-     "name": "萬海",
-     "industry": "航運業",
-     "signal_date": "2026-10-27",
-     "pick_file": "2026-10-27.v4.json",
-     "pick_generated_at": "2026-10-27T23:21:16",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-10-27",
-      "revenue": "2026-09",
-      "financials": "2026-Q2"
-     },
-     "rank": 3,
-     "score": 81.2,
-     "liq": "A",
-     "reason": "正式精選第 3 名，AI 量化評分 81.2；趨勢 100、價值 90",
-     "signal_close": 116.5,
-     "entry_date": "2026-10-28",
-     "entry_price": 117.6175,
-     "entry_open": 117.5,
-     "bought": 1698,
-     "shares": 1698,
-     "buy_value": 199714.52,
-     "buy_fee": 284,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 105.86,
-     "target_price": 141.14,
-     "max_close": 120.0,
-     "min_close": 103.5,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 103.5,
-     "last_date": "2026-11-19",
-     "held_days": 17,
-     "market_value": 175743.0,
-     "unreal_ret": -12.128,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
     {
      "id": "S0004",
      "mode": "stable",
@@ -94,15 +47,15 @@
      "stop_price": 90.09,
      "target_price": 120.12,
      "max_close": 101.5,
-     "min_close": 90.3,
+     "min_close": 83.5,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 90.3,
-     "last_date": "2026-11-19",
-     "held_days": 17,
-     "market_value": 180148.0,
-     "unreal_ret": -9.918,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-20",
+     "last_close": 83.5,
+     "last_date": "2026-11-20",
+     "held_days": 18,
+     "market_value": 166582.0,
+     "unreal_ret": -16.702,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -141,14 +94,14 @@
      "stop_price": 75.95,
      "target_price": 101.26,
      "max_close": 92.5,
-     "min_close": 84.3,
+     "min_close": 80.6,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 84.3,
-     "last_date": "2026-11-19",
-     "held_days": 9,
-     "market_value": 176440.0,
-     "unreal_ret": -0.242,
+     "last_close": 80.6,
+     "last_date": "2026-11-20",
+     "held_days": 10,
+     "market_value": 168696.0,
+     "unreal_ret": -4.62,
      "pending_exit": null,
      "status": "open"
     },
@@ -188,14 +141,14 @@
      "stop_price": 28.51,
      "target_price": 38.02,
      "max_close": 33.95,
-     "min_close": 30.75,
+     "min_close": 28.7,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 30.75,
-     "last_date": "2026-11-19",
-     "held_days": 9,
-     "market_value": 152336.0,
-     "unreal_ret": -3.078,
+     "last_close": 28.7,
+     "last_date": "2026-11-20",
+     "held_days": 10,
+     "market_value": 142180.0,
+     "unreal_ret": -9.54,
      "pending_exit": null,
      "status": "open"
     },
@@ -235,14 +188,61 @@
      "stop_price": 41.98,
      "target_price": 55.98,
      "max_close": 45.0,
-     "min_close": 43.7,
+     "min_close": 40.15,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-20",
+     "last_close": 40.15,
+     "last_date": "2026-11-20",
+     "held_days": 3,
+     "market_value": 153895.0,
+     "unreal_ret": -14.049,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
+     "status": "open"
+    },
+    {
+     "id": "S0009",
+     "mode": "stable",
+     "sid": "2615",
+     "name": "萬海",
+     "industry": "航運業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-19",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 2,
+     "score": 77.3,
+     "liq": "A",
+     "reason": "正式精選第 2 名，AI 量化評分 77.3；價值 92、成長 83",
+     "signal_close": 103.5,
+     "entry_date": "2026-11-20",
+     "entry_price": 101.101,
+     "entry_open": 101.0,
+     "bought": 1684,
+     "shares": 1684,
+     "buy_value": 170254.08,
+     "buy_fee": 242,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 90.99,
+     "target_price": 121.32,
+     "max_close": 95.0,
+     "min_close": 95.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 43.7,
-     "last_date": "2026-11-19",
-     "held_days": 2,
-     "market_value": 167502.0,
-     "unreal_ret": -6.45,
+     "last_close": 95.0,
+     "last_date": "2026-11-20",
+     "held_days": 1,
+     "market_value": 159980.0,
+     "unreal_ret": -6.168,
      "pending_exit": null,
      "status": "open"
     }
@@ -403,6 +403,58 @@
      "bench_ret": -6.784,
      "status": "closed",
      "excess": -3.523
+    },
+    {
+     "id": "S0003",
+     "mode": "stable",
+     "sid": "2615",
+     "name": "萬海",
+     "industry": "航運業",
+     "signal_date": "2026-10-27",
+     "pick_file": "2026-10-27.v4.json",
+     "pick_generated_at": "2026-10-27T23:21:16",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-10-27",
+      "revenue": "2026-09",
+      "financials": "2026-Q2"
+     },
+     "rank": 3,
+     "score": 81.2,
+     "liq": "A",
+     "reason": "正式精選第 3 名，AI 量化評分 81.2；趨勢 100、價值 90",
+     "signal_close": 116.5,
+     "entry_date": "2026-10-28",
+     "entry_price": 117.6175,
+     "entry_open": 117.5,
+     "bought": 1698,
+     "buy_value": 199714.52,
+     "buy_fee": 284,
+     "sell_fee": 244,
+     "sell_tax": 513,
+     "sell_value": 171326.502,
+     "dividends": 0.0,
+     "stop_price": 105.86,
+     "target_price": 141.14,
+     "max_close": 120.0,
+     "min_close": 103.5,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 103.5,
+     "last_date": "2026-11-19",
+     "held_days": 17,
+     "shares": 1698,
+     "exit_date": "2026-11-20",
+     "exit_price": 100.899,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -14.214,
+     "net_ret": -14.715,
+     "pnl": -29429.0,
+     "bench_ret": -19.474,
+     "status": "closed",
+     "excess": 4.759
     }
    ],
    "orders": [
@@ -556,6 +608,31 @@
      "price": 46.6466,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "2615",
+     "name": "萬海",
+     "want": 1698,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 1698,
+     "price": 100.899,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "buy",
+     "sid": "2615",
+     "name": "萬海",
+     "signal_date": "2026-11-19",
+     "rank": 2,
+     "want": 1684,
+     "filled": 1684,
+     "price": 101.101,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -677,25 +754,36 @@
      "mv": 852169.0,
      "equity": 852521.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-20",
+     "cash": 425.0,
+     "mv": 791333.0,
+     "equity": 791758.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
    "pending_sells": [
     {
-     "sid": "2615",
+     "sid": "2637",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2851",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "kpi": {
-    "equity": 852521.0,
-    "cash": 352.0,
-    "ret": -14.748,
-    "mdd": -15.26,
+    "equity": 791758.0,
+    "cash": 425.0,
+    "ret": -20.824,
+    "mdd": -21.3,
     "n_open": 5,
-    "n_closed": 3,
-    "realized": -86574.0,
-    "fees": 2881,
-    "taxes": 1546,
+    "n_closed": 4,
+    "realized": -116003.0,
+    "fees": 3367,
+    "taxes": 2059,
     "unfilled": {
      "開盤就在跌停價，賣不掉": 1
     }
@@ -706,7 +794,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 0,
-     "stop": 3,
+     "stop": 4,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -776,154 +864,30 @@
      "notes": {
       "exit": "停損後還不到 10 個交易日，之後再判斷"
      }
+    },
+    {
+     "id": "S0003",
+     "mode": "stable",
+     "sid": "2615",
+     "name": "萬海",
+     "net_ret": -14.715,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "risk"
+     ],
+     "labels": [
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
     }
    ]
   },
   "balanced": {
    "mode": "balanced",
-   "cash": 102.0,
+   "cash": 9.0,
    "positions": [
-    {
-     "id": "B0003",
-     "mode": "balanced",
-     "sid": "2615",
-     "name": "萬海",
-     "industry": "航運業",
-     "signal_date": "2026-10-27",
-     "pick_file": "2026-10-27.v4.json",
-     "pick_generated_at": "2026-10-27T23:21:16",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-10-27",
-      "revenue": "2026-09",
-      "financials": "2026-Q2"
-     },
-     "rank": 3,
-     "score": 79.8,
-     "liq": "A",
-     "reason": "正式精選第 3 名，AI 量化評分 79.8；趨勢 100、價值 90",
-     "signal_close": 116.5,
-     "entry_date": "2026-10-28",
-     "entry_price": 117.6175,
-     "entry_open": 117.5,
-     "bought": 1698,
-     "shares": 1698,
-     "buy_value": 199714.52,
-     "buy_fee": 284,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 105.86,
-     "target_price": 141.14,
-     "max_close": 120.0,
-     "min_close": 103.5,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 103.5,
-     "last_date": "2026-11-19",
-     "held_days": 17,
-     "market_value": 175743.0,
-     "unreal_ret": -12.128,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
-    {
-     "id": "B0007",
-     "mode": "balanced",
-     "sid": "2408",
-     "name": "南亞科",
-     "industry": "電子工業",
-     "signal_date": "2026-11-06",
-     "pick_file": "2026-11-06.v8.json",
-     "pick_generated_at": "2026-11-07T06:22:50",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-06",
-      "revenue": "2026-09",
-      "financials": "2026-Q2"
-     },
-     "rank": 1,
-     "score": 89.4,
-     "liq": "A",
-     "reason": "正式精選第 1 名，AI 量化評分 89.4；成長 99、動能 98",
-     "signal_close": 343.5,
-     "entry_date": "2026-11-09",
-     "entry_price": 358.358,
-     "entry_open": 358.0,
-     "bought": 486,
-     "shares": 486,
-     "buy_value": 174161.99,
-     "buy_fee": 248,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 322.52,
-     "target_price": 430.03,
-     "max_close": 394.0,
-     "min_close": 293.5,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 293.5,
-     "last_date": "2026-11-19",
-     "held_days": 9,
-     "market_value": 142641.0,
-     "unreal_ret": -18.215,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
-    {
-     "id": "B0008",
-     "mode": "balanced",
-     "sid": "3006",
-     "name": "晶豪科",
-     "industry": "電子工業",
-     "signal_date": "2026-11-06",
-     "pick_file": "2026-11-06.v8.json",
-     "pick_generated_at": "2026-11-07T06:22:50",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-06",
-      "revenue": "2026-09",
-      "financials": "2026-Q2"
-     },
-     "rank": 2,
-     "score": 89.2,
-     "liq": "A",
-     "reason": "正式精選第 2 名，AI 量化評分 89.2；成長 99、動能 93",
-     "signal_close": 207.5,
-     "entry_date": "2026-11-09",
-     "entry_price": 215.215,
-     "entry_open": 215.0,
-     "bought": 809,
-     "shares": 809,
-     "buy_value": 174108.93,
-     "buy_fee": 248,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 193.69,
-     "target_price": 258.26,
-     "max_close": 235.0,
-     "min_close": 193.0,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 193.0,
-     "last_date": "2026-11-19",
-     "held_days": 9,
-     "market_value": 156137.0,
-     "unreal_ret": -10.45,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
     {
      "id": "B0010",
      "mode": "balanced",
@@ -960,15 +924,15 @@
      "stop_price": 29.1,
      "target_price": 38.8,
      "max_close": 32.45,
-     "min_close": 30.75,
+     "min_close": 28.7,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 30.75,
-     "last_date": "2026-11-19",
-     "held_days": 2,
-     "market_value": 158362.0,
-     "unreal_ret": -5.029,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-20",
+     "last_close": 28.7,
+     "last_date": "2026-11-20",
+     "held_days": 3,
+     "market_value": 147805.0,
+     "unreal_ret": -11.36,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -1011,10 +975,151 @@
      "fill_note": null,
      "exit_signal_date": null,
      "last_close": 211.0,
-     "last_date": "2026-11-19",
-     "held_days": 2,
+     "last_date": "2026-11-20",
+     "held_days": 3,
      "market_value": 155718.0,
      "unreal_ret": -2.776,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "B0012",
+     "mode": "balanced",
+     "sid": "3006",
+     "name": "晶豪科",
+     "industry": "電子工業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-19",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 1,
+     "score": 86.6,
+     "liq": "A",
+     "reason": "正式精選第 1 名，AI 量化評分 86.6；成長 99、品質 92",
+     "signal_close": 193.0,
+     "entry_date": "2026-11-20",
+     "entry_price": 182.182,
+     "entry_open": 182.0,
+     "bought": 864,
+     "shares": 864,
+     "buy_value": 157405.25,
+     "buy_fee": 224,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 163.96,
+     "target_price": 218.62,
+     "max_close": 175.0,
+     "min_close": 175.0,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 175.0,
+     "last_date": "2026-11-20",
+     "held_days": 1,
+     "market_value": 151200.0,
+     "unreal_ret": -4.079,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "B0013",
+     "mode": "balanced",
+     "sid": "2408",
+     "name": "南亞科",
+     "industry": "電子工業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-19",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 2,
+     "score": 85.0,
+     "liq": "A",
+     "reason": "正式精選第 2 名，AI 量化評分 85.0；成長 99、品質 97",
+     "signal_close": 293.5,
+     "entry_date": "2026-11-20",
+     "entry_price": 276.7765,
+     "entry_open": 276.5,
+     "bought": 569,
+     "shares": 569,
+     "buy_value": 157485.83,
+     "buy_fee": 224,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 249.1,
+     "target_price": 332.13,
+     "max_close": 264.5,
+     "min_close": 264.5,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 264.5,
+     "last_date": "2026-11-20",
+     "held_days": 1,
+     "market_value": 150500.0,
+     "unreal_ret": -4.571,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "B0014",
+     "mode": "balanced",
+     "sid": "2344",
+     "name": "華邦電",
+     "industry": "電子工業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-19",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 4,
+     "score": 80.7,
+     "liq": "A",
+     "reason": "正式精選第 4 名，AI 量化評分 80.7；成長 97、動能 92",
+     "signal_close": 98.0,
+     "entry_date": "2026-11-20",
+     "entry_price": 90.3903,
+     "entry_open": 90.3,
+     "bought": 1496,
+     "shares": 1496,
+     "buy_value": 135223.89,
+     "buy_fee": 192,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 81.35,
+     "target_price": 108.47,
+     "max_close": 89.2,
+     "min_close": 89.2,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 89.2,
+     "last_date": "2026-11-20",
+     "held_days": 1,
+     "market_value": 133443.0,
+     "unreal_ret": -1.457,
      "pending_exit": null,
      "status": "open"
     }
@@ -1331,6 +1436,162 @@
      "bench_ret": 0.052,
      "status": "closed",
      "excess": -7.969
+    },
+    {
+     "id": "B0003",
+     "mode": "balanced",
+     "sid": "2615",
+     "name": "萬海",
+     "industry": "航運業",
+     "signal_date": "2026-10-27",
+     "pick_file": "2026-10-27.v4.json",
+     "pick_generated_at": "2026-10-27T23:21:16",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-10-27",
+      "revenue": "2026-09",
+      "financials": "2026-Q2"
+     },
+     "rank": 3,
+     "score": 79.8,
+     "liq": "A",
+     "reason": "正式精選第 3 名，AI 量化評分 79.8；趨勢 100、價值 90",
+     "signal_close": 116.5,
+     "entry_date": "2026-10-28",
+     "entry_price": 117.6175,
+     "entry_open": 117.5,
+     "bought": 1698,
+     "buy_value": 199714.52,
+     "buy_fee": 284,
+     "sell_fee": 244,
+     "sell_tax": 513,
+     "sell_value": 171326.502,
+     "dividends": 0.0,
+     "stop_price": 105.86,
+     "target_price": 141.14,
+     "max_close": 120.0,
+     "min_close": 103.5,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 103.5,
+     "last_date": "2026-11-19",
+     "held_days": 17,
+     "shares": 1698,
+     "exit_date": "2026-11-20",
+     "exit_price": 100.899,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -14.214,
+     "net_ret": -14.715,
+     "pnl": -29429.0,
+     "bench_ret": -19.474,
+     "status": "closed",
+     "excess": 4.759
+    },
+    {
+     "id": "B0007",
+     "mode": "balanced",
+     "sid": "2408",
+     "name": "南亞科",
+     "industry": "電子工業",
+     "signal_date": "2026-11-06",
+     "pick_file": "2026-11-06.v8.json",
+     "pick_generated_at": "2026-11-07T06:22:50",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-06",
+      "revenue": "2026-09",
+      "financials": "2026-Q2"
+     },
+     "rank": 1,
+     "score": 89.4,
+     "liq": "A",
+     "reason": "正式精選第 1 名，AI 量化評分 89.4；成長 99、動能 98",
+     "signal_close": 343.5,
+     "entry_date": "2026-11-09",
+     "entry_price": 358.358,
+     "entry_open": 358.0,
+     "bought": 486,
+     "buy_value": 174161.99,
+     "buy_fee": 248,
+     "sell_fee": 191,
+     "sell_tax": 402,
+     "sell_value": 134244.621,
+     "dividends": 0.0,
+     "stop_price": 322.52,
+     "target_price": 430.03,
+     "max_close": 394.0,
+     "min_close": 293.5,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 293.5,
+     "last_date": "2026-11-19",
+     "held_days": 9,
+     "shares": 486,
+     "exit_date": "2026-11-20",
+     "exit_price": 276.2235,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -22.92,
+     "net_ret": -23.369,
+     "pnl": -40758.0,
+     "bench_ret": -8.782,
+     "status": "closed",
+     "excess": -14.587
+    },
+    {
+     "id": "B0008",
+     "mode": "balanced",
+     "sid": "3006",
+     "name": "晶豪科",
+     "industry": "電子工業",
+     "signal_date": "2026-11-06",
+     "pick_file": "2026-11-06.v8.json",
+     "pick_generated_at": "2026-11-07T06:22:50",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-06",
+      "revenue": "2026-09",
+      "financials": "2026-Q2"
+     },
+     "rank": 2,
+     "score": 89.2,
+     "liq": "A",
+     "reason": "正式精選第 2 名，AI 量化評分 89.2；成長 99、動能 93",
+     "signal_close": 207.5,
+     "entry_date": "2026-11-09",
+     "entry_price": 215.215,
+     "entry_open": 215.0,
+     "bought": 809,
+     "buy_value": 174108.93,
+     "buy_fee": 248,
+     "sell_fee": 209,
+     "sell_tax": 441,
+     "sell_value": 147090.76200000002,
+     "dividends": 0.0,
+     "stop_price": 193.69,
+     "target_price": 258.26,
+     "max_close": 235.0,
+     "min_close": 193.0,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 193.0,
+     "last_date": "2026-11-19",
+     "held_days": 9,
+     "shares": 809,
+     "exit_date": "2026-11-20",
+     "exit_price": 181.818,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -15.518,
+     "net_ret": -16.011,
+     "pnl": -27916.0,
+     "bench_ret": -8.782,
+     "status": "closed",
+     "excess": -7.229
     }
    ],
    "orders": [
@@ -1570,6 +1831,81 @@
      "price": 216.7165,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "2615",
+     "name": "萬海",
+     "want": 1698,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 1698,
+     "price": 100.899,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "2408",
+     "name": "南亞科",
+     "want": 486,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 486,
+     "price": 276.2235,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "3006",
+     "name": "晶豪科",
+     "want": 809,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 809,
+     "price": 181.818,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "buy",
+     "sid": "3006",
+     "name": "晶豪科",
+     "signal_date": "2026-11-19",
+     "rank": 1,
+     "want": 864,
+     "filled": 864,
+     "price": 182.182,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "buy",
+     "sid": "2408",
+     "name": "南亞科",
+     "signal_date": "2026-11-19",
+     "rank": 2,
+     "want": 569,
+     "filled": 569,
+     "price": 276.7765,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "buy",
+     "sid": "2344",
+     "name": "華邦電",
+     "signal_date": "2026-11-19",
+     "rank": 4,
+     "want": 1496,
+     "filled": 1496,
+     "price": 90.3903,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -1691,33 +2027,32 @@
      "mv": 788602.0,
      "equity": 788704.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-20",
+     "cash": 9.0,
+     "mv": 738667.0,
+     "equity": 738676.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
    "pending_sells": [
     {
-     "sid": "2615",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "2408",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "3006",
+     "sid": "2605",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "kpi": {
-    "equity": 788704.0,
-    "cash": 102.0,
-    "ret": -21.13,
-    "mdd": -22.05,
+    "equity": 738676.0,
+    "cash": 9.0,
+    "ret": -26.132,
+    "mdd": -26.99,
     "n_open": 5,
-    "n_closed": 6,
-    "realized": -124220.0,
-    "fees": 4302,
-    "taxes": 3042,
+    "n_closed": 9,
+    "realized": -222323.0,
+    "fees": 5586,
+    "taxes": 4398,
     "unfilled": {
      "開盤就在跌停價，賣不掉": 2
     }
@@ -1728,7 +2063,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 0,
-     "stop": 6,
+     "stop": 9,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -1853,12 +2188,71 @@
      "notes": {
       "exit": "停損後還不到 10 個交易日，之後再判斷"
      }
+    },
+    {
+     "id": "B0003",
+     "mode": "balanced",
+     "sid": "2615",
+     "name": "萬海",
+     "net_ret": -14.715,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "risk"
+     ],
+     "labels": [
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
+    },
+    {
+     "id": "B0007",
+     "mode": "balanced",
+     "sid": "2408",
+     "name": "南亞科",
+     "net_ret": -23.369,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "entry",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "進場：開盤比訊號日收盤高 3% 以上才買到（追高）",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
+    },
+    {
+     "id": "B0008",
+     "mode": "balanced",
+     "sid": "3006",
+     "name": "晶豪科",
+     "net_ret": -16.011,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "entry",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "進場：開盤比訊號日收盤高 3% 以上才買到（追高）",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
     }
    ]
   },
   "aggressive": {
    "mode": "aggressive",
-   "cash": 34.0,
+   "cash": 50.0,
    "positions": [
     {
      "id": "A0012",
@@ -1899,11 +2293,11 @@
      "min_close": 165.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 172.5,
-     "last_date": "2026-11-19",
-     "held_days": 9,
-     "market_value": 167842.0,
-     "unreal_ret": 4.929,
+     "last_close": 169.5,
+     "last_date": "2026-11-20",
+     "held_days": 10,
+     "market_value": 164924.0,
+     "unreal_ret": 3.104,
      "pending_exit": null,
      "status": "open"
     },
@@ -1943,14 +2337,14 @@
      "stop_price": 131.53,
      "target_price": 175.38,
      "max_close": 167.0,
-     "min_close": 130.5,
+     "min_close": 119.0,
      "fill_note": null,
      "exit_signal_date": "2026-11-19",
-     "last_close": 130.5,
-     "last_date": "2026-11-19",
-     "held_days": 9,
-     "market_value": 142636.0,
-     "unreal_ret": -10.832,
+     "last_close": 119.0,
+     "last_date": "2026-11-20",
+     "held_days": 10,
+     "market_value": 130067.0,
+     "unreal_ret": -18.69,
      "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
@@ -1990,109 +2384,109 @@
      "stop_price": 391.89,
      "target_price": 522.52,
      "max_close": 405.0,
-     "min_close": 364.5,
+     "min_close": 344.5,
      "fill_note": null,
      "exit_signal_date": "2026-11-19",
-     "last_close": 364.5,
-     "last_date": "2026-11-19",
-     "held_days": 2,
-     "market_value": 132314.0,
-     "unreal_ret": -16.41,
+     "last_close": 344.5,
+     "last_date": "2026-11-20",
+     "held_days": 3,
+     "market_value": 125054.0,
+     "unreal_ret": -20.996,
      "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
-     "id": "A0016",
+     "id": "A0018",
      "mode": "aggressive",
-     "sid": "1303",
-     "name": "南亞",
-     "industry": "塑膠工業",
-     "signal_date": "2026-11-17",
-     "pick_file": "2026-11-17.v4.json",
-     "pick_generated_at": "2026-11-18T06:34:26",
+     "sid": "4977",
+     "name": "眾達-KY",
+     "industry": "電子工業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
      "model_version": "v1.1",
      "model_hash": "ce1e61207b30",
      "data_dates": {
-      "prices": "2026-11-17",
+      "prices": "2026-11-19",
       "revenue": "2026-10",
-      "financials": "2026-Q2"
+      "financials": "2026-Q3"
      },
      "rank": 3,
-     "score": 83.3,
+     "score": 70.9,
      "liq": "A",
-     "reason": "正式精選第 3 名，AI 量化評分 83.3；動能 100、成長 87",
-     "signal_close": 261.5,
-     "entry_date": "2026-11-18",
-     "entry_price": 278.278,
-     "entry_open": 278.0,
-     "bought": 569,
-     "shares": 569,
-     "buy_value": 158340.18,
-     "buy_fee": 225,
+     "reason": "正式精選第 3 名，AI 量化評分 70.9；成長 89、趨勢 80",
+     "signal_close": 177.5,
+     "entry_date": "2026-11-20",
+     "entry_price": 160.16,
+     "entry_open": 160.0,
+     "bought": 878,
+     "shares": 878,
+     "buy_value": 140620.48,
+     "buy_fee": 200,
      "sold": 0,
      "sell_fee": 0,
      "sell_tax": 0,
      "sell_value": 0.0,
      "dividends": 0.0,
-     "stop_price": 250.45,
-     "target_price": 333.93,
-     "max_close": 253.5,
-     "min_close": 228.5,
+     "stop_price": 144.14,
+     "target_price": 192.19,
+     "max_close": 160.0,
+     "min_close": 160.0,
      "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 228.5,
-     "last_date": "2026-11-19",
-     "held_days": 2,
-     "market_value": 130016.0,
-     "unreal_ret": -18.004,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
+     "exit_signal_date": null,
+     "last_close": 160.0,
+     "last_date": "2026-11-20",
+     "held_days": 1,
+     "market_value": 140480.0,
+     "unreal_ret": -0.242,
+     "pending_exit": null,
      "status": "open"
     },
     {
-     "id": "A0017",
+     "id": "A0019",
      "mode": "aggressive",
-     "sid": "1709",
-     "name": "和益",
-     "industry": "化學生技醫療",
-     "signal_date": "2026-11-17",
-     "pick_file": "2026-11-17.v4.json",
-     "pick_generated_at": "2026-11-18T06:34:26",
+     "sid": "2465",
+     "name": "麗臺",
+     "industry": "電腦及週邊設備業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
      "model_version": "v1.1",
      "model_hash": "ce1e61207b30",
      "data_dates": {
-      "prices": "2026-11-17",
+      "prices": "2026-11-19",
       "revenue": "2026-10",
-      "financials": "2026-Q2"
+      "financials": "2026-Q3"
      },
      "rank": 4,
-     "score": 82.9,
+     "score": 69.9,
      "liq": "A",
-     "reason": "正式精選第 4 名，AI 量化評分 82.9；動能 96、成長 84",
-     "signal_close": 48.25,
-     "entry_date": "2026-11-18",
-     "entry_price": 49.6496,
-     "entry_open": 49.6,
-     "bought": 3104,
-     "shares": 3104,
-     "buy_value": 154112.36,
-     "buy_fee": 219,
+     "reason": "正式精選第 4 名，AI 量化評分 69.9；成長 93、趨勢 80",
+     "signal_close": 122.5,
+     "entry_date": "2026-11-20",
+     "entry_price": 112.6125,
+     "entry_open": 112.5,
+     "bought": 874,
+     "shares": 874,
+     "buy_value": 98423.32,
+     "buy_fee": 140,
      "sold": 0,
      "sell_fee": 0,
      "sell_tax": 0,
      "sell_value": 0.0,
      "dividends": 0.0,
-     "stop_price": 44.68,
-     "target_price": 59.58,
-     "max_close": 47.1,
-     "min_close": 42.4,
+     "stop_price": 101.35,
+     "target_price": 135.13,
+     "max_close": 110.5,
+     "min_close": 110.5,
      "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 42.4,
-     "last_date": "2026-11-19",
-     "held_days": 2,
-     "market_value": 131610.0,
-     "unreal_ret": -14.723,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
+     "exit_signal_date": null,
+     "last_close": 110.5,
+     "last_date": "2026-11-20",
+     "held_days": 1,
+     "market_value": 96577.0,
+     "unreal_ret": -2.015,
+     "pending_exit": null,
      "status": "open"
     }
    ],
@@ -2720,6 +3114,110 @@
      "bench_ret": 0.052,
      "status": "closed",
      "excess": -8.805
+    },
+    {
+     "id": "A0016",
+     "mode": "aggressive",
+     "sid": "1303",
+     "name": "南亞",
+     "industry": "塑膠工業",
+     "signal_date": "2026-11-17",
+     "pick_file": "2026-11-17.v4.json",
+     "pick_generated_at": "2026-11-18T06:34:26",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-17",
+      "revenue": "2026-10",
+      "financials": "2026-Q2"
+     },
+     "rank": 3,
+     "score": 83.3,
+     "liq": "A",
+     "reason": "正式精選第 3 名，AI 量化評分 83.3；動能 100、成長 87",
+     "signal_close": 261.5,
+     "entry_date": "2026-11-18",
+     "entry_price": 278.278,
+     "entry_open": 278.0,
+     "bought": 569,
+     "buy_value": 158340.18,
+     "buy_fee": 225,
+     "sell_fee": 167,
+     "sell_tax": 352,
+     "sell_value": 117665.217,
+     "dividends": 0.0,
+     "stop_price": 250.45,
+     "target_price": 333.93,
+     "max_close": 253.5,
+     "min_close": 228.5,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 228.5,
+     "last_date": "2026-11-19",
+     "held_days": 2,
+     "shares": 569,
+     "exit_date": "2026-11-20",
+     "exit_price": 206.793,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -25.688,
+     "net_ret": -26.121,
+     "pnl": -41419.0,
+     "bench_ret": -8.83,
+     "status": "closed",
+     "excess": -17.291
+    },
+    {
+     "id": "A0017",
+     "mode": "aggressive",
+     "sid": "1709",
+     "name": "和益",
+     "industry": "化學生技醫療",
+     "signal_date": "2026-11-17",
+     "pick_file": "2026-11-17.v4.json",
+     "pick_generated_at": "2026-11-18T06:34:26",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-17",
+      "revenue": "2026-10",
+      "financials": "2026-Q2"
+     },
+     "rank": 4,
+     "score": 82.9,
+     "liq": "A",
+     "reason": "正式精選第 4 名，AI 量化評分 82.9；動能 96、成長 84",
+     "signal_close": 48.25,
+     "entry_date": "2026-11-18",
+     "entry_price": 49.6496,
+     "entry_open": 49.6,
+     "bought": 3104,
+     "buy_value": 154112.36,
+     "buy_fee": 219,
+     "sell_fee": 174,
+     "sell_tax": 368,
+     "sell_value": 122795.4816,
+     "dividends": 0.0,
+     "stop_price": 44.68,
+     "target_price": 59.58,
+     "max_close": 47.1,
+     "min_close": 42.4,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 42.4,
+     "last_date": "2026-11-19",
+     "held_days": 2,
+     "shares": 3104,
+     "exit_date": "2026-11-20",
+     "exit_price": 39.5604,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -20.321,
+     "net_ret": -20.785,
+     "pnl": -32078.0,
+     "bench_ret": -8.83,
+     "status": "closed",
+     "excess": -11.955
     }
    ],
    "orders": [
@@ -3098,6 +3596,78 @@
      "price": 49.6496,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "2221",
+     "name": "大甲",
+     "want": 1093,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在跌停價，賣不掉"
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "6672",
+     "name": "騰輝電子-KY",
+     "want": 363,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在跌停價，賣不掉"
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "1303",
+     "name": "南亞",
+     "want": 569,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 569,
+     "price": 206.793,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "sell",
+     "sid": "1709",
+     "name": "和益",
+     "want": 3104,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 3104,
+     "price": 39.5604,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "buy",
+     "sid": "4977",
+     "name": "眾達-KY",
+     "signal_date": "2026-11-19",
+     "rank": 3,
+     "want": 878,
+     "filled": 878,
+     "price": 160.16,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-20",
+     "side": "buy",
+     "sid": "2465",
+     "name": "麗臺",
+     "signal_date": "2026-11-19",
+     "rank": 4,
+     "want": 874,
+     "filled": 874,
+     "price": 112.6125,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -3219,6 +3789,13 @@
      "mv": 704419.0,
      "equity": 704452.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-20",
+     "cash": 50.0,
+     "mv": 657101.0,
+     "equity": 657151.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
@@ -3230,28 +3807,20 @@
     {
      "sid": "6672",
      "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "1303",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "1709",
-     "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "kpi": {
-    "equity": 704452.0,
-    "cash": 34.0,
-    "ret": -29.555,
-    "mdd": -30.64,
+    "equity": 657151.0,
+    "cash": 50.0,
+    "ret": -34.285,
+    "mdd": -35.3,
     "n_open": 5,
-    "n_closed": 12,
-    "realized": -208860.0,
-    "fees": 7039,
-    "taxes": 5940,
+    "n_closed": 14,
+    "realized": -282357.0,
+    "fees": 7720,
+    "taxes": 6660,
     "unfilled": {
-     "開盤就在跌停價，賣不掉": 1
+     "開盤就在跌停價，賣不掉": 3
     }
    },
    "odds": {
@@ -3260,7 +3829,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 1,
-     "stop": 11,
+     "stop": 13,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -3484,6 +4053,46 @@
      "notes": {
       "exit": "停損後還不到 10 個交易日，之後再判斷"
      }
+    },
+    {
+     "id": "A0016",
+     "mode": "aggressive",
+     "sid": "1303",
+     "name": "南亞",
+     "net_ret": -26.121,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "entry",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "進場：開盤比訊號日收盤高 3% 以上才買到（追高）",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
+    },
+    {
+     "id": "A0017",
+     "mode": "aggressive",
+     "sid": "1709",
+     "name": "和益",
+     "net_ret": -20.785,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
     }
    ]
   }
@@ -3575,101 +4184,84 @@
     "date": "2026-11-19",
     "e0050": 830473.0,
     "taiex": 828116.0
+   },
+   {
+    "date": "2026-11-20",
+    "e0050": 777533.0,
+    "taiex": 776533.0
    }
   ],
   "shares": 9207,
   "price": 108.4583,
   "e0050": {
-   "ret": -16.953,
-   "mdd": -16.98
+   "ret": -22.247,
+   "mdd": -22.27
   },
   "taiex": {
-   "ret": -17.188,
-   "mdd": -18.3
+   "ret": -22.347,
+   "mdd": -23.39
   },
   "taiex_start": "open",
   "note": "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：從第一個進場日的證交所開盤指數換算，不含成本；開盤指數在 9:00 很多股票還沒成交，接近前一天收盤，和 0050 的可成交開盤價不完全同步，只能參考。"
  },
  "plan": {
-  "signal_date": "2026-11-19",
-  "entry_date": "2026-11-20",
-  "pick_file": "2026-11-19.v3.json",
-  "generated_at": "2026-11-20T06:33:40",
+  "signal_date": "2026-11-20",
+  "entry_date": "2026-11-23",
+  "pick_file": "2026-11-20.json",
+  "generated_at": "2026-11-20T15:32:21",
   "model_version": "v1.1",
   "buys": {
    "stable": [
     {
-     "sid": "6532",
-     "name": "瑞耘",
-     "rank": 5,
+     "sid": "2603",
+     "name": "長榮",
+     "rank": 4,
      "score": 75.8
+    },
+    {
+     "sid": "1709",
+     "name": "和益",
+     "rank": 7,
+     "score": 70.6
     }
    ],
    "balanced": [
     {
-     "sid": "2344",
-     "name": "華邦電",
-     "rank": 4,
-     "score": 80.7
-    },
-    {
      "sid": "6505",
      "name": "台塑化",
      "rank": 6,
-     "score": 78.2
-    },
-    {
-     "sid": "5289",
-     "name": "宜鼎",
-     "rank": 7,
-     "score": 78.0
+     "score": 77.9
     }
    ],
    "aggressive": [
     {
-     "sid": "4977",
-     "name": "眾達-KY",
-     "rank": 3,
-     "score": 70.9
-    },
-    {
-     "sid": "2465",
-     "name": "麗臺",
-     "rank": 4,
-     "score": 69.9
-    },
-    {
      "sid": "6708",
      "name": "天擎",
-     "rank": 5,
-     "score": 68.7
+     "rank": 3,
+     "score": 70.2
     },
     {
      "sid": "9933",
      "name": "中鼎",
-     "rank": 6,
-     "score": 67.4
+     "rank": 4,
+     "score": 67.3
     }
    ]
   },
   "sells": {
    "stable": [
     {
-     "sid": "2615",
+     "sid": "2637",
+     "reason": "停損（收盤跌破買進價 10%）"
+    },
+    {
+     "sid": "2851",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
    "balanced": [
     {
-     "sid": "2615",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "2408",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "3006",
+     "sid": "2605",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ],
@@ -3680,14 +4272,6 @@
     },
     {
      "sid": "6672",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "1303",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "1709",
      "reason": "停損（收盤跌破買進價 10%）"
     }
    ]
@@ -3825,6 +4409,17 @@
     "revenue": "2026-10",
     "financials": "2026-Q3"
    }
+  },
+  "2026-11-20": {
+   "file": "2026-11-20.json",
+   "generated_at": "2026-11-20T15:32:21",
+   "model_version": "v1.1",
+   "model_hash": "ce1e61207b30",
+   "data_dates": {
+    "prices": "2026-11-20",
+    "revenue": "2026-10",
+    "financials": "2026-Q3"
+   }
   }
  },
  "note": "這是依固定規則的模擬交易（前瞻紀錄，從 2026-10-28 開盤開始），不是回測，也沒有送出任何真實委託。",
@@ -3833,36 +4428,37 @@
   "books": {
    "stable": {
     "kpi": {
-     "equity": 843120.0,
-     "cash": 374.0,
-     "ret": -15.688,
-     "mdd": -16.19,
+     "equity": 780451.0,
+     "cash": 2372.0,
+     "ret": -21.955,
+     "mdd": -22.42,
      "n_open": 5,
-     "n_closed": 3,
-     "realized": -86574.0,
-     "fees": 2881,
-     "taxes": 1546,
+     "n_closed": 4,
+     "realized": -116003.0,
+     "fees": 3364,
+     "taxes": 2059,
      "unfilled": {
-      "開盤就在跌停價，賣不掉": 1
+      "開盤就在跌停價，賣不掉": 2
      }
     },
     "files": [
      "2026-10-27.json",
      "2026-11-06.json",
-     "2026-11-17.json"
+     "2026-11-17.json",
+     "2026-11-19.json"
     ]
    },
    "balanced": {
     "kpi": {
-     "equity": 798186.0,
-     "cash": 8.0,
-     "ret": -20.181,
-     "mdd": -21.41,
+     "equity": 744982.0,
+     "cash": 51.0,
+     "ret": -25.502,
+     "mdd": -26.64,
      "n_open": 5,
-     "n_closed": 5,
-     "realized": -103529.0,
-     "fees": 3788,
-     "taxes": 2500,
+     "n_closed": 8,
+     "realized": -201819.0,
+     "fees": 5074,
+     "taxes": 3858,
      "unfilled": {
       "開盤就在跌停價，賣不掉": 2
      }
@@ -3871,29 +4467,31 @@
      "2026-10-27.json",
      "2026-11-03.json",
      "2026-11-06.json",
-     "2026-11-17.json"
+     "2026-11-17.json",
+     "2026-11-19.json"
     ]
    },
    "aggressive": {
     "kpi": {
-     "equity": 704633.0,
-     "cash": 266.0,
-     "ret": -29.537,
-     "mdd": -30.62,
+     "equity": 657432.0,
+     "cash": 110.0,
+     "ret": -34.257,
+     "mdd": -35.27,
      "n_open": 5,
-     "n_closed": 12,
-     "realized": -208860.0,
-     "fees": 7039,
-     "taxes": 5940,
+     "n_closed": 14,
+     "realized": -282071.0,
+     "fees": 7720,
+     "taxes": 6661,
      "unfilled": {
-      "開盤就在跌停價，賣不掉": 1
+      "開盤就在跌停價，賣不掉": 3
      }
     },
     "files": [
      "2026-10-27.json",
      "2026-11-03.json",
      "2026-11-06.json",
-     "2026-11-17.json"
+     "2026-11-17.json",
+     "2026-11-19.json"
     ]
    }
   },
@@ -3909,7 +4507,8 @@
    "2026-11-06": "2026-11-06.v8.json",
    "2026-11-17": "2026-11-17.v4.json",
    "2026-11-18": "2026-11-18.v2.json",
-   "2026-11-19": "2026-11-19.v3.json"
+   "2026-11-19": "2026-11-19.v3.json",
+   "2026-11-20": "2026-11-20.json"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-20T07:14:02",
+ "generated_at": "2026-11-20T15:37:08",
  "source": "history/audit/fair_compare.json（開盤到開盤、扣成本、只算合格批次）",
- "fair_generated_at": "2026-11-20T07:14:02",
+ "fair_generated_at": "2026-11-20T15:37:06",
  "batches": {
   "h5": 19,
-  "h20": 6
+  "h20": 7
  },
  "headline": "穩健型、均衡型、積極型目前輸 0050，還沒有達到「可以虧但不能輸 0050」。",
  "modes": {
@@ -32,21 +32,21 @@
     "before": 0.57
    },
    "h20": {
-    "n": 6,
+    "n": 7,
     "first": "2026-10-12",
-    "last": "2026-10-19",
-    "mean_excess": 3.16,
+    "last": "2026-10-20",
+    "mean_excess": 3.49,
     "beat_share": 100.0,
     "lose_streak": 0,
-    "beta": 0.9,
-    "alpha": 2.08,
+    "beta": 0.79,
+    "alpha": 1.07,
     "up": {
      "n": 0,
      "excess": null
     },
     "down": {
-     "n": 6,
-     "excess": 3.16
+     "n": 7,
+     "excess": 3.49
     }
    },
    "findings": [
@@ -90,21 +90,21 @@
     "before": 0.11
    },
    "h20": {
-    "n": 6,
+    "n": 7,
     "first": "2026-10-12",
-    "last": "2026-10-19",
-    "mean_excess": -5.73,
+    "last": "2026-10-20",
+    "mean_excess": -6.13,
     "beat_share": 0.0,
-    "lose_streak": 6,
-    "beta": 1.11,
-    "alpha": -4.59,
+    "lose_streak": 7,
+    "beta": 1.25,
+    "alpha": -3.19,
     "up": {
      "n": 0,
      "excess": null
     },
     "down": {
-     "n": 6,
-     "excess": -5.73
+     "n": 7,
+     "excess": -6.13
     }
    },
    "findings": [
@@ -131,7 +131,7 @@
     {
      "level": "bad",
      "code": "lose_0050_20d",
-     "text": "均衡型 20 日到期 6 批平均輸 0050 5.73 個百分點。"
+     "text": "均衡型 20 日到期 7 批平均輸 0050 6.13 個百分點。"
     }
    ]
   },
@@ -158,21 +158,21 @@
     "before": -4.73
    },
    "h20": {
-    "n": 6,
+    "n": 7,
     "first": "2026-10-12",
-    "last": "2026-10-19",
-    "mean_excess": -18.42,
+    "last": "2026-10-20",
+    "mean_excess": -19.61,
     "beat_share": 0.0,
-    "lose_streak": 6,
-    "beta": 1.77,
-    "alpha": -10.44,
+    "lose_streak": 7,
+    "beta": 1.85,
+    "alpha": -9.6,
     "up": {
      "n": 0,
      "excess": null
     },
     "down": {
-     "n": 6,
-     "excess": -18.42
+     "n": 7,
+     "excess": -19.61
     }
    },
    "findings": [
@@ -194,7 +194,7 @@
     {
      "level": "bad",
      "code": "lose_0050_20d",
-     "text": "積極型 20 日到期 6 批平均輸 0050 18.42 個百分點。"
+     "text": "積極型 20 日到期 7 批平均輸 0050 19.61 個百分點。"
     }
    ]
   }
@@ -204,7 +204,7 @@
   "rejected": 13,
   "shadow": 9,
   "adopted": 1,
-  "evidence_20d": 6,
+  "evidence_20d": 7,
   "since_last_adopted": 18,
   "findings": [
    {
