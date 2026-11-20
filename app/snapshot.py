@@ -435,6 +435,11 @@ def build(demo: bool = False) -> dict:
         out["strategy_rules"] = {**{k: {x: y for x, y in v.items() if isinstance(y, str)} for k, v in strategy.RULES.items()}, "long": strategy.LONG_RULE}
     except Exception as e:
         out["strategy_bt"] = {"ready": False, "reason": f"策略回測失敗：{e}"}
+    try:  # 2026-11-21 網站買賣結論本身的回測（app/plan_audit.py，每週重算）；個股卡的可信度用這份
+        from . import plan_audit
+        out["plan_audit"] = plan_audit.site_summary()
+    except Exception:  # noqa: BLE001  沒有結果時卡片照舊顯示策略回測
+        out["plan_audit"] = None
     if blocked:
         decision = {sid: {**d, "blocked": blocked} for sid, d in decision.items()}
         for r in rows:

@@ -4310,12 +4310,25 @@ function quickCard(s, d) {
 // ---------- 2026-11-18 買賣計畫：能不能買、合理價、進場、出場（app/buyplan.py 算，這裡只顯示） ----------
 const BUYCLS = { buy: "good", wait_price: "", wait_signal: "", watch: "", avoid: "warn", na: "" };
 function swingEvidence() {
+  const A = SNAP.plan_audit?.swing?.["S-BUY"];
+  if (A?.dev != null) {
+    const pa = SNAP.plan_audit;
+    return { ok: !!A.passed, txt: `「三項條件都符合」這個結論本身回測過：${esc(pa.start.slice(0, 7))}～2024 年 ${fmtNum(A.dev_n, 0)} 筆，平均每月比 0050 ${pctTxt(A.dev)}；${esc(pa.holdout_from.slice(0, 4))} 年起 ${pctTxt(A.holdout)}（已扣成本）。`
+      + (A.passed ? "歷史上通過門檻，但不保證未來。" : "<b>沒有通過門檻，目前沒有證據比直接買 0050 好。</b>請把它當成紀律工具，不是保證。") };
+  }
   const b = SNAP.strategy_bt?.modes?.swing;
   if (!b?.n) return { ok: null, txt: "這套進出場規則還沒有歷史回測，可信度未知。" };
   const ok = b.excess != null && b.excess > 0;
   return { ok, txt: `這套波段規則在 ${esc(SNAP.strategy_bt.start || "")}～${esc(SNAP.strategy_bt.end || "")} 全市場 ${fmtNum(b.n, 0)} 筆交易：勝率 ${b.win}%、平均每筆 ${pctTxt(b.avg)}、平均比 0050 ${pctTxt(b.excess)}（已扣成本）。`
     + (ok ? "過去平均贏 0050，但不保證未來。" : "<b>過去平均輸給 0050，還沒證明比直接買 0050 好</b>，請把它當成紀律工具，不是保證。") };
 }
+function longEvidence() {
+  const A = SNAP.plan_audit?.long?.["L-BUY"], B = SNAP.plan_audit?.long?.["L-ALL"];
+  if (A?.dev == null) return { ok: null, txt: "長期規則（品質、成長、AI 分數、估值四項）還沒有歷史回測，可信度未知。" };
+  return { ok: !!A.passed, txt: `「四項條件都符合」這個結論本身回測過：2019～2024 年每 20 個交易日檢查一次、持有 ${SNAP.plan_audit.long_hold} 個交易日，平均比 0050 ${pctTxt(A.dev)}，只有 ${fmtNum(A.dev_beat, 0)}% 的期間贏${B?.dev != null ? `，比所有股票平均（${pctTxt(B.dev)}）還差` : ""}；2025 年起 ${pctTxt(A.holdout)}，但只有 ${fmtNum(A.holdout_beat, 0)}% 的期間贏（已扣成本）。`
+    + (A.passed ? "歷史上通過門檻，但不保證未來。" : "<b>過去沒有贏 0050。</b>本益比比自己歷史便宜的好公司，常常是因為獲利要變差了。") };
+}
+function credPill(ev) { return ev.ok ? '<span class="pill good">可信度：歷史贏 0050</span> ' : ev.ok === false ? '<span class="pill warn">可信度：過去沒贏 0050</span> ' : '<span class="pill warn">可信度：尚未證明</span> '; }
 function exitLines(P, close) {
   const L = [], now = P.key === "buy";
   if (P.stop != null) L.push(now ? `停損：盤中跌到 <b class="num">${fmtNum(P.stop)}</b> 以下就出場${P.risk_pct != null ? `（約 −${fmtNum(P.risk_pct, 1)}%）` : ""}`
@@ -4333,7 +4346,7 @@ function planCard(s, d) {
   const pos = F && s.close ? (s.close <= F.low ? "低於保守價（便宜）" : s.close <= F.base ? "在保守價與合理價之間" : s.close <= F.high ? "在合理價與樂觀價之間（不便宜）" : "高於樂觀價（偏貴）") : null;
   const seg = `<div class="seg sm" id="phz"><button data-h="swing" class="${hz === "swing" ? "on" : ""}">波段（1～2 個月）</button><button data-h="long" class="${hz === "long" ? "on" : ""}">長期（6 個月以上）</button></div>`;
   if (!P) return `<section class="card bplan" id="bplan"><div class="card-h"><h2>現在能不能買？</h2>${seg}</div><p class="muted" style="margin:0">這檔股票還沒有長期計畫的資料。</p></section>`;
-  const ev = hz === "long" ? { ok: null, txt: "長期規則（品質、成長、AI 分數、估值四項）沒有單獨的歷史回測：交易所的歷史本益比只從 2026 年 8 月開始有，可信度未知。最接近的驗證是 AI 均衡型每月換股，2025 年以來每 20 天平均落後 0050 約 3.6 個百分點。" } : swingEvidence();
+  const ev = hz === "long" ? longEvidence() : swingEvidence();
   const exits = hz === "long" ? ["公司體質轉差：財務品質或成長分數掉到 40 分以下",
       F?.high != null ? `估值過熱：股價高於樂觀價 <b class="num">${fmtNum(F.high)}</b>（本益比高於自己近兩年第 80 百分位），分批賣出` : "估值過熱：本益比高於自己近兩年第 80 百分位，分批賣出",
       P.ma240_floor != null ? `長期趨勢破壞：股價跌破年線 15%（約 <b class="num">${fmtNum(P.ma240_floor)}</b>）就重新評估` : "長期趨勢破壞：股價跌破年線 15% 就重新評估",
@@ -4349,7 +4362,7 @@ function planCard(s, d) {
       <div><span>什麼時候進場</span><b style="font-size:14px;font-weight:600">${esc(P.entry || (P.key === "avoid" ? "目前不建議進場" : "條件還不夠，先觀察"))}</b></div>
       <div class="bp-exit"><span>${P.key === "buy" ? "買了之後什麼時候出場" : "如果之後進場，出場規則"}</span><ul>${exits.map((x) => `<li>${x}</li>`).join("")}</ul></div>
     </div>
-    <p class="small" style="margin:10px 0 0">${ev.ok === false || ev.ok === null ? '<span class="pill warn">可信度：尚未證明</span> ' : '<span class="pill good">可信度：歷史贏 0050</span> '}${ev.txt}</p>
+    <p class="small" style="margin:10px 0 0">${credPill(ev)}${ev.txt}</p>
     <p class="faint small" style="margin:4px 0 0">合理價 = 近四季 EPS × 自己近兩年本益比第 20／50／80 百分位；停損、季線、年線由股價規則算出，不是 AI 預測。這是研究參考，不是投資建議；跳空時停損可能成交在更差的價格。</p></section>`;
 }
 function bindPlan(s, d) {
@@ -4361,14 +4374,14 @@ function homeBuy() {
   const nWait = SNAP.stocks.filter((s) => s.plan?.buy?.key === "wait_signal").length, ev = swingEvidence();
   const W = Object.keys(watch()).map((id) => BYID[id]).filter(Boolean), out = W.filter((s) => { const P = s.plan?.buy; return P && (P.key === "avoid" || (P.ma60 != null && s.close < P.ma60) || (P.fair?.high != null && s.close >= P.fair.high)); });
   const why = (s) => { const P = s.plan.buy; return P.ma60 != null && s.close < P.ma60 ? "收盤跌破季線" : P.fair?.high != null && s.close >= P.fair.high ? "股價高於樂觀價" : P.label; };
-  return `<section class="card" id="hbuy"><div class="card-h"><h2>今天可以考慮進場的股票</h2><span class="faint small">${esc(SNAP.data_dates?.prices || "")} 收盤後・體質、價格、時機都符合</span></div>
+  return `<section class="card" id="hbuy"><div class="card-h"><h2>今天三項條件都符合的股票</h2><span class="faint small">${esc(SNAP.data_dates?.prices || "")} 收盤後・體質、價格、時機都符合</span></div>
     ${L.length ? `<div class="tbl"><table class="wrap"><thead><tr><th>股票</th><th class="r">收盤</th><th class="r">合理價</th><th class="r">停損</th><th>怎麼進場</th></tr></thead><tbody>
       ${L.slice(0, 10).map((s) => { const P = s.plan.buy; return `<tr><td><a href="#/stock/${esc(s.stock_id)}"><b>${esc(s.name)}</b> <span class="faint num">${esc(s.stock_id)}</span></a><br><span class="faint small">AI ${fmtNum(s.ai?.modes?.balanced?.score, 0)} 分・${esc(s.industry || "")}</span></td>
         <td class="r num">${fmtNum(s.close)}</td><td class="r num">${P.fair ? fmtNum(P.fair.base) : "—"}</td><td class="r num">${P.stop != null ? fmtNum(P.stop) : "—"}</td><td class="small">${esc(P.entry || "")}</td></tr>`; }).join("")}</tbody></table></div>
       ${L.length > 10 ? `<p class="faint small" style="margin:4px 0 0">共 ${L.length} 檔，依 AI 分數列前 10 檔。</p>` : ""}`
       : `<p style="margin:0">今天沒有三項都符合的股票。${nWait ? `另有 <b>${nWait}</b> 檔好公司、價格合理，正在等進場訊號。` : ""}沒有訊號的日子不進場，也是紀律。</p>`}
     ${out.length ? `<h3 style="margin:12px 0 4px">你的自選股：該考慮出場</h3><ul class="small" style="margin:0;padding-left:18px">${out.map((s) => `<li><a href="#/stock/${esc(s.stock_id)}">${esc(s.name)} ${esc(s.stock_id)}</a>：${esc(why(s))}（收盤 ${fmtNum(s.close)}）</li>`).join("")}</ul>` : ""}
-    <p class="small" style="margin:10px 0 0">${ev.ok === false ? '<span class="pill warn">可信度：尚未證明</span> ' : ""}${ev.txt}</p>
+    <p class="small" style="margin:10px 0 0">${ev.ok === false ? credPill(ev) : ""}${ev.txt}</p>
     <p class="faint small" style="margin:4px 0 0">點股票看完整的合理價區間、進場與出場條件。研究參考，不是投資建議。</p></section>`;
 }
 // V13 個股「AI 紀錄」：這檔股票進過正式精選的日期、名次與之後的實際表現（和績效中心同一套規則）
