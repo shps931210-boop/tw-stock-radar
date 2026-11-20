@@ -177,6 +177,14 @@ jobs:
         timeout-minutes: 5
         run: python -m app.fair_compare
 
+      # 2026-11-20 公告後股價反應（事前登記 docs/prereg_announce_1120.md，R2、Q1 通過歷史門檻）：訊號日收盤後封存名單、到期對帳 0050。只是影子紀錄，不影響正式選股
+      - name: 公告後反應影子紀錄
+        id: announce
+        if: always() && env.MODE == 'full'
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python -m app.announce_shadow
+
       # 2026-11-18 每日反省：用到期的真實預測檢查每種模式有沒有輸 0050、輸在哪裡（大盤漲跌程度、選股本身、研究流程）
       - name: 每日反省（為什麼輸 0050）
         if: always() && env.MODE != 'premarket'
@@ -257,7 +265,7 @@ jobs:
         run: >-
           python -m app.step_log "連線診斷=${{ steps.probe.outcome }}" "影子預測封存=${{ steps.shadow.outcome }}"
           "新聞與公告=${{ steps.news.outcome }}" "國際市場=${{ steps.glob.outcome }}"
-          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}" "加權指數開盤價=${{ steps.taiex.outcome }}" "同時段公平比較=${{ steps.fair.outcome }}"
+          "盤前情報=${{ steps.pre.outcome }}" "盤前情報對帳=${{ steps.prescore.outcome }}" "預測封存日曆=${{ steps.seal.outcome }}" "整合測試=${{ steps.integ.outcome }}" "AI 模擬交易=${{ steps.paper.outcome }}" "到期對帳明細=${{ steps.mature.outcome }}" "學術候選影子紀錄=${{ steps.acad.outcome }}" "正式績效對帳=${{ steps.recon.outcome }}" "加權指數開盤價=${{ steps.taiex.outcome }}" "同時段公平比較=${{ steps.fair.outcome }}" "公告後反應影子紀錄=${{ steps.announce.outcome }}"
 
       # 2026-11-17：帳號 11/7～11/17 被停權（原因未公布）。之前每次更新都上傳約 180MB 備份、再下載回來測還原，一天十幾次，
       # 很像把 GitHub 當檔案倉庫用；改成只在完整更新（21:00、22:17 備援）時備份。
