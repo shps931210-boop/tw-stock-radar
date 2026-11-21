@@ -48,7 +48,7 @@ for (const [w, h, dev] of [[1280, 900, "電腦"], [390, 844, "手機"]]) {
     for (const r of ["5D", "1M", "1Y", "3M"]) { await page.click(`#ixr button[data-r="${r}"]`); await page.waitForTimeout(300); sw.push(r + ":" + ((await chartOk("#hix")).ok ? "有圖" : "沒圖")); }
     return [c.ok && sw.every((x) => x.endsWith("有圖")), `${c.kind} ${c.wh}，頂端 ${Math.round(top)}px；${sw.join("，")}`];
   });
-  await check(0, "今天可以考慮進場的股票（首頁第一張卡）", async () => {
+  await check(0, "今天三項條件都符合的股票（首頁第一張卡）", async () => {
     const r = await page.$eval("#hbuy", (el) => ({ top: el.getBoundingClientRect().top, txt: el.innerText }));
     const first = await page.$eval("#app section.card", (el) => el.id);
     return [first === "hbuy" && r.top < h * 0.6 && /可信度|回測/.test(r.txt) && !/上漲機率/.test(r.txt), `頂端 ${Math.round(r.top)}px`];

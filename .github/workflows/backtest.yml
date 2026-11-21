@@ -120,6 +120,12 @@ jobs:
           python -m app.miss_review
           python -m app.miss_deep
           python -m app.perf_study
+      # 2026-11-21 網站買賣結論本身的回測（事前登記 docs/prereg_plan_audit_1121.md）：個股卡「可信度」用這份結果
+      - name: 網站買賣結論回測
+        id: plan
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python -m app.plan_audit
       # 學術證據庫 DOI 核對（Crossref 免費 API）
       - name: 文獻 DOI 核對
         id: doi
@@ -140,7 +146,7 @@ jobs:
         run: >-
           python -m app.step_log "風險規則檢驗=${{ steps.risk.outcome }}" "資料與回測稽核=${{ steps.leak.outcome }}"
           "組合風險研究=${{ steps.port.outcome }}" "預測模型研究=${{ steps.mlr.outcome }}" "上傳研究資料集=${{ steps.panel.outcome }}"
-          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}" "選股品質總檢討=${{ steps.sel.outcome }}" "學術假說驗證=${{ steps.acad.outcome }}" "文獻核對=${{ steps.doi.outcome }}" "兩層分數研究=${{ steps.twol.outcome }}" "V21.2 因子與進場研究=${{ steps.v212.outcome }}"
+          "LightGBM 研究=${{ steps.lgbm.outcome }}" "投資組合研究=${{ steps.pst.outcome }}" "登記實驗=${{ steps.ingest.outcome }}" "選股品質總檢討=${{ steps.sel.outcome }}" "學術假說驗證=${{ steps.acad.outcome }}" "文獻核對=${{ steps.doi.outcome }}" "兩層分數研究=${{ steps.twol.outcome }}" "V21.2 因子與進場研究=${{ steps.v212.outcome }}" "網站買賣結論回測=${{ steps.plan.outcome }}"
       - name: 保存結果
         run: |
           git config user.name "github-actions[bot]"
