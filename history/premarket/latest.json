@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-20T20:11:00",
+ "generated_at": "2026-11-21T17:01:30",
  "quality": {
-  "checked_at": "2026-11-20T20:11:00",
+  "checked_at": "2026-11-21T17:01:30",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,12 +11,12 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 82 則、上櫃 55 則"
+    "detail": "上市 110 則、上櫃 55 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-11-20T20:10:54"
+    "detail": "2026-11-21T17:01:24"
    },
    "global": {
     "label": "國際市場",
@@ -26,39 +26,245 @@
   },
   "source_ok": "3/4",
   "state": "degraded",
-  "duplicates_removed": 1,
-  "latest_event_at": "2026-11-20T02:34:00"
+  "duplicates_removed": 8,
+  "latest_event_at": "2026-11-21T08:49:00"
  },
  "upcoming_holidays": [
   "2026-12-25"
  ],
  "target_date": "2026-11-23",
- "today": "2026-11-20",
- "today_trading": true,
+ "today": "2026-11-21",
+ "today_trading": false,
  "calendar_ok": true,
  "last_close": "2026-11-20",
  "status": {
   "mode": "collect",
   "target_date": "2026-11-23",
   "since": "2026-11-20T13:30:00",
-  "events": 125,
-  "high": 2
+  "events": 360,
+  "high": 11
  },
  "risk": {
   "level": "高",
-  "score": 4,
+  "score": 6,
   "reasons": [
-   "費城半導體 -2.41%（2026-11-19）下跌",
-   "台積電 ADR -2.90%（2026-11-19）下跌",
-   "那斯達克 -2.25%（2026-11-19）大跌"
+   "費城半導體 -10.73%（2026-11-20）大跌",
+   "台積電 ADR -9.48%（2026-11-20）大跌",
+   "那斯達克 -5.28%（2026-11-20）大跌"
   ],
   "stale": [
    "WTI 原油只到 2026-11-17"
   ],
-  "us_session_expected": "2026-11-19",
+  "us_session_expected": "2026-11-20",
   "method": "規則判讀：費半、台積電 ADR、那斯達克漲跌幅門檻＋匯率、油價、高重要性負面公告數；不是預測"
  },
- "flags": [],
+ "flags": [
+  {
+   "id": "2059",
+   "name": "川湖",
+   "industry": "電子零組件業",
+   "lists": [
+    "均衡型第 14 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電子零組件業）受影響機率較高"
+   ],
+   "event_ids": [
+    "ded9ded52ce0a7cf"
+   ]
+  },
+  {
+   "id": "2355",
+   "name": "敬鵬",
+   "industry": "電子零組件業",
+   "lists": [
+    "積極型第 8 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電子零組件業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "2465",
+   "name": "麗臺",
+   "industry": "電腦及週邊設備業",
+   "lists": [
+    "積極型第 2 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電腦及週邊設備業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "3054",
+   "name": "立萬利",
+   "industry": "電子通路業",
+   "lists": [
+    "均衡型第 2 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電子通路業）受影響機率較高"
+   ],
+   "event_ids": [
+    "d2093c878d767557"
+   ]
+  },
+  {
+   "id": "3617",
+   "name": "碩天",
+   "industry": "其他電子業",
+   "lists": [
+    "穩健型第 18 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（其他電子業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "3624",
+   "name": "光頡",
+   "industry": "電子零組件業",
+   "lists": [
+    "均衡型第 19 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電子零組件業）受影響機率較高"
+   ],
+   "event_ids": [
+    "241b545cd278eb24",
+    "bbab27bf80c1666f"
+   ]
+  },
+  {
+   "id": "5289",
+   "name": "宜鼎",
+   "industry": "電腦及週邊設備業",
+   "lists": [
+    "均衡型第 9 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電腦及週邊設備業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "6148",
+   "name": "驊宏資",
+   "industry": "資訊服務業",
+   "lists": [
+    "積極型第 13 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（資訊服務業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "6265",
+   "name": "方土昶",
+   "industry": "電子通路業",
+   "lists": [
+    "均衡型第 4 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電子通路業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "6426",
+   "name": "統新",
+   "industry": "通信網路業",
+   "lists": [
+    "均衡型第 15 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（通信網路業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "6532",
+   "name": "瑞耘",
+   "industry": "半導體業",
+   "lists": [
+    "穩健型第 9 名",
+    "均衡型第 16 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（半導體業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "6672",
+   "name": "騰輝電子-KY",
+   "industry": "電子零組件業",
+   "lists": [
+    "均衡型第 20 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（電子零組件業）受影響機率較高"
+   ],
+   "event_ids": [
+    "2d9d9bf8e34bcfca"
+   ]
+  },
+  {
+   "id": "6708",
+   "name": "天擎",
+   "industry": "半導體業",
+   "lists": [
+    "積極型第 3 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（半導體業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "6751",
+   "name": "智聯服務",
+   "industry": "資訊服務業",
+   "lists": [
+    "積極型第 7 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（資訊服務業）受影響機率較高"
+   ],
+   "event_ids": []
+  },
+  {
+   "id": "7704",
+   "name": "明遠精密",
+   "industry": "半導體業",
+   "lists": [
+    "穩健型第 17 名"
+   ],
+   "flag": "產業風險",
+   "reasons": [
+    "費半 -10.73%，所屬產業（半導體業）受影響機率較高"
+   ],
+   "event_ids": []
+  }
+ ],
  "events": [
   {
    "id": "2f5cc8231ba1eb1e",
@@ -97,6 +303,204 @@
    ],
    "affected_industries": [
     "電機機械"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "a0aa2f4eea58b4dc",
+   "kind": "announcement",
+   "title": "本公司收回已發行之限制員工權利新股註銷減資變更登記完成",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T13:43:00",
+   "first_seen_at": "2026-11-21T06:00:56",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T13:43:00",
+   "affected_tickers": [
+    "6285"
+   ],
+   "affected_industries": [
+    "電子工業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "bcbd2007b67e5ccb",
+   "kind": "announcement",
+   "title": "本公司董事會決議通過反向三角合併案暨本公司 終止上櫃、停止公開發行案(補充更正)",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T14:16:00",
+   "first_seen_at": "2026-11-21T16:59:30",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T14:16:00",
+   "affected_tickers": [
+    "8426"
+   ],
+   "affected_industries": [
+    "其他"
+   ],
+   "event_type": "交易限制",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "9572bd147f9f5b74",
+   "kind": "announcement",
+   "title": "公告本公司辦理註銷庫藏股減資變更登記完成",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T14:39:00",
+   "first_seen_at": "2026-11-21T16:59:30",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T14:39:00",
+   "affected_tickers": [
+    "9951"
+   ],
+   "affected_industries": [
+    "電機機械"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "75dc952333323651",
+   "kind": "announcement",
+   "title": "公告本公司註銷收回已發行之限制員工權利新股 減資變更登記完成",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T15:11:00",
+   "first_seen_at": "2026-11-21T16:59:30",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T15:11:00",
+   "affected_tickers": [
+    "1815"
+   ],
+   "affected_industries": [
+    "電子零組件業"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "5e40c4122c9e579f",
+   "kind": "announcement",
+   "title": "永豐金控公告董事會決議通過子公司京城銀行總經理異動",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T16:10:00",
+   "first_seen_at": "2026-11-21T06:00:56",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T16:10:00",
+   "affected_tickers": [
+    "2890"
+   ],
+   "affected_industries": [
+    "金融保險"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "6b6baa27dd5517c8",
+   "kind": "announcement",
+   "title": "公告本公司總經理異動",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T16:56:00",
+   "first_seen_at": "2026-11-21T06:00:56",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T16:56:00",
+   "affected_tickers": [
+    "2901"
+   ],
+   "affected_industries": [
+    "貿易百貨"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": false
+  },
+  {
+   "id": "b0fce917d95b8471",
+   "kind": "announcement",
+   "title": "更正公告本公司總經理異動",
+   "source": "公開資訊觀測站（上市重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T17:27:00",
+   "first_seen_at": "2026-11-21T06:00:56",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T17:27:00",
+   "affected_tickers": [
+    "2901"
+   ],
+   "affected_industries": [
+    "貿易百貨"
+   ],
+   "event_type": "經營層異動",
+   "importance": 3,
+   "direction": "不確定",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "04ce66602f445648",
+   "kind": "announcement",
+   "title": "代重要子公司達佛羅股份有限公司公告董事會 決議通過辦理減資彌補虧損案",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T18:51:00",
+   "first_seen_at": "2026-11-21T16:59:30",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T18:51:00",
+   "affected_tickers": [
+    "4510"
+   ],
+   "affected_industries": [
+    "電機機械"
+   ],
+   "event_type": "減資／私募",
+   "importance": 3,
+   "direction": "負面",
+   "confidence": "官方公告",
+   "novel": true
+  },
+  {
+   "id": "61f470cb6b919dc6",
+   "kind": "announcement",
+   "title": "公告註銷限制員工權利新股減資變更登記完成",
+   "source": "公開資訊觀測站（上櫃重大訊息）",
+   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
+   "published_at": "2026-11-20T23:21:00",
+   "first_seen_at": "2026-11-21T16:59:30",
+   "fetched_at": "2026-11-21T17:01:30",
+   "data_asof": "2026-11-20T23:21:00",
+   "affected_tickers": [
+    "3211"
+   ],
+   "affected_industries": [
+    "電腦及週邊設備業"
    ],
    "event_type": "減資／私募",
    "importance": 3,
@@ -741,207 +1145,9 @@
    "direction": "不確定",
    "confidence": "媒體報導",
    "novel": true
-  },
-  {
-   "id": "9d4d69c6b0253937",
-   "kind": "announcement",
-   "title": "本公司受邀參加第一金證券舉辦之投資論壇",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T13:36:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T13:36:00",
-   "affected_tickers": [
-    "7765"
-   ],
-   "affected_industries": [
-    "數位雲端"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "a30cda0fa581df20",
-   "kind": "announcement",
-   "title": "本公司受邀參加台新證券第四季全球投資論壇",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T13:55:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T13:55:00",
-   "affected_tickers": [
-    "3042"
-   ],
-   "affected_industries": [
-    "電子零組件業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "259f09abcb41e364",
-   "kind": "announcement",
-   "title": "本公司受邀參加由Citi舉辦之\"Citi's 2026 Taiwan Corporate Day\"",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:04:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:04:00",
-   "affected_tickers": [
-    "2327"
-   ],
-   "affected_industries": [
-    "電子零組件業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "202b55474611cf1a",
-   "kind": "announcement",
-   "title": "代子公司奇力新電子股份有限公司公告 董事會決議捐贈財團法人國巨基金會",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:09:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:09:00",
-   "affected_tickers": [
-    "2327"
-   ],
-   "affected_industries": [
-    "電子零組件業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "8d3907327accdafb",
-   "kind": "announcement",
-   "title": "代子公司更正115年8月~10月份衍生性商品交易資訊",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:35:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:35:00",
-   "affected_tickers": [
-    "6197"
-   ],
-   "affected_industries": [
-    "電子零組件業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "bccedd61468262d7",
-   "kind": "announcement",
-   "title": "公告本公司取得廠務工程及設備相關訊息",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:36:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:36:00",
-   "affected_tickers": [
-    "3008"
-   ],
-   "affected_industries": [
-    "電子工業"
-   ],
-   "event_type": "資產交易",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "2befda451ce38fa4",
-   "kind": "announcement",
-   "title": "本公司受邀參加華南永昌證券2027冬季產業趨勢暨企業論壇",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:42:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:42:00",
-   "affected_tickers": [
-    "2606"
-   ],
-   "affected_industries": [
-    "航運業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "cf5e14f792d9d70c",
-   "kind": "announcement",
-   "title": "公告本公司新增對Waffer International Limited背書 保證金額達新臺幣三千萬元以上且達本公司最近期財務報 表淨值百分之五以上",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:44:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:44:00",
-   "affected_tickers": [
-    "6235"
-   ],
-   "affected_industries": [
-    "電腦及週邊設備業"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
-  },
-  {
-   "id": "d1f6e1d751fdabd4",
-   "kind": "announcement",
-   "title": "公告本公司115年度第一次股東臨時會重要決議事項",
-   "source": "公開資訊觀測站（上市重大訊息）",
-   "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
-   "published_at": "2026-11-19T14:48:00",
-   "first_seen_at": "2026-11-20T06:37:02",
-   "fetched_at": "2026-11-20T12:16:43",
-   "data_asof": "2026-11-19T14:48:00",
-   "affected_tickers": [
-    "1527"
-   ],
-   "affected_industries": [
-    "電機機械"
-   ],
-   "event_type": "其他",
-   "importance": 1,
-   "direction": "不確定",
-   "confidence": "官方公告",
-   "novel": true
   }
  ],
- "event_count": 125,
+ "event_count": 360,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -950,24 +1156,20 @@
    "price": 89.53,
    "chg_pct": 0.32
   },
-  "generated_at": "2026-11-20T20:11:00+08:00",
+  "generated_at": "2026-11-21T17:01:29+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
    {
     "symbol": "^SOX",
     "name": "費城半導體指數",
-    "date": "2026-11-19",
-    "close": 9419.72,
-    "prev_close": 9652.8,
-    "chg_pct": -2.41,
-    "streak": -1,
-    "ret_5d": -10.35,
+    "date": "2026-11-20",
+    "close": 8408.59,
+    "prev_close": 9419.72,
+    "chg_pct": -10.73,
+    "streak": -2,
+    "ret_5d": -17.13,
     "recent": [
-     [
-      "2026-11-12",
-      10506.67
-     ],
      [
       "2026-11-13",
       10146.32
@@ -987,23 +1189,23 @@
      [
       "2026-11-19",
       9419.72
+     ],
+     [
+      "2026-11-20",
+      8408.59
      ]
     ]
    },
    {
     "symbol": "^IXIC",
     "name": "那斯達克綜合指數",
-    "date": "2026-11-19",
-    "close": 23879.2,
-    "prev_close": 24429.88,
-    "chg_pct": -2.25,
-    "streak": -1,
-    "ret_5d": -5.86,
+    "date": "2026-11-20",
+    "close": 22617.73,
+    "prev_close": 23879.2,
+    "chg_pct": -5.28,
+    "streak": -2,
+    "ret_5d": -10.02,
     "recent": [
-     [
-      "2026-11-12",
-      25366.09
-     ],
      [
       "2026-11-13",
       25136.27
@@ -1023,23 +1225,23 @@
      [
       "2026-11-19",
       23879.2
+     ],
+     [
+      "2026-11-20",
+      22617.73
      ]
     ]
    },
    {
     "symbol": "^GSPC",
     "name": "S&P 500 指數",
-    "date": "2026-11-19",
-    "close": 7175.83,
-    "prev_close": 7323.63,
-    "chg_pct": -2.02,
-    "streak": -6,
-    "ret_5d": -5.49,
+    "date": "2026-11-20",
+    "close": 6910.39,
+    "prev_close": 7175.83,
+    "chg_pct": -3.7,
+    "streak": -7,
+    "ret_5d": -8.61,
     "recent": [
-     [
-      "2026-11-12",
-      7592.4
-     ],
      [
       "2026-11-13",
       7561.67
@@ -1059,23 +1261,23 @@
      [
       "2026-11-19",
       7175.83
+     ],
+     [
+      "2026-11-20",
+      6910.39
      ]
     ]
    },
    {
     "symbol": "^DJI",
     "name": "道瓊工業指數",
-    "date": "2026-11-19",
-    "close": 49097.06,
-    "prev_close": 50198.17,
-    "chg_pct": -2.19,
-    "streak": -4,
-    "ret_5d": -6.12,
+    "date": "2026-11-20",
+    "close": 48147.33,
+    "prev_close": 49097.06,
+    "chg_pct": -1.93,
+    "streak": -5,
+    "ret_5d": -8.02,
     "recent": [
-     [
-      "2026-11-12",
-      52297.09
-     ],
      [
       "2026-11-13",
       52347.55
@@ -1095,23 +1297,23 @@
      [
       "2026-11-19",
       49097.06
+     ],
+     [
+      "2026-11-20",
+      48147.33
      ]
     ]
    },
    {
     "symbol": "TSM",
     "name": "台積電 ADR（美股）",
-    "date": "2026-11-19",
-    "close": 352.09,
-    "prev_close": 362.62,
-    "chg_pct": -2.9,
-    "streak": -1,
-    "ret_5d": -13.17,
+    "date": "2026-11-20",
+    "close": 318.71,
+    "prev_close": 352.09,
+    "chg_pct": -9.48,
+    "streak": -2,
+    "ret_5d": -20.07,
     "recent": [
-     [
-      "2026-11-12",
-      405.49
-     ],
      [
       "2026-11-13",
       398.73
@@ -1131,6 +1333,10 @@
      [
       "2026-11-19",
       352.09
+     ],
+     [
+      "2026-11-20",
+      318.71
      ]
     ]
    }
