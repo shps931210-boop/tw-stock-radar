@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-21T17:01:30",
+ "generated_at": "2026-11-23T02:58:14",
  "quality": {
-  "checked_at": "2026-11-21T17:01:30",
+  "checked_at": "2026-11-23T02:58:14",
   "sources": {
    "calendar": {
     "label": "休市日曆",
@@ -11,12 +11,12 @@
    "announcements": {
     "label": "公司公告",
     "ok": true,
-    "detail": "上市 110 則、上櫃 55 則"
+    "detail": "上市 3 則、上櫃 3 則"
    },
    "news_at": {
     "label": "公告／新聞最後更新",
     "ok": true,
-    "detail": "2026-11-21T17:01:24"
+    "detail": "2026-11-23T02:58:07"
    },
    "global": {
     "label": "國際市場",
@@ -27,21 +27,21 @@
   "source_ok": "3/4",
   "state": "degraded",
   "duplicates_removed": 8,
-  "latest_event_at": "2026-11-21T08:49:00"
+  "latest_event_at": "2026-11-21T18:15:00"
  },
  "upcoming_holidays": [
   "2026-12-25"
  ],
  "target_date": "2026-11-23",
- "today": "2026-11-21",
- "today_trading": false,
+ "today": "2026-11-23",
+ "today_trading": true,
  "calendar_ok": true,
  "last_close": "2026-11-20",
  "status": {
   "mode": "collect",
   "target_date": "2026-11-23",
   "since": "2026-11-20T13:30:00",
-  "events": 360,
+  "events": 366,
   "high": 11
  },
  "risk": {
@@ -318,7 +318,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T13:43:00",
    "first_seen_at": "2026-11-21T06:00:56",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T13:43:00",
    "affected_tickers": [
     "6285"
@@ -340,7 +340,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T14:16:00",
    "first_seen_at": "2026-11-21T16:59:30",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T14:16:00",
    "affected_tickers": [
     "8426"
@@ -362,7 +362,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T14:39:00",
    "first_seen_at": "2026-11-21T16:59:30",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T14:39:00",
    "affected_tickers": [
     "9951"
@@ -384,7 +384,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T15:11:00",
    "first_seen_at": "2026-11-21T16:59:30",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T15:11:00",
    "affected_tickers": [
     "1815"
@@ -406,7 +406,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T16:10:00",
    "first_seen_at": "2026-11-21T06:00:56",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T16:10:00",
    "affected_tickers": [
     "2890"
@@ -428,7 +428,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T16:56:00",
    "first_seen_at": "2026-11-21T06:00:56",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T16:56:00",
    "affected_tickers": [
     "2901"
@@ -450,7 +450,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T17:27:00",
    "first_seen_at": "2026-11-21T06:00:56",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T17:27:00",
    "affected_tickers": [
     "2901"
@@ -472,7 +472,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T18:51:00",
    "first_seen_at": "2026-11-21T16:59:30",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T18:51:00",
    "affected_tickers": [
     "4510"
@@ -494,7 +494,7 @@
    "link": "https://mops.twse.com.tw/mops/#/web/t05sr01_1",
    "published_at": "2026-11-20T23:21:00",
    "first_seen_at": "2026-11-21T16:59:30",
-   "fetched_at": "2026-11-21T17:01:30",
+   "fetched_at": "2026-11-23T02:58:14",
    "data_asof": "2026-11-20T23:21:00",
    "affected_tickers": [
     "3211"
@@ -1147,7 +1147,7 @@
    "novel": true
   }
  ],
- "event_count": 360,
+ "event_count": 366,
  "global": {
   "schema_version": 1,
   "oil": {
@@ -1156,7 +1156,7 @@
    "price": 89.53,
    "chg_pct": 0.32
   },
-  "generated_at": "2026-11-21T17:01:29+08:00",
+  "generated_at": "2026-11-23T02:58:13+08:00",
   "source": "FinMind（USStockPrice、TaiwanExchangeRate、CrudeOilPrices）",
   "note": "美股日期是美國當地交易日；美國前一晚的收盤通常影響隔天台股開盤。這是外部市場資料，股栗子沒有另外驗證。",
   "markets": [
