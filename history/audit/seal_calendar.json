@@ -1,13 +1,13 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-21T11:39:48",
+ "generated_at": "2026-11-24T02:07:14",
  "summary": {
   "first": "2026-10-16",
-  "last_data": "2026-11-20",
-  "today": "2026-11-21",
-  "expected": 24,
-  "sealed": 19,
-  "on_time": 18,
+  "last_data": "2026-11-23",
+  "today": "2026-11-24",
+  "expected": 25,
+  "sealed": 20,
+  "on_time": 19,
   "missing": [
    "2026-11-09",
    "2026-11-10",
@@ -23,7 +23,7 @@
    "2026-11-13"
   ],
   "unexplained": [],
-  "picks": 19,
+  "picks": 20,
   "pre_open": 8,
   "pre_open_on_time": 8,
   "pre_open_note": "盤前版＝盤前情報：開盤前依隔夜國際市場與收盤後公告更新風險標示，AI 分數沿用前一天收盤後封存的正式預測（還沒有驗證過的事件模型不改分數）。正式前瞻預測是收盤後封存、隔天開盤前就已存在的那一份。",
@@ -39,21 +39,21 @@
   ],
   "matured": {
    "5": 14,
-   "20": 3,
+   "20": 4,
    "60": 0
   },
   "scorecard": {
-   "generated_at": "2026-11-20T15:35:27",
-   "days": 19,
-   "last": "2026-11-20",
+   "generated_at": "2026-11-24T02:05:13",
+   "days": 20,
+   "last": "2026-11-23",
    "matured": {
     "5": 14,
-    "20": 3,
+    "20": 4,
     "60": 0
    }
   },
   "next_due": {
-   "date": "2026-11-23",
+   "date": "2026-11-24",
    "horizon": "20"
   },
   "scorecard_lag": {},
@@ -164,7 +164,7 @@
     },
     "20": {
      "due": "2026-11-23",
-     "matured": false
+     "matured": true
     },
     "60": {
      "due": "2027-01-19",
@@ -742,6 +742,57 @@
     },
     "60": {
      "due": "2027-02-16",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-23",
+   "trading": true,
+   "entry": "2026-11-24",
+   "picks": true,
+   "pre_open": false,
+   "sealed": true,
+   "generated_at": "2026-11-24T02:04:39",
+   "on_time": true,
+   "model_version": "2026-11-18-495b288672",
+   "n": 799,
+   "status": "experimental",
+   "data_ok": true,
+   "maturity": {
+    "5": {
+     "due": "2026-12-01",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-22",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-17",
+     "matured": false
+    }
+   }
+  },
+  {
+   "date": "2026-11-24",
+   "trading": true,
+   "entry": "2026-11-25",
+   "picks": false,
+   "pre_open": false,
+   "sealed": false,
+   "reason": "今天的收盤資料還沒更新（完整更新後才會封存）",
+   "maturity": {
+    "5": {
+     "due": "2026-12-02",
+     "matured": false
+    },
+    "20": {
+     "due": "2026-12-23",
+     "matured": false
+    },
+    "60": {
+     "due": "2027-02-18",
      "matured": false
     }
    }

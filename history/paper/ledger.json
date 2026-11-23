@@ -4,60 +4,13 @@
  "rules": "訊號日收盤後的正式 AI 精選，隔一個交易日開盤買（＋0.1% 滑價）；收盤跌 10% 停損、漲 20% 停利、滿 20 個交易日到期，都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃前一個交易日的 5%，開盤就漲停買不到、開盤就跌停賣不掉照實記；開盤成交只用開盤時已知的資訊。只模擬，不會送出任何真實委託。",
  "live_trading": false,
  "start_signal": "2026-10-27",
- "last_data": "2026-11-20",
+ "last_data": "2026-11-23",
  "first_entry": "2026-10-28",
  "books": {
   "stable": {
    "mode": "stable",
-   "cash": 425.0,
+   "cash": 74.0,
    "positions": [
-    {
-     "id": "S0004",
-     "mode": "stable",
-     "sid": "2637",
-     "name": "慧洋-KY",
-     "industry": "航運業",
-     "signal_date": "2026-10-27",
-     "pick_file": "2026-10-27.v4.json",
-     "pick_generated_at": "2026-10-27T23:21:16",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-10-27",
-      "revenue": "2026-09",
-      "financials": "2026-Q2"
-     },
-     "rank": 4,
-     "score": 78.6,
-     "liq": "C",
-     "reason": "正式精選第 4 名，AI 量化評分 78.6；趨勢 100、價值 85",
-     "signal_close": 100.5,
-     "entry_date": "2026-10-28",
-     "entry_price": 100.1,
-     "entry_open": 100.0,
-     "bought": 1995,
-     "shares": 1995,
-     "buy_value": 199699.5,
-     "buy_fee": 284,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 90.09,
-     "target_price": 120.12,
-     "max_close": 101.5,
-     "min_close": 83.5,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-20",
-     "last_close": 83.5,
-     "last_date": "2026-11-20",
-     "held_days": 18,
-     "market_value": 166582.0,
-     "unreal_ret": -16.702,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
     {
      "id": "S0006",
      "mode": "stable",
@@ -97,11 +50,11 @@
      "min_close": 80.6,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 80.6,
-     "last_date": "2026-11-20",
-     "held_days": 10,
-     "market_value": 168696.0,
-     "unreal_ret": -4.62,
+     "last_close": 81.7,
+     "last_date": "2026-11-23",
+     "held_days": 11,
+     "market_value": 170998.0,
+     "unreal_ret": -3.318,
      "pending_exit": null,
      "status": "open"
     },
@@ -144,59 +97,12 @@
      "min_close": 28.7,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 28.7,
-     "last_date": "2026-11-20",
-     "held_days": 10,
-     "market_value": 142180.0,
-     "unreal_ret": -9.54,
+     "last_close": 29.25,
+     "last_date": "2026-11-23",
+     "held_days": 11,
+     "market_value": 144904.0,
+     "unreal_ret": -7.806,
      "pending_exit": null,
-     "status": "open"
-    },
-    {
-     "id": "S0008",
-     "mode": "stable",
-     "sid": "2851",
-     "name": "中再保",
-     "industry": "金融保險",
-     "signal_date": "2026-11-17",
-     "pick_file": "2026-11-17.v4.json",
-     "pick_generated_at": "2026-11-18T06:34:26",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-17",
-      "revenue": "2026-10",
-      "financials": "2026-Q2"
-     },
-     "rank": 2,
-     "score": 80.4,
-     "liq": "C",
-     "reason": "正式精選第 2 名，AI 量化評分 80.4；品質 97、動能 85",
-     "signal_close": 46.2,
-     "entry_date": "2026-11-18",
-     "entry_price": 46.6466,
-     "entry_open": 46.6,
-     "bought": 3833,
-     "shares": 3833,
-     "buy_value": 178796.42,
-     "buy_fee": 254,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 41.98,
-     "target_price": 55.98,
-     "max_close": 45.0,
-     "min_close": 40.15,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-20",
-     "last_close": 40.15,
-     "last_date": "2026-11-20",
-     "held_days": 3,
-     "market_value": 153895.0,
-     "unreal_ret": -14.049,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -234,15 +140,109 @@
      "dividends": 0.0,
      "stop_price": 90.99,
      "target_price": 121.32,
-     "max_close": 95.0,
+     "max_close": 96.1,
      "min_close": 95.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 95.0,
-     "last_date": "2026-11-20",
+     "last_close": 96.1,
+     "last_date": "2026-11-23",
+     "held_days": 2,
+     "market_value": 161832.0,
+     "unreal_ret": -5.081,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "S0010",
+     "mode": "stable",
+     "sid": "2851",
+     "name": "中再保",
+     "industry": "金融保險",
+     "signal_date": "2026-11-20",
+     "pick_file": "2026-11-20.v3.json",
+     "pick_generated_at": "2026-11-21T05:58:33",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-20",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 3,
+     "score": 77.1,
+     "liq": "C",
+     "reason": "正式精選第 3 名，AI 量化評分 77.1；品質 97、動能 83",
+     "signal_close": 40.15,
+     "entry_date": "2026-11-23",
+     "entry_price": 40.1901,
+     "entry_open": 40.15,
+     "bought": 3934,
+     "shares": 3934,
+     "buy_value": 158107.85,
+     "buy_fee": 225,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 36.17,
+     "target_price": 48.23,
+     "max_close": 39.8,
+     "min_close": 39.8,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 39.8,
+     "last_date": "2026-11-23",
      "held_days": 1,
-     "market_value": 159980.0,
-     "unreal_ret": -6.168,
+     "market_value": 156573.0,
+     "unreal_ret": -1.111,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "S0011",
+     "mode": "stable",
+     "sid": "2603",
+     "name": "長榮",
+     "industry": "航運業",
+     "signal_date": "2026-11-20",
+     "pick_file": "2026-11-20.v3.json",
+     "pick_generated_at": "2026-11-21T05:58:33",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-20",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 4,
+     "score": 75.8,
+     "liq": "A",
+     "reason": "正式精選第 4 名，AI 量化評分 75.8；價值 92、成長 81",
+     "signal_close": 233.0,
+     "entry_date": "2026-11-23",
+     "entry_price": 233.233,
+     "entry_open": 233.0,
+     "bought": 673,
+     "shares": 673,
+     "buy_value": 156965.81,
+     "buy_fee": 223,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 209.91,
+     "target_price": 279.88,
+     "max_close": 234.5,
+     "min_close": 234.5,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 234.5,
+     "last_date": "2026-11-23",
+     "held_days": 1,
+     "market_value": 157818.0,
+     "unreal_ret": 0.401,
      "pending_exit": null,
      "status": "open"
     }
@@ -455,6 +455,110 @@
      "bench_ret": -19.474,
      "status": "closed",
      "excess": 4.759
+    },
+    {
+     "id": "S0004",
+     "mode": "stable",
+     "sid": "2637",
+     "name": "慧洋-KY",
+     "industry": "航運業",
+     "signal_date": "2026-10-27",
+     "pick_file": "2026-10-27.v4.json",
+     "pick_generated_at": "2026-10-27T23:21:16",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-10-27",
+      "revenue": "2026-09",
+      "financials": "2026-Q2"
+     },
+     "rank": 4,
+     "score": 78.6,
+     "liq": "C",
+     "reason": "正式精選第 4 名，AI 量化評分 78.6；趨勢 100、價值 85",
+     "signal_close": 100.5,
+     "entry_date": "2026-10-28",
+     "entry_price": 100.1,
+     "entry_open": 100.0,
+     "bought": 1995,
+     "buy_value": 199699.5,
+     "buy_fee": 284,
+     "sell_fee": 232,
+     "sell_tax": 488,
+     "sell_value": 162828.5085,
+     "dividends": 0.0,
+     "stop_price": 90.09,
+     "target_price": 120.12,
+     "max_close": 101.5,
+     "min_close": 83.5,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-20",
+     "last_close": 83.5,
+     "last_date": "2026-11-20",
+     "held_days": 18,
+     "shares": 1995,
+     "exit_date": "2026-11-23",
+     "exit_price": 81.6183,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -18.463,
+     "net_ret": -18.939,
+     "pnl": -37875.0,
+     "bench_ret": -22.104,
+     "status": "closed",
+     "excess": 3.165
+    },
+    {
+     "id": "S0008",
+     "mode": "stable",
+     "sid": "2851",
+     "name": "中再保",
+     "industry": "金融保險",
+     "signal_date": "2026-11-17",
+     "pick_file": "2026-11-17.v4.json",
+     "pick_generated_at": "2026-11-18T06:34:26",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-17",
+      "revenue": "2026-10",
+      "financials": "2026-Q2"
+     },
+     "rank": 2,
+     "score": 80.4,
+     "liq": "C",
+     "reason": "正式精選第 2 名，AI 量化評分 80.4；品質 97、動能 85",
+     "signal_close": 46.2,
+     "entry_date": "2026-11-18",
+     "entry_price": 46.6466,
+     "entry_open": 46.6,
+     "bought": 3833,
+     "buy_value": 178796.42,
+     "buy_fee": 254,
+     "sell_fee": 219,
+     "sell_tax": 461,
+     "sell_value": 153741.24670000002,
+     "dividends": 0.0,
+     "stop_price": 41.98,
+     "target_price": 55.98,
+     "max_close": 45.0,
+     "min_close": 40.15,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-20",
+     "last_close": 40.15,
+     "last_date": "2026-11-20",
+     "held_days": 3,
+     "shares": 3833,
+     "exit_date": "2026-11-23",
+     "exit_price": 40.1099,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -14.013,
+     "net_ret": -14.515,
+     "pnl": -25989.0,
+     "bench_ret": -11.808,
+     "status": "closed",
+     "excess": -2.707
     }
    ],
    "orders": [
@@ -633,6 +737,56 @@
      "price": 101.101,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "sell",
+     "sid": "2637",
+     "name": "慧洋-KY",
+     "want": 1995,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 1995,
+     "price": 81.6183,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "sell",
+     "sid": "2851",
+     "name": "中再保",
+     "want": 3833,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 3833,
+     "price": 40.1099,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "buy",
+     "sid": "2851",
+     "name": "中再保",
+     "signal_date": "2026-11-20",
+     "rank": 3,
+     "want": 3934,
+     "filled": 3934,
+     "price": 40.1901,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "buy",
+     "sid": "2603",
+     "name": "長榮",
+     "signal_date": "2026-11-20",
+     "rank": 4,
+     "want": 673,
+     "filled": 673,
+     "price": 233.233,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -761,29 +915,27 @@
      "mv": 791333.0,
      "equity": 791758.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-23",
+     "cash": 74.0,
+     "mv": 792127.0,
+     "equity": 792200.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
-   "pending_sells": [
-    {
-     "sid": "2637",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "2851",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ],
+   "pending_sells": [],
    "kpi": {
-    "equity": 791758.0,
-    "cash": 425.0,
-    "ret": -20.824,
+    "equity": 792200.0,
+    "cash": 74.0,
+    "ret": -20.78,
     "mdd": -21.3,
     "n_open": 5,
-    "n_closed": 4,
-    "realized": -116003.0,
-    "fees": 3367,
-    "taxes": 2059,
+    "n_closed": 6,
+    "realized": -179867.0,
+    "fees": 4266,
+    "taxes": 3008,
     "unfilled": {
      "開盤就在跌停價，賣不掉": 1
     }
@@ -794,7 +946,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 0,
-     "stop": 4,
+     "stop": 6,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -831,9 +983,7 @@
       "選股：比同期 0050 差",
       "風控：虧損超過 12%（停損沒守住，例如跳空）"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "S0002",
@@ -844,9 +994,7 @@
      "exit_reason": "停損（收盤跌破買進價 10%）",
      "tags": [],
      "labels": [],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "S0001",
@@ -881,60 +1029,49 @@
      "notes": {
       "exit": "停損後還不到 10 個交易日，之後再判斷"
      }
+    },
+    {
+     "id": "S0004",
+     "mode": "stable",
+     "sid": "2637",
+     "name": "慧洋-KY",
+     "net_ret": -18.939,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "risk"
+     ],
+     "labels": [
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
+    },
+    {
+     "id": "S0008",
+     "mode": "stable",
+     "sid": "2851",
+     "name": "中再保",
+     "net_ret": -14.515,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
     }
    ]
   },
   "balanced": {
    "mode": "balanced",
-   "cash": 9.0,
+   "cash": 1.0,
    "positions": [
-    {
-     "id": "B0010",
-     "mode": "balanced",
-     "sid": "2605",
-     "name": "新興",
-     "industry": "航運業",
-     "signal_date": "2026-11-17",
-     "pick_file": "2026-11-17.v4.json",
-     "pick_generated_at": "2026-11-18T06:34:26",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-17",
-      "revenue": "2026-10",
-      "financials": "2026-Q2"
-     },
-     "rank": 3,
-     "score": 81.7,
-     "liq": "C",
-     "reason": "正式精選第 3 名，AI 量化評分 81.7；價值 93、成長 87",
-     "signal_close": 32.25,
-     "entry_date": "2026-11-18",
-     "entry_price": 32.3323,
-     "entry_open": 32.3,
-     "bought": 5150,
-     "shares": 5150,
-     "buy_value": 166511.34,
-     "buy_fee": 237,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 29.1,
-     "target_price": 38.8,
-     "max_close": 32.45,
-     "min_close": 28.7,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-20",
-     "last_close": 28.7,
-     "last_date": "2026-11-20",
-     "held_days": 3,
-     "market_value": 147805.0,
-     "unreal_ret": -11.36,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
     {
      "id": "B0011",
      "mode": "balanced",
@@ -970,15 +1107,15 @@
      "dividends": 0.0,
      "stop_price": 195.04,
      "target_price": 260.06,
-     "max_close": 218.5,
+     "max_close": 232.0,
      "min_close": 211.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 211.0,
-     "last_date": "2026-11-20",
-     "held_days": 3,
-     "market_value": 155718.0,
-     "unreal_ret": -2.776,
+     "last_close": 232.0,
+     "last_date": "2026-11-23",
+     "held_days": 4,
+     "market_value": 171216.0,
+     "unreal_ret": 6.901,
      "pending_exit": null,
      "status": "open"
     },
@@ -1017,15 +1154,15 @@
      "dividends": 0.0,
      "stop_price": 163.96,
      "target_price": 218.62,
-     "max_close": 175.0,
+     "max_close": 191.5,
      "min_close": 175.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 175.0,
-     "last_date": "2026-11-20",
-     "held_days": 1,
-     "market_value": 151200.0,
-     "unreal_ret": -4.079,
+     "last_close": 191.5,
+     "last_date": "2026-11-23",
+     "held_days": 2,
+     "market_value": 165456.0,
+     "unreal_ret": 4.965,
      "pending_exit": null,
      "status": "open"
     },
@@ -1064,15 +1201,15 @@
      "dividends": 0.0,
      "stop_price": 249.1,
      "target_price": 332.13,
-     "max_close": 264.5,
+     "max_close": 281.0,
      "min_close": 264.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 264.5,
-     "last_date": "2026-11-20",
-     "held_days": 1,
-     "market_value": 150500.0,
-     "unreal_ret": -4.571,
+     "last_close": 281.0,
+     "last_date": "2026-11-23",
+     "held_days": 2,
+     "market_value": 159889.0,
+     "unreal_ret": 1.382,
      "pending_exit": null,
      "status": "open"
     },
@@ -1111,15 +1248,62 @@
      "dividends": 0.0,
      "stop_price": 81.35,
      "target_price": 108.47,
-     "max_close": 89.2,
+     "max_close": 95.5,
      "min_close": 89.2,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 89.2,
-     "last_date": "2026-11-20",
+     "last_close": 95.5,
+     "last_date": "2026-11-23",
+     "held_days": 2,
+     "market_value": 142868.0,
+     "unreal_ret": 5.503,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "B0015",
+     "mode": "balanced",
+     "sid": "2605",
+     "name": "新興",
+     "industry": "航運業",
+     "signal_date": "2026-11-20",
+     "pick_file": "2026-11-20.v3.json",
+     "pick_generated_at": "2026-11-21T05:58:33",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-20",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 5,
+     "score": 80.2,
+     "liq": "C",
+     "reason": "正式精選第 5 名，AI 量化評分 80.2；價值 93、成長 89",
+     "signal_close": 28.7,
+     "entry_date": "2026-11-23",
+     "entry_price": 28.4784,
+     "entry_open": 28.45,
+     "bought": 5110,
+     "shares": 5110,
+     "buy_value": 145524.62,
+     "buy_fee": 207,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 25.63,
+     "target_price": 34.17,
+     "max_close": 29.25,
+     "min_close": 29.25,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 29.25,
+     "last_date": "2026-11-23",
      "held_days": 1,
-     "market_value": 133443.0,
-     "unreal_ret": -1.457,
+     "market_value": 149468.0,
+     "unreal_ret": 2.564,
      "pending_exit": null,
      "status": "open"
     }
@@ -1592,6 +1776,58 @@
      "bench_ret": -8.782,
      "status": "closed",
      "excess": -7.229
+    },
+    {
+     "id": "B0010",
+     "mode": "balanced",
+     "sid": "2605",
+     "name": "新興",
+     "industry": "航運業",
+     "signal_date": "2026-11-17",
+     "pick_file": "2026-11-17.v4.json",
+     "pick_generated_at": "2026-11-18T06:34:26",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-17",
+      "revenue": "2026-10",
+      "financials": "2026-Q2"
+     },
+     "rank": 3,
+     "score": 81.7,
+     "liq": "C",
+     "reason": "正式精選第 3 名，AI 量化評分 81.7；價值 93、成長 87",
+     "signal_close": 32.25,
+     "entry_date": "2026-11-18",
+     "entry_price": 32.3323,
+     "entry_open": 32.3,
+     "bought": 5150,
+     "buy_value": 166511.34,
+     "buy_fee": 237,
+     "sell_fee": 208,
+     "sell_tax": 439,
+     "sell_value": 146370.725,
+     "dividends": 0.0,
+     "stop_price": 29.1,
+     "target_price": 38.8,
+     "max_close": 32.45,
+     "min_close": 28.7,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-20",
+     "last_close": 28.7,
+     "last_date": "2026-11-20",
+     "held_days": 3,
+     "shares": 5150,
+     "exit_date": "2026-11-23",
+     "exit_price": 28.4215,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -12.096,
+     "net_ret": -12.609,
+     "pnl": -21025.0,
+     "bench_ret": -11.808,
+     "status": "closed",
+     "excess": -0.801
     }
    ],
    "orders": [
@@ -1906,6 +2142,31 @@
      "price": 90.3903,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "sell",
+     "sid": "2605",
+     "name": "新興",
+     "want": 5150,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 5150,
+     "price": 28.4215,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "buy",
+     "sid": "2605",
+     "name": "新興",
+     "signal_date": "2026-11-20",
+     "rank": 5,
+     "want": 5110,
+     "filled": 5110,
+     "price": 28.4784,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -2034,25 +2295,27 @@
      "mv": 738667.0,
      "equity": 738676.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-23",
+     "cash": 1.0,
+     "mv": 788896.0,
+     "equity": 788898.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
-   "pending_sells": [
-    {
-     "sid": "2605",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ],
+   "pending_sells": [],
    "kpi": {
-    "equity": 738676.0,
-    "cash": 9.0,
-    "ret": -26.132,
+    "equity": 788898.0,
+    "cash": 1.0,
+    "ret": -21.11,
     "mdd": -26.99,
     "n_open": 5,
-    "n_closed": 9,
-    "realized": -222323.0,
-    "fees": 5586,
-    "taxes": 4398,
+    "n_closed": 10,
+    "realized": -243348.0,
+    "fees": 6001,
+    "taxes": 4837,
     "unfilled": {
      "開盤就在跌停價，賣不掉": 2
     }
@@ -2063,7 +2326,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 0,
-     "stop": 9,
+     "stop": 10,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -2117,9 +2380,7 @@
       "選股：比同期 0050 差",
       "風控：虧損超過 12%（停損沒守住，例如跳空）"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "B0006",
@@ -2136,9 +2397,7 @@
       "選股：比同期 0050 差",
       "風控：虧損超過 12%（停損沒守住，例如跳空）"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "B0002",
@@ -2149,9 +2408,7 @@
      "exit_reason": "停損（收盤跌破買進價 10%）",
      "tags": [],
      "labels": [],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "B0004",
@@ -2247,12 +2504,31 @@
      "notes": {
       "exit": "停損後還不到 10 個交易日，之後再判斷"
      }
+    },
+    {
+     "id": "B0010",
+     "mode": "balanced",
+     "sid": "2605",
+     "name": "新興",
+     "net_ret": -12.609,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
     }
    ]
   },
   "aggressive": {
    "mode": "aggressive",
-   "cash": 50.0,
+   "cash": 122381.0,
    "positions": [
     {
      "id": "A0012",
@@ -2293,106 +2569,12 @@
      "min_close": 165.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 169.5,
-     "last_date": "2026-11-20",
-     "held_days": 10,
-     "market_value": 164924.0,
-     "unreal_ret": 3.104,
+     "last_close": 172.5,
+     "last_date": "2026-11-23",
+     "held_days": 11,
+     "market_value": 167842.0,
+     "unreal_ret": 4.929,
      "pending_exit": null,
-     "status": "open"
-    },
-    {
-     "id": "A0013",
-     "mode": "aggressive",
-     "sid": "2221",
-     "name": "大甲",
-     "industry": "其他",
-     "signal_date": "2026-11-06",
-     "pick_file": "2026-11-06.v8.json",
-     "pick_generated_at": "2026-11-07T06:22:50",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-06",
-      "revenue": "2026-09",
-      "financials": "2026-Q2"
-     },
-     "rank": 4,
-     "score": 74.9,
-     "liq": "C",
-     "reason": "正式精選第 4 名，AI 量化評分 74.9；動能 99、趨勢 80",
-     "signal_close": 143.5,
-     "entry_date": "2026-11-09",
-     "entry_price": 146.146,
-     "entry_open": 146.0,
-     "bought": 1093,
-     "shares": 1093,
-     "buy_value": 159737.58,
-     "buy_fee": 227,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 131.53,
-     "target_price": 175.38,
-     "max_close": 167.0,
-     "min_close": 119.0,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 119.0,
-     "last_date": "2026-11-20",
-     "held_days": 10,
-     "market_value": 130067.0,
-     "unreal_ret": -18.69,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
-     "status": "open"
-    },
-    {
-     "id": "A0015",
-     "mode": "aggressive",
-     "sid": "6672",
-     "name": "騰輝電子-KY",
-     "industry": "電子零組件業",
-     "signal_date": "2026-11-17",
-     "pick_file": "2026-11-17.v4.json",
-     "pick_generated_at": "2026-11-18T06:34:26",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-17",
-      "revenue": "2026-10",
-      "financials": "2026-Q2"
-     },
-     "rank": 1,
-     "score": 85.5,
-     "liq": "A",
-     "reason": "正式精選第 1 名，AI 量化評分 85.5；動能 99、成長 93",
-     "signal_close": 413.5,
-     "entry_date": "2026-11-18",
-     "entry_price": 435.435,
-     "entry_open": 435.0,
-     "bought": 363,
-     "shares": 363,
-     "buy_value": 158062.9,
-     "buy_fee": 225,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 391.89,
-     "target_price": 522.52,
-     "max_close": 405.0,
-     "min_close": 344.5,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-19",
-     "last_close": 344.5,
-     "last_date": "2026-11-20",
-     "held_days": 3,
-     "market_value": 125054.0,
-     "unreal_ret": -20.996,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -2431,14 +2613,14 @@
      "stop_price": 144.14,
      "target_price": 192.19,
      "max_close": 160.0,
-     "min_close": 160.0,
+     "min_close": 145.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 160.0,
-     "last_date": "2026-11-20",
-     "held_days": 1,
-     "market_value": 140480.0,
-     "unreal_ret": -0.242,
+     "last_close": 145.5,
+     "last_date": "2026-11-23",
+     "held_days": 2,
+     "market_value": 127749.0,
+     "unreal_ret": -9.282,
      "pending_exit": null,
      "status": "open"
     },
@@ -2477,15 +2659,62 @@
      "dividends": 0.0,
      "stop_price": 101.35,
      "target_price": 135.13,
-     "max_close": 110.5,
+     "max_close": 113.5,
      "min_close": 110.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 110.5,
-     "last_date": "2026-11-20",
+     "last_close": 113.5,
+     "last_date": "2026-11-23",
+     "held_days": 2,
+     "market_value": 99199.0,
+     "unreal_ret": 0.645,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "A0020",
+     "mode": "aggressive",
+     "sid": "9933",
+     "name": "中鼎",
+     "industry": "其他",
+     "signal_date": "2026-11-20",
+     "pick_file": "2026-11-20.v3.json",
+     "pick_generated_at": "2026-11-21T05:58:33",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-20",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 4,
+     "score": 67.4,
+     "liq": "B",
+     "reason": "正式精選第 4 名，AI 量化評分 67.4；趨勢 100、價值 78",
+     "signal_close": 51.5,
+     "entry_date": "2026-11-23",
+     "entry_price": 49.7997,
+     "entry_open": 49.75,
+     "bought": 2635,
+     "shares": 2635,
+     "buy_value": 131222.21,
+     "buy_fee": 186,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 44.82,
+     "target_price": 59.76,
+     "max_close": 51.9,
+     "min_close": 51.9,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 51.9,
+     "last_date": "2026-11-23",
      "held_days": 1,
-     "market_value": 96577.0,
-     "unreal_ret": -2.015,
+     "market_value": 136756.0,
+     "unreal_ret": 4.07,
      "pending_exit": null,
      "status": "open"
     }
@@ -3218,6 +3447,110 @@
      "bench_ret": -8.83,
      "status": "closed",
      "excess": -11.955
+    },
+    {
+     "id": "A0013",
+     "mode": "aggressive",
+     "sid": "2221",
+     "name": "大甲",
+     "industry": "其他",
+     "signal_date": "2026-11-06",
+     "pick_file": "2026-11-06.v8.json",
+     "pick_generated_at": "2026-11-07T06:22:50",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-06",
+      "revenue": "2026-09",
+      "financials": "2026-Q2"
+     },
+     "rank": 4,
+     "score": 74.9,
+     "liq": "C",
+     "reason": "正式精選第 4 名，AI 量化評分 74.9；動能 99、趨勢 80",
+     "signal_close": 143.5,
+     "entry_date": "2026-11-09",
+     "entry_price": 146.146,
+     "entry_open": 146.0,
+     "bought": 1093,
+     "buy_value": 159737.58,
+     "buy_fee": 227,
+     "sell_fee": 185,
+     "sell_tax": 389,
+     "sell_value": 129936.933,
+     "dividends": 0.0,
+     "stop_price": 131.53,
+     "target_price": 175.38,
+     "max_close": 167.0,
+     "min_close": 119.0,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 119.0,
+     "last_date": "2026-11-20",
+     "held_days": 10,
+     "shares": 1093,
+     "exit_date": "2026-11-23",
+     "exit_price": 118.881,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -18.656,
+     "net_ret": -19.13,
+     "pnl": -30602.0,
+     "bench_ret": -11.762,
+     "status": "closed",
+     "excess": -7.368
+    },
+    {
+     "id": "A0015",
+     "mode": "aggressive",
+     "sid": "6672",
+     "name": "騰輝電子-KY",
+     "industry": "電子零組件業",
+     "signal_date": "2026-11-17",
+     "pick_file": "2026-11-17.v4.json",
+     "pick_generated_at": "2026-11-18T06:34:26",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-17",
+      "revenue": "2026-10",
+      "financials": "2026-Q2"
+     },
+     "rank": 1,
+     "score": 85.5,
+     "liq": "A",
+     "reason": "正式精選第 1 名，AI 量化評分 85.5；動能 99、成長 93",
+     "signal_close": 413.5,
+     "entry_date": "2026-11-18",
+     "entry_price": 435.435,
+     "entry_open": 435.0,
+     "bought": 363,
+     "buy_value": 158062.9,
+     "buy_fee": 225,
+     "sell_fee": 178,
+     "sell_tax": 374,
+     "sell_value": 124928.4465,
+     "dividends": 0.0,
+     "stop_price": 391.89,
+     "target_price": 522.52,
+     "max_close": 405.0,
+     "min_close": 344.5,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-19",
+     "last_close": 344.5,
+     "last_date": "2026-11-20",
+     "held_days": 3,
+     "shares": 363,
+     "exit_date": "2026-11-23",
+     "exit_price": 344.1555,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -20.963,
+     "net_ret": -21.424,
+     "pnl": -33911.0,
+     "bench_ret": -11.808,
+     "status": "closed",
+     "excess": -9.616
     }
    ],
    "orders": [
@@ -3668,6 +4001,55 @@
      "price": 112.6125,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "sell",
+     "sid": "2221",
+     "name": "大甲",
+     "want": 1093,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 1093,
+     "price": 118.881,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "sell",
+     "sid": "6672",
+     "name": "騰輝電子-KY",
+     "want": 363,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 363,
+     "price": 344.1555,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-23",
+     "side": "buy",
+     "sid": "6708",
+     "name": "天擎",
+     "signal_date": "2026-11-20",
+     "rank": 3,
+     "want": null,
+     "filled": 0,
+     "status": "unfilled",
+     "why": "開盤就在漲停價，買不到"
+    },
+    {
+     "date": "2026-11-23",
+     "side": "buy",
+     "sid": "9933",
+     "name": "中鼎",
+     "signal_date": "2026-11-20",
+     "rank": 4,
+     "want": 2635,
+     "filled": 2635,
+     "price": 49.7997,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -3796,31 +4178,30 @@
      "mv": 657101.0,
      "equity": 657151.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-23",
+     "cash": 122381.0,
+     "mv": 531547.0,
+     "equity": 653928.0,
+     "n": 4
     }
    ],
    "first_entry": "2026-10-28",
-   "pending_sells": [
-    {
-     "sid": "2221",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "6672",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ],
+   "pending_sells": [],
    "kpi": {
-    "equity": 657151.0,
-    "cash": 50.0,
-    "ret": -34.285,
-    "mdd": -35.3,
-    "n_open": 5,
-    "n_closed": 14,
-    "realized": -282357.0,
-    "fees": 7720,
-    "taxes": 6660,
+    "equity": 653928.0,
+    "cash": 122381.0,
+    "ret": -34.607,
+    "mdd": -35.61,
+    "n_open": 4,
+    "n_closed": 16,
+    "realized": -346870.0,
+    "fees": 8269,
+    "taxes": 7423,
     "unfilled": {
-     "開盤就在跌停價，賣不掉": 3
+     "開盤就在跌停價，賣不掉": 3,
+     "開盤就在漲停價，買不到": 1
     }
    },
    "odds": {
@@ -3829,7 +4210,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 1,
-     "stop": 13,
+     "stop": 15,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -3938,9 +4319,7 @@
       "選股：比同期 0050 差",
       "進場：開盤比訊號日收盤高 3% 以上才買到（追高）"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "A0004",
@@ -3957,9 +4336,7 @@
       "選股：比同期 0050 差",
       "風控：虧損超過 12%（停損沒守住，例如跳空）"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "A0006",
@@ -3974,9 +4351,7 @@
      "labels": [
       "選股：比同期 0050 差"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "A0007",
@@ -3991,9 +4366,7 @@
      "labels": [
       "選股：比同期 0050 差"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "A0008",
@@ -4004,15 +4377,15 @@
      "exit_reason": "停損（收盤跌破買進價 10%）",
      "tags": [
       "pick",
-      "entry"
+      "entry",
+      "exit"
      ],
      "labels": [
       "選股：比同期 0050 差",
-      "進場：開盤比訊號日收盤高 3% 以上才買到（追高）"
+      "進場：開盤比訊號日收盤高 3% 以上才買到（追高）",
+      "出場：停損後 10 個交易日內又漲回買進價以上"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "A0014",
@@ -4088,6 +4461,48 @@
      ],
      "labels": [
       "選股：比同期 0050 差",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
+    },
+    {
+     "id": "A0013",
+     "mode": "aggressive",
+     "sid": "2221",
+     "name": "大甲",
+     "net_ret": -19.13,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "hold",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "持有：曾經賺 10% 以上，最後卻虧損出場",
+      "風控：虧損超過 12%（停損沒守住，例如跳空）"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
+    },
+    {
+     "id": "A0015",
+     "mode": "aggressive",
+     "sid": "6672",
+     "name": "騰輝電子-KY",
+     "net_ret": -21.424,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick",
+      "entry",
+      "risk"
+     ],
+     "labels": [
+      "選股：比同期 0050 差",
+      "進場：開盤比訊號日收盤高 3% 以上才買到（追高）",
       "風控：虧損超過 12%（停損沒守住，例如跳空）"
      ],
      "notes": {
@@ -4189,92 +4604,48 @@
     "date": "2026-11-20",
     "e0050": 777533.0,
     "taiex": 776533.0
+   },
+   {
+    "date": "2026-11-23",
+    "e0050": 801011.0,
+    "taiex": 793312.0
    }
   ],
   "shares": 9207,
   "price": 108.4583,
   "e0050": {
-   "ret": -22.247,
+   "ret": -19.899,
    "mdd": -22.27
   },
   "taiex": {
-   "ret": -22.347,
+   "ret": -20.669,
    "mdd": -23.39
   },
   "taiex_start": "open",
   "note": "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：從第一個進場日的證交所開盤指數換算，不含成本；開盤指數在 9:00 很多股票還沒成交，接近前一天收盤，和 0050 的可成交開盤價不完全同步，只能參考。"
  },
  "plan": {
-  "signal_date": "2026-11-20",
-  "entry_date": "2026-11-23",
-  "pick_file": "2026-11-20.v3.json",
-  "generated_at": "2026-11-21T05:58:33",
+  "signal_date": "2026-11-23",
+  "entry_date": "2026-11-24",
+  "pick_file": "2026-11-23.json",
+  "generated_at": "2026-11-24T02:00:16",
   "model_version": "v1.1",
   "buys": {
-   "stable": [
-    {
-     "sid": "2603",
-     "name": "長榮",
-     "rank": 4,
-     "score": 75.8
-    },
-    {
-     "sid": "1709",
-     "name": "和益",
-     "rank": 7,
-     "score": 70.9
-    }
-   ],
-   "balanced": [
-    {
-     "sid": "2615",
-     "name": "萬海",
-     "rank": 6,
-     "score": 77.9
-    }
-   ],
+   "stable": [],
+   "balanced": [],
    "aggressive": [
     {
      "sid": "6708",
      "name": "天擎",
      "rank": 3,
-     "score": 70.3
-    },
-    {
-     "sid": "9933",
-     "name": "中鼎",
-     "rank": 4,
-     "score": 67.4
+     "score": 68.9
     }
    ]
   },
   "sells": {
-   "stable": [
-    {
-     "sid": "2637",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "2851",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ],
-   "balanced": [
-    {
-     "sid": "2605",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ],
-   "aggressive": [
-    {
-     "sid": "2221",
-     "reason": "停損（收盤跌破買進價 10%）"
-    },
-    {
-     "sid": "6672",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ]
+   "stable": [],
+   "balanced": [],
+   "aggressive": []
   }
  },
  "signals": {
@@ -4420,6 +4791,17 @@
     "revenue": "2026-10",
     "financials": "2026-Q3"
    }
+  },
+  "2026-11-23": {
+   "file": "2026-11-23.json",
+   "generated_at": "2026-11-24T02:00:16",
+   "model_version": "v1.1",
+   "model_hash": "ce1e61207b30",
+   "data_dates": {
+    "prices": "2026-11-23",
+    "revenue": "2026-10",
+    "financials": "2026-Q3"
+   }
   }
  },
  "note": "這是依固定規則的模擬交易（前瞻紀錄，從 2026-10-28 開盤開始），不是回測，也沒有送出任何真實委託。",
@@ -4428,15 +4810,15 @@
   "books": {
    "stable": {
     "kpi": {
-     "equity": 780451.0,
-     "cash": 2372.0,
-     "ret": -21.955,
-     "mdd": -22.42,
+     "equity": 777223.0,
+     "cash": 172.0,
+     "ret": -22.278,
+     "mdd": -22.74,
      "n_open": 5,
-     "n_closed": 4,
-     "realized": -116003.0,
-     "fees": 3364,
-     "taxes": 2059,
+     "n_closed": 6,
+     "realized": -194923.0,
+     "fees": 4223,
+     "taxes": 2962,
      "unfilled": {
       "開盤就在跌停價，賣不掉": 2
      }
@@ -4445,20 +4827,21 @@
      "2026-10-27.json",
      "2026-11-06.json",
      "2026-11-17.json",
-     "2026-11-19.json"
+     "2026-11-19.json",
+     "2026-11-20.json"
     ]
    },
    "balanced": {
     "kpi": {
-     "equity": 744982.0,
-     "cash": 51.0,
-     "ret": -25.502,
+     "equity": 791666.0,
+     "cash": 13178.0,
+     "ret": -20.833,
      "mdd": -26.64,
      "n_open": 5,
-     "n_closed": 8,
-     "realized": -201819.0,
-     "fees": 5074,
-     "taxes": 3858,
+     "n_closed": 9,
+     "realized": -239694.0,
+     "fees": 5517,
+     "taxes": 4346,
      "unfilled": {
       "開盤就在跌停價，賣不掉": 2
      }
@@ -4468,22 +4851,24 @@
      "2026-11-03.json",
      "2026-11-06.json",
      "2026-11-17.json",
-     "2026-11-19.json"
+     "2026-11-19.json",
+     "2026-11-20.json"
     ]
    },
    "aggressive": {
     "kpi": {
-     "equity": 657432.0,
-     "cash": 110.0,
-     "ret": -34.257,
-     "mdd": -35.27,
-     "n_open": 5,
-     "n_closed": 14,
-     "realized": -282071.0,
-     "fees": 7720,
-     "taxes": 6661,
+     "equity": 654216.0,
+     "cash": 122390.0,
+     "ret": -34.578,
+     "mdd": -35.59,
+     "n_open": 4,
+     "n_closed": 16,
+     "realized": -346584.0,
+     "fees": 8270,
+     "taxes": 7424,
      "unfilled": {
-      "開盤就在跌停價，賣不掉": 3
+      "開盤就在跌停價，賣不掉": 3,
+      "開盤就在漲停價，買不到": 1
      }
     },
     "files": [
@@ -4491,7 +4876,8 @@
      "2026-11-03.json",
      "2026-11-06.json",
      "2026-11-17.json",
-     "2026-11-19.json"
+     "2026-11-19.json",
+     "2026-11-20.json"
     ]
    }
   },
@@ -4508,7 +4894,8 @@
    "2026-11-17": "2026-11-17.v4.json",
    "2026-11-18": "2026-11-18.v2.json",
    "2026-11-19": "2026-11-19.v3.json",
-   "2026-11-20": "2026-11-20.v3.json"
+   "2026-11-20": "2026-11-20.v3.json",
+   "2026-11-23": "2026-11-23.json"
   }
  }
 }
