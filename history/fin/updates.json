@@ -1,16 +1,16 @@
 {
- "generated_at": "2026-11-25T03:44:17",
+ "generated_at": "2026-11-25T07:11:05",
  "quarter": "2026-Q3",
- "announced": 1976,
- "synced": 1972,
+ "announced": 1979,
+ "synced": 1975,
  "waiting": 4,
  "slow": 0,
- "corrected": 1976,
+ "corrected": 1979,
  "mismatch": 4,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 1976,
+ "db_has_quarter": 1979,
  "latency_hours": {
-  "n": 1855,
+  "n": 1858,
   "median": 66.8,
   "max": 425.3
  },
@@ -46,11 +46,11 @@
    "name": "大略-KY",
    "period": "2026-Q3",
    "first_seen": "2026-11-17T23:54:39",
-   "attempts": 1,
+   "attempts": 2,
    "eps": -0.7,
    "status": "waiting_source",
    "slow": false,
-   "last_try": "2026-11-24T08:48:10",
+   "last_try": "2026-11-25T07:00:33",
    "corrected_at": null,
    "note": "資料庫和官方累計數字不一致：本期淨利 資料庫 -61,313 千元／官方 -50,261 千元"
   },
@@ -69,6 +69,81 @@
   }
  ],
  "rescored": [
+  {
+   "stock_id": "5880",
+   "name": "合庫金",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-25T07:00:30",
+   "before": null,
+   "after": 33.9,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-25T07:00:21",
+   "fetched_at": "2026-11-25T07:00:30",
+   "rescored_at": "2026-11-25T07:11:03",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 33.9,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "2890",
+   "name": "永豐金",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-25T07:00:27",
+   "before": null,
+   "after": 47.8,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-25T07:00:21",
+   "fetched_at": "2026-11-25T07:00:27",
+   "rescored_at": "2026-11-25T07:11:03",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 47.8,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
+  {
+   "stock_id": "2883",
+   "name": "凱基金",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-25T07:00:25",
+   "before": null,
+   "after": 43.9,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-25T07:00:21",
+   "fetched_at": "2026-11-25T07:00:25",
+   "rescored_at": "2026-11-25T07:11:03",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": true,
+    "score": 43.9,
+    "ref_composite": null,
+    "eligible": true,
+    "site_updated": true,
+    "why": "已產生新的正式 AI 綜合分數"
+   }
+  },
   {
    "stock_id": "4609",
    "name": "唐鋒",
@@ -388,10 +463,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 36.6,
+    "ref_composite": 36.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.5"
    }
   },
   {
@@ -1138,10 +1213,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 60.0,
+    "ref_composite": 59.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 60.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 59.9"
    }
   },
   {
@@ -1213,10 +1288,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 57.8,
+    "ref_composite": 57.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 57.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 57.9"
    }
   },
   {
@@ -1363,10 +1438,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 34.6,
+    "ref_composite": 34.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.7"
    }
   },
   {
@@ -2238,10 +2313,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 51.6,
+    "ref_composite": 51.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.7"
    }
   },
   {
@@ -2463,10 +2538,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 26.7,
+    "ref_composite": 26.8,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 26.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 26.8"
    }
   },
   {
@@ -2588,10 +2663,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 34.7,
+    "ref_composite": 35.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.0"
    }
   },
   {
@@ -2888,10 +2963,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 32.6,
+    "ref_composite": 32.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 32.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 32.7"
    }
   },
   {
@@ -2938,10 +3013,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 36.6,
+    "ref_composite": 36.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.7"
    }
   },
   {
@@ -3013,10 +3088,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.4,
+    "ref_composite": 56.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.3"
    }
   },
   {
@@ -3263,10 +3338,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 38.2,
+    "ref_composite": 38.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.3"
    }
   },
   {
@@ -3438,10 +3513,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 38.5,
+    "ref_composite": 39.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.1"
    }
   },
   {
@@ -3638,10 +3713,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 44.3,
+    "ref_composite": 44.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.4"
    }
   },
   {
@@ -3688,10 +3763,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 27.7,
+    "ref_composite": 27.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 27.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 27.6"
    }
   },
   {
@@ -3788,10 +3863,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 29.1,
+    "ref_composite": 29.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 29.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 29.0"
    }
   },
   {
@@ -3813,10 +3888,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 33.7,
+    "ref_composite": 33.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.6"
    }
   },
   {
@@ -4038,10 +4113,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 24.1,
+    "ref_composite": 24.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 24.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 24.0"
    }
   },
   {
@@ -4993,641 +5068,606 @@
     "site_updated": true,
     "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低、長期虧損），依規則不產生正式綜合分數"
    }
-  },
-  {
-   "stock_id": "4433",
-   "name": "興采",
-   "period": "2026-Q3",
-   "synced_at": "2026-11-21T05:10:55",
-   "before": null,
-   "after": NaN,
-   "latency_h": 90.7,
-   "first_seen": "2026-11-17T10:28:36",
-   "fetched_at": "2026-11-21T05:10:55",
-   "rescored_at": "2026-11-21T05:13:34",
-   "corrected_at": null,
-   "check": {
-    "fin_in_db": true,
-    "fin_period": "2026-Q3",
-    "factors_recomputed": true,
-    "in_rank_universe": false,
-    "complete": false,
-    "score": null,
-    "ref_composite": null,
-    "eligible": false,
-    "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數"
-   }
-  },
-  {
-   "stock_id": "2945",
-   "name": "三商家購",
-   "period": "2026-Q3",
-   "synced_at": "2026-11-21T05:10:52",
-   "before": null,
-   "after": NaN,
-   "latency_h": 90.7,
-   "first_seen": "2026-11-17T10:28:36",
-   "fetched_at": "2026-11-21T05:10:52",
-   "rescored_at": "2026-11-21T05:13:34",
-   "corrected_at": null,
-   "check": {
-    "fin_in_db": true,
-    "fin_period": "2026-Q3",
-    "factors_recomputed": true,
-    "in_rank_universe": false,
-    "complete": false,
-    "score": null,
-    "ref_composite": 36.7,
-    "eligible": false,
-    "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.7"
-   }
-  },
-  {
-   "stock_id": "4401",
-   "name": "東隆興",
-   "period": "2026-Q3",
-   "synced_at": "2026-11-21T05:10:50",
-   "before": null,
-   "after": NaN,
-   "latency_h": 90.7,
-   "first_seen": "2026-11-17T10:28:36",
-   "fetched_at": "2026-11-21T05:10:50",
-   "rescored_at": "2026-11-21T05:13:34",
-   "corrected_at": null,
-   "check": {
-    "fin_in_db": true,
-    "fin_period": "2026-Q3",
-    "factors_recomputed": true,
-    "in_rank_universe": false,
-    "complete": false,
-    "score": null,
-    "ref_composite": 30.4,
-    "eligible": false,
-    "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 30.4"
-   }
   }
  ],
  "revisions": [
   {
-   "stock_id": "2441",
+   "stock_id": "3004",
    "period": "2017-Q1",
-   "detected_at": "2026-11-24T10:03:02",
+   "detected_at": "2026-11-25T07:09:01",
    "fields": {
     "ocf": [
-     1207419000.0,
-     1201118000.0
+     92008000.0,
+     98191000.0
     ]
    }
   },
   {
-   "stock_id": "2441",
-   "period": "2017-Q2",
-   "detected_at": "2026-11-24T10:03:02",
-   "fields": {
-    "ocf": [
-     1016179000.0,
-     1006961000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2441",
+   "stock_id": "3004",
    "period": "2017-Q3",
-   "detected_at": "2026-11-24T10:03:02",
+   "detected_at": "2026-11-25T07:09:01",
    "fields": {
     "ocf": [
-     1105258000.0,
-     1120777000.0
+     5018000.0,
+     -5422000.0
     ]
    }
   },
   {
-   "stock_id": "6197",
-   "period": "2017-Q2",
-   "detected_at": "2026-11-24T10:02:56",
-   "fields": {
-    "ocf": [
-     57589000.0,
-     58683000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6197",
-   "period": "2017-Q3",
-   "detected_at": "2026-11-24T10:02:56",
-   "fields": {
-    "ocf": [
-     186726000.0,
-     185632000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5434",
-   "period": "2021-Q3",
-   "detected_at": "2026-11-24T10:02:23",
-   "fields": {
-    "ocf": [
-     1004530000.0,
-     1016053000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5434",
-   "period": "2021-Q4",
-   "detected_at": "2026-11-24T10:02:23",
-   "fields": {
-    "ocf": [
-     429621000.0,
-     418098000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2912",
-   "period": "2019-Q1",
-   "detected_at": "2026-11-24T10:02:17",
-   "fields": {
-    "ocf": [
-     5773384000.0,
-     6044777000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2912",
-   "period": "2019-Q2",
-   "detected_at": "2026-11-24T10:02:17",
-   "fields": {
-    "ocf": [
-     9647762000.0,
-     9376369000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "3023",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-24T10:02:12",
-   "fields": {
-    "ocf": [
-     1545790000.0,
-     1256013000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2467",
-   "period": "2021-Q4",
-   "detected_at": "2026-11-24T10:02:01",
-   "fields": {
-    "ocf": [
-     849000.0,
-     16946000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2467",
-   "period": "2023-Q3",
-   "detected_at": "2026-11-24T10:02:01",
-   "fields": {
-    "ocf": [
-     368103000.0,
-     412963000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "2467",
-   "period": "2023-Q4",
-   "detected_at": "2026-11-24T10:02:01",
-   "fields": {
-    "ocf": [
-     261042000.0,
-     216182000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2017-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     202237270000.0,
-     198301264000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2017-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     198562467000.0,
-     194482473000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2017-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     203078204000.0,
-     198879219000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
+   "stock_id": "3004",
    "period": "2017-Q4",
-   "detected_at": "2026-11-24T10:01:48",
+   "detected_at": "2026-11-25T07:09:01",
    "fields": {
-    "equity": [
-     205496296000.0,
-     201152040000.0
+    "ocf": [
+     125599000.0,
+     119453000.0
     ]
    }
   },
   {
-   "stock_id": "5880",
-   "period": "2018-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     210384981000.0,
-     206081458000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2018-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     205950633000.0,
-     201764915000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2018-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     211291668000.0,
-     206893965000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2018-Q4",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     212474009000.0,
-     208274204000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2019-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     220759641000.0,
-     215920173000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2019-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     218425635000.0,
-     213366102000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     222379351000.0,
-     217105254000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
+   "stock_id": "8131",
    "period": "2019-Q4",
-   "detected_at": "2026-11-24T10:01:48",
+   "detected_at": "2026-11-25T07:08:18",
    "fields": {
-    "equity": [
-     226907304000.0,
-     221419924000.0
+    "ocf": [
+     674887000.0,
+     680477000.0
     ]
    }
   },
   {
-   "stock_id": "5880",
-   "period": "2020-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     227181784000.0,
-     221996052000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2020-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     227230200000.0,
-     221455884000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2020-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     231993274000.0,
-     225799919000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2020-Q4",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     237681557000.0,
-     231049769000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2021-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     241120747000.0,
-     234357171000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2021-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     248343843000.0,
-     241613896000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2021-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     240758951000.0,
-     234021540000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2021-Q4",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     242878592000.0,
-     236227474000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2022-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     240535200000.0,
-     234228690000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2022-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     211553829000.0,
-     206224366000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2022-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     206681205000.0,
-     201691910000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2022-Q4",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     220763177000.0,
-     215446776000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2023-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     232251946000.0,
-     226658614000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2023-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     232364968000.0,
-     226762721000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2023-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     234624979000.0,
-     229122628000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2023-Q4",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     245778659000.0,
-     239890248000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2024-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     252848462000.0,
-     246839374000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2024-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     250044276000.0,
-     244502810000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2024-Q3",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     259785168000.0,
-     253902947000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2024-Q4",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     259756943000.0,
-     254049424000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2025-Q1",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     267548055000.0,
-     259008938000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
-   "period": "2025-Q2",
-   "detected_at": "2026-11-24T10:01:48",
-   "fields": {
-    "equity": [
-     260477842000.0,
-     252693706000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5880",
+   "stock_id": "8131",
    "period": "2025-Q3",
-   "detected_at": "2026-11-24T10:01:48",
+   "detected_at": "2026-11-25T07:08:18",
    "fields": {
-    "equity": [
-     274060143000.0,
-     268150491000.0
+    "ocf": [
+     -177835000.0,
+     -155833000.0
     ]
    }
   },
   {
-   "stock_id": "5880",
+   "stock_id": "8131",
    "period": "2025-Q4",
-   "detected_at": "2026-11-24T10:01:48",
+   "detected_at": "2026-11-25T07:08:18",
    "fields": {
-    "equity": [
-     287545989000.0,
-     279252593000.0
+    "ocf": [
+     353035000.0,
+     331033000.0
     ]
    }
   },
   {
-   "stock_id": "5880",
-   "period": "2026-Q1",
-   "detected_at": "2026-11-24T10:01:48",
+   "stock_id": "5443",
+   "period": "2019-Q2",
+   "detected_at": "2026-11-25T07:08:05",
+   "fields": {
+    "ocf": [
+     37783000.0,
+     37570000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5443",
+   "period": "2019-Q3",
+   "detected_at": "2026-11-25T07:08:05",
+   "fields": {
+    "ocf": [
+     10531000.0,
+     10744000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5443",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-25T07:08:05",
+   "fields": {
+    "ocf": [
+     -315815000.0,
+     -310695000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6811",
+   "period": "2025-Q1",
+   "detected_at": "2026-11-25T07:07:44",
+   "fields": {
+    "total_assets": [
+     6069414000.0,
+     5993467000.0
+    ],
+    "total_liabilities": [
+     3717081000.0,
+     3665002000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6811",
+   "period": "2025-Q2",
+   "detected_at": "2026-11-25T07:07:44",
+   "fields": {
+    "total_assets": [
+     6422081000.0,
+     6344834000.0
+    ],
+    "total_liabilities": [
+     4318326000.0,
+     4266929000.0
+    ],
+    "ocf": [
+     835688000.0,
+     824886000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6811",
+   "period": "2025-Q3",
+   "detected_at": "2026-11-25T07:07:44",
+   "fields": {
+    "total_assets": [
+     6251699000.0,
+     6178214000.0
+    ],
+    "total_liabilities": [
+     3997062000.0,
+     3950311000.0
+    ],
+    "ocf": [
+     -622260000.0,
+     -618027000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "6811",
+   "period": "2025-Q4",
+   "detected_at": "2026-11-25T07:07:44",
+   "fields": {
+    "total_assets": [
+     6347332000.0,
+     6257664000.0
+    ],
+    "total_liabilities": [
+     3961427000.0,
+     3900600000.0
+    ],
+    "ocf": [
+     748043000.0,
+     754612000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2439",
+   "period": "2018-Q3",
+   "detected_at": "2026-11-25T07:07:01",
+   "fields": {
+    "total_assets": [
+     26962087000.0,
+     26797929000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2439",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-25T07:07:01",
+   "fields": {
+    "ocf": [
+     3580459000.0,
+     3557893000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2439",
+   "period": "2025-Q3",
+   "detected_at": "2026-11-25T07:07:01",
+   "fields": {
+    "ocf": [
+     27757000.0,
+     26951000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2017-Q1",
+   "detected_at": "2026-11-25T07:06:35",
    "fields": {
     "equity": [
-     290316066000.0,
-     282716597000.0
+     35789697000.0,
+     31646920000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2017-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     35276031000.0,
+     31093668000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2017-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     36066910000.0,
+     31803130000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2017-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     35928575000.0,
+     32308422000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2018-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     36668371000.0,
+     32961312000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2018-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     35275823000.0,
+     31643131000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2018-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     35550466000.0,
+     31879192000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2018-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     36120766000.0,
+     32435973000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2019-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     37763964000.0,
+     33949626000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2019-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     37972659000.0,
+     34053525000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2019-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     39487962000.0,
+     35362651000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     39828761000.0,
+     35688112000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2020-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     38852433000.0,
+     34790191000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2020-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     40058926000.0,
+     35879309000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2020-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     41332390000.0,
+     36969708000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2020-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     42737811000.0,
+     38238714000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2021-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     42938664000.0,
+     38323888000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2021-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     44569259000.0,
+     39673869000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2021-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     43513524000.0,
+     38482211000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2021-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     44183810000.0,
+     38867098000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2022-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     42909670000.0,
+     37568175000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2022-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     39422335000.0,
+     34108799000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2022-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     38007034000.0,
+     32717781000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2022-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     42164674000.0,
+     36685703000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2023-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     43634748000.0,
+     38048506000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2023-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     44374941000.0,
+     38628391000.0
+    ],
+    "ocf": [
+     -3086205000.0,
+     -3188524000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2023-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     45476639000.0,
+     39315922000.0
+    ],
+    "ocf": [
+     -2826160000.0,
+     -2193733000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2023-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     48792588000.0,
+     42138940000.0
+    ],
+    "ocf": [
+     6573166000.0,
+     6675413000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2024-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     49458812000.0,
+     42558407000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2024-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     47527537000.0,
+     40561590000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2024-Q3",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     49541550000.0,
+     42309761000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2024-Q4",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     49452246000.0,
+     41976301000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2025-Q1",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     49975988000.0,
+     42585955000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2889",
+   "period": "2025-Q2",
+   "detected_at": "2026-11-25T07:06:35",
+   "fields": {
+    "equity": [
+     49961749000.0,
+     42701708000.0
     ]
    }
   }
  ],
  "detect": {
-  "at": "2026-11-25T03:39:41",
+  "at": "2026-11-25T07:00:21",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 1976,
-  "new": 0,
+  "stocks": 1979,
+  "new": 3,
   "corrected": 0,
   "mismatch": 0
  },
@@ -5663,9 +5703,9 @@
    "market": "twse",
    "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_fh",
    "ok": true,
-   "stocks": 3,
+   "stocks": 6,
    "error": null,
-   "rows": 3,
+   "rows": 6,
    "empty": null
   },
   {
