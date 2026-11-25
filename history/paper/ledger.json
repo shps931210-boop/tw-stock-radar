@@ -4,7 +4,7 @@
  "rules": "訊號日收盤後的正式 AI 精選，隔一個交易日開盤買（＋0.1% 滑價）；收盤跌 10% 停損、漲 20% 停利、滿 20 個交易日到期，都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃前一個交易日的 5%，開盤就漲停買不到、開盤就跌停賣不掉照實記；開盤成交只用開盤時已知的資訊。只模擬，不會送出任何真實委託。",
  "live_trading": false,
  "start_signal": "2026-10-27",
- "last_data": "2026-11-24",
+ "last_data": "2026-11-25",
  "first_entry": "2026-10-28",
  "books": {
   "stable": {
@@ -50,11 +50,11 @@
      "min_close": 80.3,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 80.3,
-     "last_date": "2026-11-24",
-     "held_days": 12,
-     "market_value": 168068.0,
-     "unreal_ret": -4.975,
+     "last_close": 80.6,
+     "last_date": "2026-11-25",
+     "held_days": 13,
+     "market_value": 168696.0,
+     "unreal_ret": -4.62,
      "pending_exit": null,
      "status": "open"
     },
@@ -97,11 +97,11 @@
      "min_close": 28.7,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 31.55,
-     "last_date": "2026-11-24",
-     "held_days": 12,
-     "market_value": 156299.0,
-     "unreal_ret": -0.557,
+     "last_close": 30.3,
+     "last_date": "2026-11-25",
+     "held_days": 13,
+     "market_value": 150106.0,
+     "unreal_ret": -4.497,
      "pending_exit": null,
      "status": "open"
     },
@@ -140,15 +140,15 @@
      "dividends": 0.0,
      "stop_price": 90.99,
      "target_price": 121.32,
-     "max_close": 97.1,
+     "max_close": 100.5,
      "min_close": 95.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 97.1,
-     "last_date": "2026-11-24",
-     "held_days": 3,
-     "market_value": 163516.0,
-     "unreal_ret": -4.094,
+     "last_close": 100.5,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "market_value": 169242.0,
+     "unreal_ret": -0.736,
      "pending_exit": null,
      "status": "open"
     },
@@ -191,11 +191,11 @@
      "min_close": 39.8,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 42.75,
-     "last_date": "2026-11-24",
-     "held_days": 2,
-     "market_value": 168178.0,
-     "unreal_ret": 6.218,
+     "last_close": 40.95,
+     "last_date": "2026-11-25",
+     "held_days": 3,
+     "market_value": 161097.0,
+     "unreal_ret": 1.746,
      "pending_exit": null,
      "status": "open"
     },
@@ -238,11 +238,11 @@
      "min_close": 234.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 257.0,
-     "last_date": "2026-11-24",
-     "held_days": 2,
-     "market_value": 172961.0,
-     "unreal_ret": 10.034,
+     "last_close": 252.5,
+     "last_date": "2026-11-25",
+     "held_days": 3,
+     "market_value": 169932.0,
+     "unreal_ret": 8.107,
      "pending_exit": null,
      "status": "open"
     }
@@ -929,14 +929,21 @@
      "mv": 829022.0,
      "equity": 829096.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-25",
+     "cash": 74.0,
+     "mv": 819074.0,
+     "equity": 819147.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
    "pending_sells": [],
    "kpi": {
-    "equity": 829096.0,
+    "equity": 819147.0,
     "cash": 74.0,
-    "ret": -17.09,
+    "ret": -18.085,
     "mdd": -21.3,
     "n_open": 5,
     "n_closed": 6,
@@ -948,31 +955,46 @@
     }
    },
    "odds": {
-    "n": 0,
+    "n": 5,
     "enough": false,
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 0,
-     "stop": 6,
+     "stop": 1,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
     "target": {
      "n": 0,
-     "pct": null,
-     "ci95": null
+     "pct": 0.0,
+     "ci95": [
+      0,
+      43.4
+     ]
     },
     "stop": {
-     "n": 0,
-     "pct": null,
-     "ci95": null
+     "n": 5,
+     "pct": 100.0,
+     "ci95": [
+      56.6,
+      100
+     ]
     },
     "expiry": {
      "n": 0,
-     "pct": null,
-     "ci95": null
+     "pct": 0.0,
+     "ci95": [
+      0,
+      43.4
+     ]
     },
-    "mean_excess": null
+    "mean_ret": -15.388,
+    "ci95_ret": [
+     -20.83,
+     -9.946
+    ],
+    "win_pct": 0.0,
+    "mean_excess": -1.028
    },
    "review": [
     {
@@ -1016,9 +1038,7 @@
      "labels": [
       "選股：比同期 0050 差"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "S0003",
@@ -1118,11 +1138,11 @@
      "min_close": 211.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 255.0,
-     "last_date": "2026-11-24",
-     "held_days": 5,
-     "market_value": 188190.0,
-     "unreal_ret": 17.498,
+     "last_close": 229.5,
+     "last_date": "2026-11-25",
+     "held_days": 6,
+     "market_value": 169371.0,
+     "unreal_ret": 5.749,
      "pending_exit": null,
      "status": "open"
     },
@@ -1162,14 +1182,14 @@
      "stop_price": 163.96,
      "target_price": 218.62,
      "max_close": 191.5,
-     "min_close": 175.0,
+     "min_close": 171.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 183.5,
-     "last_date": "2026-11-24",
-     "held_days": 3,
-     "market_value": 158544.0,
-     "unreal_ret": 0.58,
+     "last_close": 171.5,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "market_value": 148176.0,
+     "unreal_ret": -5.997,
      "pending_exit": null,
      "status": "open"
     },
@@ -1212,11 +1232,11 @@
      "min_close": 264.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 309.0,
-     "last_date": "2026-11-24",
-     "held_days": 3,
-     "market_value": 175821.0,
-     "unreal_ret": 11.484,
+     "last_close": 278.5,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "market_value": 158466.0,
+     "unreal_ret": 0.48,
      "pending_exit": null,
      "status": "open"
     },
@@ -1259,11 +1279,11 @@
      "min_close": 89.2,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 105.0,
-     "last_date": "2026-11-24",
-     "held_days": 3,
-     "market_value": 157080.0,
-     "unreal_ret": 15.998,
+     "last_close": 94.5,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "market_value": 141372.0,
+     "unreal_ret": 4.398,
      "pending_exit": null,
      "status": "open"
     },
@@ -1306,11 +1326,11 @@
      "min_close": 29.25,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 31.55,
-     "last_date": "2026-11-24",
-     "held_days": 2,
-     "market_value": 161220.0,
-     "unreal_ret": 10.628,
+     "last_close": 30.3,
+     "last_date": "2026-11-25",
+     "held_days": 3,
+     "market_value": 154833.0,
+     "unreal_ret": 6.245,
      "pending_exit": null,
      "status": "open"
     }
@@ -2316,14 +2336,21 @@
      "mv": 840856.0,
      "equity": 840857.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-25",
+     "cash": 1.0,
+     "mv": 772218.0,
+     "equity": 772220.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
    "pending_sells": [],
    "kpi": {
-    "equity": 840857.0,
+    "equity": 772220.0,
     "cash": 1.0,
-    "ret": -15.914,
+    "ret": -22.778,
     "mdd": -26.99,
     "n_open": 5,
     "n_closed": 10,
@@ -2335,31 +2362,46 @@
     }
    },
    "odds": {
-    "n": 0,
+    "n": 5,
     "enough": false,
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 0,
-     "stop": 10,
+     "stop": 5,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
     "target": {
      "n": 0,
-     "pct": null,
-     "ci95": null
+     "pct": 0.0,
+     "ci95": [
+      0,
+      43.4
+     ]
     },
     "stop": {
-     "n": 0,
-     "pct": null,
-     "ci95": null
+     "n": 5,
+     "pct": 100.0,
+     "ci95": [
+      56.6,
+      100
+     ]
     },
     "expiry": {
      "n": 0,
-     "pct": null,
-     "ci95": null
+     "pct": 0.0,
+     "ci95": [
+      0,
+      43.4
+     ]
     },
-    "mean_excess": null
+    "mean_ret": -11.968,
+    "ci95_ret": [
+     -14.154,
+     -9.782
+    ],
+    "win_pct": 0.0,
+    "mean_excess": -0.773
    },
    "review": [
     {
@@ -2437,9 +2479,7 @@
      "labels": [
       "選股：比同期 0050 差"
      ],
-     "notes": {
-      "exit": "停損後還不到 10 個交易日，之後再判斷"
-     }
+     "notes": {}
     },
     {
      "id": "B0009",
@@ -2542,7 +2582,7 @@
   },
   "aggressive": {
    "mode": "aggressive",
-   "cash": 122381.0,
+   "cash": 85.0,
    "positions": [
     {
      "id": "A0012",
@@ -2583,11 +2623,11 @@
      "min_close": 165.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 173.0,
-     "last_date": "2026-11-24",
-     "held_days": 12,
-     "market_value": 168329.0,
-     "unreal_ret": 5.233,
+     "last_close": 172.5,
+     "last_date": "2026-11-25",
+     "held_days": 13,
+     "market_value": 167842.0,
+     "unreal_ret": 4.929,
      "pending_exit": null,
      "status": "open"
     },
@@ -2627,15 +2667,15 @@
      "stop_price": 144.14,
      "target_price": 192.19,
      "max_close": 160.0,
-     "min_close": 145.5,
+     "min_close": 144.0,
      "fill_note": null,
-     "exit_signal_date": null,
-     "last_close": 160.0,
-     "last_date": "2026-11-24",
-     "held_days": 3,
-     "market_value": 140480.0,
-     "unreal_ret": -0.242,
-     "pending_exit": null,
+     "exit_signal_date": "2026-11-25",
+     "last_close": 144.0,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "market_value": 126432.0,
+     "unreal_ret": -10.218,
+     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -2677,11 +2717,11 @@
      "min_close": 110.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 124.5,
-     "last_date": "2026-11-24",
-     "held_days": 3,
-     "market_value": 108813.0,
-     "unreal_ret": 10.399,
+     "last_close": 112.5,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "market_value": 98325.0,
+     "unreal_ret": -0.242,
      "pending_exit": null,
      "status": "open"
     },
@@ -2724,11 +2764,58 @@
      "min_close": 51.9,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 54.0,
-     "last_date": "2026-11-24",
-     "held_days": 2,
-     "market_value": 142290.0,
-     "unreal_ret": 8.281,
+     "last_close": 52.5,
+     "last_date": "2026-11-25",
+     "held_days": 3,
+     "market_value": 138338.0,
+     "unreal_ret": 5.273,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "A0021",
+     "mode": "aggressive",
+     "sid": "2603",
+     "name": "長榮",
+     "industry": "航運業",
+     "signal_date": "2026-11-24",
+     "pick_file": "2026-11-24.v4.json",
+     "pick_generated_at": "2026-11-25T07:40:35",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-24",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 2,
+     "score": 76.9,
+     "liq": "A",
+     "reason": "正式精選第 2 名，AI 量化評分 76.9；趨勢 100、價值 92",
+     "signal_close": 257.0,
+     "entry_date": "2026-11-25",
+     "entry_price": 250.25,
+     "entry_open": 250.0,
+     "bought": 488,
+     "shares": 488,
+     "buy_value": 122122.0,
+     "buy_fee": 174,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 225.22,
+     "target_price": 300.3,
+     "max_close": 252.5,
+     "min_close": 252.5,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 252.5,
+     "last_date": "2026-11-25",
+     "held_days": 1,
+     "market_value": 123220.0,
+     "unreal_ret": 0.756,
      "pending_exit": null,
      "status": "open"
     }
@@ -4076,6 +4163,19 @@
      "filled": 0,
      "status": "unfilled",
      "why": "開盤就在漲停價，買不到"
+    },
+    {
+     "date": "2026-11-25",
+     "side": "buy",
+     "sid": "2603",
+     "name": "長榮",
+     "signal_date": "2026-11-24",
+     "rank": 2,
+     "want": 488,
+     "filled": 488,
+     "price": 250.25,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -4218,19 +4318,31 @@
      "mv": 559912.0,
      "equity": 682293.0,
      "n": 4
+    },
+    {
+     "date": "2026-11-25",
+     "cash": 85.0,
+     "mv": 654157.0,
+     "equity": 654242.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
-   "pending_sells": [],
+   "pending_sells": [
+    {
+     "sid": "4977",
+     "reason": "停損（收盤跌破買進價 10%）"
+    }
+   ],
    "kpi": {
-    "equity": 682293.0,
-    "cash": 122381.0,
-    "ret": -31.771,
+    "equity": 654242.0,
+    "cash": 85.0,
+    "ret": -34.576,
     "mdd": -35.61,
-    "n_open": 4,
+    "n_open": 5,
     "n_closed": 16,
     "realized": -346870.0,
-    "fees": 8269,
+    "fees": 8443,
     "taxes": 7423,
     "unfilled": {
      "開盤就在跌停價，賣不掉": 3,
@@ -4238,31 +4350,46 @@
     }
    },
    "odds": {
-    "n": 0,
+    "n": 5,
     "enough": false,
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 1,
-     "stop": 15,
+     "stop": 10,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
     "target": {
      "n": 0,
-     "pct": null,
-     "ci95": null
+     "pct": 0.0,
+     "ci95": [
+      0,
+      43.4
+     ]
     },
     "stop": {
-     "n": 0,
-     "pct": null,
-     "ci95": null
+     "n": 5,
+     "pct": 100.0,
+     "ci95": [
+      56.6,
+      100
+     ]
     },
     "expiry": {
      "n": 0,
-     "pct": null,
-     "ci95": null
+     "pct": 0.0,
+     "ci95": [
+      0,
+      43.4
+     ]
     },
-    "mean_excess": null
+    "mean_ret": -11.596,
+    "ci95_ret": [
+     -14.57,
+     -8.622
+    ],
+    "win_pct": 0.0,
+    "mean_excess": -4.231
    },
    "review": [
     {
@@ -4647,43 +4774,53 @@
     "date": "2026-11-24",
     "e0050": 881112.0,
     "taiex": 864654.0
+   },
+   {
+    "date": "2026-11-25",
+    "e0050": 831394.0,
+    "taiex": 823128.0
    }
   ],
   "shares": 9207,
   "price": 108.4583,
   "e0050": {
-   "ret": -11.889,
+   "ret": -16.861,
    "mdd": -22.27
   },
   "taiex": {
-   "ret": -13.535,
+   "ret": -17.687,
    "mdd": -23.39
   },
   "taiex_start": "open",
   "note": "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：從第一個進場日的證交所開盤指數換算，不含成本；開盤指數在 9:00 很多股票還沒成交，接近前一天收盤，和 0050 的可成交開盤價不完全同步，只能參考。"
  },
  "plan": {
-  "signal_date": "2026-11-24",
-  "entry_date": "2026-11-25",
-  "pick_file": "2026-11-24.v4.json",
-  "generated_at": "2026-11-25T07:40:35",
+  "signal_date": "2026-11-25",
+  "entry_date": "2026-11-26",
+  "pick_file": "2026-11-25.json",
+  "generated_at": "2026-11-26T01:09:20",
   "model_version": "v1.1",
   "buys": {
    "stable": [],
    "balanced": [],
    "aggressive": [
     {
-     "sid": "2603",
-     "name": "長榮",
-     "rank": 2,
-     "score": 76.9
+     "sid": "6708",
+     "name": "天擎",
+     "rank": 4,
+     "score": 70.1
     }
    ]
   },
   "sells": {
    "stable": [],
    "balanced": [],
-   "aggressive": []
+   "aggressive": [
+    {
+     "sid": "4977",
+     "reason": "停損（收盤跌破買進價 10%）"
+    }
+   ]
   }
  },
  "signals": {
@@ -4851,6 +4988,17 @@
     "revenue": "2026-10",
     "financials": "2026-Q3"
    }
+  },
+  "2026-11-25": {
+   "file": "2026-11-25.json",
+   "generated_at": "2026-11-26T01:09:20",
+   "model_version": "v1.1",
+   "model_hash": "ce1e61207b30",
+   "data_dates": {
+    "prices": "2026-11-25",
+    "revenue": "2026-10",
+    "financials": "2026-Q3"
+   }
   }
  },
  "note": "這是依固定規則的模擬交易（前瞻紀錄，從 2026-10-28 開盤開始），不是回測，也沒有送出任何真實委託。",
@@ -4859,9 +5007,9 @@
   "books": {
    "stable": {
     "kpi": {
-     "equity": 812877.0,
+     "equity": 803176.0,
      "cash": 172.0,
-     "ret": -18.712,
+     "ret": -19.682,
      "mdd": -22.74,
      "n_open": 5,
      "n_closed": 6,
@@ -4882,9 +5030,9 @@
    },
    "balanced": {
     "kpi": {
-     "equity": 842227.0,
+     "equity": 775060.0,
      "cash": 13178.0,
-     "ret": -15.777,
+     "ret": -22.494,
      "mdd": -26.64,
      "n_open": 5,
      "n_closed": 9,
@@ -4906,14 +5054,14 @@
    },
    "aggressive": {
     "kpi": {
-     "equity": 682605.0,
-     "cash": 122390.0,
-     "ret": -31.739,
+     "equity": 654529.0,
+     "cash": 94.0,
+     "ret": -34.547,
      "mdd": -35.59,
-     "n_open": 4,
+     "n_open": 5,
      "n_closed": 16,
      "realized": -346584.0,
-     "fees": 8270,
+     "fees": 8444,
      "taxes": 7424,
      "unfilled": {
       "開盤就在跌停價，賣不掉": 3,
@@ -4926,7 +5074,8 @@
      "2026-11-06.json",
      "2026-11-17.json",
      "2026-11-19.json",
-     "2026-11-20.json"
+     "2026-11-20.json",
+     "2026-11-24.json"
     ]
    }
   },
@@ -4945,7 +5094,8 @@
    "2026-11-19": "2026-11-19.v3.json",
    "2026-11-20": "2026-11-20.v3.json",
    "2026-11-23": "2026-11-23.v2.json",
-   "2026-11-24": "2026-11-24.v4.json"
+   "2026-11-24": "2026-11-24.v4.json",
+   "2026-11-25": "2026-11-25.json"
   }
  }
 }

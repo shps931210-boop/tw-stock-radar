@@ -1,8 +1,129 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-25T09:07:02",
- "taiex_open_days": 1820,
+ "generated_at": "2026-11-26T01:16:00",
+ "taiex_open_days": 1821,
  "batches": [
+  {
+   "file": "2026-11-17_h5.json",
+   "signal_date": "2026-11-17",
+   "horizon": 5,
+   "eligible": true,
+   "open_window": [
+    "2026-11-18",
+    "2026-11-25"
+   ],
+   "close_window": [
+    "2026-11-17",
+    "2026-11-24"
+   ],
+   "modes": {
+    "stable": {
+     "name": "穩健型",
+     "open": {
+      "net": -6.85,
+      "n": 10,
+      "e0050": -4.18,
+      "taiex": null,
+      "ex_0050": -2.67,
+      "ex_taiex": null,
+      "up_hit": 10.0,
+      "beat_0050_hit": 40.0,
+      "beat_taiex_hit": null,
+      "mdd": -11.15,
+      "big_loss_pct": 40.0,
+      "worst": -13.25,
+      "taiex_open_index": -1.81,
+      "taiex_missing": true
+     },
+     "close": {
+      "net": -3.62,
+      "n": 10,
+      "e0050": 1.81,
+      "taiex": 0.08,
+      "ex_0050": -5.43,
+      "ex_taiex": -3.7,
+      "up_hit": 20.0,
+      "beat_0050_hit": 10.0,
+      "beat_taiex_hit": 20.0,
+      "mdd": -11.18,
+      "big_loss_pct": 10.0,
+      "worst": -10.96,
+      "taiex_open_index": null,
+      "taiex_missing": false
+     }
+    },
+    "balanced": {
+     "name": "均衡型",
+     "open": {
+      "net": -9.89,
+      "n": 10,
+      "e0050": -4.18,
+      "taiex": null,
+      "ex_0050": -5.71,
+      "ex_taiex": null,
+      "up_hit": 10.0,
+      "beat_0050_hit": 10.0,
+      "beat_taiex_hit": null,
+      "mdd": -14.68,
+      "big_loss_pct": 60.0,
+      "worst": -23.31,
+      "taiex_open_index": -1.81,
+      "taiex_missing": true
+     },
+     "close": {
+      "net": -4.17,
+      "n": 10,
+      "e0050": 1.81,
+      "taiex": 0.08,
+      "ex_0050": -5.98,
+      "ex_taiex": -4.25,
+      "up_hit": 10.0,
+      "beat_0050_hit": 10.0,
+      "beat_taiex_hit": 10.0,
+      "mdd": -13.37,
+      "big_loss_pct": 20.0,
+      "worst": -14.43,
+      "taiex_open_index": null,
+      "taiex_missing": false
+     }
+    },
+    "aggressive": {
+     "name": "積極型",
+     "open": {
+      "net": -13.75,
+      "n": 10,
+      "e0050": -4.18,
+      "taiex": null,
+      "ex_0050": -9.57,
+      "ex_taiex": null,
+      "up_hit": 10.0,
+      "beat_0050_hit": 10.0,
+      "beat_taiex_hit": null,
+      "mdd": -19.16,
+      "big_loss_pct": 90.0,
+      "worst": -17.68,
+      "taiex_open_index": -1.81,
+      "taiex_missing": true
+     },
+     "close": {
+      "net": -7.41,
+      "n": 10,
+      "e0050": 1.81,
+      "taiex": 0.08,
+      "ex_0050": -9.21,
+      "ex_taiex": -7.48,
+      "up_hit": 10.0,
+      "beat_0050_hit": 0.0,
+      "beat_taiex_hit": 10.0,
+      "mdd": -16.57,
+      "big_loss_pct": 30.0,
+      "worst": -12.67,
+      "taiex_open_index": null,
+      "taiex_missing": false
+     }
+    }
+   }
+  },
   {
    "file": "2026-11-16_h5.json",
    "signal_date": "2026-11-16",
@@ -1207,6 +1328,127 @@
       "mdd": -15.4,
       "big_loss_pct": 60.0,
       "worst": -20.16,
+      "taiex_open_index": null,
+      "taiex_missing": false
+     }
+    }
+   }
+  },
+  {
+   "file": "2026-10-27_h20.json",
+   "signal_date": "2026-10-27",
+   "horizon": 20,
+   "eligible": true,
+   "open_window": [
+    "2026-10-28",
+    "2026-11-25"
+   ],
+   "close_window": [
+    "2026-10-27",
+    "2026-11-24"
+   ],
+   "modes": {
+    "stable": {
+     "name": "穩健型",
+     "open": {
+      "net": -13.68,
+      "n": 10,
+      "e0050": -15.37,
+      "taiex": null,
+      "ex_0050": 1.69,
+      "ex_taiex": null,
+      "up_hit": 0.0,
+      "beat_0050_hit": 70.0,
+      "beat_taiex_hit": null,
+      "mdd": -18.58,
+      "big_loss_pct": 70.0,
+      "worst": -31.56,
+      "taiex_open_index": -13.83,
+      "taiex_missing": true
+     },
+     "close": {
+      "net": -10.94,
+      "n": 10,
+      "e0050": -10.23,
+      "taiex": -12.96,
+      "ex_0050": -0.71,
+      "ex_taiex": 2.02,
+      "up_hit": 0.0,
+      "beat_0050_hit": 50.0,
+      "beat_taiex_hit": 70.0,
+      "mdd": -18.6,
+      "big_loss_pct": 50.0,
+      "worst": -29.81,
+      "taiex_open_index": null,
+      "taiex_missing": false
+     }
+    },
+    "balanced": {
+     "name": "均衡型",
+     "open": {
+      "net": -26.44,
+      "n": 10,
+      "e0050": -15.37,
+      "taiex": null,
+      "ex_0050": -11.07,
+      "ex_taiex": null,
+      "up_hit": 0.0,
+      "beat_0050_hit": 30.0,
+      "beat_taiex_hit": null,
+      "mdd": -31.92,
+      "big_loss_pct": 100.0,
+      "worst": -44.69,
+      "taiex_open_index": -13.83,
+      "taiex_missing": true
+     },
+     "close": {
+      "net": -23.49,
+      "n": 10,
+      "e0050": -10.23,
+      "taiex": -12.96,
+      "ex_0050": -13.26,
+      "ex_taiex": -10.53,
+      "up_hit": 0.0,
+      "beat_0050_hit": 20.0,
+      "beat_taiex_hit": 30.0,
+      "mdd": -32.12,
+      "big_loss_pct": 80.0,
+      "worst": -39.73,
+      "taiex_open_index": null,
+      "taiex_missing": false
+     }
+    },
+    "aggressive": {
+     "name": "積極型",
+     "open": {
+      "net": -37.9,
+      "n": 10,
+      "e0050": -15.37,
+      "taiex": null,
+      "ex_0050": -22.53,
+      "ex_taiex": null,
+      "up_hit": 0.0,
+      "beat_0050_hit": 0.0,
+      "beat_taiex_hit": null,
+      "mdd": -43.5,
+      "big_loss_pct": 100.0,
+      "worst": -51.44,
+      "taiex_open_index": -13.83,
+      "taiex_missing": true
+     },
+     "close": {
+      "net": -32.59,
+      "n": 10,
+      "e0050": -10.23,
+      "taiex": -12.96,
+      "ex_0050": -22.36,
+      "ex_taiex": -19.63,
+      "up_hit": 0.0,
+      "beat_0050_hit": 0.0,
+      "beat_taiex_hit": 0.0,
+      "mdd": -43.51,
+      "big_loss_pct": 100.0,
+      "worst": -46.07,
       "taiex_open_index": null,
       "taiex_missing": false
      }
@@ -3637,92 +3879,92 @@
  "average": {
   "stable": {
    "open": {
-    "batches": 28,
-    "net": -4.64,
-    "e0050": -5.69,
+    "batches": 30,
+    "net": -5.01,
+    "e0050": -5.97,
     "taiex": null,
-    "ex_0050": 1.06,
+    "ex_0050": 0.95,
     "ex_taiex": null,
-    "up_hit": 21.79,
-    "beat_0050_hit": 60.0,
+    "up_hit": 20.67,
+    "beat_0050_hit": 59.67,
     "beat_taiex_hit": null,
-    "mdd": -7.08,
-    "big_loss_pct": 21.07,
+    "mdd": -7.6,
+    "big_loss_pct": 23.33,
     "taiex_batches": 0
    },
    "close": {
-    "batches": 28,
-    "net": -5.1,
-    "e0050": -6.34,
-    "taiex": -6.76,
-    "ex_0050": 1.24,
-    "ex_taiex": 1.66,
-    "up_hit": 18.57,
-    "beat_0050_hit": 61.43,
-    "beat_taiex_hit": 61.43,
-    "mdd": -7.43,
-    "big_loss_pct": 21.43,
-    "taiex_batches": 28
+    "batches": 30,
+    "net": -5.25,
+    "e0050": -6.19,
+    "taiex": -6.73,
+    "ex_0050": 0.95,
+    "ex_taiex": 1.49,
+    "up_hit": 18.0,
+    "beat_0050_hit": 59.33,
+    "beat_taiex_hit": 60.33,
+    "mdd": -7.93,
+    "big_loss_pct": 22.0,
+    "taiex_batches": 30
    }
   },
   "balanced": {
    "open": {
-    "batches": 28,
-    "net": -9.09,
-    "e0050": -5.69,
+    "batches": 30,
+    "net": -9.69,
+    "e0050": -5.97,
     "taiex": null,
-    "ex_0050": -3.4,
+    "ex_0050": -3.73,
     "ex_taiex": null,
-    "up_hit": 17.5,
-    "beat_0050_hit": 40.71,
+    "up_hit": 16.67,
+    "beat_0050_hit": 39.33,
     "beat_taiex_hit": null,
-    "mdd": -10.97,
-    "big_loss_pct": 37.14,
+    "mdd": -11.79,
+    "big_loss_pct": 40.0,
     "taiex_batches": 0
    },
    "close": {
-    "batches": 28,
-    "net": -9.54,
-    "e0050": -6.34,
-    "taiex": -6.76,
-    "ex_0050": -3.2,
-    "ex_taiex": -2.78,
-    "up_hit": 13.57,
-    "beat_0050_hit": 42.86,
-    "beat_taiex_hit": 42.86,
-    "mdd": -11.38,
-    "big_loss_pct": 36.07,
-    "taiex_batches": 28
+    "batches": 30,
+    "net": -9.82,
+    "e0050": -6.19,
+    "taiex": -6.73,
+    "ex_0050": -3.63,
+    "ex_taiex": -3.09,
+    "up_hit": 13.0,
+    "beat_0050_hit": 41.0,
+    "beat_taiex_hit": 41.33,
+    "mdd": -12.14,
+    "big_loss_pct": 37.0,
+    "taiex_batches": 30
    }
   },
   "aggressive": {
    "open": {
-    "batches": 28,
-    "net": -15.57,
-    "e0050": -5.69,
+    "batches": 30,
+    "net": -16.25,
+    "e0050": -5.97,
     "taiex": null,
-    "ex_0050": -9.87,
+    "ex_0050": -10.28,
     "ex_taiex": null,
-    "up_hit": 14.64,
-    "beat_0050_hit": 15.71,
+    "up_hit": 14.0,
+    "beat_0050_hit": 15.0,
     "beat_taiex_hit": null,
-    "mdd": -18.51,
-    "big_loss_pct": 58.93,
+    "mdd": -19.37,
+    "big_loss_pct": 61.33,
     "taiex_batches": 0
    },
    "close": {
-    "batches": 28,
-    "net": -15.92,
-    "e0050": -6.34,
-    "taiex": -6.76,
-    "ex_0050": -9.59,
-    "ex_taiex": -9.17,
-    "up_hit": 12.14,
-    "beat_0050_hit": 14.29,
-    "beat_taiex_hit": 14.29,
-    "mdd": -19.08,
-    "big_loss_pct": 58.21,
-    "taiex_batches": 28
+    "batches": 30,
+    "net": -16.2,
+    "e0050": -6.19,
+    "taiex": -6.73,
+    "ex_0050": -10.0,
+    "ex_taiex": -9.46,
+    "up_hit": 11.67,
+    "beat_0050_hit": 13.33,
+    "beat_taiex_hit": 13.67,
+    "mdd": -19.81,
+    "big_loss_pct": 58.67,
+    "taiex_batches": 30
    }
   }
  },

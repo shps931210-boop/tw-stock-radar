@@ -1,169 +1,174 @@
 {
  "schema_version": 1,
- "generated_at": "2026-11-25T09:07:03",
+ "generated_at": "2026-11-26T01:16:01",
  "source": "history/audit/fair_compare.json（開盤到開盤、扣成本、只算合格批次）",
- "fair_generated_at": "2026-11-25T09:07:02",
+ "fair_generated_at": "2026-11-26T01:16:00",
  "batches": {
-  "h5": 19,
-  "h20": 9
+  "h5": 20,
+  "h20": 10
  },
  "headline": "穩健型、均衡型、積極型目前輸 0050，還沒有達到「可以虧但不能輸 0050」。",
  "modes": {
   "stable": {
    "name": "穩健型",
    "h5": {
-    "n": 19,
+    "n": 20,
     "first": "2026-10-08",
-    "last": "2026-11-06",
-    "mean_excess": 0.18,
-    "beat_share": 57.9,
-    "lose_streak": 0,
-    "beta": 0.71,
-    "alpha": -0.5,
+    "last": "2026-11-17",
+    "mean_excess": 0.03,
+    "beat_share": 55.0,
+    "lose_streak": 1,
+    "beta": 0.72,
+    "alpha": -0.65,
     "up": {
      "n": 5,
      "excess": -2.62
     },
     "down": {
-     "n": 14,
-     "excess": 1.17
+     "n": 15,
+     "excess": 0.92
     },
-    "recent": -0.18,
-    "before": 0.57
+    "recent": -0.69,
+    "before": 0.76
    },
    "h20": {
-    "n": 9,
+    "n": 10,
     "first": "2026-10-12",
-    "last": "2026-10-22",
-    "mean_excess": 2.92,
-    "beat_share": 88.9,
-    "lose_streak": 1,
-    "beta": 0.89,
-    "alpha": 1.55,
+    "last": "2026-10-27",
+    "mean_excess": 2.8,
+    "beat_share": 90.0,
+    "lose_streak": 0,
+    "beta": 0.91,
+    "alpha": 1.61,
     "up": {
      "n": 0,
      "excess": null
     },
     "down": {
-     "n": 9,
-     "excess": 2.92
+     "n": 10,
+     "excess": 2.8
     }
    },
    "findings": [
     {
      "level": "bad",
      "code": "lose_0050",
-     "text": "穩健型最近 10 批平均輸 0050 0.18 個百分點（違反「不能輸 0050」）。"
+     "text": "穩健型最近 10 批平均輸 0050 0.69 個百分點（違反「不能輸 0050」）。"
     },
     {
      "level": "warn",
      "code": "low_beta",
-     "text": "穩健型跟大盤同漲同跌的程度只有 0050 的 0.71 倍：大盤跌時贏 1.17、大盤漲時輸 2.62。贏 0050 主要是跌得少，不是選得準。"
+     "text": "穩健型跟大盤同漲同跌的程度只有 0050 的 0.72 倍：大盤跌時贏 0.92、大盤漲時輸 2.62。贏 0050 主要是跌得少，不是選得準。"
+    },
+    {
+     "level": "warn",
+     "code": "bad_alpha",
+     "text": "穩健型扣掉大盤影響後，每批平均還差 0.65 個百分點：這是真的選錯股票。"
     },
     {
      "level": "warn",
      "code": "worse",
-     "text": "穩健型最近 10 批（-0.18）比之前（+0.57）差，沒有進步。"
+     "text": "穩健型最近 10 批（-0.69）比之前（+0.76）差，沒有進步。"
     }
    ]
   },
   "balanced": {
    "name": "均衡型",
    "h5": {
-    "n": 19,
+    "n": 20,
     "first": "2026-10-08",
-    "last": "2026-11-06",
-    "mean_excess": -1.7,
-    "beat_share": 31.6,
-    "lose_streak": 9,
-    "beta": 0.97,
-    "alpha": -1.77,
+    "last": "2026-11-17",
+    "mean_excess": -1.9,
+    "beat_share": 30.0,
+    "lose_streak": 10,
+    "beta": 0.98,
+    "alpha": -1.95,
     "up": {
      "n": 5,
      "excess": -1.84
     },
     "down": {
-     "n": 14,
-     "excess": -1.65
+     "n": 15,
+     "excess": -1.92
     },
-    "recent": -3.33,
-    "before": 0.11
+    "recent": -4.03,
+    "before": 0.23
    },
    "h20": {
-    "n": 9,
+    "n": 10,
     "first": "2026-10-12",
-    "last": "2026-10-22",
-    "mean_excess": -6.97,
+    "last": "2026-10-27",
+    "mean_excess": -7.38,
     "beat_share": 0.0,
-    "lose_streak": 9,
-    "beta": 1.22,
-    "alpha": -4.18,
+    "lose_streak": 10,
+    "beta": 1.26,
+    "alpha": -4.04,
     "up": {
      "n": 0,
      "excess": null
     },
     "down": {
-     "n": 9,
-     "excess": -6.97
+     "n": 10,
+     "excess": -7.38
     }
    },
    "findings": [
     {
      "level": "bad",
      "code": "lose_0050",
-     "text": "均衡型最近 10 批平均輸 0050 3.33 個百分點（違反「不能輸 0050」）。"
+     "text": "均衡型最近 10 批平均輸 0050 4.03 個百分點（違反「不能輸 0050」）。"
     },
     {
      "level": "warn",
      "code": "bad_alpha",
-     "text": "均衡型扣掉大盤影響後，每批平均還差 1.77 個百分點：這是真的選錯股票。"
+     "text": "均衡型扣掉大盤影響後，每批平均還差 1.95 個百分點：這是真的選錯股票。"
     },
     {
      "level": "warn",
      "code": "worse",
-     "text": "均衡型最近 10 批（-3.33）比之前（+0.11）差，沒有進步。"
+     "text": "均衡型最近 10 批（-4.03）比之前（+0.23）差，沒有進步。"
     },
     {
      "level": "warn",
      "code": "streak",
-     "text": "均衡型已經連續 9 批輸 0050。"
+     "text": "均衡型已經連續 10 批輸 0050。"
     },
     {
      "level": "bad",
      "code": "lose_0050_20d",
-     "text": "均衡型 20 日到期 9 批平均輸 0050 6.97 個百分點。"
+     "text": "均衡型 20 日到期 10 批平均輸 0050 7.38 個百分點。"
     }
    ]
   },
   "aggressive": {
    "name": "積極型",
    "h5": {
-    "n": 19,
+    "n": 20,
     "first": "2026-10-08",
-    "last": "2026-11-06",
-    "mean_excess": -4.61,
-    "beat_share": 10.5,
-    "lose_streak": 1,
-    "beta": 1.48,
-    "alpha": -3.48,
+    "last": "2026-11-17",
+    "mean_excess": -4.86,
+    "beat_share": 10.0,
+    "lose_streak": 2,
+    "beta": 1.5,
+    "alpha": -3.66,
     "up": {
      "n": 5,
      "excess": -1.21
     },
     "down": {
-     "n": 14,
-     "excess": -5.82
+     "n": 15,
+     "excess": -6.07
     },
-    "recent": -4.5,
-    "before": -4.73
+    "recent": -4.65,
+    "before": -5.06
    },
    "h20": {
-    "n": 9,
+    "n": 10,
     "first": "2026-10-12",
-    "last": "2026-10-22",
-    "mean_excess": -20.98,
+    "last": "2026-10-27",
+    "mean_excess": -21.14,
     "beat_share": 0.0,
-    "lose_streak": 9,
+    "lose_streak": 10,
     "beta": 1.67,
     "alpha": -12.44,
     "up": {
@@ -171,30 +176,30 @@
      "excess": null
     },
     "down": {
-     "n": 9,
-     "excess": -20.98
+     "n": 10,
+     "excess": -21.14
     }
    },
    "findings": [
     {
      "level": "bad",
      "code": "lose_0050",
-     "text": "積極型最近 10 批平均輸 0050 4.50 個百分點（違反「不能輸 0050」）。"
+     "text": "積極型最近 10 批平均輸 0050 4.65 個百分點（違反「不能輸 0050」）。"
     },
     {
      "level": "warn",
      "code": "high_beta",
-     "text": "積極型漲跌幅度是 0050 的 1.48 倍，等於放大槓桿：大盤一跌就輸很多。"
+     "text": "積極型漲跌幅度是 0050 的 1.50 倍，等於放大槓桿：大盤一跌就輸很多。"
     },
     {
      "level": "warn",
      "code": "bad_alpha",
-     "text": "積極型扣掉大盤影響後，每批平均還差 3.48 個百分點：這是真的選錯股票。"
+     "text": "積極型扣掉大盤影響後，每批平均還差 3.66 個百分點：這是真的選錯股票。"
     },
     {
      "level": "bad",
      "code": "lose_0050_20d",
-     "text": "積極型 20 日到期 9 批平均輸 0050 20.98 個百分點。"
+     "text": "積極型 20 日到期 10 批平均輸 0050 21.14 個百分點。"
     }
    ]
   }
@@ -204,7 +209,7 @@
   "rejected": 13,
   "shadow": 9,
   "adopted": 1,
-  "evidence_20d": 9,
+  "evidence_20d": 10,
   "since_last_adopted": 18,
   "findings": [
    {

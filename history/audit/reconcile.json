@@ -1,6 +1,6 @@
 {
  "schema_version": 2,
- "generated_at": "2026-11-25T09:06:42",
+ "generated_at": "2026-11-26T01:15:30",
  "violations": 0,
  "method": "不經過 maturity_report／pit_backtest 的報酬函式，直接用還原後開盤價重算報酬、扣成本、0050 超額與名單（首次發布版前 10 名）",
  "tolerance_pp": 0.011,
@@ -296,6 +296,22 @@
    "sha256": "bba86ad926ea2caec5dfbf00c62f3dce86d781ae78d509184d75695615378107"
   },
   {
+   "file": "2026-10-27_h20.json",
+   "entry": "2026-10-28",
+   "exit": "2026-11-25",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": 1.69,
+    "balanced": -11.07,
+    "aggressive": -22.54,
+    "shadow_v21": -9.44,
+    "shadow_ridge": -2.51,
+    "shadow_lgbm": -5.37
+   },
+   "sha256": "299ba9e9d2a6402bf5a44d1ed9cb4f5865c9bd6eec17c6c8d9f7642b6bdef8f8"
+  },
+  {
    "file": "2026-10-27_h5.json",
    "entry": "2026-10-28",
    "exit": "2026-11-04",
@@ -454,6 +470,22 @@
     "shadow_lgbm": -10.32
    },
    "sha256": "f94d3598a053a8553889a425c4e716dca88c2427e90291be515fdc0ce4754952"
+  },
+  {
+   "file": "2026-11-17_h5.json",
+   "entry": "2026-11-18",
+   "exit": "2026-11-25",
+   "ok": true,
+   "problems": [],
+   "mean_excess": {
+    "stable": -2.67,
+    "balanced": -5.71,
+    "aggressive": -9.56,
+    "shadow_v21": -5.16,
+    "shadow_ridge": -12.06,
+    "shadow_lgbm": -10.18
+   },
+   "sha256": "d589014599c71f4d3f4a8bb66302c67bc2ee6f03a657237abe224b9f9c44ae6e"
   }
  ],
  "all_ok": true,
@@ -539,6 +571,14 @@
    "same_basis_match": true
   },
   {
+   "batch": "2026-10-27_h20",
+   "maturity_v21_top10_net": -9.44,
+   "scorecard_top20_gross": -10.03,
+   "scorecard_top10_net": -9.44,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
+  },
+  {
    "batch": "2026-10-27_h5",
    "maturity_v21_top10_net": -1.35,
    "scorecard_top20_gross": -1.43,
@@ -614,6 +654,14 @@
    "batch": "2026-11-16_h5",
    "maturity_v21_top10_net": -1.72,
    "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）"
+  },
+  {
+   "batch": "2026-11-17_h5",
+   "maturity_v21_top10_net": -5.16,
+   "scorecard_top20_gross": -5.81,
+   "scorecard_top10_net": -5.16,
+   "note": "到期對帳＝前 10 名、扣成本；成績單 top_excess＝前 20 名、未扣成本（口徑不同，不能直接比）；top10_net_excess 才和到期對帳同口徑（成績單遇到買不到的會往下補第 11 名，到期對帳則不補；有買不到的股票時兩者可能有小差異）",
+   "same_basis_match": true
   }
  ],
  "definitions": {
