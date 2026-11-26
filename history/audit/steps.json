@@ -1,27 +1,6 @@
 {
  "runs": [
   {
-   "at": "2026-11-04T12:24:28",
-   "run_id": "41772702034",
-   "mode": "premarket",
-   "steps": {
-    "連線診斷": "skipped",
-    "影子預測封存": "skipped",
-    "新聞與公告": "success",
-    "國際市場": "success",
-    "盤前情報": "success",
-    "盤前情報對帳": "skipped",
-    "預測封存日曆": "skipped",
-    "整合測試": "skipped",
-    "AI 模擬交易": "skipped",
-    "到期對帳明細": "skipped",
-    "學術候選影子紀錄": "skipped",
-    "正式績效對帳": "skipped",
-    "加權指數開盤價": "skipped",
-    "同時段公平比較": "skipped"
-   }
-  },
-  {
    "at": "2026-11-04T15:32:22",
    "run_id": "41791724545",
    "mode": "fast",
@@ -2562,35 +2541,50 @@
     "同時段公平比較": "skipped",
     "公告後反應影子紀錄": "skipped"
    }
+  },
+  {
+   "at": "2026-11-26T16:19:26",
+   "run_id": "45781212826",
+   "mode": "premarket",
+   "steps": {
+    "連線診斷": "skipped",
+    "影子預測封存": "skipped",
+    "新聞與公告": "success",
+    "國際市場": "success",
+    "盤前情報": "success",
+    "盤前情報對帳": "skipped",
+    "預測封存日曆": "skipped",
+    "整合測試": "skipped",
+    "AI 模擬交易": "skipped",
+    "到期對帳明細": "skipped",
+    "學術候選影子紀錄": "skipped",
+    "正式績效對帳": "skipped",
+    "加權指數開盤價": "skipped",
+    "同時段公平比較": "skipped",
+    "公告後反應影子紀錄": "skipped"
+   }
   }
  ],
  "status": {
+  "影子預測封存": {
+   "streak": 0,
+   "last_ok": "2026-11-26T08:44:53",
+   "last": "success",
+   "runs": 82,
+   "fails": 0
+  },
   "新聞與公告": {
    "streak": 0,
-   "last_ok": "2026-11-26T13:28:18",
+   "last_ok": "2026-11-26T16:19:26",
    "last": "success",
    "runs": 94,
    "fails": 0
   },
   "國際市場": {
    "streak": 0,
-   "last_ok": "2026-11-26T13:28:18",
+   "last_ok": "2026-11-26T16:19:26",
    "last": "success",
    "runs": 94,
-   "fails": 0
-  },
-  "盤前情報": {
-   "streak": 0,
-   "last_ok": "2026-11-26T13:28:18",
-   "last": "success",
-   "runs": 38,
-   "fails": 0
-  },
-  "影子預測封存": {
-   "streak": 0,
-   "last_ok": "2026-11-26T08:44:53",
-   "last": "success",
-   "runs": 82,
    "fails": 0
   },
   "預測封存日曆": {
@@ -2662,6 +2656,13 @@
    "last": "failure",
    "runs": 17,
    "fails": 11
+  },
+  "盤前情報": {
+   "streak": 0,
+   "last_ok": "2026-11-26T16:19:26",
+   "last": "success",
+   "runs": 38,
+   "fails": 0
   },
   "公告後反應影子紀錄": {
    "streak": 0,
