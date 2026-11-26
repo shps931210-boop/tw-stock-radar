@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-11-26T21:04:22",
+ "generated_at": "2026-11-27T00:51:39",
  "quarter": "2026-Q3",
- "announced": 1980,
+ "announced": 1981,
  "synced": 1976,
- "waiting": 4,
+ "waiting": 5,
  "slow": 0,
- "corrected": 1980,
+ "corrected": 1981,
  "mismatch": 4,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
  "db_has_quarter": 1980,
@@ -66,6 +66,19 @@
    "last_try": "2026-11-24T08:39:46",
    "corrected_at": null,
    "note": "資料庫和官方累計數字不一致：營業收入 資料庫 1,083,957 千元／官方 1,058,513 千元"
+  },
+  {
+   "stock_id": "7869",
+   "name": "宏于電機",
+   "period": "2026-Q3",
+   "first_seen": "2026-11-27T00:46:27",
+   "attempts": 0,
+   "eps": 10.97,
+   "status": "pending",
+   "slow": false,
+   "last_try": NaN,
+   "corrected_at": null,
+   "note": null
   }
  ],
  "rescored": [
@@ -1163,10 +1176,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 42.0,
+    "ref_composite": 42.8,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.8"
    }
   },
   {
@@ -1238,10 +1251,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 59.6,
+    "ref_composite": 59.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 59.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 59.5"
    }
   },
   {
@@ -1313,10 +1326,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.8,
+    "ref_composite": 57.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 57.5"
    }
   },
   {
@@ -1363,10 +1376,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 46.9,
+    "ref_composite": 48.8,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 48.8"
    }
   },
   {
@@ -1413,10 +1426,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 43.1,
+    "ref_composite": 44.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 43.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.3"
    }
   },
   {
@@ -1463,10 +1476,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 34.0,
+    "ref_composite": 34.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.2"
    }
   },
   {
@@ -1538,10 +1551,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 35.7,
+    "ref_composite": 37.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.9"
    }
   },
   {
@@ -1613,10 +1626,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 38.7,
+    "ref_composite": 38.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.6"
    }
   },
   {
@@ -1663,10 +1676,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 39.3,
+    "ref_composite": 38.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.9"
    }
   },
   {
@@ -1763,10 +1776,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 25.6,
+    "ref_composite": 25.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 25.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 25.5"
    }
   },
   {
@@ -1888,10 +1901,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 45.0,
+    "ref_composite": 45.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.1"
    }
   },
   {
@@ -1963,10 +1976,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 41.9,
+    "ref_composite": 42.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 41.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.2"
    }
   },
   {
@@ -2013,10 +2026,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 31.4,
+    "ref_composite": 32.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 32.2"
    }
   },
   {
@@ -2038,10 +2051,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.3,
+    "ref_composite": 56.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.4"
    }
   },
   {
@@ -2063,10 +2076,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 31.1,
+    "ref_composite": 31.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.4"
    }
   },
   {
@@ -2088,10 +2101,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 37.0,
+    "ref_composite": 36.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.6"
    }
   },
   {
@@ -2113,10 +2126,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.2,
+    "ref_composite": 56.0,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.0"
    }
   },
   {
@@ -2163,10 +2176,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 31.7,
+    "ref_composite": 31.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.2"
    }
   },
   {
@@ -2188,10 +2201,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 34.1,
+    "ref_composite": 34.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 34.3"
    }
   },
   {
@@ -2238,10 +2251,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 24.4,
+    "ref_composite": 24.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 24.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 24.6"
    }
   },
   {
@@ -2288,10 +2301,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 51.0,
+    "ref_composite": 51.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.6"
    }
   },
   {
@@ -2338,10 +2351,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 51.1,
+    "ref_composite": 52.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 52.9"
    }
   },
   {
@@ -2388,10 +2401,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 43.9,
+    "ref_composite": 44.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 43.9"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.2"
    }
   },
   {
@@ -2488,10 +2501,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 45.3,
+    "ref_composite": 45.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.5"
    }
   },
   {
@@ -2513,10 +2526,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 26.6,
+    "ref_composite": 26.8,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 26.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 26.8"
    }
   },
   {
@@ -2563,10 +2576,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 26.3,
+    "ref_composite": 26.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 26.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 26.2"
    }
   },
   {
@@ -2663,10 +2676,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 45.0,
+    "ref_composite": 44.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 44.9"
    }
   },
   {
@@ -2688,10 +2701,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 35.5,
+    "ref_composite": 35.8,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.8"
    }
   },
   {
@@ -2738,10 +2751,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 42.0,
+    "ref_composite": 46.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 42.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.2"
    }
   },
   {
@@ -2838,10 +2851,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 56.2,
+    "ref_composite": 54.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 56.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 54.4"
    }
   },
   {
@@ -2913,10 +2926,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 29.6,
+    "ref_composite": 29.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 29.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 29.9"
    }
   },
   {
@@ -2938,10 +2951,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 14.3,
+    "ref_composite": 13.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 14.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 13.7"
    }
   },
   {
@@ -3038,10 +3051,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 36.0,
+    "ref_composite": 36.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.7"
    }
   },
   {
@@ -3088,10 +3101,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 41.0,
+    "ref_composite": 41.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 41.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 41.1"
    }
   },
   {
@@ -3113,10 +3126,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 55.5,
+    "ref_composite": 54.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 55.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 54.9"
    }
   },
   {
@@ -3138,10 +3151,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 49.4,
+    "ref_composite": 49.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 49.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 49.5"
    }
   },
   {
@@ -3213,10 +3226,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 39.5,
+    "ref_composite": 40.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 40.9"
    }
   },
   {
@@ -3363,10 +3376,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 37.5,
+    "ref_composite": 37.6,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.6"
    }
   },
   {
@@ -3413,10 +3426,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 31.5,
+    "ref_composite": 32.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 32.1"
    }
   },
   {
@@ -3463,10 +3476,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 45.3,
+    "ref_composite": 45.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 45.1"
    }
   },
   {
@@ -3513,10 +3526,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 51.1,
+    "ref_composite": 51.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 51.5"
    }
   },
   {
@@ -3538,10 +3551,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 39.3,
+    "ref_composite": 39.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.4"
    }
   },
   {
@@ -3563,10 +3576,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 54.8,
+    "ref_composite": 54.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 54.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 54.5"
    }
   },
   {
@@ -3738,10 +3751,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 43.4,
+    "ref_composite": 43.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 43.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 43.3"
    }
   },
   {
@@ -3788,10 +3801,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 27.4,
+    "ref_composite": 27.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 27.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 27.3"
    }
   },
   {
@@ -3838,10 +3851,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 27.5,
+    "ref_composite": 27.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 27.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 27.9"
    }
   },
   {
@@ -3913,10 +3926,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 31.1,
+    "ref_composite": 33.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 31.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.3"
    }
   },
   {
@@ -4038,10 +4051,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 38.5,
+    "ref_composite": 37.8,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.8"
    }
   },
   {
@@ -4113,10 +4126,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 35.1,
+    "ref_composite": 35.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.5"
    }
   },
   {
@@ -4163,10 +4176,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 39.2,
+    "ref_composite": 39.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.2"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.1"
    }
   },
   {
@@ -4188,10 +4201,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 36.1,
+    "ref_composite": 37.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.9"
    }
   },
   {
@@ -4213,10 +4226,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 50.1,
+    "ref_composite": 49.5,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 50.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 49.5"
    }
   },
   {
@@ -4363,10 +4376,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 49.1,
+    "ref_composite": 49.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 49.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 49.9"
    }
   },
   {
@@ -4388,10 +4401,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 17.3,
+    "ref_composite": 19.7,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 17.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 19.7"
    }
   },
   {
@@ -4413,10 +4426,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 22.8,
+    "ref_composite": 23.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 22.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 23.2"
    }
   },
   {
@@ -4438,10 +4451,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 38.0,
+    "ref_composite": 38.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 38.3"
    }
   },
   {
@@ -4463,10 +4476,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 39.1,
+    "ref_composite": 39.2,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.2"
    }
   },
   {
@@ -4488,10 +4501,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 36.8,
+    "ref_composite": 37.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 36.8"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 37.1"
    }
   },
   {
@@ -4563,10 +4576,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 39.3,
+    "ref_composite": 39.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 39.4"
    }
   },
   {
@@ -4663,10 +4676,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 28.3,
+    "ref_composite": 28.4,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 28.3"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 28.4"
    }
   },
   {
@@ -4688,10 +4701,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 48.5,
+    "ref_composite": 46.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 48.5"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 46.9"
    }
   },
   {
@@ -4763,10 +4776,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 33.1,
+    "ref_composite": 32.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 33.1"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 32.9"
    }
   },
   {
@@ -4988,10 +5001,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 35.0,
+    "ref_composite": 35.1,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.0"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.1"
    }
   },
   {
@@ -5013,10 +5026,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 28.7,
+    "ref_composite": 28.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 28.7"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 28.9"
    }
   },
   {
@@ -5631,11 +5644,11 @@
   }
  ],
  "detect": {
-  "at": "2026-11-26T08:35:50",
+  "at": "2026-11-27T00:46:27",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 1980,
-  "new": 0,
+  "stocks": 1981,
+  "new": 1,
   "corrected": 0,
   "mismatch": 0
  },
@@ -5698,9 +5711,9 @@
    "market": "tpex",
    "url": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
    "ok": true,
-   "stocks": 891,
+   "stocks": 892,
    "error": null,
-   "rows": 891,
+   "rows": 892,
    "empty": null
   },
   {

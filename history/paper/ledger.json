@@ -4,7 +4,7 @@
  "rules": "訊號日收盤後的正式 AI 精選，隔一個交易日開盤買（＋0.1% 滑價）；收盤跌 10% 停損、漲 20% 停利、滿 20 個交易日到期，都在隔一個交易日開盤賣（－0.1% 滑價）。手續費 0.1425%、證交稅 0.3%（ETF 0.1%），成交量最多吃前一個交易日的 5%，開盤就漲停買不到、開盤就跌停賣不掉照實記；開盤成交只用開盤時已知的資訊。只模擬，不會送出任何真實委託。",
  "live_trading": false,
  "start_signal": "2026-10-27",
- "last_data": "2026-11-25",
+ "last_data": "2026-11-26",
  "first_entry": "2026-10-28",
  "books": {
   "stable": {
@@ -50,11 +50,11 @@
      "min_close": 80.3,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 80.6,
-     "last_date": "2026-11-25",
-     "held_days": 13,
-     "market_value": 168696.0,
-     "unreal_ret": -4.62,
+     "last_close": 85.9,
+     "last_date": "2026-11-26",
+     "held_days": 14,
+     "market_value": 179789.0,
+     "unreal_ret": 1.652,
      "pending_exit": null,
      "status": "open"
     },
@@ -97,11 +97,11 @@
      "min_close": 28.7,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 30.3,
-     "last_date": "2026-11-25",
-     "held_days": 13,
-     "market_value": 150106.0,
-     "unreal_ret": -4.497,
+     "last_close": 31.05,
+     "last_date": "2026-11-26",
+     "held_days": 14,
+     "market_value": 153822.0,
+     "unreal_ret": -2.133,
      "pending_exit": null,
      "status": "open"
     },
@@ -144,11 +144,11 @@
      "min_close": 95.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 100.5,
-     "last_date": "2026-11-25",
-     "held_days": 4,
-     "market_value": 169242.0,
-     "unreal_ret": -0.736,
+     "last_close": 100.0,
+     "last_date": "2026-11-26",
+     "held_days": 5,
+     "market_value": 168400.0,
+     "unreal_ret": -1.229,
      "pending_exit": null,
      "status": "open"
     },
@@ -191,11 +191,11 @@
      "min_close": 39.8,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 40.95,
-     "last_date": "2026-11-25",
-     "held_days": 3,
-     "market_value": 161097.0,
-     "unreal_ret": 1.746,
+     "last_close": 41.1,
+     "last_date": "2026-11-26",
+     "held_days": 4,
+     "market_value": 161687.0,
+     "unreal_ret": 2.119,
      "pending_exit": null,
      "status": "open"
     },
@@ -238,11 +238,11 @@
      "min_close": 234.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 252.5,
-     "last_date": "2026-11-25",
-     "held_days": 3,
-     "market_value": 169932.0,
-     "unreal_ret": 8.107,
+     "last_close": 254.0,
+     "last_date": "2026-11-26",
+     "held_days": 4,
+     "market_value": 170942.0,
+     "unreal_ret": 8.749,
      "pending_exit": null,
      "status": "open"
     }
@@ -936,14 +936,21 @@
      "mv": 819074.0,
      "equity": 819147.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-26",
+     "cash": 74.0,
+     "mv": 834640.0,
+     "equity": 834713.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
    "pending_sells": [],
    "kpi": {
-    "equity": 819147.0,
+    "equity": 834713.0,
     "cash": 74.0,
-    "ret": -18.085,
+    "ret": -16.529,
     "mdd": -21.3,
     "n_open": 5,
     "n_closed": 6,
@@ -1138,11 +1145,11 @@
      "min_close": 211.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 229.5,
-     "last_date": "2026-11-25",
-     "held_days": 6,
-     "market_value": 169371.0,
-     "unreal_ret": 5.749,
+     "last_close": 237.0,
+     "last_date": "2026-11-26",
+     "held_days": 7,
+     "market_value": 174906.0,
+     "unreal_ret": 9.204,
      "pending_exit": null,
      "status": "open"
     },
@@ -1185,11 +1192,11 @@
      "min_close": 171.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 171.5,
-     "last_date": "2026-11-25",
-     "held_days": 4,
-     "market_value": 148176.0,
-     "unreal_ret": -5.997,
+     "last_close": 185.0,
+     "last_date": "2026-11-26",
+     "held_days": 5,
+     "market_value": 159840.0,
+     "unreal_ret": 1.402,
      "pending_exit": null,
      "status": "open"
     },
@@ -1232,11 +1239,11 @@
      "min_close": 264.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 278.5,
-     "last_date": "2026-11-25",
-     "held_days": 4,
-     "market_value": 158466.0,
-     "unreal_ret": 0.48,
+     "last_close": 306.0,
+     "last_date": "2026-11-26",
+     "held_days": 5,
+     "market_value": 174114.0,
+     "unreal_ret": 10.401,
      "pending_exit": null,
      "status": "open"
     },
@@ -1279,11 +1286,11 @@
      "min_close": 89.2,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 94.5,
-     "last_date": "2026-11-25",
-     "held_days": 4,
-     "market_value": 141372.0,
-     "unreal_ret": 4.398,
+     "last_close": 103.5,
+     "last_date": "2026-11-26",
+     "held_days": 5,
+     "market_value": 154836.0,
+     "unreal_ret": 14.341,
      "pending_exit": null,
      "status": "open"
     },
@@ -1326,11 +1333,11 @@
      "min_close": 29.25,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 30.3,
-     "last_date": "2026-11-25",
-     "held_days": 3,
-     "market_value": 154833.0,
-     "unreal_ret": 6.245,
+     "last_close": 31.05,
+     "last_date": "2026-11-26",
+     "held_days": 4,
+     "market_value": 158666.0,
+     "unreal_ret": 8.875,
      "pending_exit": null,
      "status": "open"
     }
@@ -2343,14 +2350,21 @@
      "mv": 772218.0,
      "equity": 772220.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-26",
+     "cash": 1.0,
+     "mv": 822362.0,
+     "equity": 822363.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
    "pending_sells": [],
    "kpi": {
-    "equity": 772220.0,
+    "equity": 822363.0,
     "cash": 1.0,
-    "ret": -22.778,
+    "ret": -17.764,
     "mdd": -26.99,
     "n_open": 5,
     "n_closed": 10,
@@ -2582,7 +2596,7 @@
   },
   "aggressive": {
    "mode": "aggressive",
-   "cash": 85.0,
+   "cash": 71.0,
    "positions": [
     {
      "id": "A0012",
@@ -2623,59 +2637,12 @@
      "min_close": 165.0,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 172.5,
-     "last_date": "2026-11-25",
-     "held_days": 13,
-     "market_value": 167842.0,
-     "unreal_ret": 4.929,
+     "last_close": 173.0,
+     "last_date": "2026-11-26",
+     "held_days": 14,
+     "market_value": 168329.0,
+     "unreal_ret": 5.233,
      "pending_exit": null,
-     "status": "open"
-    },
-    {
-     "id": "A0018",
-     "mode": "aggressive",
-     "sid": "4977",
-     "name": "眾達-KY",
-     "industry": "電子工業",
-     "signal_date": "2026-11-19",
-     "pick_file": "2026-11-19.v3.json",
-     "pick_generated_at": "2026-11-20T06:33:40",
-     "model_version": "v1.1",
-     "model_hash": "ce1e61207b30",
-     "data_dates": {
-      "prices": "2026-11-19",
-      "revenue": "2026-10",
-      "financials": "2026-Q3"
-     },
-     "rank": 3,
-     "score": 70.9,
-     "liq": "A",
-     "reason": "正式精選第 3 名，AI 量化評分 70.9；成長 89、趨勢 80",
-     "signal_close": 177.5,
-     "entry_date": "2026-11-20",
-     "entry_price": 160.16,
-     "entry_open": 160.0,
-     "bought": 878,
-     "shares": 878,
-     "buy_value": 140620.48,
-     "buy_fee": 200,
-     "sold": 0,
-     "sell_fee": 0,
-     "sell_tax": 0,
-     "sell_value": 0.0,
-     "dividends": 0.0,
-     "stop_price": 144.14,
-     "target_price": 192.19,
-     "max_close": 160.0,
-     "min_close": 144.0,
-     "fill_note": null,
-     "exit_signal_date": "2026-11-25",
-     "last_close": 144.0,
-     "last_date": "2026-11-25",
-     "held_days": 4,
-     "market_value": 126432.0,
-     "unreal_ret": -10.218,
-     "pending_exit": "停損（收盤跌破買進價 10%）",
      "status": "open"
     },
     {
@@ -2717,11 +2684,11 @@
      "min_close": 110.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 112.5,
-     "last_date": "2026-11-25",
-     "held_days": 4,
-     "market_value": 98325.0,
-     "unreal_ret": -0.242,
+     "last_close": 118.0,
+     "last_date": "2026-11-26",
+     "held_days": 5,
+     "market_value": 103132.0,
+     "unreal_ret": 4.635,
      "pending_exit": null,
      "status": "open"
     },
@@ -2760,15 +2727,15 @@
      "dividends": 0.0,
      "stop_price": 44.82,
      "target_price": 59.76,
-     "max_close": 54.0,
+     "max_close": 54.9,
      "min_close": 51.9,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 52.5,
-     "last_date": "2026-11-25",
-     "held_days": 3,
-     "market_value": 138338.0,
-     "unreal_ret": 5.273,
+     "last_close": 54.9,
+     "last_date": "2026-11-26",
+     "held_days": 4,
+     "market_value": 144662.0,
+     "unreal_ret": 10.086,
      "pending_exit": null,
      "status": "open"
     },
@@ -2807,15 +2774,62 @@
      "dividends": 0.0,
      "stop_price": 225.22,
      "target_price": 300.3,
-     "max_close": 252.5,
+     "max_close": 254.0,
      "min_close": 252.5,
      "fill_note": null,
      "exit_signal_date": null,
-     "last_close": 252.5,
-     "last_date": "2026-11-25",
+     "last_close": 254.0,
+     "last_date": "2026-11-26",
+     "held_days": 2,
+     "market_value": 123952.0,
+     "unreal_ret": 1.354,
+     "pending_exit": null,
+     "status": "open"
+    },
+    {
+     "id": "A0022",
+     "mode": "aggressive",
+     "sid": "6708",
+     "name": "天擎",
+     "industry": "半導體業",
+     "signal_date": "2026-11-25",
+     "pick_file": "2026-11-25.v4.json",
+     "pick_generated_at": "2026-11-26T08:37:54",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-25",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 4,
+     "score": 70.1,
+     "liq": "C",
+     "reason": "正式精選第 4 名，AI 量化評分 70.1；趨勢 100、成長 84",
+     "signal_close": 76.5,
+     "entry_date": "2026-11-26",
+     "entry_price": 78.1781,
+     "entry_open": 78.1,
+     "bought": 1651,
+     "shares": 1651,
+     "buy_value": 129072.04,
+     "buy_fee": 183,
+     "sold": 0,
+     "sell_fee": 0,
+     "sell_tax": 0,
+     "sell_value": 0.0,
+     "dividends": 0.0,
+     "stop_price": 70.36,
+     "target_price": 93.81,
+     "max_close": 71.8,
+     "min_close": 71.8,
+     "fill_note": null,
+     "exit_signal_date": null,
+     "last_close": 71.8,
+     "last_date": "2026-11-26",
      "held_days": 1,
-     "market_value": 123220.0,
-     "unreal_ret": 0.756,
+     "market_value": 118542.0,
+     "unreal_ret": -8.288,
      "pending_exit": null,
      "status": "open"
     }
@@ -3652,6 +3666,58 @@
      "bench_ret": -11.808,
      "status": "closed",
      "excess": -9.616
+    },
+    {
+     "id": "A0018",
+     "mode": "aggressive",
+     "sid": "4977",
+     "name": "眾達-KY",
+     "industry": "電子工業",
+     "signal_date": "2026-11-19",
+     "pick_file": "2026-11-19.v3.json",
+     "pick_generated_at": "2026-11-20T06:33:40",
+     "model_version": "v1.1",
+     "model_hash": "ce1e61207b30",
+     "data_dates": {
+      "prices": "2026-11-19",
+      "revenue": "2026-10",
+      "financials": "2026-Q3"
+     },
+     "rank": 3,
+     "score": 70.9,
+     "liq": "A",
+     "reason": "正式精選第 3 名，AI 量化評分 70.9；成長 89、趨勢 80",
+     "signal_close": 177.5,
+     "entry_date": "2026-11-20",
+     "entry_price": 160.16,
+     "entry_open": 160.0,
+     "bought": 878,
+     "buy_value": 140620.48,
+     "buy_fee": 200,
+     "sell_fee": 184,
+     "sell_tax": 389,
+     "sell_value": 129814.056,
+     "dividends": 0.0,
+     "stop_price": 144.14,
+     "target_price": 192.19,
+     "max_close": 160.0,
+     "min_close": 144.0,
+     "fill_note": null,
+     "exit_signal_date": "2026-11-25",
+     "last_close": 144.0,
+     "last_date": "2026-11-25",
+     "held_days": 4,
+     "shares": 878,
+     "exit_date": "2026-11-26",
+     "exit_price": 147.852,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "exit_kind": "stop",
+     "gross_ret": -7.685,
+     "net_ret": -8.223,
+     "pnl": -11579.0,
+     "bench_ret": 4.986,
+     "status": "closed",
+     "excess": -13.209
     }
    ],
    "orders": [
@@ -4176,6 +4242,31 @@
      "price": 250.25,
      "status": "filled",
      "why": null
+    },
+    {
+     "date": "2026-11-26",
+     "side": "sell",
+     "sid": "4977",
+     "name": "眾達-KY",
+     "want": 878,
+     "reason": "停損（收盤跌破買進價 10%）",
+     "filled": 878,
+     "price": 147.852,
+     "status": "filled",
+     "why": null
+    },
+    {
+     "date": "2026-11-26",
+     "side": "buy",
+     "sid": "6708",
+     "name": "天擎",
+     "signal_date": "2026-11-25",
+     "rank": 4,
+     "want": 1651,
+     "filled": 1651,
+     "price": 78.1781,
+     "status": "filled",
+     "why": null
     }
    ],
    "curve": [
@@ -4325,25 +4416,27 @@
      "mv": 654157.0,
      "equity": 654242.0,
      "n": 5
+    },
+    {
+     "date": "2026-11-26",
+     "cash": 71.0,
+     "mv": 658616.0,
+     "equity": 658687.0,
+     "n": 5
     }
    ],
    "first_entry": "2026-10-28",
-   "pending_sells": [
-    {
-     "sid": "4977",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ],
+   "pending_sells": [],
    "kpi": {
-    "equity": 654242.0,
-    "cash": 85.0,
-    "ret": -34.576,
+    "equity": 658687.0,
+    "cash": 71.0,
+    "ret": -34.131,
     "mdd": -35.61,
     "n_open": 5,
-    "n_closed": 16,
-    "realized": -346870.0,
-    "fees": 8443,
-    "taxes": 7423,
+    "n_closed": 17,
+    "realized": -358449.0,
+    "fees": 8810,
+    "taxes": 7812,
     "unfilled": {
      "開盤就在跌停價，賣不掉": 3,
      "開盤就在漲停價，買不到": 2
@@ -4355,7 +4448,7 @@
     "label": "樣本不足，只能看方向",
     "early": {
      "target": 1,
-     "stop": 10,
+     "stop": 11,
      "expiry": 0
     },
     "rule": "只算進場後 20 個交易日都已過完的批次；同一天收盤只會觸發一種出場（先看停損，再看停利，最後看到期）；買不到的不算交易，另外列出",
@@ -4668,6 +4761,23 @@
      "notes": {
       "exit": "停損後還不到 10 個交易日，之後再判斷"
      }
+    },
+    {
+     "id": "A0018",
+     "mode": "aggressive",
+     "sid": "4977",
+     "name": "眾達-KY",
+     "net_ret": -8.223,
+     "exit_reason": "停損（收盤跌破買進價 10%）",
+     "tags": [
+      "pick"
+     ],
+     "labels": [
+      "選股：比同期 0050 差"
+     ],
+     "notes": {
+      "exit": "停損後還不到 10 個交易日，之後再判斷"
+     }
     }
    ]
   }
@@ -4779,48 +4889,41 @@
     "date": "2026-11-25",
     "e0050": 831394.0,
     "taiex": 823128.0
+   },
+   {
+    "date": "2026-11-26",
+    "e0050": 854872.0,
+    "taiex": 843738.0
    }
   ],
   "shares": 9207,
   "price": 108.4583,
   "e0050": {
-   "ret": -16.861,
+   "ret": -14.513,
    "mdd": -22.27
   },
   "taiex": {
-   "ret": -17.687,
+   "ret": -15.626,
    "mdd": -23.39
   },
   "taiex_start": "open",
   "note": "0050：第一個進場日開盤用同樣 100 萬元買進（含手續費、滑價）放著；加權指數：從第一個進場日的證交所開盤指數換算，不含成本；開盤指數在 9:00 很多股票還沒成交，接近前一天收盤，和 0050 的可成交開盤價不完全同步，只能參考。"
  },
  "plan": {
-  "signal_date": "2026-11-25",
-  "entry_date": "2026-11-26",
-  "pick_file": "2026-11-25.v4.json",
-  "generated_at": "2026-11-26T08:37:54",
+  "signal_date": "2026-11-26",
+  "entry_date": "2026-11-27",
+  "pick_file": "2026-11-26.json",
+  "generated_at": "2026-11-27T00:48:44",
   "model_version": "v1.1",
   "buys": {
    "stable": [],
    "balanced": [],
-   "aggressive": [
-    {
-     "sid": "6708",
-     "name": "天擎",
-     "rank": 4,
-     "score": 70.1
-    }
-   ]
+   "aggressive": []
   },
   "sells": {
    "stable": [],
    "balanced": [],
-   "aggressive": [
-    {
-     "sid": "4977",
-     "reason": "停損（收盤跌破買進價 10%）"
-    }
-   ]
+   "aggressive": []
   }
  },
  "signals": {
@@ -4999,6 +5102,17 @@
     "revenue": "2026-10",
     "financials": "2026-Q3"
    }
+  },
+  "2026-11-26": {
+   "file": "2026-11-26.json",
+   "generated_at": "2026-11-27T00:48:44",
+   "model_version": "v1.1",
+   "model_hash": "ce1e61207b30",
+   "data_dates": {
+    "prices": "2026-11-26",
+    "revenue": "2026-10",
+    "financials": "2026-Q3"
+   }
   }
  },
  "note": "這是依固定規則的模擬交易（前瞻紀錄，從 2026-10-28 開盤開始），不是回測，也沒有送出任何真實委託。",
@@ -5007,9 +5121,9 @@
   "books": {
    "stable": {
     "kpi": {
-     "equity": 803176.0,
+     "equity": 818672.0,
      "cash": 172.0,
-     "ret": -19.682,
+     "ret": -18.133,
      "mdd": -22.74,
      "n_open": 5,
      "n_closed": 6,
@@ -5030,9 +5144,9 @@
    },
    "balanced": {
     "kpi": {
-     "equity": 775060.0,
+     "equity": 824840.0,
      "cash": 13178.0,
-     "ret": -22.494,
+     "ret": -17.516,
      "mdd": -26.64,
      "n_open": 5,
      "n_closed": 9,
@@ -5054,15 +5168,15 @@
    },
    "aggressive": {
     "kpi": {
-     "equity": 654529.0,
-     "cash": 94.0,
-     "ret": -34.547,
+     "equity": 658980.0,
+     "cash": 1.0,
+     "ret": -34.102,
      "mdd": -35.59,
      "n_open": 5,
-     "n_closed": 16,
-     "realized": -346584.0,
-     "fees": 8444,
-     "taxes": 7424,
+     "n_closed": 17,
+     "realized": -358163.0,
+     "fees": 8812,
+     "taxes": 7813,
      "unfilled": {
       "開盤就在跌停價，賣不掉": 3,
       "開盤就在漲停價，買不到": 2
@@ -5075,7 +5189,8 @@
      "2026-11-17.json",
      "2026-11-19.json",
      "2026-11-20.json",
-     "2026-11-24.json"
+     "2026-11-24.json",
+     "2026-11-25.json"
     ]
    }
   },
@@ -5095,7 +5210,8 @@
    "2026-11-20": "2026-11-20.v3.json",
    "2026-11-23": "2026-11-23.v2.json",
    "2026-11-24": "2026-11-24.v4.json",
-   "2026-11-25": "2026-11-25.v4.json"
+   "2026-11-25": "2026-11-25.v4.json",
+   "2026-11-26": "2026-11-26.json"
   }
  }
 }

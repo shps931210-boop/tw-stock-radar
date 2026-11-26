@@ -1,0 +1,291 @@
+{
+ "schema_version": 1,
+ "generated_at": "2026-11-27T00:55:39",
+ "source": "history/audit/fair_compare.json（開盤到開盤、扣成本、只算合格批次）",
+ "fair_generated_at": "2026-11-27T00:55:38",
+ "batches": {
+  "h5": 21,
+  "h20": 11
+ },
+ "headline": "穩健型、均衡型、積極型目前輸 0050，還沒有達到「可以虧但不能輸 0050」。",
+ "modes": {
+  "stable": {
+   "name": "穩健型",
+   "h5": {
+    "n": 21,
+    "first": "2026-10-08",
+    "last": "2026-11-18",
+    "mean_excess": -0.19,
+    "beat_share": 52.4,
+    "lose_streak": 2,
+    "beta": 0.72,
+    "alpha": -0.87,
+    "up": {
+     "n": 5,
+     "excess": -2.62
+    },
+    "down": {
+     "n": 16,
+     "excess": 0.57
+    },
+    "recent": -1.43,
+    "before": 0.93
+   },
+   "h20": {
+    "n": 11,
+    "first": "2026-10-12",
+    "last": "2026-10-28",
+    "mean_excess": 2.72,
+    "beat_share": 90.9,
+    "lose_streak": 0,
+    "beta": 0.92,
+    "alpha": 1.66,
+    "up": {
+     "n": 0,
+     "excess": null
+    },
+    "down": {
+     "n": 11,
+     "excess": 2.72
+    },
+    "recent": 2.34,
+    "before": 6.55
+   },
+   "findings": [
+    {
+     "level": "bad",
+     "code": "lose_0050",
+     "text": "穩健型最近 10 批平均輸 0050 1.43 個百分點（違反「不能輸 0050」）。"
+    },
+    {
+     "level": "warn",
+     "code": "low_beta",
+     "text": "穩健型跟大盤同漲同跌的程度只有 0050 的 0.72 倍：大盤跌時贏 0.57、大盤漲時輸 2.62。贏 0050 主要是跌得少，不是選得準。"
+    },
+    {
+     "level": "warn",
+     "code": "bad_alpha",
+     "text": "穩健型扣掉大盤影響後，每批平均還差 0.87 個百分點：這是真的選錯股票。"
+    },
+    {
+     "level": "warn",
+     "code": "worse",
+     "text": "穩健型最近 10 批（-1.43）比之前（+0.93）差，沒有進步。"
+    }
+   ]
+  },
+  "balanced": {
+   "name": "均衡型",
+   "h5": {
+    "n": 21,
+    "first": "2026-10-08",
+    "last": "2026-11-18",
+    "mean_excess": -2.12,
+    "beat_share": 28.6,
+    "lose_streak": 11,
+    "beta": 0.98,
+    "alpha": -2.16,
+    "up": {
+     "n": 5,
+     "excess": -1.84
+    },
+    "down": {
+     "n": 16,
+     "excess": -2.21
+    },
+    "recent": -4.63,
+    "before": 0.16
+   },
+   "h20": {
+    "n": 11,
+    "first": "2026-10-12",
+    "last": "2026-10-28",
+    "mean_excess": -7.43,
+    "beat_share": 0.0,
+    "lose_streak": 11,
+    "beta": 1.25,
+    "alpha": -4.04,
+    "up": {
+     "n": 0,
+     "excess": null
+    },
+    "down": {
+     "n": 11,
+     "excess": -7.43
+    },
+    "recent": -7.66,
+    "before": -5.18
+   },
+   "findings": [
+    {
+     "level": "bad",
+     "code": "lose_0050",
+     "text": "均衡型最近 10 批平均輸 0050 4.63 個百分點（違反「不能輸 0050」）。"
+    },
+    {
+     "level": "warn",
+     "code": "bad_alpha",
+     "text": "均衡型扣掉大盤影響後，每批平均還差 2.16 個百分點：這是真的選錯股票。"
+    },
+    {
+     "level": "warn",
+     "code": "worse",
+     "text": "均衡型最近 10 批（-4.63）比之前（+0.16）差，沒有進步。"
+    },
+    {
+     "level": "warn",
+     "code": "streak",
+     "text": "均衡型已經連續 11 批輸 0050。"
+    },
+    {
+     "level": "bad",
+     "code": "lose_0050_20d",
+     "text": "均衡型 20 日到期 11 批平均輸 0050 7.43 個百分點。"
+    }
+   ]
+  },
+  "aggressive": {
+   "name": "積極型",
+   "h5": {
+    "n": 21,
+    "first": "2026-10-08",
+    "last": "2026-11-18",
+    "mean_excess": -5.05,
+    "beat_share": 9.5,
+    "lose_streak": 3,
+    "beta": 1.5,
+    "alpha": -3.84,
+    "up": {
+     "n": 5,
+     "excess": -1.21
+    },
+    "down": {
+     "n": 16,
+     "excess": -6.24
+    },
+    "recent": -4.74,
+    "before": -5.32
+   },
+   "h20": {
+    "n": 11,
+    "first": "2026-10-12",
+    "last": "2026-10-28",
+    "mean_excess": -20.88,
+    "beat_share": 0.0,
+    "lose_streak": 11,
+    "beta": 1.62,
+    "alpha": -12.68,
+    "up": {
+     "n": 0,
+     "excess": null
+    },
+    "down": {
+     "n": 11,
+     "excess": -20.88
+    },
+    "recent": -21.27,
+    "before": -16.92
+   },
+   "findings": [
+    {
+     "level": "bad",
+     "code": "lose_0050",
+     "text": "積極型最近 10 批平均輸 0050 4.74 個百分點（違反「不能輸 0050」）。"
+    },
+    {
+     "level": "warn",
+     "code": "high_beta",
+     "text": "積極型漲跌幅度是 0050 的 1.50 倍，等於放大槓桿：大盤一跌就輸很多。"
+    },
+    {
+     "level": "warn",
+     "code": "bad_alpha",
+     "text": "積極型扣掉大盤影響後，每批平均還差 3.84 個百分點：這是真的選錯股票。"
+    },
+    {
+     "level": "warn",
+     "code": "streak",
+     "text": "積極型已經連續 3 批輸 0050。"
+    },
+    {
+     "level": "bad",
+     "code": "lose_0050_20d",
+     "text": "積極型 20 日到期 11 批平均輸 0050 20.88 個百分點。"
+    }
+   ]
+  }
+ },
+ "process": {
+  "tests": 43,
+  "rejected": 13,
+  "shadow": 9,
+  "adopted": 1,
+  "evidence_20d": 11,
+  "since_last_adopted": 18,
+  "findings": [
+   {
+    "level": "warn",
+    "code": "no_adopt",
+    "text": "最近 18 個研究決定都沒有採用：在同一個框架裡換參數已經沒有用，要換問題，不是換參數。"
+   }
+  ]
+ },
+ "next": [
+  "研究讓這個模式不輸 0050 的做法（例如以 0050 為主、選股為輔）；正式要改需要你同意。",
+  "比較時要扣掉大盤影響：大跌時「贏」不算進步。",
+  "限制高波動股票的比重（積極型波動上限影子紀錄已在累積）。",
+  "這個模式的排序在真實預測裡沒有效，先不要再加新因子，等更多到期證據確認。",
+  "檢查最近市場是不是換了風格（例如權值股帶動），選股是否沒有跟上。",
+  "連續輸的批次逐檔看歸因（history/learning/attribution/）。",
+  "20 日是主要指標：再累積到期批次，若持續輸就建議降級為研究用。",
+  "下一個研究要換問題（例如以 0050 為比較基準），不是在原本的分數上調參數。"
+ ],
+ "lessons": [
+  {
+   "date": "2026-10-28",
+   "lesson": "輸 0050 不只是選錯股：全部可選股票等權平均每 20 天就落後 0050 約 0.85 個百分點（0050 大部分是台積電）。和 0050 比之前要先知道這個結構差距。",
+   "evidence": "history/backtest/selection.json（V21 選股品質檢討）"
+  },
+  {
+   "date": "2026-10-28",
+   "lesson": "積極型的分數在 2019 年以來的歷史裡沒有排序能力（Rank IC −0.015），高分不代表會漲。",
+   "evidence": "history/backtest/selection.json"
+  },
+  {
+   "date": "2026-11-01",
+   "lesson": "積極型大虧主要來自高波動股的開盤跳空；避開跳空的股票反而更差，問題在挑了太多高波動股。",
+   "evidence": "history/research/miss_deep.json、history/backtest/perf_v22.json"
+  },
+  {
+   "date": "2026-11-01",
+   "lesson": "27 個事前登記的候選規則全部沒過；控制波動、空頭改買 0050 能減少大虧，但都犧牲太多報酬。",
+   "evidence": "history/backtest/perf_v22.json"
+  },
+  {
+   "date": "2026-11-17",
+   "lesson": "穩健型之前看起來贏 0050，主要是跟大盤漲跌的程度只有 0.7 倍，大跌時少跌；大盤一漲就輸。跌得少不等於選得準。",
+   "evidence": "history/audit/fair_compare.json（19 批 5 日到期）"
+  },
+  {
+   "date": "2026-11-17",
+   "lesson": "正式名單幾乎沒有 0050 的權值股（57 份名單裡，鴻海、聯發科、台達電等一次都沒有）；權值股一帶動大盤，我們一定落後。",
+   "evidence": "history/audit/maturity/"
+  },
+  {
+   "date": "2026-11-17",
+   "lesson": "2025 年以來，原本前 10 名每 20 天落後 0050 約 3.6～3.8 個百分點（穩健、均衡），同期 0050 累計 +116%、穩健只有 +3%。以 0050 為主可以把落後縮小，但不能變贏。",
+   "evidence": "history/backtest/bench_study.json（PR #2）"
+  },
+  {
+   "date": "2026-11-17",
+   "lesson": "研究做太多、真實證據太少：40 多個測試對上只有幾批 20 日到期結果。再加新候選只會增加碰巧有效的機會，不會讓網站變準。",
+   "evidence": "history/research/experiments.json"
+  },
+  {
+   "date": "2026-11-17",
+   "lesson": "重新訓練不等於進步：LightGBM 重新訓練 4 次，真實到期表現都沒贏正式版；兩次用的訓練期間還一模一樣。",
+   "evidence": "history/learning/、影子模型對帳"
+  }
+ ],
+ "rule": "可以虧，但不能輸 0050（使用者 2026-11-17）。反省只陳述到期數字，改正式選股一律要你同意。"
+}
