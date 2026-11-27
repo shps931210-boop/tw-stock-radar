@@ -1,7 +1,112 @@
 {
- "generated_at": "2026-11-27T08:49:52",
- "new": [],
+ "generated_at": "2026-11-28T00:38:29",
+ "new": [
+  "2026-10-29_h20.json",
+  "2026-11-19_h5.json"
+ ],
  "batches": [
+  {
+   "file": "2026-11-19_h5.json",
+   "signal_date": "2026-11-19",
+   "horizon": 5,
+   "exit": "2026-11-27",
+   "bench_0050": 6.36,
+   "taiex": 1.89,
+   "taiex_window": [
+    "2026-11-19",
+    "2026-11-26"
+   ],
+   "bench_0050_close": 2.94,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": 0.316,
+     "mean_net": 5.16,
+     "mean_excess": -1.2,
+     "up_hit": 70.0,
+     "beat_0050": 40.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": 0.564,
+     "mean_net": 15.6,
+     "mean_excess": 9.24,
+     "up_hit": 100.0,
+     "beat_0050": 100.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": 0.493,
+     "mean_net": 14.95,
+     "mean_excess": 8.59,
+     "up_hit": 100.0,
+     "beat_0050": 90.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "495b288672",
+   "official": {
+    "stable": {
+     "mean_net": 1.13,
+     "mean_excess": -5.24,
+     "up_hit": 50.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": 6.76,
+     "mean_excess": 0.4,
+     "up_hit": 80.0,
+     "beat_0050": 50.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": 0.76,
+     "mean_excess": -5.6,
+     "up_hit": 50.0,
+     "beat_0050": 20.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": 5.16,
+     "mean_excess": -1.2,
+     "beat_0050": 40.0,
+     "big_loss": 0.0,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": 8.77,
+     "mean_excess": 2.4,
+     "beat_0050": 40.0,
+     "big_loss": 0.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": 0.11,
+     "mean_excess": -6.25,
+     "beat_0050": 20.0,
+     "big_loss": 20.0,
+     "filled": 10
+    },
+    "aggressive_volcap": {
+     "mean_net": 3.52,
+     "mean_excess": -2.84,
+     "beat_0050": 30.0,
+     "big_loss": 10.0,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": true
+   }
+  },
   {
    "file": "2026-11-18_h5.json",
    "signal_date": "2026-11-18",
@@ -950,6 +1055,94 @@
     "shadow": true,
     "official": true,
     "academic": true
+   }
+  },
+  {
+   "file": "2026-10-29_h20.json",
+   "signal_date": "2026-10-29",
+   "horizon": 20,
+   "exit": "2026-11-27",
+   "bench_0050": -11.45,
+   "taiex": -15.56,
+   "taiex_window": [
+    "2026-10-29",
+    "2026-11-26"
+   ],
+   "bench_0050_close": -13.43,
+   "corrected": false,
+   "shadow": {
+    "v21": {
+     "ic": -0.052,
+     "mean_net": -17.56,
+     "mean_excess": -6.11,
+     "up_hit": 0.0,
+     "beat_0050": 10.0,
+     "filled": 10
+    },
+    "ridge": {
+     "ic": 0.322,
+     "mean_net": -17.43,
+     "mean_excess": -5.98,
+     "up_hit": 0.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "lgbm": {
+     "ic": 0.268,
+     "mean_net": -16.08,
+     "mean_excess": -4.63,
+     "up_hit": 0.0,
+     "beat_0050": 50.0,
+     "filled": 10
+    }
+   },
+   "shadow_on_time": true,
+   "shadow_model": "4c675d40be",
+   "official": {
+    "stable": {
+     "mean_net": -9.96,
+     "mean_excess": 1.49,
+     "up_hit": 10.0,
+     "beat_0050": 30.0,
+     "filled": 10
+    },
+    "balanced": {
+     "mean_net": -20.96,
+     "mean_excess": -9.51,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    },
+    "aggressive": {
+     "mean_net": -27.59,
+     "mean_excess": -16.13,
+     "up_hit": 0.0,
+     "beat_0050": 0.0,
+     "filled": 10
+    }
+   },
+   "academic": {
+    "balanced": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    },
+    "balanced_msurge": {
+     "mean_net": null,
+     "mean_excess": null,
+     "beat_0050": null,
+     "big_loss": null,
+     "filled": 10
+    }
+   },
+   "official_kind": "正式精選",
+   "official_on_time": true,
+   "eligible": {
+    "shadow": true,
+    "official": true,
+    "academic": false
    }
   },
   {
@@ -2461,6 +2654,11 @@
   },
   {
    "file": "2026-10-28_h20.json",
+   "part": "academic",
+   "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
+  },
+  {
+   "file": "2026-10-29_h20.json",
    "part": "academic",
    "why": "沒有記錄行情資料日，無法確認用的是訊號日資料"
   },

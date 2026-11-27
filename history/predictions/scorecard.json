@@ -1,114 +1,114 @@
 {
- "generated_at": "2026-11-27T00:53:54",
- "days": 23,
- "on_time": 22,
+ "generated_at": "2026-11-28T00:37:54",
+ "days": 24,
+ "on_time": 23,
  "definitions": {
   "top_excess": "前 20 名平均相對 0050 超額，未扣成本（研究排序能力）",
   "top10_net_excess": "前 10 名平均相對 0050 超額，扣成本 0.585%（和到期對帳明細同一口徑）"
  },
  "first": "2026-10-16",
- "last": "2026-11-26",
+ "last": "2026-11-27",
  "horizons": {
   "5": {
-   "matured": 16,
+   "matured": 17,
    "v21": {
-    "ic": -0.014,
-    "ic_pos": 43.8,
-    "top_excess": -1.92,
+    "ic": 0.006,
+    "ic_pos": 47.1,
+    "top_excess": -1.64,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -2.07,
-    "n": 16
+    "top10_net_excess": -2.02,
+    "n": 17
    },
    "ridge": {
-    "ic": 0.035,
-    "ic_pos": 50.0,
-    "top_excess": -3.08,
+    "ic": 0.066,
+    "ic_pos": 52.9,
+    "top_excess": -2.48,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -4.34,
-    "n": 16
+    "top10_net_excess": -3.54,
+    "n": 17
    },
    "lgbm": {
-    "ic": 0.0,
-    "ic_pos": 43.8,
-    "top_excess": -3.68,
+    "ic": 0.029,
+    "ic_pos": 47.1,
+    "top_excess": -3.02,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -4.42,
-    "n": 16
+    "top10_net_excess": -3.65,
+    "n": 17
    },
    "ens": {
-    "ic": -0.008,
-    "ic_pos": 46.7,
-    "top_excess": -3.56,
+    "ic": 0.023,
+    "ic_pos": 50.0,
+    "top_excess": -2.72,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -4.92,
-    "n": 15
+    "top10_net_excess": -4.08,
+    "n": 16
    },
    "logit": {
-    "ic": -0.081,
-    "ic_pos": 37.5,
-    "top_excess": -4.86,
+    "ic": -0.043,
+    "ic_pos": 41.2,
+    "top_excess": -4.12,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -6.27,
-    "n": 16,
-    "hit": 58.2,
-    "brier": 0.2445,
-    "brier_base": 0.2218
+    "top10_net_excess": -5.36,
+    "n": 17,
+    "hit": 59.3,
+    "brier": 0.2428,
+    "brier_base": 0.2219
    }
   },
   "20": {
-   "matured": 7,
+   "matured": 8,
    "v21": {
-    "ic": -0.104,
+    "ic": -0.098,
     "ic_pos": 0.0,
-    "top_excess": -10.22,
+    "top_excess": -10.28,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -7.68,
-    "n": 7
+    "top10_net_excess": -7.49,
+    "n": 8
    },
    "ridge": {
-    "ic": 0.158,
-    "ic_pos": 85.7,
-    "top_excess": -1.96,
+    "ic": 0.178,
+    "ic_pos": 87.5,
+    "top_excess": -1.91,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -3.72,
-    "n": 7
+    "top10_net_excess": -4.0,
+    "n": 8
    },
    "lgbm": {
-    "ic": 0.085,
-    "ic_pos": 85.7,
-    "top_excess": -14.47,
+    "ic": 0.108,
+    "ic_pos": 87.5,
+    "top_excess": -12.77,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -15.43,
-    "n": 7
+    "top10_net_excess": -14.08,
+    "n": 8
    },
    "ens": {
-    "ic": 0.017,
-    "ic_pos": 50.0,
-    "top_excess": -13.19,
+    "ic": 0.034,
+    "ic_pos": 57.1,
+    "top_excess": -12.49,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -13.55,
-    "n": 6
+    "top10_net_excess": -12.94,
+    "n": 7
    },
    "logit": {
-    "ic": -0.259,
-    "ic_pos": 0.0,
-    "top_excess": -18.68,
+    "ic": -0.226,
+    "ic_pos": 12.5,
+    "top_excess": -17.76,
     "top_n": 20,
     "top_basis": "未扣成本",
-    "top10_net_excess": -19.66,
-    "n": 7,
-    "hit": 65.0,
-    "brier": 0.2389,
-    "brier_base": 0.2251
+    "top10_net_excess": -18.98,
+    "n": 8,
+    "hit": 65.8,
+    "brier": 0.2366,
+    "brier_base": 0.2224
    }
   },
   "60": {
@@ -501,6 +501,32 @@
    }
   },
   {
+   "sig": "2026-10-29",
+   "h": "20",
+   "ver": "2026-10-22-4c675d40be",
+   "ic": {
+    "v21": -0.0522,
+    "ridge": 0.322,
+    "lgbm": 0.2678,
+    "ens": 0.1378,
+    "logit": 0.0029
+   },
+   "top": {
+    "v21": -0.10639,
+    "ridge": -0.01599,
+    "lgbm": -0.00851,
+    "ens": -0.0831,
+    "logit": -0.1139
+   },
+   "top10": {
+    "v21": -0.06109,
+    "ridge": -0.05979,
+    "lgbm": -0.04629,
+    "ens": -0.09295,
+    "logit": -0.1421
+   }
+  },
+  {
    "sig": "2026-10-30",
    "h": "5",
    "ver": "2026-10-22-4c675d40be",
@@ -706,6 +732,32 @@
     "lgbm": -0.04122,
     "ens": -0.0273,
     "logit": -0.04769
+   }
+  },
+  {
+   "sig": "2026-11-19",
+   "h": "5",
+   "ver": "2026-11-18-495b288672",
+   "ic": {
+    "v21": 0.316,
+    "ridge": 0.5636,
+    "lgbm": 0.4931,
+    "ens": 0.4948,
+    "logit": 0.5706
+   },
+   "top": {
+    "v21": 0.02753,
+    "ridge": 0.07176,
+    "lgbm": 0.07667,
+    "ens": 0.09828,
+    "logit": 0.07874
+   },
+   "top10": {
+    "v21": -0.01201,
+    "ridge": 0.09242,
+    "lgbm": 0.08591,
+    "ens": 0.08496,
+    "logit": 0.09109
    }
   }
  ],
