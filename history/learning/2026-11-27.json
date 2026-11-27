@@ -1,0 +1,1568 @@
+{
+ "schema_version": 1,
+ "date": "2026-11-27",
+ "generated_at": "2026-11-28T06:07:59",
+ "seconds": 37,
+ "summary": "今天有 2 批預測到期（1526 筆股票結果，已寫入到期對帳與錯誤觀察）；新增的研究訓練標籤 0 筆（原因見 label_flow）。沒有重新訓練：沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型",
+ "data": {
+  "ok": true,
+  "prices": "2026-11-27",
+  "why": null
+ },
+ "sealed": {
+  "today": true,
+  "on_time": true,
+  "model_version": "2026-11-24-018f0e6bd6",
+  "n": 810
+ },
+ "matured_today": [
+  {
+   "signal_date": "2026-10-29",
+   "horizon": "20",
+   "stocks": 741,
+   "model_version": "2026-10-22-4c675d40be"
+  },
+  {
+   "signal_date": "2026-11-19",
+   "horizon": "5",
+   "stocks": 785,
+   "model_version": "2026-11-18-495b288672"
+  }
+ ],
+ "matured_stocks_today": 1526,
+ "live": {
+  "sealed_days": 24,
+  "matured": {
+   "5": 17,
+   "20": 8,
+   "60": 0
+  }
+ },
+ "candidate": {
+  "retrained": false,
+  "reason": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型",
+  "new_signals": [],
+  "new_labels": {
+   "5": 0,
+   "20": 0,
+   "60": 0
+  },
+  "labeled_through": {
+   "5": "2026-11-13",
+   "20": "2026-10-14",
+   "60": "2026-08-14"
+  },
+  "panel_rows": 128825,
+  "panel_start": "2019-08-01"
+ },
+ "champion": {
+  "id": "v21",
+  "name": "V21 固定權重",
+  "role": "正式排行榜"
+ },
+ "challenger": "2026-11-24-018f0e6bd6",
+ "gate": {
+  "status": "accumulating",
+  "label": "累積中（7／60 天）",
+  "days": 7,
+  "need": 60,
+  "live": {
+   "v21": {
+    "ic": -0.1001,
+    "top_net": -11.23,
+    "mdd": -9.5
+   },
+   "ens": {
+    "ic": 0.0342,
+    "top_net": -13.07,
+    "mdd": -12.7
+   }
+  },
+  "challenger_name": "V21＋LightGBM 平均",
+  "criteria": [
+   {
+    "name": "到期的真實預測天數",
+    "need": "≥ 60 天",
+    "value": "7 天",
+    "ok": false
+   },
+   {
+    "name": "Rank IC 勝過 V21（Newey-West t）",
+    "need": "t ≥ 2.24",
+    "value": "差 +0.134，t 10.21",
+    "ok": true
+   },
+   {
+    "name": "前 20 名扣成本超額報酬",
+    "need": "> 0 且高於 V21",
+    "value": "-13.07%（V21 -11.23%）",
+    "ok": false
+   },
+   {
+    "name": "跑贏 0050 的天數比例（扣成本）",
+    "need": "≥ 50%",
+    "value": "0%",
+    "ok": false
+   },
+   {
+    "name": "最大回撤不比 V21 差太多",
+    "need": "差距 ≤ 5 個百分點",
+    "value": "-12.7%（V21 -9.5%）",
+    "ok": "True"
+   }
+  ]
+ },
+ "acceptance": "未全部通過：正式排行榜維持 V21，候選模型繼續影子追蹤",
+ "promotion_ok": false,
+ "auto_promote": false,
+ "model_drift": {
+  "status": "accumulating",
+  "label": "樣本不足（8／20 天）",
+  "recent_ic": null,
+  "research_ic": 0.0292
+ },
+ "feature_drift": {
+  "status": "warn",
+  "label": "7 項特徵缺漏或分布明顯改變",
+  "reference_days": 19,
+  "flagged": [
+   {
+    "feature": "score_trend",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.262,
+    "flag": true
+   },
+   {
+    "feature": "ret_1m",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.294,
+    "flag": true
+   },
+   {
+    "feature": "ret_3m",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.363,
+    "flag": true
+   },
+   {
+    "feature": "dist_ma60",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.27,
+    "flag": true
+   },
+   {
+    "feature": "ma60_slope_20",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.464,
+    "flag": true
+   },
+   {
+    "feature": "rsi",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.593,
+    "flag": true
+   },
+   {
+    "feature": "vol_ratio",
+    "missing": 0.0,
+    "missing_ref": 0.0,
+    "psi": 0.866,
+    "flag": true
+   }
+  ]
+ },
+ "feature_effect": {
+  "dates": 4,
+  "label": "4 個到期日（少於 20 個，先不判斷是否失效）",
+  "rows": [
+   {
+    "feature": "vol_1y",
+    "dates": 4,
+    "live_ic": -0.688,
+    "t": -53.27,
+    "research_ic": -0.0655,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "downside_vol",
+    "dates": 4,
+    "live_ic": -0.6847,
+    "t": -56.07,
+    "research_ic": -0.0611,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "beta",
+    "dates": 4,
+    "live_ic": -0.6656,
+    "t": -51.81,
+    "research_ic": 0.0013,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "score_momentum",
+    "dates": 4,
+    "live_ic": -0.4218,
+    "t": -43.88,
+    "research_ic": -0.0046,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "mom_12_1",
+    "dates": 4,
+    "live_ic": -0.4218,
+    "t": -43.88,
+    "research_ic": -0.0046,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "rs_rank",
+    "dates": 4,
+    "live_ic": -0.4218,
+    "t": -43.88,
+    "research_ic": -0.0046,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "avg_value_20",
+    "dates": 4,
+    "live_ic": -0.3687,
+    "t": -21.67,
+    "research_ic": -0.0045,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "score_growth",
+    "dates": 4,
+    "live_ic": -0.241,
+    "t": -30.88,
+    "research_ic": 0.0183,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "rev_yoy_3m",
+    "dates": 4,
+    "live_ic": -0.2238,
+    "t": -26.38,
+    "research_ic": 0.0183,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "eps_q_yoy",
+    "dates": 4,
+    "live_ic": -0.1945,
+    "t": -45.4,
+    "research_ic": 0.0122,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "rev_yoy",
+    "dates": 4,
+    "live_ic": -0.1911,
+    "t": -21.35,
+    "research_ic": 0.0207,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "op_q_yoy",
+    "dates": 4,
+    "live_ic": -0.1377,
+    "t": -27.14,
+    "research_ic": 0.0091,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "ret_3m",
+    "dates": 4,
+    "live_ic": -0.0543,
+    "t": -2.13,
+    "research_ic": -0.0094,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "ma60_slope_20",
+    "dates": 4,
+    "live_ic": -0.0249,
+    "t": -2.42,
+    "research_ic": 0.0069,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "gross_margin",
+    "dates": 4,
+    "live_ic": -0.0013,
+    "t": -1.23,
+    "research_ic": -0.0195,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "fscore",
+    "dates": 4,
+    "live_ic": 0.0213,
+    "t": 8.19,
+    "research_ic": 0.0004,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "score_quality",
+    "dates": 4,
+    "live_ic": 0.0297,
+    "t": 4.96,
+    "research_ic": 0.0015,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "market_cap",
+    "dates": 4,
+    "live_ic": 0.0345,
+    "t": 2.79,
+    "research_ic": 0.046,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "dist_ma60",
+    "dates": 4,
+    "live_ic": 0.0485,
+    "t": 4.58,
+    "research_ic": -0.0232,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "roe",
+    "dates": 4,
+    "live_ic": 0.054,
+    "t": 12.93,
+    "research_ic": 0.004,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "op_margin",
+    "dates": 4,
+    "live_ic": 0.0684,
+    "t": 9.87,
+    "research_ic": -0.0,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "score_trend",
+    "dates": 4,
+    "live_ic": 0.0711,
+    "t": 24.9,
+    "research_ic": 0.0141,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "debt_ratio",
+    "dates": 4,
+    "live_ic": 0.1226,
+    "t": 33.25,
+    "research_ic": 0.0243,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "ret_1m",
+    "dates": 4,
+    "live_ic": 0.1571,
+    "t": 16.33,
+    "research_ic": -0.0324,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "rsi",
+    "dates": 4,
+    "live_ic": 0.1605,
+    "t": 11.62,
+    "research_ic": -0.0071,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "vol_ratio",
+    "dates": 4,
+    "live_ic": 0.1698,
+    "t": 4.86,
+    "research_ic": -0.0043,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "fcf_yield",
+    "dates": 4,
+    "live_ic": 0.3014,
+    "t": 53.75,
+    "research_ic": 0.025,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "book_to_price",
+    "dates": 4,
+    "live_ic": 0.366,
+    "t": 23.04,
+    "research_ic": 0.0372,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "earnings_yield",
+    "dates": 4,
+    "live_ic": 0.4757,
+    "t": 31.24,
+    "research_ic": 0.0453,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "score_value",
+    "dates": 4,
+    "live_ic": 0.4897,
+    "t": 36.17,
+    "research_ic": 0.0454,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "dy",
+    "dates": 4,
+    "live_ic": 0.5746,
+    "t": 54.64,
+    "research_ic": 0.0727,
+    "status": "樣本不足"
+   },
+   {
+    "feature": "mdd_1y",
+    "dates": 4,
+    "live_ic": 0.5905,
+    "t": 87.55,
+    "research_ic": 0.0511,
+    "status": "樣本不足"
+   }
+  ],
+  "hypotheses": []
+ },
+ "errors": {
+  "dates": 8,
+  "stock_dates": 5897,
+  "models": {
+   "v21": {
+    "dates": 8,
+    "ic": -0.0979,
+    "top_excess": -6.9,
+    "beat_0050": 42.5
+   },
+   "lgbm": {
+    "dates": 8,
+    "ic": 0.1081,
+    "top_excess": -13.49,
+    "beat_0050": 22.5
+   },
+   "ens": {
+    "dates": 7,
+    "ic": 0.0342,
+    "top_excess": -12.35,
+    "beat_0050": 31.4
+   }
+  },
+  "by_industry": {
+   "lgbm": [
+    {
+     "group": "半導體業",
+     "n": 6,
+     "avg_excess": -24.9,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "電子零組件業",
+     "n": 31,
+     "avg_excess": -23.9,
+     "big_loss_pct": 96.8,
+     "enough": true
+    },
+    {
+     "group": "電機機械",
+     "n": 1,
+     "avg_excess": -22.14,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "通信網路業",
+     "n": 2,
+     "avg_excess": -20.86,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "電子工業",
+     "n": 14,
+     "avg_excess": -13.95,
+     "big_loss_pct": 64.3,
+     "enough": false
+    },
+    {
+     "group": "塑膠工業",
+     "n": 5,
+     "avg_excess": -8.25,
+     "big_loss_pct": 60.0,
+     "enough": false
+    },
+    {
+     "group": "金融保險",
+     "n": 16,
+     "avg_excess": 3.1,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "紡織纖維",
+     "n": 1,
+     "avg_excess": 4.21,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "其他",
+     "n": 1,
+     "avg_excess": 8.43,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "建材營造",
+     "n": 2,
+     "avg_excess": 11.36,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "航運業",
+     "n": 1,
+     "avg_excess": 26.39,
+     "big_loss_pct": 0.0,
+     "enough": false
+    }
+   ],
+   "v21": [
+    {
+     "group": "電腦及週邊設備業",
+     "n": 7,
+     "avg_excess": -28.17,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "通信網路業",
+     "n": 6,
+     "avg_excess": -25.18,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "電子零組件業",
+     "n": 8,
+     "avg_excess": -21.48,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "半導體業",
+     "n": 11,
+     "avg_excess": -3.14,
+     "big_loss_pct": 36.4,
+     "enough": false
+    },
+    {
+     "group": "電子工業",
+     "n": 17,
+     "avg_excess": -2.63,
+     "big_loss_pct": 11.8,
+     "enough": false
+    },
+    {
+     "group": "建材營造",
+     "n": 1,
+     "avg_excess": -2.04,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "金融保險",
+     "n": 7,
+     "avg_excess": -0.01,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "航運業",
+     "n": 23,
+     "avg_excess": 2.14,
+     "big_loss_pct": 0.0,
+     "enough": false
+    }
+   ]
+  },
+  "by_regime": {
+   "lgbm": [
+    {
+     "group": "up_wild",
+     "n": 80,
+     "avg_excess": -13.49,
+     "big_loss_pct": 63.7,
+     "enough": true
+    }
+   ],
+   "v21": [
+    {
+     "group": "up_wild",
+     "n": 80,
+     "avg_excess": -6.9,
+     "big_loss_pct": 33.8,
+     "enough": true
+    }
+   ]
+  },
+  "worst": [
+   {
+    "sig": "2026-10-22",
+    "sid": "6274",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -37.43
+   },
+   {
+    "sig": "2026-10-21",
+    "sid": "3189",
+    "industry": "電子工業",
+    "model": "lgbm",
+    "excess": -35.12
+   },
+   {
+    "sig": "2026-10-22",
+    "sid": "2492",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -34.79
+   },
+   {
+    "sig": "2026-10-21",
+    "sid": "2492",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -34.7
+   },
+   {
+    "sig": "2026-10-19",
+    "sid": "8046",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -31.69
+   },
+   {
+    "sig": "2026-10-29",
+    "sid": "5386",
+    "industry": "電腦及週邊設備業",
+    "model": "v21",
+    "excess": -31.26
+   },
+   {
+    "sig": "2026-10-28",
+    "sid": "5386",
+    "industry": "電腦及週邊設備業",
+    "model": "v21",
+    "excess": -31.05
+   },
+   {
+    "sig": "2026-10-21",
+    "sid": "3264",
+    "industry": "半導體業",
+    "model": "lgbm",
+    "excess": -31.02
+   },
+   {
+    "sig": "2026-10-21",
+    "sid": "3624",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -31.02
+   },
+   {
+    "sig": "2026-10-20",
+    "sid": "5386",
+    "industry": "電腦及週邊設備業",
+    "model": "v21",
+    "excess": -30.59
+   }
+  ],
+  "note": "分組少於 30 筆的只供觀察；這裡只描述哪裡錯，原因要再用對照實驗驗證。"
+ },
+ "risks": [
+  "7 項特徵缺漏或分布明顯改變"
+ ],
+ "needs_human": true,
+ "human_why": [
+  "7 項特徵缺漏或分布明顯改變"
+ ],
+ "steps": [
+  "到期對帳：這次新增 2 份，今天累計 2 份"
+ ],
+ "skipped": [],
+ "limits": [
+  "每天跑學習流程不代表每天變準；是否變好只看到期的真實預測與樣本外比賽",
+  "20 日預測要 20 個交易日後才知道對錯，真實樣本累積很慢",
+  "資料庫沒有法人、融資券等籌碼資料，也沒有歷史處置股、全額交割紀錄"
+ ],
+ "first_run_at": "2026-11-28T06:07:59",
+ "runs": 1,
+ "label_flow": {
+  "batches": 2,
+  "stocks": 1526,
+  "rows": [
+   {
+    "signal_date": "2026-10-29",
+    "horizon": "20",
+    "stocks": 741,
+    "model_version": "2026-10-22-4c675d40be",
+    "train_eligible": false,
+    "why_not": "2026-10-29 不是研究資料集的訊號日（每 10 個交易日一個）；同一期間的標籤由最近的研究訊號日提供"
+   },
+   {
+    "signal_date": "2026-11-19",
+    "horizon": "5",
+    "stocks": 785,
+    "model_version": "2026-11-18-495b288672",
+    "train_eligible": false,
+    "why_not": "2026-11-19 不是研究資料集的訊號日（每 10 個交易日一個）；同一期間的標籤由最近的研究訊號日提供"
+   }
+  ],
+  "A_forward": {
+   "stocks": 1526,
+   "where": "history/learning/matured/、history/audit/maturity/（前瞻績效）"
+  },
+  "B_training": {
+   "eligible_stocks": 0,
+   "new_labels": 0,
+   "unused_stocks": 1526,
+   "note": "訓練標籤只來自研究訊號日；今天到期的批次如果不是研究訊號日，結果只進前瞻績效與錯誤觀察",
+   "next_label": {
+    "signal_date": "2026-10-30",
+    "trading_days_left": 1,
+    "note": "研究訊號日 2026-10-30 的 20 日標籤再 1 個交易日到期，到期後才會新增訓練標籤"
+   }
+  },
+  "C_errors": {
+   "h5_dates": 17,
+   "h20_dates": 8,
+   "note": "5 日只當觀察（樣本重疊、雜訊大）；正式錯誤分析看 20 日"
+  },
+  "D_retrain": {
+   "retrained": false,
+   "why": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型"
+  },
+  "E_improved": {
+   "proven": false,
+   "why": "模型是否改善只看樣本外比賽與成熟的前瞻成績，不看今天有沒有訓練"
+  },
+  "changes_conclusion": null,
+  "conclusion_note": "見錯誤分析"
+ },
+ "errors_5d": {
+  "dates": 17,
+  "stock_dates": 12694,
+  "models": {
+   "v21": {
+    "dates": 17,
+    "ic": 0.0055,
+    "top_excess": -1.43,
+    "beat_0050": 40.6
+   },
+   "lgbm": {
+    "dates": 17,
+    "ic": 0.0293,
+    "top_excess": -3.07,
+    "beat_0050": 34.7
+   },
+   "ens": {
+    "dates": 16,
+    "ic": 0.0234,
+    "top_excess": -3.5,
+    "beat_0050": 31.9
+   }
+  },
+  "by_industry": {
+   "lgbm": [
+    {
+     "group": "半導體業",
+     "n": 26,
+     "avg_excess": -6.64,
+     "big_loss_pct": 34.6,
+     "enough": false
+    },
+    {
+     "group": "通信網路業",
+     "n": 17,
+     "avg_excess": -4.12,
+     "big_loss_pct": 41.2,
+     "enough": false
+    },
+    {
+     "group": "電子零組件業",
+     "n": 61,
+     "avg_excess": -3.98,
+     "big_loss_pct": 34.4,
+     "enough": true
+    },
+    {
+     "group": "電子工業",
+     "n": 31,
+     "avg_excess": -3.32,
+     "big_loss_pct": 16.1,
+     "enough": true
+    },
+    {
+     "group": "其他電子業",
+     "n": 2,
+     "avg_excess": -3.3,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "電腦及週邊設備業",
+     "n": 3,
+     "avg_excess": -3.26,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "電機機械",
+     "n": 4,
+     "avg_excess": -2.13,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "塑膠工業",
+     "n": 2,
+     "avg_excess": 0.08,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "金融業",
+     "n": 3,
+     "avg_excess": 2.35,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "建材營造",
+     "n": 10,
+     "avg_excess": 2.59,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "航運業",
+     "n": 1,
+     "avg_excess": 3.69,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "汽車工業",
+     "n": 1,
+     "avg_excess": 3.92,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "金融保險",
+     "n": 8,
+     "avg_excess": 4.93,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "鋼鐵工業",
+     "n": 1,
+     "avg_excess": 11.39,
+     "big_loss_pct": 0.0,
+     "enough": false
+    }
+   ],
+   "v21": [
+    {
+     "group": "其他電子類",
+     "n": 1,
+     "avg_excess": -14.67,
+     "big_loss_pct": 100.0,
+     "enough": false
+    },
+    {
+     "group": "油電燃氣業",
+     "n": 3,
+     "avg_excess": -6.42,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "電腦及週邊設備業",
+     "n": 13,
+     "avg_excess": -5.48,
+     "big_loss_pct": 38.5,
+     "enough": false
+    },
+    {
+     "group": "電子零組件業",
+     "n": 13,
+     "avg_excess": -4.34,
+     "big_loss_pct": 15.4,
+     "enough": false
+    },
+    {
+     "group": "電子通路業",
+     "n": 4,
+     "avg_excess": -2.12,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "半導體業",
+     "n": 21,
+     "avg_excess": -1.07,
+     "big_loss_pct": 14.3,
+     "enough": false
+    },
+    {
+     "group": "金融保險",
+     "n": 15,
+     "avg_excess": -0.68,
+     "big_loss_pct": 6.7,
+     "enough": false
+    },
+    {
+     "group": "電子工業",
+     "n": 42,
+     "avg_excess": -0.65,
+     "big_loss_pct": 21.4,
+     "enough": true
+    },
+    {
+     "group": "航運業",
+     "n": 43,
+     "avg_excess": -0.47,
+     "big_loss_pct": 2.3,
+     "enough": true
+    },
+    {
+     "group": "通信網路業",
+     "n": 8,
+     "avg_excess": -0.03,
+     "big_loss_pct": 12.5,
+     "enough": false
+    },
+    {
+     "group": "化學生技醫療",
+     "n": 2,
+     "avg_excess": 0.31,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "金融業",
+     "n": 2,
+     "avg_excess": 0.62,
+     "big_loss_pct": 0.0,
+     "enough": false
+    },
+    {
+     "group": "建材營造",
+     "n": 3,
+     "avg_excess": 1.79,
+     "big_loss_pct": 0.0,
+     "enough": false
+    }
+   ]
+  },
+  "by_regime": {
+   "lgbm": [
+    {
+     "group": "up_wild",
+     "n": 80,
+     "avg_excess": -3.89,
+     "big_loss_pct": 25.0,
+     "enough": true
+    },
+    {
+     "group": "down_wild",
+     "n": 90,
+     "avg_excess": -2.34,
+     "big_loss_pct": 24.4,
+     "enough": true
+    }
+   ],
+   "v21": [
+    {
+     "group": "down_wild",
+     "n": 90,
+     "avg_excess": -3.39,
+     "big_loss_pct": 18.9,
+     "enough": true
+    },
+    {
+     "group": "up_wild",
+     "n": 80,
+     "avg_excess": 0.78,
+     "big_loss_pct": 7.5,
+     "enough": true
+    }
+   ]
+  },
+  "worst": [
+   {
+    "sig": "2026-11-02",
+    "sid": "5274",
+    "industry": "半導體業",
+    "model": "lgbm",
+    "excess": -22.91
+   },
+   {
+    "sig": "2026-10-28",
+    "sid": "4979",
+    "industry": "通信網路業",
+    "model": "lgbm",
+    "excess": -21.64
+   },
+   {
+    "sig": "2026-10-21",
+    "sid": "6213",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -21.44
+   },
+   {
+    "sig": "2026-10-21",
+    "sid": "6672",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -19.72
+   },
+   {
+    "sig": "2026-11-17",
+    "sid": "3006",
+    "industry": "電子工業",
+    "model": "v21",
+    "excess": -18.55
+   },
+   {
+    "sig": "2026-10-30",
+    "sid": "4979",
+    "industry": "通信網路業",
+    "model": "lgbm",
+    "excess": -16.52
+   },
+   {
+    "sig": "2026-10-28",
+    "sid": "5274",
+    "industry": "半導體業",
+    "model": "lgbm",
+    "excess": -16.03
+   },
+   {
+    "sig": "2026-10-29",
+    "sid": "4979",
+    "industry": "通信網路業",
+    "model": "lgbm",
+    "excess": -15.88
+   },
+   {
+    "sig": "2026-10-28",
+    "sid": "2308",
+    "industry": "電子零組件業",
+    "model": "lgbm",
+    "excess": -15.42
+   },
+   {
+    "sig": "2026-10-30",
+    "sid": "6223",
+    "industry": "半導體業",
+    "model": "lgbm",
+    "excess": -15.39
+   }
+  ],
+  "note": "分組少於 30 筆的只供觀察；這裡只描述哪裡錯，原因要再用對照實驗驗證。"
+ },
+ "attribution": {
+  "new": [
+   {
+    "file": "2026-10-29_h20.json",
+    "stable": {
+     "mean_net": -9.96,
+     "big_losses": 8,
+     "flags": {
+      "最新月營收年減": 1,
+      "20日波動≥60%": 1
+     }
+    },
+    "balanced": {
+     "mean_net": -20.96,
+     "big_losses": 10,
+     "flags": {
+      "最新月營收年減": 1,
+      "20日波動≥60%": 2
+     }
+    },
+    "aggressive": {
+     "mean_net": -27.59,
+     "big_losses": 10,
+     "flags": {
+      "20日波動≥60%": 6,
+      "訊號前20日漲≥20%": 2
+     }
+    }
+   },
+   {
+    "file": "2026-11-19_h5.json",
+    "stable": {
+     "mean_net": 1.13,
+     "big_losses": 0,
+     "flags": {
+      "最新月營收年減": 1,
+      "20日波動≥60%": 3
+     }
+    },
+    "balanced": {
+     "mean_net": 6.76,
+     "big_losses": 0,
+     "flags": {
+      "20日波動≥60%": 7
+     }
+    },
+    "aggressive": {
+     "mean_net": 0.76,
+     "big_losses": 2,
+     "flags": {
+      "20日波動≥60%": 8,
+      "RSI≥75": 1,
+      "訊號前20日漲≥20%": 2,
+      "高於20日均線≥10%": 1
+     }
+    }
+   }
+  ],
+  "total": 36,
+  "where": "history/learning/attribution/",
+  "note": "逐檔歸因只是描述；要變成規則必須先事前登記，並在 87 期歷史通過門檻（見 history/backtest/perf_v22.json）"
+ },
+ "evolution": {
+  "mission": {
+   "version": 1,
+   "hash": "94eeefb77003",
+   "status": "unchanged",
+   "alert": false
+  },
+  "new_experiments": [],
+  "reflection": {
+   "q1_new_errors": {
+    "items": [
+     {
+      "sig": "2026-10-29",
+      "sid": "5386",
+      "industry": "電腦及週邊設備業",
+      "model": "v21",
+      "excess": -31.26
+     }
+    ],
+    "evidence": "history/learning/matured/",
+    "text": "今天到期的預測裡，落後最多的 1 檔"
+   },
+   "q2_recurring": {
+    "items": [
+     {
+      "text": "ret_1m 的資料分布或缺漏突然改變：先檢查資料來源，再判斷是不是市場真的變了",
+      "times": 12,
+      "first_seen": "2026-11-03"
+     },
+     {
+      "text": "dist_ma60 的資料分布或缺漏突然改變：先檢查資料來源，再判斷是不是市場真的變了",
+      "times": 12,
+      "first_seen": "2026-11-03"
+     },
+     {
+      "text": "模擬交易積極型有 16 筆虧損屬於「選股：比同期 0050 差」：列入研究，用樣本外資料驗證後才考慮調整，不會自動改策略",
+      "times": 12,
+      "first_seen": "2026-11-04"
+     },
+     {
+      "text": "模擬交易積極型有 8 筆虧損屬於「進場：開盤比訊號日收盤高 3% 以上才買到（追高）」：列入研究，用樣本外資料驗證後才考慮調整，不會自動改策略",
+      "times": 12,
+      "first_seen": "2026-11-04"
+     },
+     {
+      "text": "rsi 的資料分布或缺漏突然改變：先檢查資料來源，再判斷是不是市場真的變了",
+      "times": 11,
+      "first_seen": "2026-11-03"
+     }
+    ],
+    "evidence": "history/learning/research_queue.json",
+    "text": "重複出現 3 次以上的問題"
+   },
+   "q3_degrading": {
+    "status": "accumulating",
+    "text": "已到期的 20 日訊號日只有 8 個（至少要 20 個才判斷變好或變差）",
+    "evidence": "history/learning/live_ledger.json"
+   },
+   "q4_hypotheses": {
+    "items": [],
+    "status": "待驗證假設",
+    "text": "以下是根據統計提出的待驗證假設，不是已確認的原因"
+   },
+   "q5_outcome": [
+    {
+     "kind": "新增資料",
+     "done": true,
+     "evidence": "到期對帳 1526 筆、新訓練標籤 0 筆"
+    },
+    {
+     "kind": "完成分析",
+     "done": true,
+     "evidence": "錯誤分析涵蓋 8 個已到期訊號日"
+    },
+    {
+     "kind": "完成實驗",
+     "done": false,
+     "evidence": "今天沒有新的實驗"
+    },
+    {
+     "kind": "訓練候選模型",
+     "done": false,
+     "evidence": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型"
+    },
+    {
+     "kind": "驗證候選模型改善",
+     "done": false,
+     "evidence": "累積中（7／60 天）"
+    }
+   ],
+   "supervised_learning": true,
+   "supervised_text": "今天有新的真實結果可以學習"
+  },
+  "tasks": {
+   "open": 57,
+   "top": [
+    {
+     "id": "RT-20261022-016",
+     "key": "tpl:big_loss:vol_1y",
+     "created": "2026-10-22",
+     "status": "待研究",
+     "question": "重大損失的持股一年波動百分位平均 50.9（其他 40.0，t 2.85）：事先排除這類股票能不能降低虧損又不傷報酬？",
+     "goal": "G4",
+     "goal_text": "G4（P0）降低重大虧損",
+     "hypothesis": "待驗證假設：重大損失的持股有共同特徵，事先排除可以降低尾端虧損又不傷報酬",
+     "metric": "重大損失比例、最大回撤（主要）；扣成本超額不能變差",
+     "data_needed": "前 10 名持股的 20 日結果＋選股當天的特徵百分位",
+     "design": "比較落後 0050 超過 10% 的持股和其他持股的特徵差異；有顯著差異的特徵再做「排除規則」的組合研究",
+     "oos": "排除規則事先固定，用 walk-forward 檢查",
+     "budget": "每週回測內 5 分鐘",
+     "stop_rule": "排除後最大回撤沒改善或超額報酬變差就否定",
+     "action": "portfolio_rule",
+     "allowed": true,
+     "needs_human": false,
+     "template": "big_loss",
+     "last_seen": "2026-11-27",
+     "priority": 7.2,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-017",
+     "key": "sel:trend_growth_weights",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "趨勢（前 10% 每期 +1.09%，t 3.81）和成長（+0.77%，t 2.69）是五大因子裡唯二穩定有效的；品質沒有預測力（-0.31%）。調整模式權重能不能改善前 10 名扣成本超額？",
+     "goal": "G1",
+     "hypothesis": "趨勢（前 10% 每期 +1.09%，t 3.81）和成長（+0.77%，t 2.69）是五大因子裡唯二穩定有效的；品質沒有預測力（-0.31%）。調整模式權重能不能改善前 10 名扣成本超額？",
+     "metric": "20 日前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/selection.json 同一套 87 期資料",
+     "design": "事前登記規則，Bonferroni 校正",
+     "oos": "權重要在新一段開發期決定，用 2025-01 之後的保留期只看一次；不能用 selection.json 的保留期結果挑權重",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "開發期 t 未達門檻或保留期變差就否定",
+     "action": "model_weights",
+     "allowed": true,
+     "needs_human": true,
+     "template": "selection",
+     "last_seen": "2026-10-28",
+     "priority": 8.5,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-018",
+     "key": "sel:benchmark_structure",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "可排名股票等權平均每 20 日落後 0050 約 0.85%：用市值加權、或以 0050 為核心＋AI 衛星部位，能不能在不冒充選股能力的前提下縮小落後？",
+     "goal": "G1",
+     "hypothesis": "可排名股票等權平均每 20 日落後 0050 約 0.85%：用市值加權、或以 0050 為核心＋AI 衛星部位，能不能在不冒充選股能力的前提下縮小落後？",
+     "metric": "20 日前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/selection.json 同一套 87 期資料",
+     "design": "事前登記規則，Bonferroni 校正",
+     "oos": "分開報告「資金配置效果」和「選股能力」；最大回撤不能比原版差超過 5 個百分點",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "開發期 t 未達門檻或保留期變差就否定",
+     "action": "portfolio_rule",
+     "allowed": true,
+     "needs_human": false,
+     "template": "selection",
+     "last_seen": "2026-10-28",
+     "priority": 8.0,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-020",
+     "key": "acad:msurge_forward",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "均衡型＋MSURGE 的前瞻影子紀錄累積到 12 批 20 日到期後，是否仍贏同一天的均衡型原始前 10 名？（E3 驗證）",
+     "goal": "G1",
+     "hypothesis": "均衡型＋MSURGE 的前瞻影子紀錄累積到 12 批 20 日到期後，是否仍贏同一天的均衡型原始前 10 名？（E3 驗證）",
+     "metric": "前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/academic.json、history/predictions/academic/",
+     "design": "事前登記規則",
+     "oos": "只用 2026-10-28 之後封存的新資料；規則不改",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "未達門檻就否定",
+     "action": "model_weights",
+     "allowed": true,
+     "needs_human": true,
+     "template": "academic",
+     "last_seen": "2026-10-28",
+     "priority": 9.0,
+     "prior_failed_experiments": 0
+    },
+    {
+     "id": "RT-20261028-021",
+     "key": "acad:rev_mom_negative",
+     "created": "2026-10-28",
+     "status": "待研究",
+     "question": "營收月增率在台股是負向（前 10% 每期 -0.59%，t -3.54）：目前成長分數是否用到月增率而拖累排序？",
+     "goal": "G1",
+     "hypothesis": "營收月增率在台股是負向（前 10% 每期 -0.59%，t -3.54）：目前成長分數是否用到月增率而拖累排序？",
+     "metric": "前 10 名扣成本相對 0050 超額（主要）；最大回撤、重大虧損率",
+     "data_needed": "history/backtest/academic.json、history/predictions/academic/",
+     "design": "事前登記規則",
+     "oos": "先查 snapshot 成長因子組成，再事前登記移除或改用 MSURGE 的比較",
+     "budget": "每週回測內 30 分鐘",
+     "stop_rule": "未達門檻就否定",
+     "action": "model_weights",
+     "allowed": true,
+     "needs_human": true,
+     "template": "academic",
+     "last_seen": "2026-10-28",
+     "priority": 8.0,
+     "prior_failed_experiments": 0
+    }
+   ]
+  },
+  "governance": {
+   "tiers": {
+    "champion": "V21 固定權重（正式推薦）",
+    "challenger": "2026-11-24-018f0e6bd6",
+    "research": "lgbm_study、portfolio_study 的變體（只做研究）"
+   },
+   "gates": [
+    {
+     "gate": "資料正確",
+     "ok": true,
+     "value": "資料稽核 6/6 項通過"
+    },
+    {
+     "gate": "排序改善",
+     "ok": true,
+     "value": "差 +0.134，t 10.21"
+    },
+    {
+     "gate": "策略改善",
+     "ok": false,
+     "value": "-13.07%（V21 -11.23%）"
+    },
+    {
+     "gate": "風險合理",
+     "ok": true,
+     "value": "-12.7%（V21 -9.5%）"
+    },
+    {
+     "gate": "前瞻驗證",
+     "ok": false,
+     "value": "已到期的真實預測 7／60 天"
+    }
+   ],
+   "recommend": false,
+   "human_approval": true,
+   "label": "未通過：策略改善、前瞻驗證。正式模型維持 V21"
+  },
+  "acceptance": [
+   {
+    "q": "今天有學到新資料嗎？",
+    "answer": "新增 1526 筆到期結果、0 筆研究訓練標籤",
+    "evidence": "history/learning/matured/、candidate.new_labels",
+    "yes": true
+   },
+   {
+    "q": "今天發現什麼問題？",
+    "answer": "錯誤分析涵蓋 8 個到期訊號日；重複出現 3 次以上的問題",
+    "evidence": "history/learning/research_queue.json",
+    "yes": true
+   },
+   {
+    "q": "今天研究什麼？",
+    "answer": "RT-20261022-001、RT-20261022-002、RT-20261022-003、RT-20261022-004、RT-20261022-005、RT-20261022-006、RT-20261022-007、RT-20261022-008（新增 1 項）",
+    "evidence": "history/research/research_tasks.json",
+    "yes": true
+   },
+   {
+    "q": "今天做了什麼實驗？",
+    "answer": "沒有新的實驗（實驗在每週回測執行）",
+    "evidence": "history/research/experiments.json auto",
+    "yes": false
+   },
+   {
+    "q": "新模型變好了嗎？",
+    "answer": "還不知道：同期到期的真實預測只有 7／60 天",
+    "evidence": "history/predictions/scorecard.json",
+    "yes": null
+   },
+   {
+    "q": "是否值得升級？",
+    "answer": "未通過：策略改善、前瞻驗證。正式模型維持 V21",
+    "evidence": "五道晉升關卡",
+    "yes": false
+   },
+   {
+    "q": "哪些地方仍沒改善？",
+    "answer": "沒通過的關卡：策略改善、前瞻驗證",
+    "evidence": "晉升關卡、實驗記憶、真實前瞻帳本",
+    "yes": null
+   }
+  ],
+  "memory": {
+   "prediction": {
+    "n": 24,
+    "last": "2026-11-27",
+    "path": "history/predictions/",
+    "rule": "開盤前封存，不可覆寫"
+   },
+   "outcome": {
+    "n": 8,
+    "last": "2026-10-29",
+    "path": "history/learning/matured/",
+    "rule": "到期才對帳，只寫一次"
+   },
+   "error": {
+    "n": 28,
+    "path": "history/learning/research_queue.json",
+    "rule": "只增不刪"
+   },
+   "experiment": {
+    "n": 43,
+    "auto": 20,
+    "decisions": 23,
+    "path": "history/research/experiments.json",
+    "rule": "失敗也記，不刪除"
+   },
+   "mission": {
+    "version": 1,
+    "hash": "94eeefb77003",
+    "goals": 10,
+    "path": "config/ai_mission.yaml",
+    "rule": "程式只讀，人工改版"
+   }
+  },
+  "steps": [
+   {
+    "step": "目標檢查",
+    "status": "success"
+   },
+   {
+    "step": "登記新實驗",
+    "status": "success"
+   },
+   {
+    "step": "反省",
+    "status": "success"
+   },
+   {
+    "step": "更新研究任務",
+    "status": "success"
+   },
+   {
+    "step": "晉升把關",
+    "status": "success"
+   },
+   {
+    "step": "成果驗收",
+    "status": "success"
+   },
+   {
+    "step": "記憶盤點",
+    "status": "success"
+   }
+  ]
+ },
+ "pipeline": [
+  {
+   "step": "資料品質檢查",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "預測封存",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "成熟標籤對帳",
+   "status": "success",
+   "why": "新增 2 份"
+  },
+  {
+   "step": "錯誤分析",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "失準歸因",
+   "status": "success",
+   "why": "新增 2 份逐檔歸因"
+  },
+  {
+   "step": "特徵漂移分析",
+   "status": "success",
+   "why": "7 項特徵缺漏或分布明顯改變"
+  },
+  {
+   "step": "研究任務更新",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "候選模型訓練",
+   "status": "skipped",
+   "why": "沒有新到期的訓練標籤（訊號每 10 個交易日一個，標籤要等持有期結束才確定），沿用目前的候選模型"
+  },
+  {
+   "step": "模型競賽",
+   "status": "success",
+   "why": "累積中（7／60 天）"
+  },
+  {
+   "step": "晉升資格評估",
+   "status": "success",
+   "why": null
+  },
+  {
+   "step": "學習日誌保存",
+   "status": "success",
+   "why": "history/learning/2026-11-27.json"
+  }
+ ]
+}

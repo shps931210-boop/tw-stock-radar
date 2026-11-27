@@ -1,16 +1,16 @@
 {
- "generated_at": "2026-11-28T02:27:53",
+ "generated_at": "2026-11-28T06:05:28",
  "quarter": "2026-Q3",
- "announced": 1982,
- "synced": 1978,
+ "announced": 1984,
+ "synced": 1980,
  "waiting": 4,
  "slow": 0,
- "corrected": 1982,
+ "corrected": 1984,
  "mismatch": 4,
  "checks": "官方 EPS、營業收入、營業利益、本期淨利、歸屬母公司淨利任一項變動算更正；資料庫各季加總和官方累計營收（一般業、保險、其他業）與淨利比對，不一致就重抓，抓到的數字比原本更偏離官方時不寫入",
- "db_has_quarter": 1982,
+ "db_has_quarter": 1984,
  "latency_hours": {
-  "n": 1861,
+  "n": 1863,
   "median": 66.8,
   "max": 425.3
  },
@@ -20,11 +20,11 @@
    "name": "嘉里大榮",
    "period": "2026-Q3",
    "first_seen": "2026-11-17T10:28:36",
-   "attempts": 3,
+   "attempts": 4,
    "eps": 1.56,
    "status": "waiting_source",
    "slow": false,
-   "last_try": "2026-11-24T08:39:44",
+   "last_try": "2026-11-28T05:55:19",
    "corrected_at": null,
    "note": "資料庫和官方累計數字不一致：營業收入 資料庫 10,933,558 千元／官方 12,701,169 千元"
   },
@@ -33,11 +33,11 @@
    "name": "諾貝兒",
    "period": "2026-Q3",
    "first_seen": "2026-11-17T10:28:36",
-   "attempts": 2,
+   "attempts": 3,
    "eps": 4.77,
    "status": "waiting_source",
    "slow": false,
-   "last_try": "2026-11-24T08:39:49",
+   "last_try": "2026-11-28T05:55:24",
    "corrected_at": null,
    "note": "資料庫和官方累計數字不一致：營業收入 資料庫 2,654,509 千元／官方 2,825,823 千元"
   },
@@ -59,16 +59,66 @@
    "name": "全達",
    "period": "2026-Q3",
    "first_seen": "2026-11-17T23:54:39",
-   "attempts": 3,
+   "attempts": 4,
    "eps": -0.58,
    "status": "waiting_source",
    "slow": false,
-   "last_try": "2026-11-24T08:39:46",
+   "last_try": "2026-11-28T05:55:21",
    "corrected_at": null,
    "note": "資料庫和官方累計數字不一致：營業收入 資料庫 1,083,957 千元／官方 1,058,513 千元"
   }
  ],
  "rescored": [
+  {
+   "stock_id": "2892",
+   "name": "第一金",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-28T05:55:16",
+   "before": null,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-28T05:55:09",
+   "fetched_at": "2026-11-28T05:55:16",
+   "rescored_at": "2026-11-28T06:05:25",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫，但還缺 財務品質，五個因子沒有全部算出，不產生綜合分數"
+   }
+  },
+  {
+   "stock_id": "2884",
+   "name": "玉山金",
+   "period": "2026-Q3",
+   "synced_at": "2026-11-28T05:55:13",
+   "before": null,
+   "after": NaN,
+   "latency_h": 0.0,
+   "first_seen": "2026-11-28T05:55:09",
+   "fetched_at": "2026-11-28T05:55:13",
+   "rescored_at": "2026-11-28T06:05:25",
+   "corrected_at": null,
+   "check": {
+    "fin_in_db": true,
+    "fin_period": "2026-Q3",
+    "factors_recomputed": true,
+    "in_rank_universe": true,
+    "complete": false,
+    "score": null,
+    "ref_composite": null,
+    "eligible": false,
+    "site_updated": true,
+    "why": "財報已入庫，但還缺 財務品質，五個因子沒有全部算出，不產生綜合分數"
+   }
+  },
   {
    "stock_id": "7869",
    "name": "宏于電機",
@@ -2388,10 +2438,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 53.4,
+    "ref_composite": 53.3,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 53.4"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 53.3"
    }
   },
   {
@@ -3038,10 +3088,10 @@
     "in_rank_universe": false,
     "complete": false,
     "score": null,
-    "ref_composite": 32.6,
+    "ref_composite": 29.9,
     "eligible": false,
     "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 32.6"
+    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 29.9"
    }
   },
   {
@@ -5018,624 +5068,614 @@
     "site_updated": true,
     "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數"
    }
-  },
-  {
-   "stock_id": "2947",
-   "name": "振宇五金",
-   "period": "2026-Q3",
-   "synced_at": "2026-11-21T05:11:09",
-   "before": null,
-   "after": NaN,
-   "latency_h": 77.3,
-   "first_seen": "2026-11-17T23:54:39",
-   "fetched_at": "2026-11-21T05:11:09",
-   "rescored_at": "2026-11-21T05:13:34",
-   "corrected_at": null,
-   "check": {
-    "fin_in_db": true,
-    "fin_period": "2026-Q3",
-    "factors_recomputed": true,
-    "in_rank_universe": false,
-    "complete": false,
-    "score": null,
-    "ref_composite": 35.2,
-    "eligible": false,
-    "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 35.2"
-   }
-  },
-  {
-   "stock_id": "4558",
-   "name": "寶緯",
-   "period": "2026-Q3",
-   "synced_at": "2026-11-21T05:11:07",
-   "before": null,
-   "after": NaN,
-   "latency_h": 90.7,
-   "first_seen": "2026-11-17T10:28:36",
-   "fetched_at": "2026-11-21T05:11:07",
-   "rescored_at": "2026-11-21T05:13:34",
-   "corrected_at": null,
-   "check": {
-    "fin_in_db": true,
-    "fin_period": "2026-Q3",
-    "factors_recomputed": true,
-    "in_rank_universe": false,
-    "complete": false,
-    "score": null,
-    "ref_composite": 29.2,
-    "eligible": false,
-    "site_updated": true,
-    "why": "財報已入庫、因子已重算，但不在正式排名母體（成交金額過低），依規則不產生正式綜合分數；同一套公式的母體外綜合分數 29.2"
-   }
   }
  ],
  "revisions": [
   {
-   "stock_id": "8463",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-27T07:21:29",
-   "fields": {
-    "ocf": [
-     55779000.0,
-     57773000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "8463",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-27T07:21:29",
-   "fields": {
-    "ocf": [
-     206315000.0,
-     204321000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "3297",
-   "period": "2017-Q4",
-   "detected_at": "2026-11-27T07:20:59",
-   "fields": {
-    "ocf": [
-     40401000.0,
-     -68459000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6185",
+   "stock_id": "6512",
    "period": "2019-Q1",
-   "detected_at": "2026-11-27T07:20:43",
+   "detected_at": "2026-11-28T06:02:16",
    "fields": {
     "ocf": [
-     110096000.0,
-     218495000.0
+     3726000.0,
+     3504000.0
     ]
    }
   },
   {
-   "stock_id": "6185",
+   "stock_id": "6512",
    "period": "2019-Q2",
-   "detected_at": "2026-11-27T07:20:43",
+   "detected_at": "2026-11-28T06:02:16",
    "fields": {
     "ocf": [
-     55845000.0,
-     57796000.0
+     -2957000.0,
+     -2735000.0
     ]
    }
   },
   {
-   "stock_id": "6185",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-27T07:20:43",
-   "fields": {
-    "ocf": [
-     52991000.0,
-     -44391000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6185",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-27T07:20:43",
-   "fields": {
-    "ocf": [
-     14734000.0,
-     1766000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6185",
+   "stock_id": "6512",
    "period": "2021-Q1",
-   "detected_at": "2026-11-27T07:20:43",
+   "detected_at": "2026-11-28T06:02:16",
    "fields": {
     "ocf": [
-     8347000.0,
-     19523000.0
+     7498000.0,
+     15380000.0
     ]
    }
   },
   {
-   "stock_id": "6185",
-   "period": "2021-Q2",
-   "detected_at": "2026-11-27T07:20:43",
-   "fields": {
-    "ocf": [
-     -18158000.0,
-     -10987000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6185",
+   "stock_id": "6512",
    "period": "2021-Q3",
-   "detected_at": "2026-11-27T07:20:43",
+   "detected_at": "2026-11-28T06:02:16",
    "fields": {
     "ocf": [
-     59395000.0,
-     41048000.0
+     -2501000.0,
+     -10383000.0
     ]
    }
   },
   {
-   "stock_id": "6552",
-   "period": "2017-Q1",
-   "detected_at": "2026-11-27T07:20:33",
+   "stock_id": "2719",
+   "period": "2019-Q1",
+   "detected_at": "2026-11-28T06:01:44",
    "fields": {
-    "total_liabilities": [
-     262776000.0,
-     257723000.0
+    "ocf": [
+     -27705000.0,
+     -27407000.0
     ]
    }
   },
   {
-   "stock_id": "6552",
-   "period": "2017-Q2",
-   "detected_at": "2026-11-27T07:20:33",
+   "stock_id": "2719",
+   "period": "2019-Q2",
+   "detected_at": "2026-11-28T06:01:44",
+   "fields": {
+    "ocf": [
+     43352000.0,
+     43054000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2719",
+   "period": "2021-Q3",
+   "detected_at": "2026-11-28T06:01:44",
+   "fields": {
+    "ocf": [
+     -3911000.0,
+     -3543000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2719",
+   "period": "2021-Q4",
+   "detected_at": "2026-11-28T06:01:44",
+   "fields": {
+    "ocf": [
+     -1290000.0,
+     -1456000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5344",
+   "period": "2023-Q1",
+   "detected_at": "2026-11-28T06:01:36",
+   "fields": {
+    "ocf": [
+     -17447000.0,
+     -14673000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5344",
+   "period": "2023-Q2",
+   "detected_at": "2026-11-28T06:01:36",
+   "fields": {
+    "ocf": [
+     12127000.0,
+     12439000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5344",
+   "period": "2023-Q3",
+   "detected_at": "2026-11-28T06:01:36",
+   "fields": {
+    "ocf": [
+     -2331000.0,
+     -5417000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5344",
+   "period": "2023-Q4",
+   "detected_at": "2026-11-28T06:01:36",
+   "fields": {
+    "ocf": [
+     17209000.0,
+     18082000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5514",
+   "period": "2017-Q3",
+   "detected_at": "2026-11-28T06:01:19",
+   "fields": {
+    "ocf": [
+     -90471000.0,
+     -149817000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "5514",
+   "period": "2017-Q4",
+   "detected_at": "2026-11-28T06:01:19",
+   "fields": {
+    "ocf": [
+     -64265000.0,
+     -4919000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2937",
+   "period": "2021-Q1",
+   "detected_at": "2026-11-28T06:01:04",
+   "fields": {
+    "ocf": [
+     -53301000.0,
+     -48601000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2937",
+   "period": "2021-Q2",
+   "detected_at": "2026-11-28T06:01:04",
+   "fields": {
+    "ocf": [
+     75873000.0,
+     98364000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2937",
+   "period": "2021-Q3",
+   "detected_at": "2026-11-28T06:01:04",
+   "fields": {
+    "ocf": [
+     -229355000.0,
+     -208005000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2937",
+   "period": "2021-Q4",
+   "detected_at": "2026-11-28T06:01:04",
+   "fields": {
+    "ocf": [
+     244893000.0,
+     196352000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1423",
+   "period": "2021-Q3",
+   "detected_at": "2026-11-28T06:00:36",
+   "fields": {
+    "ocf": [
+     23355000.0,
+     18615000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1423",
+   "period": "2021-Q4",
+   "detected_at": "2026-11-28T06:00:36",
+   "fields": {
+    "ocf": [
+     49088000.0,
+     53828000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1626",
+   "period": "2017-Q3",
+   "detected_at": "2026-11-28T05:59:44",
+   "fields": {
+    "ocf": [
+     308491000.0,
+     228951000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1626",
+   "period": "2017-Q4",
+   "detected_at": "2026-11-28T05:59:44",
+   "fields": {
+    "ocf": [
+     -420345000.0,
+     -340805000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1626",
+   "period": "2019-Q3",
+   "detected_at": "2026-11-28T05:59:44",
+   "fields": {
+    "ocf": [
+     128117000.0,
+     -1409000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1626",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-28T05:59:44",
+   "fields": {
+    "ocf": [
+     -6484000.0,
+     123042000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3465",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-28T05:59:23",
+   "fields": {
+    "ocf": [
+     -3011000.0,
+     -2933000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3465",
+   "period": "2021-Q1",
+   "detected_at": "2026-11-28T05:59:23",
    "fields": {
     "total_assets": [
-     2000137000.0,
-     1985809000.0
+     1875460000.0,
+     1313357000.0
     ],
     "total_liabilities": [
-     319034000.0,
-     304706000.0
+     1256779000.0,
+     810808000.0
+    ],
+    "ocf": [
+     -516419000.0,
+     -146996000.0
     ]
    }
   },
   {
-   "stock_id": "6552",
-   "period": "2017-Q4",
-   "detected_at": "2026-11-27T07:20:33",
-   "fields": {
-    "total_liabilities": [
-     296058000.0,
-     286336000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "1463",
-   "period": "2023-Q1",
-   "detected_at": "2026-11-27T07:19:38",
+   "stock_id": "3465",
+   "period": "2021-Q2",
+   "detected_at": "2026-11-28T05:59:23",
    "fields": {
     "ocf": [
-     -42430000.0,
-     -41091000.0
+     -17148000.0,
+     22178000.0
     ]
    }
   },
   {
-   "stock_id": "1463",
-   "period": "2023-Q2",
-   "detected_at": "2026-11-27T07:19:38",
-   "fields": {
-    "ocf": [
-     -12837000.0,
-     -12660000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "1463",
-   "period": "2023-Q3",
-   "detected_at": "2026-11-27T07:19:38",
-   "fields": {
-    "ocf": [
-     64996000.0,
-     63480000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "4995",
+   "stock_id": "3465",
    "period": "2021-Q3",
-   "detected_at": "2026-11-27T07:19:35",
+   "detected_at": "2026-11-28T05:59:23",
    "fields": {
     "ocf": [
-     -27104000.0,
-     -25682000.0
+     45865000.0,
+     49291000.0
     ]
    }
   },
   {
-   "stock_id": "4995",
+   "stock_id": "3465",
    "period": "2021-Q4",
-   "detected_at": "2026-11-27T07:19:35",
+   "detected_at": "2026-11-28T05:59:23",
    "fields": {
-    "ocf": [
-     98773000.0,
-     97655000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "4995",
-   "period": "2023-Q2",
-   "detected_at": "2026-11-27T07:19:35",
-   "fields": {
-    "ocf": [
-     120208000.0,
-     69903000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "4995",
-   "period": "2023-Q3",
-   "detected_at": "2026-11-27T07:19:35",
-   "fields": {
-    "ocf": [
-     -19586000.0,
-     30414000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "9902",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-27T07:18:59",
-   "fields": {
-    "ocf": [
-     42725000.0,
-     45725000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "8049",
-   "period": "2019-Q1",
-   "detected_at": "2026-11-27T07:18:04",
-   "fields": {
-    "ocf": [
-     133323000.0,
-     129822000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "8049",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-27T07:18:04",
-   "fields": {
-    "ocf": [
-     26249000.0,
-     20546000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "8049",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-27T07:18:04",
-   "fields": {
-    "ocf": [
-     110371000.0,
-     119225000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "8049",
-   "period": "2021-Q2",
-   "detected_at": "2026-11-27T07:18:04",
-   "fields": {
-    "ocf": [
-     2905000.0,
-     13085000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "8049",
-   "period": "2021-Q3",
-   "detected_at": "2026-11-27T07:18:04",
-   "fields": {
-    "ocf": [
-     25853000.0,
-     15673000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "1535",
-   "period": "2019-Q1",
-   "detected_at": "2026-11-27T07:17:46",
-   "fields": {
-    "ocf": [
-     -237063000.0,
-     -470124000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "1535",
-   "period": "2019-Q2",
-   "detected_at": "2026-11-27T07:17:46",
-   "fields": {
-    "ocf": [
-     406925000.0,
-     225586000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "1535",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-27T07:17:46",
-   "fields": {
-    "ocf": [
-     140767000.0,
-     42372000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "1535",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-27T07:17:46",
-   "fields": {
-    "ocf": [
-     673657000.0,
-     1186452000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6569",
-   "period": "2017-Q1",
-   "detected_at": "2026-11-27T07:17:20",
-   "fields": {
-    "ocf": [
-     5846000.0,
-     62471000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6569",
-   "period": "2017-Q2",
-   "detected_at": "2026-11-27T07:17:20",
-   "fields": {
-    "ocf": [
-     78135000.0,
-     21510000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6161",
-   "period": "2022-Q1",
-   "detected_at": "2026-11-27T07:17:13",
-   "fields": {
+    "total_assets": [
+     2433611000.0,
+     1870004000.0
+    ],
     "total_liabilities": [
-     537598000.0,
-     529060000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6161",
-   "period": "2022-Q2",
-   "detected_at": "2026-11-27T07:17:13",
-   "fields": {
-    "total_liabilities": [
-     663520000.0,
-     655168000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6161",
-   "period": "2022-Q3",
-   "detected_at": "2026-11-27T07:17:13",
-   "fields": {
-    "total_liabilities": [
-     438775000.0,
-     430395000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6161",
-   "period": "2022-Q4",
-   "detected_at": "2026-11-27T07:17:13",
-   "fields": {
-    "total_liabilities": [
-     359923000.0,
-     351757000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6161",
-   "period": "2023-Q4",
-   "detected_at": "2026-11-27T07:17:13",
-   "fields": {
-    "ocf": [
-     45391000.0,
-     47892000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6494",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-27T07:17:10",
-   "fields": {
-    "ocf": [
-     114538000.0,
-     119911000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6494",
-   "period": "2019-Q4",
-   "detected_at": "2026-11-27T07:17:10",
-   "fields": {
-    "ocf": [
-     53048000.0,
-     22587000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "6494",
-   "period": "2021-Q2",
-   "detected_at": "2026-11-27T07:17:10",
-   "fields": {
-    "ocf": [
-     158778000.0,
-     157458000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "3628",
-   "period": "2019-Q1",
-   "detected_at": "2026-11-27T07:15:44",
-   "fields": {
-    "ocf": [
-     -21113000.0,
-     -19212000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "3628",
-   "period": "2019-Q2",
-   "detected_at": "2026-11-27T07:15:44",
-   "fields": {
-    "ocf": [
-     -4350000.0,
-     -5979000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "3628",
-   "period": "2019-Q3",
-   "detected_at": "2026-11-27T07:15:44",
-   "fields": {
-    "ocf": [
-     49197000.0,
-     56548000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "4438",
-   "period": "2017-Q3",
-   "detected_at": "2026-11-27T07:14:28",
-   "fields": {
-    "ocf": [
-     -82718000.0,
-     -76577000.0
-    ]
-   }
-  },
-  {
-   "stock_id": "5706",
-   "period": "2017-Q1",
-   "detected_at": "2026-11-27T07:14:25",
-   "fields": {
-    "total_liabilities": [
-     823368000.0,
-     812943000.0
+     1594415000.0,
+     1060838000.0
     ],
     "ocf": [
-     -64819000.0,
-     -70549000.0
+     257920000.0,
+     124766000.0
     ]
    }
   },
   {
-   "stock_id": "5706",
-   "period": "2017-Q2",
-   "detected_at": "2026-11-27T07:14:25",
+   "stock_id": "3465",
+   "period": "2023-Q4",
+   "detected_at": "2026-11-28T05:59:23",
    "fields": {
     "ocf": [
-     176961000.0,
-     179919000.0
+     90768000.0,
+     88025000.0
     ]
    }
   },
   {
-   "stock_id": "5706",
-   "period": "2017-Q3",
-   "detected_at": "2026-11-27T07:14:25",
+   "stock_id": "4972",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-28T05:59:18",
    "fields": {
     "ocf": [
-     117171000.0,
-     122168000.0
+     92995000.0,
+     100528000.0
     ]
    }
   },
   {
-   "stock_id": "5706",
-   "period": "2017-Q4",
-   "detected_at": "2026-11-27T07:14:25",
+   "stock_id": "4972",
+   "period": "2023-Q4",
+   "detected_at": "2026-11-28T05:59:18",
    "fields": {
     "ocf": [
-     -136631000.0,
-     -138856000.0
+     63533000.0,
+     61454000.0
     ]
    }
   },
   {
-   "stock_id": "3055",
+   "stock_id": "3272",
    "period": "2019-Q1",
-   "detected_at": "2026-11-27T07:13:58",
+   "detected_at": "2026-11-28T05:58:55",
    "fields": {
     "ocf": [
-     -129586000.0,
-     -132759000.0
+     -259734000.0,
+     -288975000.0
     ]
    }
   },
   {
-   "stock_id": "3055",
+   "stock_id": "3272",
    "period": "2019-Q2",
-   "detected_at": "2026-11-27T07:13:58",
+   "detected_at": "2026-11-28T05:58:55",
    "fields": {
     "ocf": [
-     -250794000.0,
-     -255800000.0
+     -26930000.0,
+     -25921000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3272",
+   "period": "2019-Q3",
+   "detected_at": "2026-11-28T05:58:55",
+   "fields": {
+    "ocf": [
+     285238000.0,
+     311259000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3150",
+   "period": "2025-Q3",
+   "detected_at": "2026-11-28T05:58:41",
+   "fields": {
+    "ocf": [
+     -1393000.0,
+     71745000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "3150",
+   "period": "2025-Q4",
+   "detected_at": "2026-11-28T05:58:41",
+   "fields": {
+    "ocf": [
+     81211000.0,
+     8073000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "8940",
+   "period": "2021-Q1",
+   "detected_at": "2026-11-28T05:58:33",
+   "fields": {
+    "ocf": [
+     11243000.0,
+     11088000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "2012",
+   "period": "2019-Q4",
+   "detected_at": "2026-11-28T05:58:29",
+   "fields": {
+    "ocf": [
+     311495000.0,
+     314784000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2017-Q1",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "ocf": [
+     -160267000.0,
+     -157767000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2017-Q2",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "ocf": [
+     -180431000.0,
+     -148473000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2017-Q3",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "ocf": [
+     -65591000.0,
+     -100049000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2017-Q4",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "ocf": [
+     101957000.0,
+     109184000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2019-Q2",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "ocf": [
+     -762000.0,
+     -320000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2019-Q3",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "ocf": [
+     18357000.0,
+     17915000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2022-Q1",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "total_assets": [
+     1403568000.0,
+     1312165000.0
+    ],
+    "total_liabilities": [
+     762311000.0,
+     736720000.0
+    ],
+    "equity": [
+     641257000.0,
+     575445000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2022-Q2",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "total_assets": [
+     1395684000.0,
+     1304281000.0
+    ],
+    "total_liabilities": [
+     766440000.0,
+     740849000.0
+    ],
+    "equity": [
+     629244000.0,
+     563432000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2022-Q3",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "total_assets": [
+     1468334000.0,
+     1376931000.0
+    ],
+    "total_liabilities": [
+     852338000.0,
+     826747000.0
+    ],
+    "equity": [
+     615996000.0,
+     550184000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "1805",
+   "period": "2022-Q4",
+   "detected_at": "2026-11-28T05:58:26",
+   "fields": {
+    "total_assets": [
+     1423984000.0,
+     1348608000.0
+    ],
+    "total_liabilities": [
+     869715000.0,
+     844124000.0
+    ],
+    "equity": [
+     554269000.0,
+     504484000.0
+    ]
+   }
+  },
+  {
+   "stock_id": "4911",
+   "period": "2017-Q1",
+   "detected_at": "2026-11-28T05:58:10",
+   "fields": {
+    "ocf": [
+     850000.0,
+     871000.0
     ]
    }
   }
  ],
  "detect": {
-  "at": "2026-11-28T02:23:26",
+  "at": "2026-11-28T05:55:09",
   "endpoints_ok": 12,
   "endpoints": 12,
-  "stocks": 1982,
-  "new": 0,
+  "stocks": 1984,
+  "new": 2,
   "corrected": 0,
   "mismatch": 0
  },
@@ -5671,9 +5711,9 @@
    "market": "twse",
    "url": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_fh",
    "ok": true,
-   "stocks": 8,
+   "stocks": 10,
    "error": null,
-   "rows": 8,
+   "rows": 10,
    "empty": null
   },
   {
