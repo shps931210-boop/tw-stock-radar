@@ -1,0 +1,2059 @@
+{
+ "study_version": "2026-11-17",
+ "prereg": "docs/prereg_bench_1117.md",
+ "generated_at": "2026-11-17T17:12:02",
+ "periods": {
+  "dev": 67,
+  "holdout": 21,
+  "first": "2019-07-31",
+  "last": "2026-09-24"
+ },
+ "names": {
+  "A50": "0050 佔 50%＋前 10 名",
+  "A70": "0050 佔 70%＋前 10 名",
+  "A80": "0050 佔 80%＋前 10 名",
+  "B0": "市值前 50 大市值加權（0050 近似，對照組）",
+  "B1": "前 50 大市值加權，前 10 名 ×1.5、最後 10 名 ×0.5",
+  "B2": "前 50 大市值加權，前 10 名 ×2、最後 10 名不持有",
+  "TOP10": "原本的前 10 名等權（對照）"
+ },
+ "gate_rule": {
+  "lag_pp": 3.0,
+  "lag_share": 0.1,
+  "mdd_gap": 3.0,
+  "proxy_err": 1.0
+ },
+ "modes": {
+  "stable": {
+   "TOP10": {
+    "name": "原本的前 10 名等權（對照）",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.39,
+     "mean_bench": 1.77,
+     "mean_excess": -0.38,
+     "t": -0.6,
+     "beat_share": 44.8,
+     "lag3_share": 31.3,
+     "worst_excess": -13.38,
+     "mdd": -28.9,
+     "mdd_bench": -29.48,
+     "cum": 123.7,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.16,
+     "mean_bench": 1.87,
+     "mean_excess": -0.71,
+     "t": -0.72,
+     "beat_share": 39.4,
+     "lag3_share": 36.4,
+     "worst_excess": -13.38,
+     "mdd": -25.48,
+     "mdd_bench": -19.03,
+     "cum": 36.9,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.62,
+     "mean_bench": 1.67,
+     "mean_excess": -0.06,
+     "t": -0.07,
+     "beat_share": 50.0,
+     "lag3_share": 26.5,
+     "worst_excess": -11.93,
+     "mdd": -15.39,
+     "mdd_bench": -16.52,
+     "cum": 63.5,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 0.27,
+     "mean_bench": 4.08,
+     "mean_excess": -3.81,
+     "t": -2.48,
+     "beat_share": 33.3,
+     "lag3_share": 57.1,
+     "worst_excess": -20.38,
+     "mdd": -19.83,
+     "mdd_bench": -11.04,
+     "cum": 2.9,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 1.28,
+      "mean_bench": 2.76,
+      "mean_excess": -1.48,
+      "t": -1.94,
+      "beat_share": 41.5,
+      "lag3_share": 41.5,
+      "worst_excess": -20.38,
+      "mdd": -17.58,
+      "mdd_bench": -15.48,
+      "cum": 110.0,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.69,
+      "mean_bench": 1.1,
+      "mean_excess": -0.41,
+      "t": -0.41,
+      "beat_share": 43.5,
+      "lag3_share": 26.1,
+      "worst_excess": -7.7,
+      "mdd": -19.16,
+      "mdd_bench": -24.67,
+      "cum": 9.7,
+      "cum_bench": 20.9
+     }
+    }
+   },
+   "A50": {
+    "name": "0050 佔 50%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.58,
+     "mean_bench": 1.77,
+     "mean_excess": -0.19,
+     "t": -0.61,
+     "beat_share": 44.8,
+     "lag3_share": 11.9,
+     "worst_excess": -6.69,
+     "mdd": -26.65,
+     "mdd_bench": -29.48,
+     "cum": 158.6,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.51,
+     "mean_bench": 1.87,
+     "mean_excess": -0.36,
+     "t": -0.74,
+     "beat_share": 39.4,
+     "lag3_share": 12.1,
+     "worst_excess": -6.69,
+     "mdd": -21.13,
+     "mdd_bench": -19.03,
+     "cum": 56.2,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.65,
+     "mean_bench": 1.67,
+     "mean_excess": -0.03,
+     "t": -0.07,
+     "beat_share": 50.0,
+     "lag3_share": 11.8,
+     "worst_excess": -5.97,
+     "mdd": -12.7,
+     "mdd_bench": -16.52,
+     "cum": 65.5,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 2.18,
+     "mean_bench": 4.08,
+     "mean_excess": -1.91,
+     "t": -2.48,
+     "beat_share": 33.3,
+     "lag3_share": 42.9,
+     "worst_excess": -10.19,
+     "mdd": -12.03,
+     "mdd_bench": -11.04,
+     "cum": 51.2,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.01,
+      "mean_bench": 2.76,
+      "mean_excess": -0.74,
+      "t": -1.95,
+      "beat_share": 41.5,
+      "lag3_share": 18.5,
+      "worst_excess": -10.19,
+      "mdd": -15.36,
+      "mdd_bench": -15.48,
+      "cum": 237.6,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.89,
+      "mean_bench": 1.1,
+      "mean_excess": -0.21,
+      "t": -0.41,
+      "beat_share": 43.5,
+      "lag3_share": 21.7,
+      "worst_excess": -3.85,
+      "mdd": -21.7,
+      "mdd_bench": -24.67,
+      "cum": 15.8,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": false,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "A70": {
+    "name": "0050 佔 70%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.65,
+     "mean_bench": 1.77,
+     "mean_excess": -0.12,
+     "t": -0.63,
+     "beat_share": 44.8,
+     "lag3_share": 4.5,
+     "worst_excess": -4.01,
+     "mdd": -25.87,
+     "mdd_bench": -29.48,
+     "cum": 170.8,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.64,
+     "mean_bench": 1.87,
+     "mean_excess": -0.22,
+     "t": -0.76,
+     "beat_share": 39.4,
+     "lag3_share": 6.1,
+     "worst_excess": -4.01,
+     "mdd": -20.3,
+     "mdd_bench": -19.03,
+     "cum": 63.6,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.66,
+     "mean_bench": 1.67,
+     "mean_excess": -0.02,
+     "t": -0.07,
+     "beat_share": 50.0,
+     "lag3_share": 2.9,
+     "worst_excess": -3.58,
+     "mdd": -13.69,
+     "mdd_bench": -16.52,
+     "cum": 65.6,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 2.94,
+     "mean_bench": 4.08,
+     "mean_excess": -1.14,
+     "t": -2.48,
+     "beat_share": 33.3,
+     "lag3_share": 14.3,
+     "worst_excess": -6.11,
+     "mdd": -11.63,
+     "mdd_bench": -11.04,
+     "cum": 74.9,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.31,
+      "mean_bench": 2.76,
+      "mean_excess": -0.45,
+      "t": -1.97,
+      "beat_share": 41.5,
+      "lag3_share": 9.2,
+      "worst_excess": -6.11,
+      "mdd": -14.57,
+      "mdd_bench": -15.48,
+      "cum": 301.5,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.98,
+      "mean_bench": 1.1,
+      "mean_excess": -0.12,
+      "t": -0.41,
+      "beat_share": 43.5,
+      "lag3_share": 0.0,
+      "worst_excess": -2.31,
+      "mdd": -22.73,
+      "mdd_bench": -24.67,
+      "cum": 18.0,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": false,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "A80": {
+    "name": "0050 佔 80%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.69,
+     "mean_bench": 1.77,
+     "mean_excess": -0.08,
+     "t": -0.66,
+     "beat_share": 44.8,
+     "lag3_share": 0.0,
+     "worst_excess": -2.68,
+     "mdd": -26.85,
+     "mdd_bench": -29.48,
+     "cum": 176.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.71,
+     "mean_bench": 1.87,
+     "mean_excess": -0.16,
+     "t": -0.8,
+     "beat_share": 39.4,
+     "lag3_share": 0.0,
+     "worst_excess": -2.68,
+     "mdd": -19.88,
+     "mdd_bench": -19.03,
+     "cum": 67.2,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.66,
+     "mean_bench": 1.67,
+     "mean_excess": -0.01,
+     "t": -0.07,
+     "beat_share": 50.0,
+     "lag3_share": 0.0,
+     "worst_excess": -2.39,
+     "mdd": -14.62,
+     "mdd_bench": -16.52,
+     "cum": 65.4,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.32,
+     "mean_bench": 4.08,
+     "mean_excess": -0.76,
+     "t": -2.48,
+     "beat_share": 33.3,
+     "lag3_share": 4.8,
+     "worst_excess": -4.08,
+     "mdd": -11.43,
+     "mdd_bench": -11.04,
+     "cum": 87.8,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.45,
+      "mean_bench": 2.76,
+      "mean_excess": -0.3,
+      "t": -1.99,
+      "beat_share": 41.5,
+      "lag3_share": 1.5,
+      "worst_excess": -4.08,
+      "mdd": -14.85,
+      "mdd_bench": -15.48,
+      "cum": 336.3,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 1.02,
+      "mean_bench": 1.1,
+      "mean_excess": -0.08,
+      "t": -0.41,
+      "beat_share": 43.5,
+      "lag3_share": 0.0,
+      "worst_excess": -1.54,
+      "mdd": -23.38,
+      "mdd_bench": -24.67,
+      "cum": 19.0,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": false,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "B0": {
+    "name": "市值前 50 大市值加權（0050 近似，對照組）",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.64,
+     "mean_bench": 1.77,
+     "mean_excess": -0.13,
+     "t": -1.64,
+     "beat_share": 44.8,
+     "lag3_share": 0.0,
+     "worst_excess": -2.48,
+     "mdd": -28.4,
+     "mdd_bench": -29.48,
+     "cum": 167.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.77,
+     "mean_bench": 1.87,
+     "mean_excess": -0.1,
+     "t": -0.75,
+     "beat_share": 45.5,
+     "lag3_share": 0.0,
+     "worst_excess": -2.48,
+     "mdd": -18.36,
+     "mdd_bench": -19.03,
+     "cum": 70.4,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.51,
+     "mean_bench": 1.67,
+     "mean_excess": -0.16,
+     "t": -1.74,
+     "beat_share": 44.1,
+     "lag3_share": 0.0,
+     "worst_excess": -1.9,
+     "mdd": -15.75,
+     "mdd_bench": -16.52,
+     "cum": 57.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.6,
+     "mean_bench": 4.08,
+     "mean_excess": -0.49,
+     "t": -1.36,
+     "beat_share": 42.9,
+     "lag3_share": 4.8,
+     "worst_excess": -7.09,
+     "mdd": -11.02,
+     "mdd_bench": -11.04,
+     "cum": 96.3,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.6,
+      "mean_bench": 2.76,
+      "mean_excess": -0.16,
+      "t": -1.86,
+      "beat_share": 44.6,
+      "lag3_share": 0.0,
+      "worst_excess": -2.48,
+      "mdd": -13.42,
+      "mdd_bench": -15.48,
+      "cum": 370.3,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.72,
+      "mean_bench": 1.1,
+      "mean_excess": -0.38,
+      "t": -1.17,
+      "beat_share": 43.5,
+      "lag3_share": 4.3,
+      "worst_excess": -7.09,
+      "mdd": -23.63,
+      "mdd_bench": -24.67,
+      "cum": 11.7,
+      "cum_bench": 20.9
+     }
+    }
+   },
+   "B1": {
+    "name": "前 50 大市值加權，前 10 名 ×1.5、最後 10 名 ×0.5",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.83,
+     "mean_bench": 1.77,
+     "mean_excess": 0.06,
+     "t": 0.84,
+     "beat_share": 52.2,
+     "lag3_share": 0.0,
+     "worst_excess": -1.55,
+     "mdd": -31.02,
+     "mdd_bench": -29.48,
+     "cum": 198.0,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.0,
+     "mean_bench": 1.87,
+     "mean_excess": 0.13,
+     "t": 1.22,
+     "beat_share": 60.6,
+     "lag3_share": 0.0,
+     "worst_excess": -0.97,
+     "mdd": -17.93,
+     "mdd_bench": -19.03,
+     "cum": 82.3,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.66,
+     "mean_bench": 1.67,
+     "mean_excess": -0.01,
+     "t": -0.13,
+     "beat_share": 44.1,
+     "lag3_share": 0.0,
+     "worst_excess": -1.55,
+     "mdd": -17.99,
+     "mdd_bench": -16.52,
+     "cum": 63.5,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.66,
+     "mean_bench": 4.08,
+     "mean_excess": -0.43,
+     "t": -1.15,
+     "beat_share": 52.4,
+     "lag3_share": 4.8,
+     "worst_excess": -7.22,
+     "mdd": -10.72,
+     "mdd_bench": -11.04,
+     "cum": 98.2,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.8,
+      "mean_bench": 2.76,
+      "mean_excess": 0.04,
+      "t": 0.59,
+      "beat_share": 52.3,
+      "lag3_share": 0.0,
+      "worst_excess": -1.91,
+      "mdd": -15.22,
+      "mdd_bench": -15.48,
+      "cum": 427.4,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.75,
+      "mean_bench": 1.1,
+      "mean_excess": -0.35,
+      "t": -1.05,
+      "beat_share": 52.2,
+      "lag3_share": 4.3,
+      "worst_excess": -7.22,
+      "mdd": -26.03,
+      "mdd_bench": -24.67,
+      "cum": 12.0,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "B2": {
+    "name": "前 50 大市值加權，前 10 名 ×2、最後 10 名不持有",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.96,
+     "mean_bench": 1.77,
+     "mean_excess": 0.19,
+     "t": 1.57,
+     "beat_share": 55.2,
+     "lag3_share": 0.0,
+     "worst_excess": -1.46,
+     "mdd": -33.21,
+     "mdd_bench": -29.48,
+     "cum": 219.8,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.17,
+     "mean_bench": 1.87,
+     "mean_excess": 0.3,
+     "t": 1.67,
+     "beat_share": 57.6,
+     "lag3_share": 0.0,
+     "worst_excess": -1.1,
+     "mdd": -17.6,
+     "mdd_bench": -19.03,
+     "cum": 91.5,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.75,
+     "mean_bench": 1.67,
+     "mean_excess": 0.08,
+     "t": 0.5,
+     "beat_share": 52.9,
+     "lag3_share": 0.0,
+     "worst_excess": -1.46,
+     "mdd": -19.84,
+     "mdd_bench": -16.52,
+     "cum": 67.1,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.7,
+     "mean_bench": 4.08,
+     "mean_excess": -0.39,
+     "t": -0.99,
+     "beat_share": 57.1,
+     "lag3_share": 4.8,
+     "worst_excess": -7.31,
+     "mdd": -10.52,
+     "mdd_bench": -11.04,
+     "cum": 99.2,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.94,
+      "mean_bench": 2.76,
+      "mean_excess": 0.19,
+      "t": 1.55,
+      "beat_share": 56.9,
+      "lag3_share": 0.0,
+      "worst_excess": -2.0,
+      "mdd": -17.11,
+      "mdd_bench": -15.48,
+      "cum": 470.5,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.76,
+      "mean_bench": 1.1,
+      "mean_excess": -0.34,
+      "t": -0.94,
+      "beat_share": 52.2,
+      "lag3_share": 4.3,
+      "worst_excess": -7.31,
+      "mdd": -28.05,
+      "mdd_bench": -24.67,
+      "cum": 11.7,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": true,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   }
+  },
+  "balanced": {
+   "TOP10": {
+    "name": "原本的前 10 名等權（對照）",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.53,
+     "mean_bench": 1.77,
+     "mean_excess": -0.24,
+     "t": -0.25,
+     "beat_share": 49.3,
+     "lag3_share": 37.3,
+     "worst_excess": -18.14,
+     "mdd": -32.21,
+     "mdd_bench": -29.48,
+     "cum": 134.1,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.47,
+     "mean_bench": 1.87,
+     "mean_excess": -0.4,
+     "t": -0.24,
+     "beat_share": 48.5,
+     "lag3_share": 42.4,
+     "worst_excess": -18.14,
+     "mdd": -27.23,
+     "mdd_bench": -19.03,
+     "cum": 43.4,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.59,
+     "mean_bench": 1.67,
+     "mean_excess": -0.08,
+     "t": -0.09,
+     "beat_share": 50.0,
+     "lag3_share": 32.4,
+     "worst_excess": -9.84,
+     "mdd": -12.81,
+     "mdd_bench": -16.52,
+     "cum": 63.3,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 0.5,
+     "mean_bench": 4.08,
+     "mean_excess": -3.58,
+     "t": -1.9,
+     "beat_share": 33.3,
+     "lag3_share": 57.1,
+     "worst_excess": -19.67,
+     "mdd": -16.91,
+     "mdd_bench": -11.04,
+     "cum": 5.7,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 1.5,
+      "mean_bench": 2.76,
+      "mean_excess": -1.26,
+      "t": -1.17,
+      "beat_share": 44.6,
+      "lag3_share": 43.1,
+      "worst_excess": -19.67,
+      "mdd": -22.63,
+      "mdd_bench": -15.48,
+      "cum": 125.8,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.68,
+      "mean_bench": 1.1,
+      "mean_excess": -0.42,
+      "t": -0.34,
+      "beat_share": 47.8,
+      "lag3_share": 39.1,
+      "worst_excess": -10.63,
+      "mdd": -23.02,
+      "mdd_bench": -24.67,
+      "cum": 9.6,
+      "cum_bench": 20.9
+     }
+    }
+   },
+   "A50": {
+    "name": "0050 佔 50%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.65,
+     "mean_bench": 1.77,
+     "mean_excess": -0.12,
+     "t": -0.26,
+     "beat_share": 49.3,
+     "lag3_share": 25.4,
+     "worst_excess": -9.07,
+     "mdd": -27.31,
+     "mdd_bench": -29.48,
+     "cum": 171.2,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.66,
+     "mean_bench": 1.87,
+     "mean_excess": -0.21,
+     "t": -0.25,
+     "beat_share": 48.5,
+     "lag3_share": 36.4,
+     "worst_excess": -9.07,
+     "mdd": -15.61,
+     "mdd_bench": -19.03,
+     "cum": 63.3,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.63,
+     "mean_bench": 1.67,
+     "mean_excess": -0.04,
+     "t": -0.09,
+     "beat_share": 50.0,
+     "lag3_share": 14.7,
+     "worst_excess": -4.92,
+     "mdd": -14.58,
+     "mdd_bench": -16.52,
+     "cum": 66.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 2.29,
+     "mean_bench": 4.08,
+     "mean_excess": -1.79,
+     "t": -1.9,
+     "beat_share": 33.3,
+     "lag3_share": 38.1,
+     "worst_excess": -9.84,
+     "mdd": -10.23,
+     "mdd_bench": -11.04,
+     "cum": 54.1,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.12,
+      "mean_bench": 2.76,
+      "mean_excess": -0.63,
+      "t": -1.17,
+      "beat_share": 44.6,
+      "lag3_share": 32.3,
+      "worst_excess": -9.84,
+      "mdd": -16.21,
+      "mdd_bench": -15.48,
+      "cum": 259.8,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.89,
+      "mean_bench": 1.1,
+      "mean_excess": -0.21,
+      "t": -0.34,
+      "beat_share": 47.8,
+      "lag3_share": 17.4,
+      "worst_excess": -5.31,
+      "mdd": -23.74,
+      "mdd_bench": -24.67,
+      "cum": 16.1,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": false,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "A70": {
+    "name": "0050 佔 70%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.69,
+     "mean_bench": 1.77,
+     "mean_excess": -0.08,
+     "t": -0.28,
+     "beat_share": 49.3,
+     "lag3_share": 9.0,
+     "worst_excess": -5.44,
+     "mdd": -26.85,
+     "mdd_bench": -29.48,
+     "cum": 180.4,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.74,
+     "mean_bench": 1.87,
+     "mean_excess": -0.13,
+     "t": -0.27,
+     "beat_share": 48.5,
+     "lag3_share": 18.2,
+     "worst_excess": -5.44,
+     "mdd": -16.98,
+     "mdd_bench": -19.03,
+     "cum": 68.9,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.65,
+     "mean_bench": 1.67,
+     "mean_excess": -0.03,
+     "t": -0.09,
+     "beat_share": 50.0,
+     "lag3_share": 0.0,
+     "worst_excess": -2.95,
+     "mdd": -15.33,
+     "mdd_bench": -16.52,
+     "cum": 66.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.01,
+     "mean_bench": 4.08,
+     "mean_excess": -1.07,
+     "t": -1.9,
+     "beat_share": 33.3,
+     "lag3_share": 19.0,
+     "worst_excess": -5.9,
+     "mdd": -10.55,
+     "mdd_bench": -11.04,
+     "cum": 77.1,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.37,
+      "mean_bench": 2.76,
+      "mean_excess": -0.38,
+      "t": -1.19,
+      "beat_share": 44.6,
+      "lag3_share": 13.8,
+      "worst_excess": -5.9,
+      "mdd": -14.26,
+      "mdd_bench": -15.48,
+      "cum": 319.8,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.97,
+      "mean_bench": 1.1,
+      "mean_excess": -0.13,
+      "t": -0.34,
+      "beat_share": 47.8,
+      "lag3_share": 4.3,
+      "worst_excess": -3.19,
+      "mdd": -24.09,
+      "mdd_bench": -24.67,
+      "cum": 18.3,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": false,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "A80": {
+    "name": "0050 佔 80%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.72,
+     "mean_bench": 1.77,
+     "mean_excess": -0.05,
+     "t": -0.29,
+     "beat_share": 49.3,
+     "lag3_share": 1.5,
+     "worst_excess": -3.63,
+     "mdd": -27.72,
+     "mdd_bench": -29.48,
+     "cum": 183.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.77,
+     "mean_bench": 1.87,
+     "mean_excess": -0.09,
+     "t": -0.28,
+     "beat_share": 48.5,
+     "lag3_share": 3.0,
+     "worst_excess": -3.63,
+     "mdd": -17.67,
+     "mdd_bench": -19.03,
+     "cum": 71.1,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.66,
+     "mean_bench": 1.67,
+     "mean_excess": -0.02,
+     "t": -0.09,
+     "beat_share": 50.0,
+     "lag3_share": 0.0,
+     "worst_excess": -1.97,
+     "mdd": -15.72,
+     "mdd_bench": -16.52,
+     "cum": 65.7,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.37,
+     "mean_bench": 4.08,
+     "mean_excess": -0.72,
+     "t": -1.9,
+     "beat_share": 33.3,
+     "lag3_share": 14.3,
+     "worst_excess": -3.93,
+     "mdd": -10.72,
+     "mdd_bench": -11.04,
+     "cum": 89.4,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.5,
+      "mean_bench": 2.76,
+      "mean_excess": -0.26,
+      "t": -1.2,
+      "beat_share": 44.6,
+      "lag3_share": 6.2,
+      "worst_excess": -3.93,
+      "mdd": -13.38,
+      "mdd_bench": -15.48,
+      "cum": 350.5,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 1.02,
+      "mean_bench": 1.1,
+      "mean_excess": -0.08,
+      "t": -0.34,
+      "beat_share": 47.8,
+      "lag3_share": 0.0,
+      "worst_excess": -2.13,
+      "mdd": -24.27,
+      "mdd_bench": -24.67,
+      "cum": 19.2,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": false,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "B0": {
+    "name": "市值前 50 大市值加權（0050 近似，對照組）",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.64,
+     "mean_bench": 1.77,
+     "mean_excess": -0.13,
+     "t": -1.64,
+     "beat_share": 44.8,
+     "lag3_share": 0.0,
+     "worst_excess": -2.48,
+     "mdd": -28.4,
+     "mdd_bench": -29.48,
+     "cum": 167.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.77,
+     "mean_bench": 1.87,
+     "mean_excess": -0.1,
+     "t": -0.75,
+     "beat_share": 45.5,
+     "lag3_share": 0.0,
+     "worst_excess": -2.48,
+     "mdd": -18.36,
+     "mdd_bench": -19.03,
+     "cum": 70.4,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.51,
+     "mean_bench": 1.67,
+     "mean_excess": -0.16,
+     "t": -1.74,
+     "beat_share": 44.1,
+     "lag3_share": 0.0,
+     "worst_excess": -1.9,
+     "mdd": -15.75,
+     "mdd_bench": -16.52,
+     "cum": 57.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.6,
+     "mean_bench": 4.08,
+     "mean_excess": -0.49,
+     "t": -1.36,
+     "beat_share": 42.9,
+     "lag3_share": 4.8,
+     "worst_excess": -7.09,
+     "mdd": -11.02,
+     "mdd_bench": -11.04,
+     "cum": 96.3,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.6,
+      "mean_bench": 2.76,
+      "mean_excess": -0.16,
+      "t": -1.86,
+      "beat_share": 44.6,
+      "lag3_share": 0.0,
+      "worst_excess": -2.48,
+      "mdd": -13.42,
+      "mdd_bench": -15.48,
+      "cum": 370.3,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.72,
+      "mean_bench": 1.1,
+      "mean_excess": -0.38,
+      "t": -1.17,
+      "beat_share": 43.5,
+      "lag3_share": 4.3,
+      "worst_excess": -7.09,
+      "mdd": -23.63,
+      "mdd_bench": -24.67,
+      "cum": 11.7,
+      "cum_bench": 20.9
+     }
+    }
+   },
+   "B1": {
+    "name": "前 50 大市值加權，前 10 名 ×1.5、最後 10 名 ×0.5",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.84,
+     "mean_bench": 1.77,
+     "mean_excess": 0.07,
+     "t": 0.87,
+     "beat_share": 49.3,
+     "lag3_share": 0.0,
+     "worst_excess": -1.21,
+     "mdd": -31.8,
+     "mdd_bench": -29.48,
+     "cum": 199.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.06,
+     "mean_bench": 1.87,
+     "mean_excess": 0.19,
+     "t": 1.41,
+     "beat_share": 60.6,
+     "lag3_share": 0.0,
+     "worst_excess": -1.21,
+     "mdd": -18.02,
+     "mdd_bench": -19.03,
+     "cum": 85.8,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.63,
+     "mean_bench": 1.67,
+     "mean_excess": -0.05,
+     "t": -0.56,
+     "beat_share": 38.2,
+     "lag3_share": 0.0,
+     "worst_excess": -0.97,
+     "mdd": -19.1,
+     "mdd_bench": -16.52,
+     "cum": 61.3,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.61,
+     "mean_bench": 4.08,
+     "mean_excess": -0.47,
+     "t": -1.2,
+     "beat_share": 42.9,
+     "lag3_share": 4.8,
+     "worst_excess": -7.23,
+     "mdd": -11.01,
+     "mdd_bench": -11.04,
+     "cum": 96.4,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.8,
+      "mean_bench": 2.76,
+      "mean_excess": 0.04,
+      "t": 0.44,
+      "beat_share": 49.2,
+      "lag3_share": 0.0,
+      "worst_excess": -1.85,
+      "mdd": -15.45,
+      "mdd_bench": -15.48,
+      "cum": 426.8,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.75,
+      "mean_bench": 1.1,
+      "mean_excess": -0.35,
+      "t": -1.06,
+      "beat_share": 43.5,
+      "lag3_share": 4.3,
+      "worst_excess": -7.23,
+      "mdd": -27.03,
+      "mdd_bench": -24.67,
+      "cum": 11.7,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "B2": {
+    "name": "前 50 大市值加權，前 10 名 ×2、最後 10 名不持有",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.99,
+     "mean_bench": 1.77,
+     "mean_excess": 0.22,
+     "t": 1.53,
+     "beat_share": 59.7,
+     "lag3_share": 0.0,
+     "worst_excess": -1.69,
+     "mdd": -34.48,
+     "mdd_bench": -29.48,
+     "cum": 223.8,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.28,
+     "mean_bench": 1.87,
+     "mean_excess": 0.41,
+     "t": 1.8,
+     "beat_share": 69.7,
+     "lag3_share": 0.0,
+     "worst_excess": -1.65,
+     "mdd": -17.77,
+     "mdd_bench": -19.03,
+     "cum": 97.9,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.7,
+     "mean_bench": 1.67,
+     "mean_excess": 0.03,
+     "t": 0.16,
+     "beat_share": 50.0,
+     "lag3_share": 0.0,
+     "worst_excess": -1.69,
+     "mdd": -21.65,
+     "mdd_bench": -16.52,
+     "cum": 63.6,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.62,
+     "mean_bench": 4.08,
+     "mean_excess": -0.46,
+     "t": -1.08,
+     "beat_share": 52.4,
+     "lag3_share": 4.8,
+     "worst_excess": -7.32,
+     "mdd": -11.0,
+     "mdd_bench": -11.04,
+     "cum": 96.3,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.95,
+      "mean_bench": 2.76,
+      "mean_excess": 0.19,
+      "t": 1.25,
+      "beat_share": 60.0,
+      "lag3_share": 0.0,
+      "worst_excess": -2.3,
+      "mdd": -17.47,
+      "mdd_bench": -15.48,
+      "cum": 470.9,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.77,
+      "mean_bench": 1.1,
+      "mean_excess": -0.33,
+      "t": -0.9,
+      "beat_share": 52.2,
+      "lag3_share": 4.3,
+      "worst_excess": -7.32,
+      "mdd": -29.69,
+      "mdd_bench": -24.67,
+      "cum": 11.3,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": true,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   }
+  },
+  "aggressive": {
+   "TOP10": {
+    "name": "原本的前 10 名等權（對照）",
+    "dev": {
+     "n": 67,
+     "mean_net": 2.73,
+     "mean_bench": 1.77,
+     "mean_excess": 0.96,
+     "t": 0.9,
+     "beat_share": 47.8,
+     "lag3_share": 37.3,
+     "worst_excess": -16.8,
+     "mdd": -36.74,
+     "mdd_bench": -29.48,
+     "cum": 357.9,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.58,
+     "mean_bench": 1.87,
+     "mean_excess": 0.71,
+     "t": 0.41,
+     "beat_share": 45.5,
+     "lag3_share": 39.4,
+     "worst_excess": -16.8,
+     "mdd": -23.65,
+     "mdd_bench": -19.03,
+     "cum": 97.0,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 2.87,
+     "mean_bench": 1.67,
+     "mean_excess": 1.2,
+     "t": 0.93,
+     "beat_share": 50.0,
+     "lag3_share": 35.3,
+     "worst_excess": -11.7,
+     "mdd": -18.68,
+     "mdd_bench": -16.52,
+     "cum": 132.4,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 2.47,
+     "mean_bench": 4.08,
+     "mean_excess": -1.61,
+     "t": -0.57,
+     "beat_share": 47.6,
+     "lag3_share": 42.9,
+     "worst_excess": -21.9,
+     "mdd": -43.68,
+     "mdd_bench": -11.04,
+     "cum": 28.7,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 3.21,
+      "mean_bench": 2.76,
+      "mean_excess": 0.46,
+      "t": 0.37,
+      "beat_share": 47.7,
+      "lag3_share": 38.5,
+      "worst_excess": -21.83,
+      "mdd": -43.68,
+      "mdd_bench": -15.48,
+      "cum": 440.4,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 1.12,
+      "mean_bench": 1.1,
+      "mean_excess": 0.02,
+      "t": 0.01,
+      "beat_share": 47.8,
+      "lag3_share": 39.1,
+      "worst_excess": -21.9,
+      "mdd": -31.29,
+      "mdd_bench": -24.67,
+      "cum": 9.0,
+      "cum_bench": 20.9
+     }
+    }
+   },
+   "A50": {
+    "name": "0050 佔 50%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 2.24,
+     "mean_bench": 1.77,
+     "mean_excess": 0.47,
+     "t": 0.9,
+     "beat_share": 47.8,
+     "lag3_share": 22.4,
+     "worst_excess": -8.4,
+     "mdd": -29.74,
+     "mdd_bench": -29.48,
+     "cum": 283.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.21,
+     "mean_bench": 1.87,
+     "mean_excess": 0.35,
+     "t": 0.4,
+     "beat_share": 45.5,
+     "lag3_share": 30.3,
+     "worst_excess": -8.4,
+     "mdd": -18.37,
+     "mdd_bench": -19.03,
+     "cum": 91.7,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 2.27,
+     "mean_bench": 1.67,
+     "mean_excess": 0.6,
+     "t": 0.93,
+     "beat_share": 50.0,
+     "lag3_share": 14.7,
+     "worst_excess": -5.85,
+     "mdd": -17.45,
+     "mdd_bench": -16.52,
+     "cum": 100.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.28,
+     "mean_bench": 4.08,
+     "mean_excess": -0.81,
+     "t": -0.57,
+     "beat_share": 47.6,
+     "lag3_share": 38.1,
+     "worst_excess": -10.95,
+     "mdd": -25.62,
+     "mdd_bench": -11.04,
+     "cum": 74.0,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.98,
+      "mean_bench": 2.76,
+      "mean_excess": 0.22,
+      "t": 0.36,
+      "beat_share": 47.7,
+      "lag3_share": 26.2,
+      "worst_excess": -10.92,
+      "mdd": -25.62,
+      "mdd_bench": -15.48,
+      "cum": 468.0,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 1.11,
+      "mean_bench": 1.1,
+      "mean_excess": 0.01,
+      "t": 0.01,
+      "beat_share": 47.8,
+      "lag3_share": 26.1,
+      "worst_excess": -10.95,
+      "mdd": -27.88,
+      "mdd_bench": -24.67,
+      "cum": 17.5,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": true,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": false
+     }
+    }
+   },
+   "A70": {
+    "name": "0050 佔 70%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 2.05,
+     "mean_bench": 1.77,
+     "mean_excess": 0.28,
+     "t": 0.89,
+     "beat_share": 47.8,
+     "lag3_share": 10.4,
+     "worst_excess": -5.04,
+     "mdd": -28.45,
+     "mdd_bench": -29.48,
+     "cum": 246.2,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.07,
+     "mean_bench": 1.87,
+     "mean_excess": 0.2,
+     "t": 0.39,
+     "beat_share": 45.5,
+     "lag3_share": 18.2,
+     "worst_excess": -5.04,
+     "mdd": -18.42,
+     "mdd_bench": -19.03,
+     "cum": 86.0,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 2.03,
+     "mean_bench": 1.67,
+     "mean_excess": 0.36,
+     "t": 0.93,
+     "beat_share": 50.0,
+     "lag3_share": 2.9,
+     "worst_excess": -3.51,
+     "mdd": -17.04,
+     "mdd_bench": -16.52,
+     "cum": 86.1,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.6,
+     "mean_bench": 4.08,
+     "mean_excess": -0.48,
+     "t": -0.57,
+     "beat_share": 47.6,
+     "lag3_share": 23.8,
+     "worst_excess": -6.57,
+     "mdd": -18.13,
+     "mdd_bench": -11.04,
+     "cum": 91.5,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.89,
+      "mean_bench": 2.76,
+      "mean_excess": 0.13,
+      "t": 0.35,
+      "beat_share": 47.7,
+      "lag3_share": 16.9,
+      "worst_excess": -6.55,
+      "mdd": -18.13,
+      "mdd_bench": -15.48,
+      "cum": 455.0,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 1.11,
+      "mean_bench": 1.1,
+      "mean_excess": 0.01,
+      "t": 0.01,
+      "beat_share": 47.8,
+      "lag3_share": 4.3,
+      "worst_excess": -6.57,
+      "mdd": -26.57,
+      "mdd_bench": -24.67,
+      "cum": 19.5,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": true,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": false
+     }
+    }
+   },
+   "A80": {
+    "name": "0050 佔 80%＋前 10 名",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.95,
+     "mean_bench": 1.77,
+     "mean_excess": 0.18,
+     "t": 0.87,
+     "beat_share": 47.8,
+     "lag3_share": 1.5,
+     "worst_excess": -3.36,
+     "mdd": -28.77,
+     "mdd_bench": -29.48,
+     "cum": 226.7,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.0,
+     "mean_bench": 1.87,
+     "mean_excess": 0.13,
+     "t": 0.37,
+     "beat_share": 45.5,
+     "lag3_share": 3.0,
+     "worst_excess": -3.36,
+     "mdd": -18.62,
+     "mdd_bench": -19.03,
+     "cum": 82.5,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.91,
+     "mean_bench": 1.67,
+     "mean_excess": 0.24,
+     "t": 0.93,
+     "beat_share": 50.0,
+     "lag3_share": 0.0,
+     "worst_excess": -2.34,
+     "mdd": -16.85,
+     "mdd_bench": -16.52,
+     "cum": 79.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.76,
+     "mean_bench": 4.08,
+     "mean_excess": -0.32,
+     "t": -0.57,
+     "beat_share": 47.6,
+     "lag3_share": 14.3,
+     "worst_excess": -4.38,
+     "mdd": -14.26,
+     "mdd_bench": -11.04,
+     "cum": 100.0,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.84,
+      "mean_bench": 2.76,
+      "mean_excess": 0.08,
+      "t": 0.34,
+      "beat_share": 47.7,
+      "lag3_share": 4.6,
+      "worst_excess": -4.37,
+      "mdd": -14.26,
+      "mdd_bench": -15.48,
+      "cum": 443.5,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 1.1,
+      "mean_bench": 1.1,
+      "mean_excess": 0.0,
+      "t": 0.01,
+      "beat_share": 47.8,
+      "lag3_share": 4.3,
+      "worst_excess": -4.38,
+      "mdd": -25.93,
+      "mdd_bench": -24.67,
+      "cum": 20.2,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": true,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": false,
+      "保留段最大回撤不比 0050 差超過 3 點": false
+     }
+    }
+   },
+   "B0": {
+    "name": "市值前 50 大市值加權（0050 近似，對照組）",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.64,
+     "mean_bench": 1.77,
+     "mean_excess": -0.13,
+     "t": -1.64,
+     "beat_share": 44.8,
+     "lag3_share": 0.0,
+     "worst_excess": -2.48,
+     "mdd": -28.4,
+     "mdd_bench": -29.48,
+     "cum": 167.5,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 1.77,
+     "mean_bench": 1.87,
+     "mean_excess": -0.1,
+     "t": -0.75,
+     "beat_share": 45.5,
+     "lag3_share": 0.0,
+     "worst_excess": -2.48,
+     "mdd": -18.36,
+     "mdd_bench": -19.03,
+     "cum": 70.4,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.51,
+     "mean_bench": 1.67,
+     "mean_excess": -0.16,
+     "t": -1.74,
+     "beat_share": 44.1,
+     "lag3_share": 0.0,
+     "worst_excess": -1.9,
+     "mdd": -15.75,
+     "mdd_bench": -16.52,
+     "cum": 57.0,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.6,
+     "mean_bench": 4.08,
+     "mean_excess": -0.49,
+     "t": -1.36,
+     "beat_share": 42.9,
+     "lag3_share": 4.8,
+     "worst_excess": -7.09,
+     "mdd": -11.02,
+     "mdd_bench": -11.04,
+     "cum": 96.3,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.6,
+      "mean_bench": 2.76,
+      "mean_excess": -0.16,
+      "t": -1.86,
+      "beat_share": 44.6,
+      "lag3_share": 0.0,
+      "worst_excess": -2.48,
+      "mdd": -13.42,
+      "mdd_bench": -15.48,
+      "cum": 370.3,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.72,
+      "mean_bench": 1.1,
+      "mean_excess": -0.38,
+      "t": -1.17,
+      "beat_share": 43.5,
+      "lag3_share": 4.3,
+      "worst_excess": -7.09,
+      "mdd": -23.63,
+      "mdd_bench": -24.67,
+      "cum": 11.7,
+      "cum_bench": 20.9
+     }
+    }
+   },
+   "B1": {
+    "name": "前 50 大市值加權，前 10 名 ×1.5、最後 10 名 ×0.5",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.78,
+     "mean_bench": 1.77,
+     "mean_excess": 0.01,
+     "t": 0.13,
+     "beat_share": 47.8,
+     "lag3_share": 0.0,
+     "worst_excess": -2.2,
+     "mdd": -29.2,
+     "mdd_bench": -29.48,
+     "cum": 190.8,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.03,
+     "mean_bench": 1.87,
+     "mean_excess": 0.16,
+     "t": 1.08,
+     "beat_share": 57.6,
+     "lag3_share": 0.0,
+     "worst_excess": -1.36,
+     "mdd": -18.38,
+     "mdd_bench": -19.03,
+     "cum": 83.8,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.54,
+     "mean_bench": 1.67,
+     "mean_excess": -0.13,
+     "t": -1.31,
+     "beat_share": 38.2,
+     "lag3_share": 0.0,
+     "worst_excess": -2.2,
+     "mdd": -16.5,
+     "mdd_bench": -16.52,
+     "cum": 58.2,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.7,
+     "mean_bench": 4.08,
+     "mean_excess": -0.39,
+     "t": -0.99,
+     "beat_share": 47.6,
+     "lag3_share": 4.8,
+     "worst_excess": -7.12,
+     "mdd": -11.35,
+     "mdd_bench": -11.04,
+     "cum": 99.3,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.76,
+      "mean_bench": 2.76,
+      "mean_excess": 0.01,
+      "t": 0.08,
+      "beat_share": 49.2,
+      "lag3_share": 0.0,
+      "worst_excess": -2.33,
+      "mdd": -15.77,
+      "mdd_bench": -15.48,
+      "cum": 415.8,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.75,
+      "mean_bench": 1.1,
+      "mean_excess": -0.34,
+      "t": -1.03,
+      "beat_share": 43.5,
+      "lag3_share": 4.3,
+      "worst_excess": -7.12,
+      "mdd": -24.3,
+      "mdd_bench": -24.67,
+      "cum": 12.4,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   },
+   "B2": {
+    "name": "前 50 大市值加權，前 10 名 ×2、最後 10 名不持有",
+    "dev": {
+     "n": 67,
+     "mean_net": 1.88,
+     "mean_bench": 1.77,
+     "mean_excess": 0.11,
+     "t": 0.77,
+     "beat_share": 50.7,
+     "lag3_share": 0.0,
+     "worst_excess": -2.57,
+     "mdd": -29.82,
+     "mdd_bench": -29.48,
+     "cum": 207.1,
+     "cum_bench": 188.5
+    },
+    "dev_first": {
+     "n": 33,
+     "mean_net": 2.22,
+     "mean_bench": 1.87,
+     "mean_excess": 0.35,
+     "t": 1.37,
+     "beat_share": 60.6,
+     "lag3_share": 0.0,
+     "worst_excess": -2.57,
+     "mdd": -18.41,
+     "mdd_bench": -19.03,
+     "cum": 94.0,
+     "cum_bench": 75.1
+    },
+    "dev_second": {
+     "n": 34,
+     "mean_net": 1.55,
+     "mean_bench": 1.67,
+     "mean_excess": -0.12,
+     "t": -0.95,
+     "beat_share": 41.2,
+     "lag3_share": 0.0,
+     "worst_excess": -2.46,
+     "mdd": -17.06,
+     "mdd_bench": -16.52,
+     "cum": 58.3,
+     "cum_bench": 64.8
+    },
+    "holdout": {
+     "n": 21,
+     "mean_net": 3.77,
+     "mean_bench": 4.08,
+     "mean_excess": -0.31,
+     "t": -0.69,
+     "beat_share": 52.4,
+     "lag3_share": 9.5,
+     "worst_excess": -7.16,
+     "mdd": -11.67,
+     "mdd_bench": -11.04,
+     "cum": 101.5,
+     "cum_bench": 115.8
+    },
+    "regime": {
+     "bull": {
+      "n": 65,
+      "mean_net": 2.88,
+      "mean_bench": 2.76,
+      "mean_excess": 0.13,
+      "t": 0.77,
+      "beat_share": 53.8,
+      "lag3_share": 1.5,
+      "worst_excess": -3.47,
+      "mdd": -18.36,
+      "mdd_bench": -15.48,
+      "cum": 448.8,
+      "cum_bench": 414.9
+     },
+     "bear": {
+      "n": 23,
+      "mean_net": 0.78,
+      "mean_bench": 1.1,
+      "mean_excess": -0.32,
+      "t": -0.9,
+      "beat_share": 43.5,
+      "lag3_share": 4.3,
+      "worst_excess": -7.16,
+      "mdd": -24.78,
+      "mdd_bench": -24.67,
+      "cum": 12.8,
+      "cum_bench": 20.9
+     }
+    },
+    "gate": {
+     "passed": false,
+     "checks": {
+      "開發段平均不輸 0050": true,
+      "開發段前後兩半都不輸": false,
+      "保留段平均不輸 0050": false,
+      "保留段落後超過 3 點的期數 ≤ 10%": true,
+      "保留段最大回撤不比 0050 差超過 3 點": true
+     }
+    }
+   }
+  }
+ },
+ "proxy": {
+  "mean_diff": -0.22,
+  "abs_diff": 0.55,
+  "corr": 0.99,
+  "reliable": true
+ }
+}
